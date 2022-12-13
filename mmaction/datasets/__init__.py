@@ -17,6 +17,9 @@ from .rawframe_dataset import RawframeDataset
 from .rawvideo_dataset import RawVideoDataset
 from .ssn_dataset import SSNDataset
 from .video_dataset import VideoDataset
+from .imigue_dataset import ImigueDataset
+from .bmn_ssn_dataset import BMNSSNDataset
+from .bsn_ssn_dataset import BSNSSNDataset
 
 __all__ = [
     'VideoDataset', 'build_dataloader', 'build_dataset', 'RepeatDataset',
@@ -24,5 +27,6 @@ __all__ = [
     'HVUDataset', 'AudioDataset', 'AudioFeatureDataset', 'ImageDataset',
     'RawVideoDataset', 'AVADataset', 'AudioVisualDataset',
     'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending', 'DATASETS',
-    'PIPELINES', 'BLENDINGS', 'PoseDataset', 'ConcatDataset'
+    'PIPELINES', 'BLENDINGS', 'PoseDataset', 'ConcatDataset', 'ImigueDataset',
+    'BMNSSNDataset', 'BSNSSNDataset'
 ]

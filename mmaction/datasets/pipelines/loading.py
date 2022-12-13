@@ -1695,6 +1695,55 @@ class AudioFeatureSelector:
 
 
 @PIPELINES.register_module()
+class LoadLocalizationFeatureWithPadding:
+    """Load Video features for localizer with given video_name list.
+
+    Required keys are "video_name" and "data_prefix", added or modified keys
+    are "raw_feature".
+
+    Args:
+        raw_feature_ext (str): Raw feature file extension.  Default: '.csv'.
+    """
+
+    def __init__(self, raw_feature_ext='.csv'):
+        valid_raw_feature_ext = ('.csv', )
+        if raw_feature_ext not in valid_raw_feature_ext:
+            raise NotImplementedError
+        self.raw_feature_ext = raw_feature_ext
+
+    def __call__(self, results):
+        """Perform the LoadLocalizationFeature loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        video_name = results['video_name']
+        data_prefix = results['data_prefix']
+
+        data_path = osp.join(data_prefix, video_name + self.raw_feature_ext)
+        raw_feature = np.loadtxt(
+            data_path, dtype=np.float32, delimiter=',', skiprows=1)
+
+        N, C = raw_feature.shape
+        if N < 100:
+            tmp = np.zeros([100, C], dtype='float32')
+            tmp[:N] = raw_feature
+            raw_feature = tmp
+
+        results['raw_feature'] = np.transpose(raw_feature, (1, 0))
+
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'raw_feature_ext={self.raw_feature_ext})')
+        return repr_str
+
+
+
+
+@PIPELINES.register_module()
 class LoadLocalizationFeature:
     """Load Video features for localizer with given video_name list.
 
@@ -1753,7 +1802,7 @@ class GenerateLocalizationLabels:
         video_frame = results['duration_frame']
         video_second = results['duration_second']
         feature_frame = results['feature_frame']
-        corrected_second = float(feature_frame) / video_frame * video_second
+        corrected_second = video_second#float(feature_frame) / video_frame * video_second
         annotations = results['annotations']
 
         gt_bbox = []

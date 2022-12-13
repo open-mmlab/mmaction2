@@ -3,7 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 **/*.pyc
-
 # C extensions
 *.so
 
@@ -113,6 +112,7 @@ venv.bak/
 *.log.json
 benchlist.txt
 work_dirs/
+data/
 
 # Pytorch
 *.pth

@@ -3,15 +3,16 @@ _base_ = [
 ]
 
 # dataset settings
-dataset_type = 'ActivityNetDataset'
-data_root = 'data/ActivityNet/activitynet_feature_cuhk/csv_mean_100/'
-data_root_val = 'data/ActivityNet/activitynet_feature_cuhk/csv_mean_100/'
-ann_file_train = 'data/ActivityNet/anet_anno_train.json'
-ann_file_val = 'data/ActivityNet/anet_anno_val.json'
-ann_file_test = 'data/ActivityNet/anet_anno_val.json'
+dataset_type = 'ImigueDataset'
+data_root = 'data/iMiGUE/data/tsn_feature/clip_feature_tsn_depth8_clip_length100_overlap0.5/'
+data_root_val = 'data/iMiGUE/data/tsn_feature/clip_feature_tsn_depth8_clip_length100_overlap0.5/'
+
+ann_file_train = 'data/iMiGUE/label/imigue_clip_annotation_100_8_bmn.json'
+ann_file_val = 'data/iMiGUE/label/imigue_clip_annotation_100_8_bmn.json'
+ann_file_test = 'data/iMiGUE/label/imigue_clip_annotation_100_8_bmn.json'
 
 test_pipeline = [
-    dict(type='LoadLocalizationFeature'),
+    dict(type='LoadLocalizationFeatureWithPadding'),
     dict(
         type='Collect',
         keys=['raw_feature'],
@@ -23,7 +24,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['raw_feature']),
 ]
 train_pipeline = [
-    dict(type='LoadLocalizationFeature'),
+    dict(type='LoadLocalizationFeatureWithPadding'),
     dict(type='GenerateLocalizationLabels'),
     dict(
         type='Collect',
@@ -36,7 +37,7 @@ train_pipeline = [
         fields=[dict(key='gt_bbox', stack=False, cpu_only=True)])
 ]
 val_pipeline = [
-    dict(type='LoadLocalizationFeature'),
+    dict(type='LoadLocalizationFeatureWithPadding'),
     dict(type='GenerateLocalizationLabels'),
     dict(
         type='Collect',
@@ -61,16 +62,19 @@ data = dict(
         type=dataset_type,
         ann_file=ann_file_test,
         pipeline=test_pipeline,
+        subset='testing',
         data_prefix=data_root_val),
     val=dict(
         type=dataset_type,
         ann_file=ann_file_val,
         pipeline=val_pipeline,
+        subset='training',
         data_prefix=data_root_val),
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
         pipeline=train_pipeline,
+        subset='training',
         data_prefix=data_root))
 evaluation = dict(interval=1, metrics=['AR@AN'])
 
@@ -84,5 +88,5 @@ total_epochs = 9
 
 # runtime settings
 log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
-work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'
+work_dir = './work_dirs/bsn_imigue_tsn_100_1x8_0.5/'
 output_config = dict(out=f'{work_dir}/results.json', output_format='json')
