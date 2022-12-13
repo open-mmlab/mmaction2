@@ -11,10 +11,6 @@ ann_file_train = 'data/sthv2/sthv2_train_list_videos.txt'
 ann_file_val = 'data/sthv2/sthv2_val_list_videos.txt'
 ann_file_test = 'data/sthv2/sthv2_val_list_videos.txt'
 
-# file_client_args = dict(
-#      io_backend='petrel',
-#      path_mapping=dict(
-#          {'data/sthv2': 's3://openmmlab/datasets/action/sthv2'}))
 file_client_args = dict(io_backend='disk')
 
 sthv2_flip_label_map = {86: 87, 87: 86, 93: 94, 94: 93, 166: 167, 167: 166}
