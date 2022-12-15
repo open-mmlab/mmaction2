@@ -198,11 +198,10 @@ class SampleFrames(BaseTransform):
                 num_segments = self.num_clips - 1
                 offset_between = max_offset / float(num_segments)
                 clip_offsets = np.arange(self.num_clips) * offset_between
-                clip_offsets = np.round(clip_offsets).astype(np.int32)
+                clip_offsets = np.round(clip_offsets)
             else:
                 clip_offsets = np.array([max_offset // 2])
-
-        return np.round(clip_offsets).astype(np.int32)
+        return clip_offsets
 
     def _sample_clips(self, num_frames):
         """Choose clip offsets for the video in a given mode.
