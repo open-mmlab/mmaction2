@@ -12,7 +12,7 @@ import pandas as pd
 
 tsn_clip_feature_directory = '/media/micro-gesture/work/hshi/project/BSN-boundary-sensitive-network.pytorch/data/imigue/clip_feature_tsn_depth8_clip_length100_overlap0.5'
 tsn_video_feature_directory = '/media/micro-gesture/work/hshi/project/BSN-boundary-sensitive-network.pytorch/data/imigue/feature_tsn_8'
-video_annotation_file_path = '/media/micro-gesture/work/hshi/project/BSN-boundary-sensitive-network.pytorch/data/imigue/imigue_annotation.json'
+video_annotation_file_path = '/media/micro-gesture/work/hshi/project/PycharmProjects/mmaction2/data/iMiGUE/label/imigue_annotation_corrected.json'
     
 with open(video_annotation_file_path) as json_file:
     video_annotations = json.load(json_file)
@@ -31,12 +31,17 @@ video_annotations = video_annotations['database']
 videoNames = os.listdir(tsn_video_feature_directory)
 
 video_dict = {}
+
+stats = dict()
+
+#for i in range
+
 for videoName in videoNames:
     df = pd.read_csv(os.path.join(tsn_video_feature_directory, videoName))
     
     feature = df.values
     N, C = feature.shape
-    
+    #aa = N * 8
     begs_feature = list(range(0, N-step, step))
     video_annotation = video_annotations[videoName.split('.')[0]]
     
@@ -65,6 +70,12 @@ for videoName in videoNames:
                 annotation['segment'][0] = annotation['segment'][0] - beg_second
                 annotation['segment'][1] = annotation['segment'][1] - beg_second
                 clip_annotation.append(annotation)
+
+                if annotation['label'] not in stats.keys():
+                    stats[annotation['label']] = 1
+                else:
+                    stats[annotation['label']] = stats[annotation['label']] + 1
+
         
 
 
@@ -84,9 +95,9 @@ for videoName in videoNames:
     
 
     
-    
+print (len(stats))
 json_object = json.dumps(video_dict)
-with open("../../../data/iMiGUE/label/imigue_clip_annotation_100_8_bsn.json", "w") as outfile:
+with open("../../../data/iMiGUE/label/imigue_clip_annotation_100_8_corrected.json", "w") as outfile:
     outfile.write(json_object)
     
     

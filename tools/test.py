@@ -158,7 +158,7 @@ def inference_pytorch(args, cfg, distributed, data_loader):
 
     if not distributed:
         model = build_dp(
-            model, default_device, default_args=dict(device_ids=cfg.gpu_ids))
+            model, default_device, default_args=dict(device_ids=[1]))#cfg.gpu_ids))
         outputs = single_gpu_test(model, data_loader)
     else:
         model = build_ddp(

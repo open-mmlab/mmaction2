@@ -30,22 +30,24 @@ def imigue_to_ssn_labels(label_file, dest_dir, class_index_map_file='/media/micr
         num_annotations = currentDataFrame.shape[0]
         
         outPath = os.path.join(dest_dir, labelName + '.txt')
-        
-        with open(outPath, 'w') as f:
-        
+        print(num_annotations, label)
+        continue
+        #with open(outPath, 'w') as f:
+        if True:
             for i in range(num_annotations):
-                
+                #print (num_annotations, label)
+                #break
             
                 videoName = '{:04d}'.format(int(currentDataFrame['video_id'][i]))
                 start_time = currentDataFrame['start_time'][i]
                 end_time = currentDataFrame['end_time'][i]
                 currentline = videoName + '  ' + '{:.2f}'.format(start_time) + ' ' + '{:.2f}'.format(end_time)
                 
-                f.writelines(currentline)
+                #f.writelines(currentline)
         
     
     
-imigue_to_ssn_labels(label_file, dest_dir)
+#imigue_to_ssn_labels(label_file, dest_dir)
 
 label_file = '/media/micro-gesture/work/hshi/project/mmaction2/data/iMiGUE/labels_test_protocol2.csv'
 class_index_map_file = '/media/micro-gesture/work/hshi/project/mmaction2/data/iMiGUE/Class_Index_Map.csv'

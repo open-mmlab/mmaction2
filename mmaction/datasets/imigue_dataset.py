@@ -154,7 +154,7 @@ class ImigueDataset(BaseDataset):
             prog_bar = mmcv.ProgressBar(len(results))
         for result in results:
             video_name = result['video_name']
-            result_dict[video_name[2:]] = result['proposal_list']
+            result_dict[video_name] = result['proposal_list']
             if show_progress:
                 prog_bar.update()
         return result_dict
@@ -165,7 +165,7 @@ class ImigueDataset(BaseDataset):
         proposals = {}
         num_proposals = 0
         for result in results:
-            video_id = result['video_name'][2:]
+            video_id = result['video_name']
             this_video_proposals = []
             for proposal in result['proposal_list']:
                 t_start, t_end = proposal['segment']

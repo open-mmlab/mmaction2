@@ -96,8 +96,8 @@ def generate_candidate_proposals(video_list,
         video_frame = video_info['duration_frame']
         video_second = video_info['duration_second']
         feature_frame = video_info['feature_frame']
-        corrected_second = float(feature_frame) / video_frame * video_second
-
+        #corrected_second = float(feature_frame) / video_frame * video_second
+        corrected_second = video_second
         gt_tmins = []
         gt_tmaxs = []
         for annotations in video_info['annotations']:

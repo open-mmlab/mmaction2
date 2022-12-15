@@ -3,7 +3,7 @@
 into the input proposal file of action classifier (Currently supports SSN and
 P-GCN, not including TSN, I3D etc.)."""
 import argparse
-
+import pandas as pd
 import mmcv
 import numpy as np
 
@@ -25,7 +25,7 @@ def import_ground_truth(video_infos, activity_index):
     """Read ground truth data from video_infos."""
     ground_truth = {}
     for video_info in video_infos:
-        video_id = video_info['video_name'][2:]
+        video_id = video_info['video_name']  # [2:]
         this_video_ground_truths = []
         for ann in video_info['annotations']:
             t_start, t_end = ann['segment']
@@ -108,6 +108,11 @@ def parse_args():
         default='../../../data/ActivityNet/anet_anno_val.json',
         help='name of annotation file')
     parser.add_argument(
+        '--subset',
+        type=str,
+        default='training',
+        help='name of annotation file')
+    parser.add_argument(
         '--activity-index-file',
         type=str,
         default='../../../data/ActivityNet/anet_activity_indexes_val.txt',
@@ -135,21 +140,39 @@ if __name__ == '__main__':
 
     # The activity index file is constructed according to
     # 'https://github.com/activitynet/ActivityNet/blob/master/Evaluation/eval_classification.py'
-    activity_index, class_idx = {}, 0
-    for line in open(args.activity_index_file).readlines():
-        activity_index[line.strip()] = class_idx
-        class_idx += 1
+
+
+    activity_index = {}
+    gesture_id_map = pd.read_csv(args.activity_index_file)
+    num_rows, _ = gesture_id_map.shape
+    for i in range(num_rows):
+        activity_index[gesture_id_map['type'][i]] = 32 if gesture_id_map['index'][i] == 99 else gesture_id_map['index'][i]
+    
+
 
     video_infos = load_annotations(args.ann_file)
     ground_truth = import_ground_truth(video_infos, activity_index)
+
     proposal, num_proposals = import_proposals(
         mmcv.load(args.proposal_file)['results'])
+
+
     video_idx = 0
+    invalid_videos = []
 
     for video_info in video_infos:
-        video_id = video_info['video_name'][2:]
+        #print (video_info['subset'])
+        if video_info['subset'] != args.subset:
+            continue
+
+        video_id = video_info['video_name']
+        if video_id not in proposal.keys():
+            invalid_videos.append(video_id)
+            continue
+
         num_frames = video_info['duration_frame']
         fps = video_info['fps']
+
         tiou, t_overlap = pairwise_temporal_iou(
             proposal[video_id][:, :2].astype(float),
             ground_truth[video_id][:, :2].astype(float),
@@ -160,3 +183,6 @@ if __name__ == '__main__':
                                 tiou, t_overlap, formatted_proposal_file)
         video_idx += 1
     formatted_proposal_file.close()
+
+
+# python convert_proposal_format.py --ann_file --activity-index-file --proposal-file --formatted-proposal-file
