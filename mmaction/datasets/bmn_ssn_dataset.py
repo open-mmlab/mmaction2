@@ -353,18 +353,18 @@ class BMNSSNDataset(BaseDataset):
         Returns:
             list: Detection results.
         """
-        num_classes = results[0]['activity_scores'].shape[1] - 1
+        num_classes = np.array(results[0]['activity_scores']).shape[1] - 1
         detections = [dict() for _ in range(num_classes)]
 
         for idx in range(len(self)):
             video_id = self.video_infos[idx]['video_id']
-            relative_proposals = results[idx]['relative_proposal_list']
-            if len(relative_proposals[0].shape) == 3:
+            relative_proposals = np.array(results[idx]['relative_proposal_list'])
+            if len(np.array(relative_proposals[0]).shape) == 3:
                 relative_proposals = np.squeeze(relative_proposals, 0)
 
-            activity_scores = results[idx]['activity_scores']
-            completeness_scores = results[idx]['completeness_scores']
-            regression_scores = results[idx]['bbox_preds']
+            activity_scores = np.array(results[idx]['activity_scores'])
+            completeness_scores = np.array(results[idx]['completeness_scores'])
+            regression_scores = np.array(results[idx]['bbox_preds'])
             if regression_scores is None:
                 regression_scores = np.zeros(
                     (len(relative_proposals), num_classes, 2),

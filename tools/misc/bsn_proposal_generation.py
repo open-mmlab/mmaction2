@@ -21,11 +21,20 @@ def load_video_infos(ann_file):
         list[dict]: A list containing annotations for videos.
     """
     video_infos = []
+    invalid_videos = []
+
     anno_database = mmcv.load(ann_file)
     for video_name in anno_database:
         video_info = anno_database[video_name]
+
+        if len(video_info['annotations']) == 0:
+            invalid_videos.append(video_name)
+            continue
+
+
         video_info['video_name'] = video_name
         video_infos.append(video_info)
+    print('{:d} invalid videos, {:d} valid videos'.format(len(invalid_videos), len(video_infos)))
     return video_infos
 
 

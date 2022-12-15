@@ -557,7 +557,12 @@ def average_precision_at_temporal_iou(ground_truth,
 
     tp_cumsum = np.cumsum(tp, axis=1).astype(np.float32)
     fp_cumsum = np.cumsum(fp, axis=1).astype(np.float32)
-    recall_cumsum = tp_cumsum / num_gts
+    
+    if num_gts == 0:
+        print (tp_cumsum)
+        recall_cumsum = tp_cumsum/np.Inf
+    else:
+        recall_cumsum = tp_cumsum / num_gts
 
     precision_cumsum = tp_cumsum / (tp_cumsum + fp_cumsum)
 
