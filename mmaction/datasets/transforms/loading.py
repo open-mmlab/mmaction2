@@ -194,10 +194,14 @@ class SampleFrames(BaseTransform):
         else:  # 3D recognizer
             ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
             max_offset = max(num_frames - ori_clip_len, 0)
-            if self.num_clips > 1:
+            if self.twice_sample:
+                num_clips = self.num_clips * 2
+            else:
+                num_clips = self.num_clips
+            if num_clips > 1:
                 num_segments = self.num_clips - 1
                 offset_between = max_offset / float(num_segments)
-                clip_offsets = np.arange(self.num_clips) * offset_between
+                clip_offsets = np.arange(num_clips) * offset_between
                 clip_offsets = np.round(clip_offsets)
             else:
                 clip_offsets = np.array([max_offset // 2])
