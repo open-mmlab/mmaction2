@@ -22,6 +22,8 @@ class STGCNBlock(BaseModule):
             with shape of `(num_subsets, num_nodes, num_nodes)`.
         stride (int): Stride of the temporal convolution. Defaults to 1.
         residual (bool): Whether to use residual connection. Defaults to True.
+        init_cfg (dict or list[dict], optional): Config to control
+            the initialization. Defaults to None.
     """
 
     def __init__(self,
@@ -30,8 +32,9 @@ class STGCNBlock(BaseModule):
                  A: torch.Tensor,
                  stride: int = 1,
                  residual: bool = True,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None,
                  **kwargs) -> None:
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
 
         gcn_kwargs = {k[4:]: v for k, v in kwargs.items() if k[:4] == 'gcn_'}
         tcn_kwargs = {k[4:]: v for k, v in kwargs.items() if k[:4] == 'tcn_'}

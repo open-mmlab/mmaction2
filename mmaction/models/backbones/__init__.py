@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .agcn import AGCN
+# from .aagcn import AAGCN
 from .c2d import C2D
 from .c3d import C3D
 from .mobilenet_v2 import MobileNetV2
@@ -25,6 +25,6 @@ __all__ = [
     'C2D', 'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
     'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN', 'X3D',
     'ResNet3dLayer', 'MobileNetV2TSM', 'MobileNetV2', 'TANet', 'TimeSformer',
-    'STGCN', 'AGCN', 'ResNetAudio', 'SwinTransformer3D', 'VisionTransformer',
+    'STGCN', 'ResNetAudio', 'SwinTransformer3D', 'VisionTransformer',
     'MViT'
 ]

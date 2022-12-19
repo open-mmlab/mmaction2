@@ -13,7 +13,7 @@ Models:
       Architecture: STGCN
       Batch Size: 16
       Epochs: 80
-      FLOPs: 3.82G
+      FLOPs: 3.8G
       Parameters: 3.1M
       Training Data: NTU60-XSub-2D
       Training Resources: 8 GPUs
@@ -32,7 +32,7 @@ Models:
       Architecture: STGCN
       Batch Size: 16
       Epochs: 80
-      FLOPs: 3.82G
+      FLOPs: 3.8G
       Parameters: 3.1M
       Training Data: NTU60-XSub-2D
       Training Resources: 8 GPUs
@@ -51,7 +51,7 @@ Models:
       Architecture: STGCN
       Batch Size: 16
       Epochs: 80
-      FLOPs: 3.82G
+      FLOPs: 3.8G
       Parameters: 3.1M
       Training Data: NTU60-XSub-2D
       Training Resources: 8 GPUs
@@ -70,7 +70,7 @@ Models:
       Architecture: STGCN
       Batch Size: 16
       Epochs: 80
-      FLOPs: 3.82G
+      FLOPs: 3.8G
       Parameters: 3.1M
       Training Data: NTU60-XSub-2D
       Training Resources: 8 GPUs
