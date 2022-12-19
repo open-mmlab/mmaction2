@@ -12,12 +12,7 @@ ann_file_train = f'data/ucf101/ucf101_train_split_{split}_videos.txt'
 ann_file_val = f'data/ucf101/ucf101_val_split_{split}_videos.txt'
 ann_file_test = f'data/ucf101/ucf101_val_split_{split}_videos.txt'
 
-# file_client_args = dict(
-#     io_backend='petrel',
-#     path_mapping=dict(
-#         {'data/ucf101': 's3://openmmlab/datasets/action/ucf101'}))
 file_client_args = dict(io_backend='disk')
-
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=16, frame_interval=1, num_clips=1),
