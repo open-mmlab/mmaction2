@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, Union
+from typing import Dict, Sequence, Union
 
 import torch
 from mmengine.model import BaseModel
 
 from mmaction.registry import MODELS
-from mmaction.utils import ConfigType, ForwardResults
+from mmaction.utils import ConfigType, ForwardResults, SampleList
 
 
 @MODELS.register_module()
@@ -14,7 +14,7 @@ class RecognizerOmni(BaseModel):
 
     def __init__(self, backbone: ConfigType, cls_head: ConfigType,
                  image_preprocessor: ConfigType,
-                 video_preprocessor: ConfigType):
+                 video_preprocessor: ConfigType) -> None:
         super().__init__()
         self.backbone = MODELS.build(backbone)
         self.cls_head = MODELS.build(cls_head)
@@ -25,10 +25,40 @@ class RecognizerOmni(BaseModel):
         """Initiate the parameters from scratch."""
         pass
 
-    def forward(self, *args, mode, **kwargs):
+    def forward(self, data_samples: Union[Sequence[SampleList], torch.Tensor],
+                mode: str, **kwargs) -> ForwardResults:
+        """The unified entry for a forward process in both training and test.
+
+        The method should accept three modes:
+
+        - ``tensor``: Forward the whole network and return tensor or tuple of
+        tensor without any post-processing, same as a common nn.Module.
+        - ``predict``: Forward and return the predictions, which are fully
+        processed to a list of :obj:`ActionDataSample`.
+        - ``loss``: Forward and return a dict of losses according to the given
+        inputs and data samples.
+
+        Note that this method doesn't handle neither back propagation nor
+        optimizer updating, which are done in the :meth:`train_step`.
+
+        Args:
+            data_samples: should be a sequence of ``SampleList`` if
+                ``mode="predict"`` or ``mode="loss"``. Each ``SampleList`` is
+                the annotation data of one data source.
+                It should be a single torch tensor if ``mode="tensor"``.
+            mode (str): Return what kind of value. Defaults to ``tensor``.
+
+        Returns:
+            The return type depends on ``mode``.
+
+            - If ``mode="tensor"``, return a tensor or a tuple of tensor.
+            - If ``mode="predict"``, return a list of ``ActionDataSample``.
+            - If ``mode="loss"``, return a dict of tensor.
+        """
+
         if mode == 'loss' or mode == 'predict':
             preprocessed = []
-            for item in args:
+            for item in data_samples:
                 assert type(item) == dict
                 if len(item['inputs'][0].shape) == 3:
                     item = self.image_preprocessor(item, self.training)
@@ -40,19 +70,32 @@ class RecognizerOmni(BaseModel):
             return self.predict(*preprocessed, **kwargs)
 
         elif mode == 'tensor':
-            assert len(args) == 1 and isinstance(args[0], torch.Tensor)
-            inputs = args[0]
-            if len(inputs.shape) == 4:
+
+            assert isinstance(data_samples, torch.Tensor)
+
+            if len(data_samples.shape) == 4:
                 print('Input a 4D tensor, using image mode.')
-            elif len(inputs.shape) == 5:
+                # data_samples = self.image_preprocessor(item, self.training)
+            elif len(data_samples.shape) == 5:
                 print('Input a 5D tensor, using video mode.')
+                # data_samples = self.video_preprocessor(item, self.training)
             else:
-                info = 'Input is a %dD tensor. ' % len(inputs.shape)
+                info = 'Input is a %dD tensor. ' % len(data_samples.shape)
                 info += 'Only 4D (BCHW) or 5D (BCTHW) tensors are supported!'
                 raise ValueError(info)
-            return self._forward(inputs, **kwargs)
 
-    def loss(self, *data_samples, **kwargs):
+            return self._forward(data_samples, **kwargs)
+
+    def loss(self, data_samples: Sequence[SampleList], **kwargs) -> dict:
+        """Calculate losses from a batch of inputs and data samples.
+
+        Args:
+            data_samples (Sequence[SampleList]): a sequence of SampleList. Each
+                SampleList contains data samples from the same data source.
+
+        Returns:
+            dict: A dictionary of loss components.
+        """
         loss_dict = {}
         for idx, data in enumerate(data_samples):
             inputs, data_samples = data['inputs'], data['data_samples']
@@ -62,8 +105,29 @@ class RecognizerOmni(BaseModel):
                 loss_dict[key + f'_{idx}'] = loss_cls[key]
         return loss_dict
 
-    def predict(self, *data_samples, **kwargs):
-        pass
+    def predict(self, data_samples: Sequence[SampleList],
+                **kwargs) -> SampleList:
+        """Predict results from a batch of inputs and data samples with post-
+        processing.
+
+        Args:
+            data_samples (Sequence[SampleList]): a sequence of SampleList. Each
+                SampleList contains data samples from the same data source.
+
+        Returns:
+            List[``ActionDataSample``]: Return the recognition results.
+            The returns value is ``ActionDataSample``, which usually contains
+            ``pred_scores``. And the ``pred_scores`` usually contains
+            following keys.
+
+                - item (torch.Tensor): Classification scores, has a shape
+                    (num_classes, )
+        """
+        assert len(data_samples) == [1]
+        feats = self.extract_feat(data_samples[0]['inputs'], test_mode=True)
+        predictions = self.cls_head.predict(feats,
+                                            data_samples[0]['data_samples'])
+        return predictions
 
     def _forward(self,
                  inputs: torch.Tensor,
@@ -94,9 +158,9 @@ class RecognizerOmni(BaseModel):
         """
         if isinstance(data, dict):
             data = [data]
-            results = self(*data, mode=mode)
+            results = self(data, mode=mode)
         elif isinstance(data, (list, tuple)):
-            results = self(*data, mode=mode)
+            results = self(data, mode=mode)
         else:
             raise TypeError
         return results
@@ -126,6 +190,7 @@ class RecognizerOmni(BaseModel):
         # Check settings of test
         if test_mode:
             x = self.backbone(inputs)
+            return x
         else:
             # Return features extracted through backbone
             x = self.backbone(inputs)
