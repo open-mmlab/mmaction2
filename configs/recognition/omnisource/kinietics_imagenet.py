@@ -1,9 +1,10 @@
 _base_ = ['../../_base_/default_runtime.py']
 
 # model settings
+pytorch_pretrain = 'https://download.pytorch.org/models/resnet50-11ad3fa6.pth'
 model = dict(
     type='RecognizerOmni',
-    backbone=dict(type='OmniResNet'),
+    backbone=dict(type='OmniResNet', pretrain_2d=pytorch_pretrain),
     cls_head=dict(
         type='OmniHead',
         image_classes=1000,
@@ -29,6 +30,13 @@ video_root = 'data/kinetics400/videos_train'
 video_root_val = 'data/kinetics400/videos_val'
 video_ann_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 video_ann_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
+
+num_images = 1281167  # number of training samples in ImageNet dataset
+num_videos = 240435  # number of training samples in the Kinetics400 dataset
+batchsize_video = 16
+num_gpus = 8
+num_iter = num_videos // (batchsize_video * num_gpus)
+batchsize_image = num_images // (num_iter * num_gpus)
 
 file_client_args = dict(
     io_backend='petrel',
@@ -82,7 +90,7 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=16,
+    batch_size=batchsize_video,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -116,6 +124,15 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
+file_client_args = dict(
+    backend='petrel',
+    path_mapping=dict({
+        'data/kinetics400':
+        's3://openmmlab/datasets/action/Kinetics400',
+        'data/imagenet':
+        's3://openmmlab/datasets/classification/imagenet'
+    }))
+
 imagenet_pipeline = [
     dict(type='mmcls.LoadImageFromFile', file_client_args=file_client_args),
     dict(type='mmcls.RandomResizedCrop', scale=224),
@@ -124,7 +141,7 @@ imagenet_pipeline = [
 ]
 
 image_dataloader = dict(
-    batch_size=80,
+    batch_size=batchsize_image,
     num_workers=8,
     dataset=dict(
         type='mmcls.ImageNet',

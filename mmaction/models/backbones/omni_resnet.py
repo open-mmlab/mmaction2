@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.model import BaseModel, BaseModule
+from mmengine.runner import CheckpointLoader
 
 from mmaction.registry import MODELS
 from mmaction.utils import OptConfigType
@@ -203,7 +204,8 @@ class OmniResNet(BaseModel):
         return nn.Sequential(*layers)
 
     def init_from_2d(self, pretrain: str) -> None:
-        param2d = torch.load(pretrain, 'cpu')
+        param2d = CheckpointLoader.load_checkpoint(
+            pretrain, map_location='cpu')
         param3d = self.state_dict()
         for key in param3d:
             if key in param2d:

@@ -59,7 +59,7 @@ class RecognizerOmni(BaseModel):
             feats = self.extract_feat(inputs)
             loss_cls = self.cls_head.loss(feats, data_samples)
             for key in loss_cls:
-                loss_dict[key + '_{idx}'] = loss_cls[key]
+                loss_dict[key + f'_{idx}'] = loss_cls[key]
         return loss_dict
 
     def predict(self, *data_samples, **kwargs):
