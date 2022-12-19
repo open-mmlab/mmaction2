@@ -25,8 +25,7 @@ class RecognizerOmni(BaseModel):
         """Initiate the parameters from scratch."""
         pass
 
-    def forward(self, data_samples: Union[Sequence[SampleList], torch.Tensor],
-                mode: str, **kwargs) -> ForwardResults:
+    def forward(self, *data_samples, mode: str, **kwargs) -> ForwardResults:
         """The unified entry for a forward process in both training and test.
 
         The method should accept three modes:
@@ -66,8 +65,8 @@ class RecognizerOmni(BaseModel):
                     item = self.video_preprocessor(item, self.training)
                 preprocessed.append(item)
             if mode == 'loss':
-                return self.loss(*preprocessed, **kwargs)
-            return self.predict(*preprocessed, **kwargs)
+                return self.loss(preprocessed, **kwargs)
+            return self.predict(preprocessed, **kwargs)
 
         elif mode == 'tensor':
 
@@ -123,7 +122,7 @@ class RecognizerOmni(BaseModel):
                 - item (torch.Tensor): Classification scores, has a shape
                     (num_classes, )
         """
-        assert len(data_samples) == [1]
+        assert len(data_samples) == 1
         feats = self.extract_feat(data_samples[0]['inputs'], test_mode=True)
         predictions = self.cls_head.predict(feats,
                                             data_samples[0]['data_samples'])
@@ -158,9 +157,9 @@ class RecognizerOmni(BaseModel):
         """
         if isinstance(data, dict):
             data = [data]
-            results = self(data, mode=mode)
+            results = self(*data, mode=mode)
         elif isinstance(data, (list, tuple)):
-            results = self(data, mode=mode)
+            results = self(*data, mode=mode)
         else:
             raise TypeError
         return results
