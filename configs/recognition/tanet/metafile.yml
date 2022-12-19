@@ -47,10 +47,10 @@ Models:
     - Dataset: SthV1
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 49.00
-        Top 1 Accuracy (efficient): 46.13
-        Top 5 Accuracy: 77.22
-        Top 5 Accuracy (efficient): 75.06
+        Top 1 Accuracy: 49.71
+        Top 1 Accuracy (efficient): 46.98
+        Top 5 Accuracy: 77.43
+        Top 5 Accuracy (efficient): 75.75
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb_20220906-de50e4ef.pth
 
@@ -72,9 +72,9 @@ Models:
     - Dataset: SthV1
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 51.02
-        Top 1 Accuracy (efficient): 48.52
-        Top 5 Accuracy: 79.83
-        Top 5 Accuracy (efficient): 78.61
+        Top 1 Accuracy: 50.95
+        Top 1 Accuracy (efficient): 48.24
+        Top 5 Accuracy: 79.28
+        Top 5 Accuracy (efficient): 78.16
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb_20220919-cc37e9b8.pth
