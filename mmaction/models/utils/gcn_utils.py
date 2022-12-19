@@ -1,21 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import math
 from typing import Dict, List, Optional, Union
 
 import torch
 import torch.nn as nn
 from mmcv.cnn import build_activation_layer, build_norm_layer
 from mmengine.model import BaseModule, Sequential, ModuleList
-
-
-def conv_init(conv):
-    nn.init.kaiming_normal_(conv.weight, mode='fan_out')
-    nn.init.constant_(conv.bias, 0)
-
-
-def bn_init(bn, scale):
-    nn.init.constant_(bn.weight, scale)
-    nn.init.constant_(bn.bias, 0)
 
 
 class unit_gcn(BaseModule):

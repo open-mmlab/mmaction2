@@ -3,7 +3,8 @@ _base_ = '../../_base_/default_runtime.py'
 model = dict(
     type='RecognizerGCN',
     backbone=dict(
-        type='AAGCN', graph_cfg=dict(layout='coco', mode='spatial')),
+        type='AAGCN', graph_cfg=dict(layout='coco', mode='spatial'),
+        stage_cfgs=dict(gcn_attention=False)),  # disable the attention module
     cls_head=dict(type='GCNHead', num_classes=60, in_channels=256))
 
 dataset_type = 'PoseDataset'

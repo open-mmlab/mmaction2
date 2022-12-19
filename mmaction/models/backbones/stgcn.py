@@ -13,7 +13,7 @@ EPS = 1e-4
 
 
 class STGCNBlock(BaseModule):
-    """The basic block of ST-GCN.
+    """The basic block of STGCN.
 
     Args:
         in_channels (int): Number of input channels.
@@ -74,10 +74,12 @@ class STGCNBlock(BaseModule):
 
 @MODELS.register_module()
 class STGCN(BaseModule):
-    """ STGCN
-    A PyTorch implement of : `Spatial Temporal Graph Convolutional
-    Networks for Skeleton-Based Action Recognition`  -
-        https://arxiv.org/abs/1801.07455
+    """STGCN backbone.
+
+    Spatial Temporal Graph Convolutional
+    Networks for Skeleton-Based Action Recognition.
+    More details can be found in the `paper
+    <https://arxiv.org/abs/1801.07455>`__ .
 
     Args:
         graph_cfg (dict): Config for building the graph.
@@ -110,7 +112,7 @@ class STGCN(BaseModule):
         >>> model = STGCN(graph_cfg=dict(layout='openpose', mode=mode))
         >>> model.init_weights()
         >>> inputs = torch.randn(batch_size, num_person,
-        >>>                      num_frames, num_joints, 3)
+        ...                      num_frames, num_joints, 3)
         >>> output = model(inputs)
         >>> print(output.shape)
         >>>
@@ -119,7 +121,7 @@ class STGCN(BaseModule):
         >>> model = STGCN(graph_cfg=dict(layout='nturgb+d', mode=mode))
         >>> model.init_weights()
         >>> inputs = torch.randn(batch_size, num_person,
-        >>>                      num_frames, num_joints, 3)
+        ...                      num_frames, num_joints, 3)
         >>> output = model(inputs)
         >>> print(output.shape)
         >>>
@@ -128,7 +130,7 @@ class STGCN(BaseModule):
         >>> model = STGCN(graph_cfg=dict(layout='coco', mode=mode))
         >>> model.init_weights()
         >>> inputs = torch.randn(batch_size, num_person,
-        >>>                      num_frames, num_joints, 3)
+        ...                      num_frames, num_joints, 3)
         >>> output = model(inputs)
         >>> print(output.shape)
         >>>
@@ -136,7 +138,7 @@ class STGCN(BaseModule):
         >>> # add additional residual connection for the first four gcns
         >>> stage_cfgs = {'gcn_with_res': [True] * 4 + [False] * 6}
         >>> model = STGCN(graph_cfg=dict(layout='coco', mode=mode),
-        >>>               num_stages=10, stage_cfgs=stage_cfgs)
+        ...               num_stages=10, stage_cfgs=stage_cfgs)
         >>> model.init_weights()
         >>> output = model(inputs)
         >>> print(output.shape)
