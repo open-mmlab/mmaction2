@@ -1,8 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Tuple, Union
+
+import torch
+import torch.nn.functional as F
 from torch import Tensor, nn
 
+from mmaction.evaluation import top_k_accuracy
 from mmaction.registry import MODELS
-from mmaction.utils import ConfigType
+from mmaction.utils import ConfigType, SampleList
 from .base import BaseHead
 
 
@@ -71,3 +76,53 @@ class OmniHead(BaseHead):
         else:
             cls_score = self.fc3d(x)
         return cls_score
+
+    def loss_by_feat(self, cls_scores: Union[Tensor, Tuple[Tensor]],
+                     data_samples: SampleList) -> dict:
+        """Calculate the loss based on the features extracted by the head.
+
+        Args:
+            cls_scores (Tensor): Classification prediction results of
+                all class, has shape (batch_size, num_classes).
+            data_samples (List[:obj:`ActionDataSample`]): The batch
+                data samples.
+
+        Returns:
+            dict: A dictionary of loss components.
+        """
+        if hasattr(data_samples[0], 'gt_labels'):
+            labels = [x.gt_labels.item for x in data_samples]
+        else:
+            labels = [x.gt_label.label for x in data_samples]
+        labels = torch.stack(labels).to(cls_scores.device)
+        labels = labels.squeeze()
+
+        losses = dict()
+        if labels.shape == torch.Size([]):
+            labels = labels.unsqueeze(0)
+        elif labels.dim() == 1 and cls_scores.size()[0] == 1:
+            # Fix a bug when training with soft labels and batch size is 1.
+            # When using soft labels, `labels` and `cls_socre` share the same
+            # shape.
+            labels = labels.unsqueeze(0)
+
+        if cls_scores.size() != labels.size():
+            top_k_acc = top_k_accuracy(cls_scores.detach().cpu().numpy(),
+                                       labels.detach().cpu().numpy(),
+                                       self.topk)
+            for k, a in zip(self.topk, top_k_acc):
+                losses[f'top{k}_acc'] = torch.tensor(
+                    a, device=cls_scores.device)
+        if self.label_smooth_eps != 0:
+            if cls_scores.size() != labels.size():
+                labels = F.one_hot(labels, num_classes=self.num_classes)
+            labels = ((1 - self.label_smooth_eps) * labels +
+                      self.label_smooth_eps / self.num_classes)
+
+        loss_cls = self.loss_cls(cls_scores, labels)
+        # loss_cls may be dictionary or single tensor
+        if isinstance(loss_cls, dict):
+            losses.update(loss_cls)
+        else:
+            losses['loss_cls'] = loss_cls
+        return losses

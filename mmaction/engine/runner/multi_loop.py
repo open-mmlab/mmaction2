@@ -73,8 +73,6 @@ class MultiLoaderEpochBasedTrainLoop(EpochBasedTrainLoop):
         self.runner.model.train()
 
         for idx, data_batch in enumerate(EpochMultiLoader(self.multi_loaders)):
-            print(type(data_batch))
-            print(data_batch)
             self.run_iter(idx, data_batch)
 
         self.runner.call_hook('after_train_epoch')

@@ -8,19 +8,39 @@ model = dict(
         type='OmniHead',
         image_classes=1000,
         video_classes=400,
-        in_channels=2048))
+        in_channels=2048),
+    image_preprocessor=dict(
+        type='mmcls.ClsDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        num_classes=1000,
+        to_rgb=True),
+    video_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        format_shape='NCTHW'))
 
 # dataset settings
-image_root = 'data/imagenet'
-image_ann_train = 'data/imagenet/train.txt'
+image_root = 'data/imagenet/'
+image_ann_train = 'meta/train.txt'
 
 video_root = 'data/kinetics400/videos_train'
 video_root_val = 'data/kinetics400/videos_val'
 video_ann_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 video_ann_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
+file_client_args = dict(
+    io_backend='petrel',
+    path_mapping=dict({
+        'data/kinetics400':
+        's3://openmmlab/datasets/action/Kinetics400',
+        'data/imagenet':
+        's3://openmmlab/datasets/classification/imagenet'
+    }))
+
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -32,7 +52,7 @@ train_pipeline = [
 ]
 
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -47,7 +67,7 @@ val_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -97,7 +117,7 @@ test_dataloader = dict(
         test_mode=True))
 
 imagenet_pipeline = [
-    dict(type='mmcls.LoadImageFromFile'),
+    dict(type='mmcls.LoadImageFromFile', file_client_args=file_client_args),
     dict(type='mmcls.RandomResizedCrop', scale=224),
     dict(type='mmcls.RandomFlip', prob=0.5, direction='horizontal'),
     dict(type='mmcls.PackClsInputs'),

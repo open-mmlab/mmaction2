@@ -1,54 +1,135 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, Union
+
+import torch
 from mmengine.model import BaseModel
 
 from mmaction.registry import MODELS
+from mmaction.utils import ConfigType, ForwardResults
 
 
 @MODELS.register_module()
 class RecognizerOmni(BaseModel):
-    """Boundary Matching Network for temporal action proposal generation.
+    """"""
 
-    Please refer `BMN: Boundary-Matching Network for Temporal Action Proposal
-    Generation <https://arxiv.org/abs/1907.09702>`_.
-    Code Reference https://github.com/JJBOY/BMN-Boundary-Matching-Network
-    Args:
-        temporal_dim (int): Total frames selected for each video.
-        boundary_ratio (float): Ratio for determining video boundaries.
-        num_samples (int): Number of samples for each proposal.
-        num_samples_per_bin (int): Number of bin samples for each sample.
-        feat_dim (int): Feature dimension.
-        soft_nms_alpha (float): Soft NMS alpha.
-        soft_nms_low_threshold (float): Soft NMS low threshold.
-        soft_nms_high_threshold (float): Soft NMS high threshold.
-        post_process_top_k (int): Top k proposals in post process.
-        feature_extraction_interval (int):
-            Interval used in feature extraction. Default: 16.
-        loss_cls (dict): Config for building loss.
-            Default: ``dict(type='BMNLoss')``.
-        hidden_dim_1d (int): Hidden dim for 1d conv. Default: 256.
-        hidden_dim_2d (int): Hidden dim for 2d conv. Default: 128.
-        hidden_dim_3d (int): Hidden dim for 3d conv. Default: 512.
-    """
-
-    def __init__(self, backbone, cls_head):
+    def __init__(self, backbone: ConfigType, cls_head: ConfigType,
+                 image_preprocessor: ConfigType,
+                 video_preprocessor: ConfigType):
         super().__init__()
         self.backbone = MODELS.build(backbone)
         self.cls_head = MODELS.build(cls_head)
+        self.image_preprocessor = MODELS.build(image_preprocessor)
+        self.video_preprocessor = MODELS.build(video_preprocessor)
 
     def init_weights(self) -> None:
         """Initiate the parameters from scratch."""
         pass
 
-    def forward(self, x, y, mode, **kwargs):
-        print(type(x), len(x), 'fuckme')
-        print(type(x), len(x), 'fuckyou')
-        exit()
+    def forward(self, *args, mode, **kwargs):
+        if mode == 'loss' or mode == 'predict':
+            preprocessed = []
+            for item in args:
+                assert type(item) == dict
+                if len(item['inputs'][0].shape) == 3:
+                    item = self.image_preprocessor(item, self.training)
+                else:
+                    item = self.video_preprocessor(item, self.training)
+                preprocessed.append(item)
+            if mode == 'loss':
+                return self.loss(*preprocessed, **kwargs)
+            return self.predict(*preprocessed, **kwargs)
 
-    def loss(self, batch_inputs, batch_data_samples, **kwargs):
+        elif mode == 'tensor':
+            assert len(args) == 1 and isinstance(args[0], torch.Tensor)
+            inputs = args[0]
+            if len(inputs.shape) == 4:
+                print('Input a 4D tensor, using image mode.')
+            elif len(inputs.shape) == 5:
+                print('Input a 5D tensor, using video mode.')
+            else:
+                info = 'Input is a %dD tensor. ' % len(inputs.shape)
+                info += 'Only 4D (BCHW) or 5D (BCTHW) tensors are supported!'
+                raise ValueError(info)
+            return self._forward(inputs, **kwargs)
+
+    def loss(self, *data_samples, **kwargs):
+        loss_dict = {}
+        for idx, data in enumerate(data_samples):
+            inputs, data_samples = data['inputs'], data['data_samples']
+            feats = self.extract_feat(inputs)
+            loss_cls = self.cls_head.loss(feats, data_samples)
+            for key in loss_cls:
+                loss_dict[key + '_{idx}'] = loss_cls[key]
+        return loss_dict
+
+    def predict(self, *data_samples, **kwargs):
         pass
 
-    def predict(self, batch_inputs, batch_data_samples, **kwargs):
-        pass
+    def _forward(self,
+                 inputs: torch.Tensor,
+                 stage: str = 'backbone',
+                 **kwargs) -> ForwardResults:
+        """Network forward process. Usually includes backbone, neck and head
+        forward without any post-processing.
 
-    def _forward(self, x):
-        pass
+        Args:
+            inputs (torch.Tensor): Raw Inputs of the recognizer.
+            stage (str): Which stage to output the features.
+
+        Returns:
+            Union[tuple, torch.Tensor]: Features from ``backbone`` or ``head``
+            forward.
+        """
+        feats, _ = self.extract_feat(inputs, stage=stage)
+        return feats
+
+    def _run_forward(self, data: Union[dict, tuple, list],
+                     mode: str) -> Union[Dict[str, torch.Tensor], list]:
+        """Unpacks data for :meth:`forward`
+        Args:
+            data (dict or tuple or list): Data sampled from dataset.
+            mode (str): Mode of forward.
+        Returns:
+            dict or list: Results of training or testing mode.
+        """
+        if isinstance(data, dict):
+            data = [data]
+            results = self(*data, mode=mode)
+        elif isinstance(data, (list, tuple)):
+            results = self(*data, mode=mode)
+        else:
+            raise TypeError
+        return results
+
+    def extract_feat(self,
+                     inputs: torch.Tensor,
+                     stage: str = 'backbone',
+                     test_mode: bool = False) -> tuple:
+        """Extract features of different stages.
+
+        Args:
+            inputs (torch.Tensor): The input data.
+            stage (str): Which stage to output the feature.
+                Defaults to ``'backbone'``.
+            test_mode (bool): Whether in test mode. Defaults to False.
+
+        Returns:
+                torch.Tensor: The extracted features.
+                dict: A dict recording the kwargs for downstream
+                    pipeline. These keys are usually included:
+                    ``loss_aux``.
+        """
+
+        if len(inputs.shape) == 6:
+            inputs = inputs.view((-1, ) + inputs.shape[2:])
+
+        # Check settings of test
+        if test_mode:
+            x = self.backbone(inputs)
+        else:
+            # Return features extracted through backbone
+            x = self.backbone(inputs)
+            if stage == 'backbone':
+                return x
+            x = self.cls_head(x)
+            return x
