@@ -17,10 +17,6 @@ ann_file_val = 'data/sthv1/sthv1_val_list_rawframes.txt'
 ann_file_test = 'data/sthv1/sthv1_val_list_rawframes.txt'
 
 sthv1_flip_label_map = {2: 4, 4: 2, 30: 41, 41: 30, 52: 66, 66: 52}
-# file_client_args = dict(
-#     io_backend='petrel',
-#     path_mapping=dict(
-#         {'data/sthv1': 's3://openmmlab/datasets/action/sthv1'}))
 file_client_args = dict(io_backend='disk')
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=16),
