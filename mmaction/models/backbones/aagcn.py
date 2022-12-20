@@ -93,6 +93,55 @@ class AAGCN(BaseModule):
             Defaults to ``dict()``.
         init_cfg (dict or list[dict], optional): Config to control
             the initialization. Defaults to None.
+
+        Examples:
+        >>> import torch
+        >>> from mmaction.models import AAGCN
+        >>> from mmaction.utils import register_all_modules
+        >>>
+        >>> register_all_modules()
+        >>> mode = 'stgcn_spatial'
+        >>> batch_size, num_person, num_frames = 2, 2, 150
+        >>>
+        >>> # openpose-18 layout
+        >>> num_joints = 18
+        >>> model = AAGCN(graph_cfg=dict(layout='openpose', mode=mode))
+        >>> model.init_weights()
+        >>> inputs = torch.randn(batch_size, num_person,
+        ...                      num_frames, num_joints, 3)
+        >>> output = model(inputs)
+        >>> print(output.shape)
+        >>>
+        >>> # nturgb+d layout
+        >>> num_joints = 25
+        >>> model = AAGCN(graph_cfg=dict(layout='nturgb+d', mode=mode))
+        >>> model.init_weights()
+        >>> inputs = torch.randn(batch_size, num_person,
+        ...                      num_frames, num_joints, 3)
+        >>> output = model(inputs)
+        >>> print(output.shape)
+        >>>
+        >>> # coco layout
+        >>> num_joints = 17
+        >>> model = AAGCN(graph_cfg=dict(layout='coco', mode=mode))
+        >>> model.init_weights()
+        >>> inputs = torch.randn(batch_size, num_person,
+        ...                      num_frames, num_joints, 3)
+        >>> output = model(inputs)
+        >>> print(output.shape)
+        >>>
+        >>> # custom settings
+        >>> # disable the attention module to degenerate AAGCN to 2s-AGCN
+        >>> stage_cfgs = {'gcn_attention': False}
+        >>> model = AAGCN(graph_cfg=dict(layout='coco', mode=mode),
+        ...               stage_cfgs=stage_cfgs)
+        >>> model.init_weights()
+        >>> output = model(inputs)
+        >>> print(output.shape)
+        torch.Size([2, 2, 256, 38, 18])
+        torch.Size([2, 2, 256, 38, 25])
+        torch.Size([2, 2, 256, 38, 17])
+        torch.Size([2, 2, 256, 38, 17])
     """
 
     def __init__(self,

@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy as cp
 from typing import Dict, List, Optional, Union
 
 import torch
@@ -147,6 +148,7 @@ class unit_aagcn(BaseModule):
                 dict(type='Kaiming', layer='Linear', mode='fan_in',
                      override=dict(type='Constant', val=0, name='fc2c'))
             ]
+            init_cfg = cp.copy(init_cfg)
             init_cfg.extend(attention_init_cfg)
 
         super(unit_aagcn, self).__init__(init_cfg=init_cfg)
