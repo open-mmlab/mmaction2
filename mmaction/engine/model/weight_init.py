@@ -1,8 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import math
 
-from mmengine.model import BaseInit, update_init_info
 import torch.nn as nn
+from mmengine.model import BaseInit, update_init_info
+
 from mmaction.registry import WEIGHT_INITIALIZERS
 
 

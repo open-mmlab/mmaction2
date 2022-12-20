@@ -40,7 +40,8 @@ def test_aagcn_backbone():
     # custom settings
     # disable the attention module to degenerate AAGCN to 2s-AGCN
     stage_cfgs = {'gcn_attention': False}
-    model = AAGCN(graph_cfg=dict(layout='coco', mode=mode), stage_cfgs=stage_cfgs)
+    model = AAGCN(
+        graph_cfg=dict(layout='coco', mode=mode), stage_cfgs=stage_cfgs)
     model.init_weights()
     output = model(inputs)
     assert output.shape == torch.Size([2, 2, 256, 38, 17])

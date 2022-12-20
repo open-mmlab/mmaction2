@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 # from .aagcn import AAGCN
+from .aagcn import AAGCN
 from .c2d import C2D
 from .c3d import C3D
 from .mobilenet_v2 import MobileNetV2
@@ -15,7 +16,6 @@ from .resnet_audio import ResNetAudio
 from .resnet_tin import ResNetTIN
 from .resnet_tsm import ResNetTSM
 from .stgcn import STGCN
-from .aagcn import AAGCN
 from .swin import SwinTransformer3D
 from .tanet import TANet
 from .timesformer import TimeSformer

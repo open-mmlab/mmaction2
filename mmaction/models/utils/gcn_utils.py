@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Union
 import torch
 import torch.nn as nn
 from mmcv.cnn import build_activation_layer, build_norm_layer
-from mmengine.model import BaseModule, Sequential, ModuleList
+from mmengine.model import BaseModule, ModuleList, Sequential
 
 
 class unit_gcn(BaseModule):
@@ -127,26 +127,37 @@ class unit_aagcn(BaseModule):
             ]``.
     """
 
-    def __init__(self,
-                 in_channels: int,
-                 out_channels: int,
-                 A: torch.Tensor,
-                 coff_embedding: int = 4,
-                 adaptive: bool = True,
-                 attention: bool = True,
-                 init_cfg: Optional[Union[Dict, List[Dict]]] = [
-                     dict(type='Constant', layer='BatchNorm2d', val=1,
-                          override=dict(type='Constant', name='bn', val=1e-6)),
-                     dict(type='Kaiming', layer='Conv2d', mode='fan_out'),
-                     dict(type='ConvBranch', name='conv_d')
-                 ]) -> None:
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        A: torch.Tensor,
+        coff_embedding: int = 4,
+        adaptive: bool = True,
+        attention: bool = True,
+        init_cfg: Optional[Union[Dict, List[Dict]]] = [
+            dict(
+                type='Constant',
+                layer='BatchNorm2d',
+                val=1,
+                override=dict(type='Constant', name='bn', val=1e-6)),
+            dict(type='Kaiming', layer='Conv2d', mode='fan_out'),
+            dict(type='ConvBranch', name='conv_d')
+        ]
+    ) -> None:
 
         if attention:
             attention_init_cfg = [
-                dict(type='Constant', layer='Conv1d', val=0,
-                     override=dict(type='Xavier', name='conv_sa')),
-                dict(type='Kaiming', layer='Linear', mode='fan_in',
-                     override=dict(type='Constant', val=0, name='fc2c'))
+                dict(
+                    type='Constant',
+                    layer='Conv1d',
+                    val=0,
+                    override=dict(type='Xavier', name='conv_sa')),
+                dict(
+                    type='Kaiming',
+                    layer='Linear',
+                    mode='fan_in',
+                    override=dict(type='Constant', val=0, name='fc2c'))
             ]
             init_cfg = cp.copy(init_cfg)
             init_cfg.extend(attention_init_cfg)
@@ -193,8 +204,7 @@ class unit_aagcn(BaseModule):
         if in_channels != out_channels:
             self.down = nn.Sequential(
                 nn.Conv2d(in_channels, out_channels, 1),
-                nn.BatchNorm2d(out_channels)
-            )
+                nn.BatchNorm2d(out_channels))
 
         self.bn = nn.BatchNorm2d(out_channels)
         self.tan = nn.Tanh()
@@ -208,7 +218,8 @@ class unit_aagcn(BaseModule):
         y = None
         if self.adaptive:
             for i in range(self.num_subset):
-                A1 = self.conv_a[i](x).permute(0, 3, 1, 2).contiguous().view(N, V, self.inter_c * T)
+                A1 = self.conv_a[i](x).permute(0, 3, 1, 2).contiguous().view(
+                    N, V, self.inter_c * T)
                 A2 = self.conv_b[i](x).view(N, self.inter_c * T, V)
                 A1 = self.tan(torch.matmul(A1, A2) / A1.size(-1))  # N V V
                 A1 = self.A[i] + A1 * self.alpha

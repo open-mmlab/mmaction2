@@ -36,7 +36,10 @@ class AAGCNBlock(BaseModule):
 
         gcn_kwargs = {k[4:]: v for k, v in kwargs.items() if k[:4] == 'gcn_'}
         tcn_kwargs = {k[4:]: v for k, v in kwargs.items() if k[:4] == 'tcn_'}
-        kwargs = {k: v for k, v in kwargs.items() if k[:4] not in ['gcn_', 'tcn_']}
+        kwargs = {
+            k: v
+            for k, v in kwargs.items() if k[:4] not in ['gcn_', 'tcn_']
+        }
         assert len(kwargs) == 0, f'Invalid arguments: {kwargs}'
 
         tcn_type = tcn_kwargs.pop('type', 'unit_tcn')
@@ -47,7 +50,8 @@ class AAGCNBlock(BaseModule):
         self.gcn = unit_aagcn(in_channels, out_channels, A, **gcn_kwargs)
 
         if tcn_type == 'unit_tcn':
-            self.tcn = unit_tcn(out_channels, out_channels, 9, stride=stride, **tcn_kwargs)
+            self.tcn = unit_tcn(
+                out_channels, out_channels, 9, stride=stride, **tcn_kwargs)
 
         self.relu = nn.ReLU()
 
@@ -56,7 +60,8 @@ class AAGCNBlock(BaseModule):
         elif (in_channels == out_channels) and (stride == 1):
             self.residual = lambda x: x
         else:
-            self.residual = unit_tcn(in_channels, out_channels, kernel_size=1, stride=stride)
+            self.residual = unit_tcn(
+                in_channels, out_channels, kernel_size=1, stride=stride)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call."""
@@ -158,7 +163,8 @@ class AAGCN(BaseModule):
         super().__init__(init_cfg=init_cfg)
 
         self.graph = Graph(**graph_cfg)
-        A = torch.tensor(self.graph.A, dtype=torch.float32, requires_grad=False)
+        A = torch.tensor(
+            self.graph.A, dtype=torch.float32, requires_grad=False)
         self.register_buffer('A', A)
 
         assert data_bn_type in ['MVC', 'VC', None]
@@ -186,13 +192,27 @@ class AAGCN(BaseModule):
 
         modules = []
         if self.in_channels != self.base_channels:
-            modules = [AAGCNBlock(in_channels, base_channels, A.clone(), 1, residual=False, **lw_kwargs[0])]
+            modules = [
+                AAGCNBlock(
+                    in_channels,
+                    base_channels,
+                    A.clone(),
+                    1,
+                    residual=False,
+                    **lw_kwargs[0])
+            ]
 
         for i in range(2, num_stages + 1):
             in_channels = base_channels
             out_channels = base_channels * (1 + (i in inflate_stages))
             stride = 1 + (i in down_stages)
-            modules.append(AAGCNBlock(base_channels, out_channels, A.clone(), stride=stride, **lw_kwargs[i - 1]))
+            modules.append(
+                AAGCNBlock(
+                    base_channels,
+                    out_channels,
+                    A.clone(),
+                    stride=stride,
+                    **lw_kwargs[i - 1]))
             base_channels = out_channels
 
         if self.in_channels == self.base_channels:
@@ -209,7 +229,8 @@ class AAGCN(BaseModule):
         else:
             x = self.data_bn(x.view(N * M, V * C, T))
 
-        x = x.view(N, M, V, C, T).permute(0, 1, 3, 4, 2).contiguous().view(N * M, C, T, V)
+        x = x.view(N, M, V, C, T).permute(0, 1, 3, 4,
+                                          2).contiguous().view(N * M, C, T, V)
 
         for i in range(self.num_stages):
             x = self.gcn[i](x)
