@@ -41,7 +41,7 @@ def results2csv(results, out_file, custom_classes=None):
     # save space for float
     def to_str(item):
         if isinstance(item, float):
-            return f'{item:.3f}'
+            return f'{item:.4f}'
         return str(item)
 
     with open(out_file, 'w') as f:
@@ -222,17 +222,17 @@ def ava_eval(result_file,
         categories = [cat for cat in categories if cat['id'] in custom_classes]
 
     # loading gt, do not need gt score
-    gt_bboxes, gt_labels, _ = read_csv(ann_file, class_whitelist)
+    gt_bboxes, gt_labels, _ = read_csv(open(ann_file), class_whitelist)
     if verbose:
         print_time('Reading GT results', start)
 
     if exclude_file is not None:
-        excluded_keys = read_exclusions(exclude_file)
+        excluded_keys = read_exclusions(open(exclude_file))
     else:
         excluded_keys = list()
 
     start = time.time()
-    boxes, labels, scores = read_csv(result_file, class_whitelist)
+    boxes, labels, scores = read_csv(open(result_file), class_whitelist)
     if verbose:
         print_time('Reading Detection results', start)
 
@@ -276,7 +276,7 @@ def ava_eval(result_file,
 
     print('Per-class results: ', flush=True)
     for k, class_name, ap in cls_AP:
-        print(f'Index: {k}, Action: {class_name}: AP: {ap:.3f};', flush=True)
+        print(f'Index: {k}, Action: {class_name}: AP: {ap:.4f};', flush=True)
 
     overall = np.nanmean([x[2] for x in cls_AP])
     person_movement = np.nanmean([x[2] for x in cls_AP if x[0] <= 14])
@@ -284,14 +284,17 @@ def ava_eval(result_file,
     person_interaction = np.nanmean([x[2] for x in cls_AP if 64 <= x[0]])
 
     print('Overall Results: ', flush=True)
-    print(f'Overall mAP: {overall:.3f}', flush=True)
-    print(f'Person Movement mAP: {person_movement:.3f}', flush=True)
-    print(f'Object Manipulation mAP: {object_manipulation:.3f}', flush=True)
-    print(f'Person Interaction mAP: {person_interaction:.3f}', flush=True)
+    print(f'Overall mAP: {overall:.4f}', flush=True)
+    print(f'Person Movement mAP: {person_movement:.4f}', flush=True)
+    print(f'Object Manipulation mAP: {object_manipulation:.4f}', flush=True)
+    print(f'Person Interaction mAP: {person_interaction:.4f}', flush=True)
 
-    cls_AP['overall'] = overall
-    cls_AP['person_movement'] = person_movement
-    cls_AP['object_manipulation'] = object_manipulation
-    cls_AP['person_interaction'] = person_interaction
+    results = {}
+    results['overall'] = overall
+    results['person_movement'] = person_movement
+    results['object_manipulation'] = object_manipulation
+    results['person_interaction'] = person_interaction
+    for k, class_name, ap in cls_AP:
+        results[class_name] = ap
 
-    return cls_AP
+    return results
