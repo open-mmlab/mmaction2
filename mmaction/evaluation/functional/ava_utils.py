@@ -79,7 +79,6 @@ def read_csv(csv_file, class_whitelist=None):
         of score values labels, matching the corresponding label in `labels`.
         If scores are not provided in the csv, then they will default to 1.0.
     """
-    start = time.time()
     entries = defaultdict(list)
     boxes = defaultdict(list)
     labels = defaultdict(list)
@@ -106,7 +105,6 @@ def read_csv(csv_file, class_whitelist=None):
         labels[image_key] = [x[1] for x in entry]
         scores[image_key] = [x[0] for x in entry]
 
-    print_time('read file ' + csv_file.name, start)
     return boxes, labels, scores
 
 
