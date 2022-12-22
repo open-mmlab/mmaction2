@@ -81,3 +81,82 @@ Models:
         Top 1 Accuracy: 88.82
     Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d_20221222-87996f0d.pth
+
+  - Name: 2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 6.5G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 88.26
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d_20221222-24dabf78.pth
+
+  - Name: 2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 6.5G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 89.22
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d_20221222-abe70a7f.pth
+
+  - Name: 2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 6.5G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 86.73
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d_20221222-923cd3c3.pth
+
+  - Name: 2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 6.5G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 86.41
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d_20221222-3d8f6f43.pth
+
+
+

@@ -90,7 +90,7 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test STGCN model on NTU60 dataset and dump the result to a pickle file.
+Example: test STGCN model on NTU60-2D dataset and dump the result to a pickle file.
 
 ```shell
 python tools/test.py configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py \
