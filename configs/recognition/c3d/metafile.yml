@@ -13,9 +13,10 @@ Models:
       Architecture: c3d
       Batch Size: 30
       Epochs: 45
-      FLOPs: 38615475200
-      Parameters: 78409573
+      FLOPs: 38.5G
+      Parameters: 78.4M
       Pretrained: sports1m
+      Resolution: 112x112
       Training Data: UCF101
       Training Resources: 8 GPUs
     Modality: RGB
@@ -23,7 +24,7 @@ Models:
     - Dataset: UCF101
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 82.92
-        Top 5 Accuracy: 96.11
+        Top 1 Accuracy: 83.08
+        Top 5 Accuracy: 95.93
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb_20220811-31723200.pth
