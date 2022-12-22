@@ -1,11 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 
+import onnxruntime
 import torch
 import torch.nn as nn
-
-import onnxruntime
-
 from mmdet.structures.bbox import bbox2roi
 from mmengine import Config
 from mmengine.runner import load_checkpoint
@@ -182,12 +180,12 @@ def main():
     input_feed = {
         'input_tensor': input_tensor.cpu().data.numpy(),
         'rois': rois.cpu().data.numpy()
-        }
+    }
     outputs = session.run(['cls_score'], input_feed=input_feed)
     outputs = outputs[0]
     diff = abs(cls_score.cpu().data.numpy() - outputs).max()
     if diff < 1e-5:
-        print('The ouput difference is smaller than 1e-5.')
+        print('The output difference is smaller than 1e-5.')
 
 
 if __name__ == '__main__':
