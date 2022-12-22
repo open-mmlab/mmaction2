@@ -3,7 +3,7 @@ _base_ = '2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py'
 dataset_type = 'PoseDataset'
 ann_file = 'data/skeleton/ntu60_3d.pkl'
 train_pipeline = [
-    dict(type='PreNormalize2D'),
+    dict(type='PreNormalize3D'),
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['jm']),
     dict(type='UniformSampleFrames', clip_len=100),
     dict(type='PoseDecode'),
@@ -11,7 +11,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='PreNormalize2D'),
+    dict(type='PreNormalize3D'),
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['jm']),
     dict(
         type='UniformSampleFrames', clip_len=100, num_clips=1, test_mode=True),
@@ -20,7 +20,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='PreNormalize2D'),
+    dict(type='PreNormalize3D'),
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['jm']),
     dict(
         type='UniformSampleFrames', clip_len=100, num_clips=10,

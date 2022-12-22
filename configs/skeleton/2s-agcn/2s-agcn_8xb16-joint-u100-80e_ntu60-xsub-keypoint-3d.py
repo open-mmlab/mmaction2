@@ -11,7 +11,7 @@ model = dict(
 dataset_type = 'PoseDataset'
 ann_file = 'data/skeleton/ntu60_3d.pkl'
 train_pipeline = [
-    dict(type='PreNormalize2D'),
+    dict(type='PreNormalize3D'),
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['j']),
     dict(type='UniformSampleFrames', clip_len=100),
     dict(type='PoseDecode'),
@@ -19,7 +19,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='PreNormalize2D'),
+    dict(type='PreNormalize3D'),
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['j']),
     dict(
         type='UniformSampleFrames', clip_len=100, num_clips=1, test_mode=True),
@@ -28,7 +28,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='PreNormalize2D'),
+    dict(type='PreNormalize3D'),
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['j']),
     dict(
         type='UniformSampleFrames', clip_len=100, num_clips=10,
