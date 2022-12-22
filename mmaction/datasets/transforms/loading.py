@@ -83,40 +83,46 @@ class LoadHVULabel(BaseTransform):
 class SampleFrames(BaseTransform):
     """Sample frames from the video.
 
-    Required keys are "total_frames", "start_index" , added or modified keys
-    are "frame_inds", "frame_interval" and "num_clips".
+    Required Keys:
+
+        - total_frames
+        - start_index
+
+    Added Keys:
+
+        - frame_inds
+        - frame_interval
+        - num_clips
 
     Args:
         clip_len (int): Frames of each sampled output clip.
         frame_interval (int): Temporal interval of adjacent sampled frames.
-            Default: 1.
+            Defaults to 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
-            Default: False.
+            Defaults to False.
         twice_sample (bool): Whether to use twice sample when testing.
             If set to True, it will sample frames with and without fixed shift,
-            which is commonly used for testing in TSM model. Default: False.
+            which is commonly used for testing in TSM model. Defaults to False.
         out_of_bound_opt (str): The way to deal with out of bounds frame
             indexes. Available options are 'loop', 'repeat_last'.
-            Default: 'loop'.
+            Defaults to 'loop'.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
-        start_index (None): This argument is deprecated and moved to dataset
-            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
-            see this: https://github.com/open-mmlab/mmaction2/pull/89.
+            Defaults to False.
         keep_tail_frames (bool): Whether to keep tail frames when sampling.
-            Default: False.
+            Defaults to False.
     """
 
     def __init__(self,
-                 clip_len,
-                 frame_interval=1,
-                 num_clips=1,
-                 temporal_jitter=False,
-                 twice_sample=False,
-                 out_of_bound_opt='loop',
-                 test_mode=False,
-                 keep_tail_frames=False):
+                 clip_len: int,
+                 frame_interval: int = 1,
+                 num_clips: int = 1,
+                 temporal_jitter: bool = False,
+                 twice_sample: bool = False,
+                 out_of_bound_opt: str = 'loop',
+                 test_mode: bool = False,
+                 keep_tail_frames: bool = False,
+                 **kwargs) -> None:
 
         self.clip_len = clip_len
         self.frame_interval = frame_interval
@@ -128,7 +134,7 @@ class SampleFrames(BaseTransform):
         self.keep_tail_frames = keep_tail_frames
         assert self.out_of_bound_opt in ['loop', 'repeat_last']
 
-    def _get_train_clips(self, num_frames):
+    def _get_train_clips(self, num_frames: int) -> np.array:
         """Get clip offsets in train mode.
 
         It will calculate the average interval for selected frames,
@@ -172,7 +178,7 @@ class SampleFrames(BaseTransform):
 
         return clip_offsets
 
-    def _get_test_clips(self, num_frames):
+    def _get_test_clips(self, num_frames: int) -> np.array:
         """Get clip offsets in test mode.
 
         If the total number of frames is
@@ -184,21 +190,30 @@ class SampleFrames(BaseTransform):
         Returns:
             np.ndarray: Sampled frame indices in test mode.
         """
-        k = 2 if self.twice_sample else 1
-        num_clips = self.num_clips * k
-        ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
-        max_offset = max(num_frames - ori_clip_len, 0)
-
-        if num_clips > 1:
-            num_segments = num_clips - 1
-            offset_between = max_offset / float(num_segments)
-            clip_offsets = np.arange(num_clips) * offset_between
-            clip_offsets = np.round(clip_offsets).astype(np.int32)
-        else:
-            clip_offsets = np.array([max_offset // 2])
+        if self.clip_len == 1:  # 2D recognizer
+            # assert self.frame_interval == 1
+            avg_interval = num_frames / float(self.num_clips)
+            base_offsets = np.arange(self.num_clips) * avg_interval
+            clip_offsets = base_offsets + avg_interval / 2.0
+            if self.twice_sample:
+                clip_offsets = np.concatenate([clip_offsets, base_offsets])
+        else:  # 3D recognizer
+            ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
+            max_offset = max(num_frames - ori_clip_len, 0)
+            if self.twice_sample:
+                num_clips = self.num_clips * 2
+            else:
+                num_clips = self.num_clips
+            if num_clips > 1:
+                num_segments = self.num_clips - 1
+                offset_between = max_offset / float(num_segments)
+                clip_offsets = np.arange(num_clips) * offset_between
+                clip_offsets = np.round(clip_offsets)
+            else:
+                clip_offsets = np.array([max_offset // 2])
         return clip_offsets
 
-    def _sample_clips(self, num_frames):
+    def _sample_clips(self, num_frames: int) -> np.array:
         """Choose clip offsets for the video in a given mode.
 
         Args:
@@ -214,7 +229,7 @@ class SampleFrames(BaseTransform):
 
         return clip_offsets
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Perform the SampleFrames loading.
 
         Args:
@@ -253,7 +268,7 @@ class SampleFrames(BaseTransform):
         results['num_clips'] = self.num_clips
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'clip_len={self.clip_len}, '
                     f'frame_interval={self.frame_interval}, '
