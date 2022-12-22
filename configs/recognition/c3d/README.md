@@ -20,16 +20,14 @@ We propose a simple, yet effective approach for spatiotemporal feature learning 
 
 ### UCF-101
 
-| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol  | inference_time(video/s) | gpu_mem(M) |            config            |            ckpt             |            log             |
-| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :---------------: | :---------------------: | :--------: | :--------------------------: | :-------------------------: | :------------------------: |
-|         16x1x1          |    raw     |  8   |   c3d    | sports1m |  82.92   |  96.11   | 10 clips x 1 crop |            x            |    6067    | [config](/configs/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb_20220811-31723200.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.log) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol  | FLOPs | params |                config                |                ckpt                |                log                |
+| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :---------------: | :---: | :----: | :----------------------------------: | :--------------------------------: | :-------------------------------: |
+|         16x1x1          |  112x112   |  8   |   c3d    | sports1m |  83.08   |  95.93   | 10 clips x 1 crop | 38.5G | 78.4M  | [config](/configs/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb_20220811-31723200.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.log) |
 
 1. The author of C3D normalized UCF-101 with volume mean and used SVM to classify videos, while we normalized the dataset with RGB mean value and used a linear classifier.
-2. The **gpus** indicates the number of gpu (80G A100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
+2. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
 
-For more details on data preparation, you can refer to the **Prepare videos** part in the [Data Preparation Tutorial](/docs/en/user_guides/2_data_prepare.md).
+For more details on data preparation, you can refer to [UCF101](/tools/data/ucf101/README.md).
 
 ## Train
 
@@ -43,7 +41,7 @@ Example: train C3D model on UCF-101 dataset in a deterministic option with perio
 
 ```shell
 python tools/train.py configs/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.py \
-    --cfg-options randomness.seed=0 randomness.deterministic=True
+    --seed=0 --deterministic
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
