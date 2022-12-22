@@ -3,34 +3,39 @@ import argparse
 
 import torch
 import torch.nn as nn
-
+from mmdet.structures.bbox import bbox2roi
 from mmengine import Config
+from mmengine.runner import load_checkpoint
+
 from mmaction.registry import MODELS
 from mmaction.utils import register_all_modules
-from mmdet.structures.bbox import bbox2roi
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Get model flops and params')
     parser.add_argument('config', help='config file path')
-    parser.add_argument('--num_frames', 
-                        type=int, 
-                        default=8, 
-                        help='number of input frames.')
-    parser.add_argument('--shape',
-                        type=int,
-                        nargs='+',
-                        default=[256, 455],
-                        help='input image size')
-    parser.add_argument('--output_file',
-                        type=str,
-                        default='stdet.onnx',
-                        help='file name of the ouput onnx file')
+    parser.add_argument('checkpoint', help='checkpoint file')
+    parser.add_argument(
+        '--num_frames', type=int, default=8, help='number of input frames.')
+    parser.add_argument(
+        '--shape',
+        type=int,
+        nargs='+',
+        default=[256, 455],
+        help='input image size')
+    parser.add_argument(
+        '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
+    parser.add_argument(
+        '--output_file',
+        type=str,
+        default='stdet.onnx',
+        help='file name of the output onnx file')
     args = parser.parse_args()
     return args
 
 
 class SpatialMaxPool3d(nn.Module):
+
     def __init__(self):
         super().__init__()
 
@@ -40,14 +45,16 @@ class SpatialMaxPool3d(nn.Module):
 
 
 class SpatialAvgPool(nn.Module):
+
     def __init__(self):
         super().__init__()
-    
+
     def forward(self, x):
         return x.mean(dim=(-1, -2), keepdims=True)
 
 
 class TemporalMaxPool3d(nn.Module):
+
     def __init__(self):
         super().__init__()
 
@@ -56,6 +63,7 @@ class TemporalMaxPool3d(nn.Module):
 
 
 class TemporalAvgPool3d(nn.Module):
+
     def __init__(self):
         super().__init__()
 
@@ -64,6 +72,7 @@ class TemporalAvgPool3d(nn.Module):
 
 
 class GlobalPool2d(nn.Module):
+
     def __init__(self, pool_size, later_max=True):
         super().__init__()
         self.pool = nn.AvgPool2d(pool_size)
@@ -74,10 +83,11 @@ class GlobalPool2d(nn.Module):
         if self.max:
             x = x.max(dim=-1, keepdim=True)[0]
             return x.max(dim=-2, keepdim=True)[0]
-        return x.mean(dim=(-1, -2), keepdims=True)  
+        return x.mean(dim=(-1, -2), keepdims=True)
 
 
 class STDet(nn.Module):
+
     def __init__(self, base_model, input_tensor):
         super(STDet, self).__init__()
         self.backbone = base_model.backbone
@@ -93,12 +103,12 @@ class STDet(nn.Module):
             self.bbox_head.temporal_pool = TemporalMaxPool3d()
         if isinstance(self.bbox_head.spatial_pool, nn.AdaptiveAvgPool3d):
             self.bbox_head.spatial_pool = SpatialAvgPool()
-            self.bbox_roi_extractor.global_pool = GlobalPool2d(pool_size, 
-                                                               later_max=False)
+            self.bbox_roi_extractor.global_pool = GlobalPool2d(
+                pool_size, later_max=False)
         else:
             self.bbox_head.spatial_pool = SpatialMaxPool3d()
-            self.bbox_roi_extractor.global_pool = GlobalPool2d(pool_size, 
-                                                               later_max=True)
+            self.bbox_roi_extractor.global_pool = GlobalPool2d(
+                pool_size, later_max=True)
 
     def forward(self, input_tensor, rois):
         feat = self.backbone(input_tensor)
@@ -113,7 +123,9 @@ def main():
     config = Config.fromfile(args.config)
 
     base_model = MODELS.build(config.model)
-    base_model.eval()
+    load_checkpoint(base_model, args.checkpoint, map_location='cpu')
+    base_model.to(args.device)
+    base_model
 
     if len(args.shape) == 1:
         input_shape = (args.shape[0], args.shape[0])
@@ -123,16 +135,15 @@ def main():
         raise ValueError('invalid input shape')
 
     input_tensor = torch.randn(1, 3, args.num_frames, *input_shape)
-    input_tensor = input_tensor.clamp(-3, 3)
-    proposal = torch.Tensor([[22.,  59.,  67., 157.],
-                             [186.,  73., 217., 159.],
-                             [407.,  95., 431., 168.]])
+    input_tensor = input_tensor.clamp(-3, 3).to(args.device)
+    proposal = torch.Tensor([[22., 59., 67., 157.], [186., 73., 217., 159.],
+                             [407., 95., 431., 168.]])
 
-    rois = bbox2roi([proposal])
+    rois = bbox2roi([proposal]).to(args.device)
 
-    model = STDet(base_model, input_tensor)
+    model = STDet(base_model, input_tensor).to(args.device)
     cls_score = model(input_tensor, rois)
-    print(f'Model ouput shape: {cls_score.shape}')
+    print(f'Model output shape: {cls_score.shape}')
 
     torch.onnx.export(
         model, (input_tensor, rois),
@@ -144,7 +155,15 @@ def main():
         verbose=False,
         opset_version=10,
         dynamic_axes={
-            'input_tensor': {0: 'batch_size', 3: 'height', 4: 'width'},
-            'rois': {0: 'total_num_bbox_for_the_batch'},
-            'cls_score': {0: 'total_num_bbox_for_the_batch'}
+            'input_tensor': {
+                0: 'batch_size',
+                3: 'height',
+                4: 'width'
+            },
+            'rois': {
+                0: 'total_num_bbox_for_the_batch'
+            },
+            'cls_score': {
+                0: 'total_num_bbox_for_the_batch'
+            }
         })
