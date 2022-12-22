@@ -3,6 +3,9 @@ import argparse
 
 import torch
 import torch.nn as nn
+
+import onnxruntime
+
 from mmdet.structures.bbox import bbox2roi
 from mmengine import Config
 from mmengine.runner import load_checkpoint
@@ -24,7 +27,7 @@ def parse_args():
         default=[256, 455],
         help='input image size')
     parser.add_argument(
-        '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
+        '--device', type=str, default='cpu', help='CPU/CUDA device option')
     parser.add_argument(
         '--output_file',
         type=str,
@@ -73,17 +76,21 @@ class TemporalAvgPool3d(nn.Module):
 
 class GlobalPool2d(nn.Module):
 
-    def __init__(self, pool_size, later_max=True):
+    def __init__(self, pool_size, output_size, later_max=True):
         super().__init__()
         self.pool = nn.AvgPool2d(pool_size)
         self.max = later_max
+        self.output_size = output_size
 
     def forward(self, x):
         x = self.pool(x)
         if self.max:
             x = x.max(dim=-1, keepdim=True)[0]
-            return x.max(dim=-2, keepdim=True)[0]
-        return x.mean(dim=(-1, -2), keepdims=True)
+            x = x.max(dim=-2, keepdim=True)[0]
+        else:
+            x = x.mean(dim=(-1, -2), keepdims=True)
+        x = x.expand(-1, -1, self.output_size, self.output_size)
+        return x
 
 
 class STDet(nn.Module):
@@ -95,7 +102,7 @@ class STDet(nn.Module):
         self.bbox_head = base_model.roi_head.bbox_head
 
         output_size = self.bbox_roi_extractor.global_pool.output_size
-        pool_size = min(input_tensor.shape[-2:]) // output_size
+        pool_size = min(input_tensor.shape[-2:]) // 16 // output_size
 
         if isinstance(self.bbox_head.temporal_pool, nn.AdaptiveAvgPool3d):
             self.bbox_head.temporal_pool = TemporalAvgPool3d()
@@ -104,11 +111,11 @@ class STDet(nn.Module):
         if isinstance(self.bbox_head.spatial_pool, nn.AdaptiveAvgPool3d):
             self.bbox_head.spatial_pool = SpatialAvgPool()
             self.bbox_roi_extractor.global_pool = GlobalPool2d(
-                pool_size, later_max=False)
+                pool_size, output_size, later_max=False)
         else:
             self.bbox_head.spatial_pool = SpatialMaxPool3d()
             self.bbox_roi_extractor.global_pool = GlobalPool2d(
-                pool_size, later_max=True)
+                pool_size, output_size, later_max=True)
 
     def forward(self, input_tensor, rois):
         feat = self.backbone(input_tensor)
@@ -125,7 +132,6 @@ def main():
     base_model = MODELS.build(config.model)
     load_checkpoint(base_model, args.checkpoint, map_location='cpu')
     base_model.to(args.device)
-    base_model
 
     if len(args.shape) == 1:
         input_shape = (args.shape[0], args.shape[0])
@@ -142,6 +148,7 @@ def main():
     rois = bbox2roi([proposal]).to(args.device)
 
     model = STDet(base_model, input_tensor).to(args.device)
+    model.eval()
     cls_score = model(input_tensor, rois)
     print(f'Model output shape: {cls_score.shape}')
 
@@ -150,10 +157,10 @@ def main():
         args.output_file,
         input_names=['input_tensor', 'rois'],
         output_names=['cls_score'],
-        export_params=True,
+        export_params=False,
         do_constant_folding=True,
-        verbose=False,
-        opset_version=10,
+        verbose=True,
+        opset_version=11,
         dynamic_axes={
             'input_tensor': {
                 0: 'batch_size',
@@ -167,3 +174,21 @@ def main():
                 0: 'total_num_bbox_for_the_batch'
             }
         })
+
+    print(f'Successfully export the onnx file to {args.output_file}')
+
+    # Test exported file
+    session = onnxruntime.InferenceSession(args.output_file)
+    input_feed = {
+        'input_tensor': input_tensor.cpu().data.numpy(),
+        'rois': rois.cpu().data.numpy()
+        }
+    outputs = session.run(['cls_score'], input_feed=input_feed)
+    outputs = outputs[0]
+    diff = abs(cls_score.cpu().data.numpy() - outputs).max()
+    if diff < 1e-5:
+        print('The ouput difference is smaller than 1e-5.')
+
+
+if __name__ == '__main__':
+    main()
