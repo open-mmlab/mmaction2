@@ -157,6 +157,3 @@ Models:
         Top 1 Accuracy: 86.41
     Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d_20221222-3d8f6f43.pth
-
-
-
