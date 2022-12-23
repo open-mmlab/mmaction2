@@ -37,5 +37,5 @@ __all__ = [
     'PyAVDecodeMotionVector', 'Rename', 'Imgaug', 'UniformSampleFrames',
     'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
     'PIMSDecode', 'TorchvisionTrans', 'PytorchVideoTrans', 'PoseNormalize',
-    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'JointToBone'
+    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'JointToBone', 'RandAugment_T'
 ]

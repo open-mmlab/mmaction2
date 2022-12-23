@@ -2,11 +2,13 @@
 import random
 import warnings
 from collections.abc import Sequence
+from PIL import Image
 
 import cv2
 import mmcv
 import numpy as np
 from mmcv.utils import digit_version
+from randaugment_utils import Augment
 from torch.nn.modules.utils import _pair
 
 from ..builder import PIPELINES
@@ -266,6 +268,58 @@ class PoseCompact:
                     f'allow_imgpad={self.allow_imgpad})')
         return repr_str
 
+@PIPELINES.register_module()
+class RandAugment_T(Augment):
+    """Apply a random augment that linearly changes from a starting frame to an end frame.
+
+    See paper "Learning Temporally Invariant and Localizable Features via
+    Data Augmentation for Video Recognition", Taeoh Kim et al., 2020
+    (https://arxiv.org/pdf/2008.05721.pdf) for details.
+
+    Args:
+        n (int): Number of augments to be applied sequentially. Default: 2.
+        m (int): Magnitude of each augment between range [0,30]. Default: 7.
+        temp_degree (boolean): Change augment intensity temporally. Default: True.
+        range (float): Highest relative change in magnitude between frames, [0, 1.0]. Default: 1.0.
+    """
+
+    def __init__(self, n=2, m=7, temp_degree=True, range=1.0):
+        super(RandAugment_T, self).__init__()
+        self.max_severity = 30
+        self.temp_degree = temp_degree
+        self.n = n
+        self.m = m  # usually values in the range [5, 30] works best
+        self.range = range
+        self.augment_list = self.augment_list()
+
+    def __call__(self, results):
+        buffer = [Image.fromarray(img.astype('uint8'))
+                  for img in np.array(results['imgs'])]
+
+        ops = random.choices(self.augment_list, k=self.n)
+        for op, minval, maxval in ops:
+            if self.temp_degree:
+                val_list = [(float(self.m) / self.max_severity)
+                            * float(maxval - minval) + minval]
+            else:  # temp_degree == False
+                tval = float(np.random.uniform(
+                    low=0.0, high=0.5 * self.range * self.m))
+                if random.random() > 0.5:
+                    val_list = [((float(self.m) - tval) / self.max_severity)
+                                * float(maxval - minval) + minval]
+                    val_list.extend(
+                        [((float(self.m) + tval) / self.max_severity) * float(maxval - minval) + minval])
+                else:
+                    val_list = [((float(self.m) + tval) / self.max_severity)
+                                * float(maxval - minval) + minval]
+                    val_list.extend(
+                        [((float(self.m) - tval) / self.max_severity) * float(maxval - minval) + minval])
+            buffer = op(buffer, val_list)
+
+        results['imgs'] = np.array(
+            [np.array(img, np.dtype('int64')) for img in buffer])
+
+        return results
 
 @PIPELINES.register_module()
 class Imgaug:
