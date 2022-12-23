@@ -1,0 +1,414 @@
+Collections:
+- Name: UniFormerV2
+  README: configs/recognition/uniformerv2/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2211.09552
+    Title: "UniFormerV2: Spatiotemporal Learning by Arming Image ViTs with Video UniFormer"
+
+Models:
+  - Name: uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics400-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics400-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-B/16
+      Pretrained: Kinetics-710
+      Resolution: short-side 320
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 85.8
+        Top 5 Accuracy: 97.1
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics400/uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics400-rgb_20221219-203d6aac.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics400-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics400-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710
+      Resolution: short-side 320
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 88.7
+        Top 5 Accuracy: 98.1
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics400/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics400-rgb_20221219-972ea063.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics400-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics400-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710
+      Resolution: short-side 320
+      Frame: 16
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 89.0
+        Top 5 Accuracy: 98.2
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics400/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics400-rgb_20221219-6dc86d05.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics400-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics400-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710
+      Resolution: short-side 320
+      Frame: 32
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 89.3
+        Top 5 Accuracy: 98.2
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics400/uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics400-rgb_20221219-56a46f64.pth
+
+  - Name: uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics400-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics400-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14@336
+      Pretrained: Kinetics-710
+      Resolution: short-side 320
+      Frame: 32
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 89.5
+        Top 5 Accuracy: 98.4
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics400/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics400-rgb_20221219-1dd7650f.pth
+
+  - Name: uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics600-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics600-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-B/16
+      Pretrained: Kinetics-710
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-600
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 86.4
+        Top 5 Accuracy: 97.3
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics600/uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics600-rgb_20221219-c62c4da4.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics600-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics600-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-600
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 89.0
+        Top 5 Accuracy: 98.3
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics600/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics600-rgb_20221219-cf88e4c2.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics600-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics600-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710
+      Frame: 16
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-600
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 89.4
+        Top 5 Accuracy: 98.3
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics600/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics600-rgb_20221219-38ff0e3e.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics600-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics600-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710
+      Frame: 32
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-600
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 89.2
+        Top 5 Accuracy: 98.3
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics600/uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics600-rgb_20221219-d450d071.pth
+
+  - Name: uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics600-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics600-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14@336
+      Pretrained: Kinetics-710
+      Frame: 32
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-600
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 89.8
+        Top 5 Accuracy: 98.5
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics600/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics600-rgb_20221219-f984f5d2.pth
+
+  - Name: uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics700-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics700-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-B/16
+      Pretrained: Kinetics-710
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-700
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 76.3
+        Top 5 Accuracy: 92.9
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics700/uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics700-rgb_20221219-8a7c4ac4.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics700-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics700-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-700
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 80.8
+        Top 5 Accuracy: 95.2
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics700/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics700-rgb_20221219-bfb9f401.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics700-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics700-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710
+      Frame: 16
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-700
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 81.2
+        Top 5 Accuracy: 95.6
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics700/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics700-rgb_20221219-745209d2.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics700-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics700-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710
+      Frame: 32
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-700
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 81.4
+        Top 5 Accuracy: 95.7
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics700/uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics700-rgb_20221219-eebe7056.pth
+
+  - Name: uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics700-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics700-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14@336
+      Pretrained: Kinetics-710
+      Frame: 32
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 82.1
+        Top 5 Accuracy: 96.0
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics700/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics700-rgb_20221219-bfb9f401.pth
+
+  - Name: uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-B/16
+      Pretrained: CLIP-400M
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb_20221219-77d34f81.pth
+
+  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics700-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics700-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: CLIP-400M
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-large-p14-res224_clip-pre_u8_kinetics710-rgb_20221219-bfaae587.pth
+
+  - Name: uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14@336
+      Pretrained: Kinetics-710
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb_20221219-55878cdc.pth
+
+  - Name: uniformerv2-base-p16-res224_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-B/16
+      Pretrained: Kinetics-710 + Kinetics-400
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Moments in Time V1
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 42.7
+        Top 5 Accuracy: 71.6
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/mitv1/uniformerv2-base-p16-res224_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb_20221219-fddbc786.pth
+
+  - Name: uniformerv2-large-p16-res224_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p16-res224_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14
+      Pretrained: Kinetics-710 + Kinetics-400
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Moments in Time V1
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 47.0
+        Top 5 Accuracy: 76.1
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/mitv1/uniformerv2-large-p16-res224_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb_20221219-882c0598.pth
+
+  - Name: uniformerv2-large-p16-res336_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p16-res336_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormerV2-L/14@336
+      Pretrained: Kinetics-710 + Kinetics-400
+      Frame: 8
+      Sampling method: Uniform
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/UniFormerV2
+    Results:
+    - Dataset: Moments in Time V1
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 47.7
+        Top 5 Accuracy: 76.8
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/mitv1/uniformerv2-large-p16-res336_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb_20221219-9020986e.pth
