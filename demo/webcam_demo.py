@@ -61,8 +61,8 @@ def parse_args():
         action=DictAction,
         default={},
         help='override some settings in the used config, the key-value pair '
-             'in xxx=yyy format will be merged into config file. For example, '
-             "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     args = parser.parse_args()
     assert args.drawing_fps >= 0 and args.inference_fps >= 0, \
         'upper bound FPS value of drawing and inference should be set as ' \
@@ -88,7 +88,7 @@ def show_results():
                 if score < threshold:
                     break
                 location = (0, 40 + i * 20)
-                text = selected_label + ': ' + str(round(score*100, 2))
+                text = selected_label + ': ' + str(round(score * 100, 2))
                 text_info[location] = text
                 cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
                             FONTCOLOR, THICKNESS, LINETYPE)
@@ -149,7 +149,8 @@ def inference():
             num_selected_labels = min(len(label), 5)
 
             score_tuples = tuple(zip(label, scores_avg))
-            score_sorted = sorted(score_tuples, key=itemgetter(1), reverse=True)
+            score_sorted = sorted(
+                score_tuples, key=itemgetter(1), reverse=True)
             results = score_sorted[:num_selected_labels]
 
             result_queue.append(results)
@@ -164,7 +165,8 @@ def inference():
 
 
 def main():
-    global average_size, threshold, drawing_fps, inference_fps, device, model, camera, data, label, sample_length, \
+    global average_size, threshold, drawing_fps, inference_fps, \
+        device, model, camera, data, label, sample_length, \
         test_pipeline, frame_queue, result_queue
 
     # Register all modules in mmaction2 into the registries
