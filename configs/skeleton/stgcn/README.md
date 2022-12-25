@@ -73,7 +73,7 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train STGCN model on NTU60 dataset in a deterministic option with periodic validation.
+Example: train STGCN model on NTU60-2D dataset in a deterministic option with periodic validation.
 
 ```shell
 python tools/train.py configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py \
