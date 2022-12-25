@@ -94,8 +94,6 @@ class AAGCN(BaseModule):
             Defaults to ``[5, 8]``.
         down_stages (list[int]): Stages to perform downsampling in
             the time dimension. Defaults to ``[5, 8]``.
-        stage_cfgs (dict): Extra config dict for each stage.
-            Defaults to ``dict()``.
         init_cfg (dict or list[dict], optional): Config to control
             the initialization. Defaults to None.
 
@@ -136,10 +134,9 @@ class AAGCN(BaseModule):
         >>> print(output.shape)
         >>>
         >>> # custom settings
-        >>> # disable the attention module to degenerate AAGCN to 2s-AGCN
-        >>> stage_cfgs = {'gcn_attention': False}
+        >>> # disable the attention module to degenerate AAGCN to AGCN
         >>> model = AAGCN(graph_cfg=dict(layout='coco', mode=mode),
-        ...               stage_cfgs=stage_cfgs)
+        ...               gcn_attention=False)
         >>> model.init_weights()
         >>> output = model(inputs)
         >>> print(output.shape)
@@ -158,8 +155,8 @@ class AAGCN(BaseModule):
                  num_stages: int = 10,
                  inflate_stages: List[int] = [5, 8],
                  down_stages: List[int] = [5, 8],
-                 stage_cfgs: Dict = dict(),
-                 init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None,
+                 **kwargs) -> None:
         super().__init__(init_cfg=init_cfg)
 
         self.graph = Graph(**graph_cfg)
@@ -183,8 +180,8 @@ class AAGCN(BaseModule):
         else:
             self.data_bn = nn.Identity()
 
-        lw_kwargs = [cp.deepcopy(stage_cfgs) for i in range(num_stages)]
-        for k, v in stage_cfgs.items():
+        lw_kwargs = [cp.deepcopy(kwargs) for i in range(num_stages)]
+        for k, v in kwargs.items():
             if isinstance(v, tuple) and len(v) == num_stages:
                 for i in range(num_stages):
                     lw_kwargs[i][k] = v[i]

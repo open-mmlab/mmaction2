@@ -5,7 +5,7 @@ model = dict(
     backbone=dict(
         type='AAGCN',
         graph_cfg=dict(layout='nturgb+d', mode='spatial'),
-        stage_cfgs=dict(gcn_attention=False)),  # degenerate AAGCN to AGCN
+        gcn_attention=False),  # degenerate AAGCN to AGCN
     cls_head=dict(type='GCNHead', num_classes=60, in_channels=256))
 
 dataset_type = 'PoseDataset'
