@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Union
 import torch
 import torch.nn as nn
 from mmcv.cnn import build_activation_layer, build_norm_layer
-from mmengine.model import BaseModule, Sequential, ModuleList
+from mmengine.model import BaseModule, ModuleList, Sequential
 
 
 class unit_gcn(BaseModule):
@@ -326,12 +326,14 @@ class mstcn(BaseModule):
         init_cfg (dict or list[dict]): Initialization config dict.
             Defaults to None.
     """
+
     def __init__(self,
                  in_channels: int,
                  out_channels: int,
                  mid_channels: int = None,
                  dropout: float = 0.,
-                 ms_cfg: List = [(3, 1), (3, 2), (3, 3), (3, 4), ('max', 3), '1x1'],
+                 ms_cfg: List = [(3, 1), (3, 2), (3, 3), (3, 4), ('max', 3),
+                                 '1x1'],
                  stride: int = 1,
                  init_cfg: Union[Dict, List[Dict]] = None) -> None:
         super().__init__(init_cfg=init_cfg)
@@ -358,26 +360,43 @@ class mstcn(BaseModule):
         for i, cfg in enumerate(ms_cfg):
             branch_c = rem_mid_channels if i == 0 else mid_channels
             if cfg == '1x1':
-                branches.append(nn.Conv2d(in_channels, branch_c, kernel_size=1, stride=(stride, 1)))
+                branches.append(
+                    nn.Conv2d(
+                        in_channels,
+                        branch_c,
+                        kernel_size=1,
+                        stride=(stride, 1)))
                 continue
             assert isinstance(cfg, tuple)
             if cfg[0] == 'max':
                 branches.append(
                     Sequential(
-                        nn.Conv2d(in_channels, branch_c, kernel_size=1), nn.BatchNorm2d(branch_c), self.act,
-                        nn.MaxPool2d(kernel_size=(cfg[1], 1), stride=(stride, 1), padding=(1, 0))))
+                        nn.Conv2d(in_channels, branch_c, kernel_size=1),
+                        nn.BatchNorm2d(branch_c), self.act,
+                        nn.MaxPool2d(
+                            kernel_size=(cfg[1], 1),
+                            stride=(stride, 1),
+                            padding=(1, 0))))
                 continue
             assert isinstance(cfg[0], int) and isinstance(cfg[1], int)
             branch = Sequential(
-                nn.Conv2d(in_channels, branch_c, kernel_size=1), nn.BatchNorm2d(branch_c), self.act,
-                unit_tcn(branch_c, branch_c, kernel_size=cfg[0], stride=stride, dilation=cfg[1], norm=None))
+                nn.Conv2d(in_channels, branch_c, kernel_size=1),
+                nn.BatchNorm2d(branch_c), self.act,
+                unit_tcn(
+                    branch_c,
+                    branch_c,
+                    kernel_size=cfg[0],
+                    stride=stride,
+                    dilation=cfg[1],
+                    norm=None))
             branches.append(branch)
 
         self.branches = ModuleList(branches)
         tin_channels = mid_channels * (num_branches - 1) + rem_mid_channels
 
         self.transform = Sequential(
-            nn.BatchNorm2d(tin_channels), self.act, nn.Conv2d(tin_channels, out_channels, kernel_size=1))
+            nn.BatchNorm2d(tin_channels), self.act,
+            nn.Conv2d(tin_channels, out_channels, kernel_size=1))
 
         self.bn = nn.BatchNorm2d(out_channels)
         self.drop = nn.Dropout(dropout, inplace=True)

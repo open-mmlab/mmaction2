@@ -36,9 +36,11 @@ def test_stgcn_backbone():
 
     # custom settings
     # instantiate STGCN++
-    model = STGCN(graph_cfg=dict(layout='coco', mode='spatial'),
-                  gcn_adaptive='init', gcn_with_res=True,
-                  tcn_type='mstcn')
+    model = STGCN(
+        graph_cfg=dict(layout='coco', mode='spatial'),
+        gcn_adaptive='init',
+        gcn_with_res=True,
+        tcn_type='mstcn')
     model.init_weights()
     output = model(inputs)
     assert output.shape == torch.Size([2, 2, 256, 38, 17])

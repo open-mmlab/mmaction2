@@ -7,7 +7,7 @@ import torch.nn as nn
 from mmengine.model import BaseModule, ModuleList
 
 from mmaction.registry import MODELS
-from ..utils import Graph, unit_gcn, unit_tcn, mstcn
+from ..utils import Graph, mstcn, unit_gcn, unit_tcn
 
 EPS = 1e-4
 
@@ -55,7 +55,8 @@ class STGCNBlock(BaseModule):
             self.tcn = unit_tcn(
                 out_channels, out_channels, 9, stride=stride, **tcn_kwargs)
         elif tcn_type == 'mstcn':
-            self.tcn = mstcn(out_channels, out_channels, stride=stride, **tcn_kwargs)
+            self.tcn = mstcn(
+                out_channels, out_channels, stride=stride, **tcn_kwargs)
         self.relu = nn.ReLU()
 
         if not residual:
