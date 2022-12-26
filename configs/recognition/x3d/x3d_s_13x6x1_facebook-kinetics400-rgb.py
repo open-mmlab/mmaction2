@@ -11,10 +11,11 @@ test_pipeline = [
         clip_len=13,
         frame_interval=6,
         num_clips=10,
+        target_fps=30,
         test_mode=True),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(-1, 192)),
-    dict(type='ThreeCrop', crop_size=192),
+    dict(type='Resize', scale=(-1, 182)),
+    dict(type='ThreeCrop', crop_size=182),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
 ]

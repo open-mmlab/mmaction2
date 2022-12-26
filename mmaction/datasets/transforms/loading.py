@@ -203,7 +203,6 @@ class SampleFrames(BaseTransform):
             if self.twice_sample:
                 clip_offsets = np.concatenate([clip_offsets, base_offsets])
         else:  # 3D recognizer
-            ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
             max_offset = max(num_frames - ori_clip_len, 0)
             if self.twice_sample:
                 num_clips = self.num_clips * 2
@@ -211,9 +210,14 @@ class SampleFrames(BaseTransform):
                 num_clips = self.num_clips
             if num_clips > 1:
                 num_segments = self.num_clips - 1
-                offset_between = max_offset / float(num_segments)
-                clip_offsets = np.arange(num_clips) * offset_between
-                clip_offsets = np.round(clip_offsets)
+                # align test sample strategy with `PySlowFast` repo
+                if self.target_fps is not None:
+                    offset_between = np.floor(max_offset / float(num_segments))
+                    clip_offsets = np.arange(num_clips) * offset_between
+                else:
+                    offset_between = max_offset / float(num_segments)
+                    clip_offsets = np.arange(num_clips) * offset_between
+                    clip_offsets = np.round(clip_offsets)
             else:
                 clip_offsets = np.array([max_offset // 2])
         return clip_offsets
@@ -240,15 +244,15 @@ class SampleFrames(BaseTransform):
         Args:
             fps_scale_ratio (float): Scale ratio to adjust fps.
         """
-        if not self.test_mode:
-            ori_clip_len = self.clip_len * self.frame_interval
-            ori_clip_len = ori_clip_len * fps_scale_ratio
-        elif self.target_fps is not None:
+        if self.target_fps is not None:
             # align test sample strategy with `PySlowFast` repo
             ori_clip_len = self.clip_len * self.frame_interval
             ori_clip_len = np.maximum(1, ori_clip_len * fps_scale_ratio)
-        else:
+        elif self.test_mode:
             ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
+        else:
+            ori_clip_len = self.clip_len * self.frame_interval
+
         return ori_clip_len
 
     def transform(self, results: dict) -> dict:
@@ -948,6 +952,7 @@ class DecordInit(BaseTransform):
 
         file_obj = io.BytesIO(self.file_client.get(results['filename']))
         container = decord.VideoReader(file_obj, num_threads=self.num_threads)
+        results['fps'] = container.get_avg_fps()
         results['video_reader'] = container
         results['total_frames'] = len(container)
         return results

@@ -13,7 +13,7 @@ Models:
       Architecture: X3D_S
       FLOPs: 2967543760
       Parameters: 3794322
-      Resolution: short-side 320
+      Resolution: 160x160
     Modality: RGB
     Converted From:
       Weights: https://dl.fbaipublicfiles.com/pyslowfast/x3d_models/x3d_s.pyth
@@ -34,7 +34,7 @@ Models:
       Architecture: X3D_M
       FLOPs: 6490866832
       Parameters: 3794322
-      Resolution: short-side 320
+      Resolution: 224x224
     Modality: RGB
     Converted From:
       Weights: https://dl.fbaipublicfiles.com/pyslowfast/x3d_models/x3d_m.pyth
@@ -43,7 +43,7 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 75.5
+        Top 1 Accuracy: 76.4
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/x3d/facebook/x3d_m_16x5x1_facebook-kinetics400-rgb_20201027-3f42382a.pth
     reference top1 10-view: 75.1 [[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)]
     reference top1 30-view: 76.2 [[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)]
