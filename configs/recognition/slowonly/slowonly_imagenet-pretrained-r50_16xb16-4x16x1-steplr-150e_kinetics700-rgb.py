@@ -13,8 +13,10 @@ data_root_val = 'data/kinetics700/videos_val'
 ann_file_train = 'data/kinetics700/kinetics700_train_list_videos.txt'
 ann_file_val = 'data/kinetics700/kinetics700_val_list_videos.txt'
 
+file_client_args = dict(io_backend='disk')
+
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=4, frame_interval=16, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -26,7 +28,7 @@ train_pipeline = [
 ]
 
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=4,
@@ -41,7 +43,7 @@ val_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=4,
@@ -106,11 +108,13 @@ param_scheduler = [
         milestones=[90, 130],
         gamma=0.1)
 ]
-"""
-The learning rate is for total_batch_size = 16 x 16 (num_gpus x batch_size)
-If you want to use other batch size or number of GPU settings, please update
-the learning rate with the linear scaling rule.
-"""
+
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.04, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (16 GPUs) x (16 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=256)
