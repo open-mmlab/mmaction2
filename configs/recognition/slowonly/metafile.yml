@@ -13,8 +13,8 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 256
-      FLOPs: 27430649856
-      Parameters: 32454096
+      FLOPs: 27.38G
+      Parameters: 32.45M
       Pretrained: None
       Resolution: short-side 320
       Training Data: Kinetics-400
@@ -36,8 +36,8 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 256
-      FLOPs: 54860480512
-      Parameters: 32454096
+      FLOPs: 54.75G
+      Parameters: 32.45M
       Pretrained: None
       Resolution: short-side 320
       Training Data: Kinetics-400
@@ -60,8 +60,8 @@ Models:
       Architecture: ResNet101
       Batch Size: 16
       Epochs: 196
-      FLOPs: 112063447040
-      Parameters: 60359120
+      FLOPs: 112G
+      Parameters: 60.36M
       Pretrained: None
       Resolution: short-side 320
       Training Data: Kinetics-400
@@ -83,8 +83,8 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 150
-      FLOPs: 27430649856
-      Parameters: 32454096
+      FLOPs: 27.38G
+      Parameters: 32.45M
       Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
@@ -106,8 +106,8 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 150
-      FLOPs: 54860480512
-      Parameters: 32454096
+      FLOPs: 54.75G
+      Parameters: 32.45M
       Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
@@ -130,8 +130,8 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 150
-      FLOPs: 38201098240
-      Parameters: 39808464
+      FLOPs: 43.23G
+      Parameters: 39.81M
       Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
@@ -153,8 +153,8 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 150
-      FLOPs: 76401377280
-      Parameters: 39808464
+      FLOPs: 96.66G
+      Parameters: 39.81M
       Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
@@ -176,8 +176,8 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 150
-      FLOPs: 27430649856
-      Parameters: 32454096
+      FLOPs: 27.38G
+      Parameters: 32.45M
       Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
@@ -199,8 +199,8 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 150
-      FLOPs: 54860480512
-      Parameters: 32454096
+      FLOPs: 54.75G
+      Parameters: 32.45M
       Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
