@@ -14,7 +14,9 @@ Models:
       Batch Size: 8
       Epochs: 15
       Pretrained: ImageNet-21K
-      Resolution: short-side 320
+      Resolution: 224x224
+      FLOPs: 196G
+      params: 122M
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -22,8 +24,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 77.96
-        Top 5 Accuracy: 93.57
+        Top 1 Accuracy: 77.69
+        Top 5 Accuracy: 93.45
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb_20220815-a4d0d01f.pth
 
@@ -35,7 +37,9 @@ Models:
       Batch Size: 8
       Epochs: 15
       Pretrained: ImageNet-21K
-      Resolution: short-side 320
+      Resolution: 224x224
+      FLOPs: 180G
+      params: 86.11M
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -43,8 +47,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 76.93
-        Top 5 Accuracy: 93.27
+        Top 1 Accuracy: 76.95
+        Top 5 Accuracy: 93.28
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb_20220815-8022d1c0.pth
 
@@ -56,7 +60,9 @@ Models:
       Batch Size: 8
       Epochs: 15
       Pretrained: ImageNet-21K
-      Resolution: short-side 320
+      Resolution: 224x224
+      FLOPs: 141G
+      params: 86.11M
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -64,7 +70,7 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 76.98
-        Top 5 Accuracy: 92.83
+        Top 1 Accuracy: 76.93
+        Top 5 Accuracy: 92.88
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb_20220815-78f05367.pth
