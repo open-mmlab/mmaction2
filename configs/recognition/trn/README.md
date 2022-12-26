@@ -20,24 +20,22 @@ Temporal relational reasoning, the ability to link meaningful transformations of
 
 ### Something-Something V1
 
-| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |            config            |            ckpt            |            log            |
-| :---------------------: | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------: | :------------------------: | :-----------------------: |
-|          1x1x8          | height 100 |  8   | ResNet50 | ImageNet |         31.81 / 33.86         |         60.47 / 62.24         |   11037    | [config](/configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb_20220815-e13db2e9.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.log) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) |  testing protocol  | FLOPs  | params |        config         |        ckpt         |         log         |
+| :---------------------: | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :----------------: | :----: | :----: | :-------------------: | :-----------------: | :-----------------: |
+|          1x1x8          |  224x224   |  8   | ResNet50 | ImageNet |         31.60 / 33.65         |         60.15 / 62.22         | 16 clips x 10 crop | 42.94G | 26.64M | [config](/configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb_20220815-e13db2e9.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.log) |
 
 ### Something-Something V2
 
-| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |            config            |            ckpt            |            log            |
-| :---------------------: | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------: | :------------------------: | :-----------------------: |
-|          1x1x8          | height 240 |  8   | ResNet50 | ImageNet |         48.54 / 51.53         |         76.53 / 78.60         |   11037    | [config](/configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb_20220815-e01617db.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.log) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) |  testing protocol  | FLOPs  | params |        config         |        ckpt         |         log         |
+| :---------------------: | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :----------------: | :----: | :----: | :-------------------: | :-----------------: | :-----------------: |
+|          1x1x8          |  224x224   |  8   | ResNet50 | ImageNet |         47.65 / 51.20         |         76.27 / 78.42         | 16 clips x 10 crop | 42.94G | 26.64M | [config](/configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb_20220815-e01617db.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.log) |
 
-1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-2. There are two kinds of test settings for Something-Something dataset, efficient setting (center crop x 1 clip) and accurate setting (Three crop x 2 clip).
+1. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
+2. There are two kinds of test settings for Something-Something dataset, efficient setting (center crop only) and accurate setting (three crop and `twice_sample`).
 3. In the original [repository](https://github.com/zhoubolei/TRN-pytorch), the author augments data with random flipping on something-something dataset, but the augmentation method may be wrong due to the direct actions, such as `push left to right`. So, we replaced `flip` with `flip with label mapping`, and change the testing method `TenCrop`, which has five flipped crops, to `Twice Sample & ThreeCrop`.
 4. We use `ResNet50` instead of `BNInception` as the backbone of TRN. When Training `TRN-ResNet50` on sthv1 dataset in the original repository, we get top1 (top5) accuracy 30.542 (58.627) vs. ours 31.81 (60.47).
 
-For more details on data preparation, you can refer to [sthv1](/tools/data/sthv1/README.md) and [sthv2](/tools/data/sthv2/README.md).
+For more details on data preparation, you can refer to [Something-something V1](/tools/data/sthv1/README.md) and [Something-something V2](/tools/data/sthv2/README.md).
 
 ## Train
 
@@ -51,7 +49,7 @@ Example: train TRN model on sthv1 dataset in a deterministic option with periodi
 
 ```shell
 python tools/train.py configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py \
-    --cfg-options randomness.seed=0 randomness.deterministic=True
+    --seed=0 --deterministic
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).

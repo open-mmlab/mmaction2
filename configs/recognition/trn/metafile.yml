@@ -13,9 +13,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 50
-      Parameters: 26641154
+      FLOPs: 42.94G
+      params: 26.64M
       Pretrained: ImageNet
-      Resolution: height 100
+      Resolution: 224x224
       Training Data: SthV1
       Training Resources: 8 GPUs
     Modality: RGB
@@ -23,10 +24,10 @@ Models:
     - Dataset: SthV1
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 33.86
-        Top 1 Accuracy (efficient): 31.81
-        Top 5 Accuracy: 62.24
-        Top 5 Accuracy (efficient): 60.47
+        Top 1 Accuracy: 33.65
+        Top 1 Accuracy (efficient): 31.60
+        Top 5 Accuracy: 62.22
+        Top 5 Accuracy (efficient): 60.15
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb_20220815-e13db2e9.pth
 
@@ -37,8 +38,9 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 50
-      Parameters: 26641154
-      Pretrained: ImageNet
+      FLOPs: 42.94G
+      params: 26.64M
+      Pretrained: 224x224
       Resolution: height 240
       Training Data: SthV2
       Training Resources: 8 GPUs
@@ -47,9 +49,9 @@ Models:
     - Dataset: SthV2
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 51.53
-        Top 1 Accuracy (efficient): 48.54
-        Top 5 Accuracy: 78.60
-        Top 5 Accuracy (efficient): 76.53
+        Top 1 Accuracy: 51.20
+        Top 1 Accuracy (efficient): 47.65
+        Top 5 Accuracy: 78.42
+        Top 5 Accuracy (efficient): 76.27
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb_20220815-e01617db.pth
