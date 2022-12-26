@@ -11,7 +11,7 @@ Models:
     In Collection: MViT
     Metadata:
       Architecture: MViT-small
-      Resolution: short-side 320
+      Resolution: 224x224
     Modality: RGB
     Converted From:
       Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
@@ -29,7 +29,7 @@ Models:
     In Collection: MViT
     Metadata:
       Architecture: MViT-base
-      Resolution: short-side 320
+      Resolution: 224x224
     Modality: RGB
     Converted From:
       Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
@@ -47,7 +47,7 @@ Models:
     In Collection: MViT
     Metadata:
       Architecture: MViT-large
-      Resolution: short-side 446
+      Resolution: 312x312
     Modality: RGB
     Converted From:
       Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
@@ -65,7 +65,7 @@ Models:
     In Collection: MViT
     Metadata:
       Architecture: MViT-small
-      Resolution: short-side 320
+      Resolution: 224x224
     Modality: RGB
     Converted From:
       Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
@@ -82,8 +82,8 @@ Models:
     Config: configs/recognition/mvit/mvit-base-p244_u32_sthv2-rgb.py
     In Collection: MViT
     Metadata:
-      Architecture: MViT-small
-      Resolution: short-side 320
+      Architecture: MViT-base
+      Resolution: 224x224
     Modality: RGB
     Converted From:
       Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
@@ -100,8 +100,8 @@ Models:
     Config: configs/recognition/mvit/mvit-large-p244_u40_sthv2-rgb.py
     In Collection: MViT
     Metadata:
-      Architecture: MViT-small
-      Resolution: short-side 446
+      Architecture: MViT-large
+      Resolution: 312x312
     Modality: RGB
     Converted From:
       Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
