@@ -457,35 +457,44 @@ class UntrimmedSampleFrames(BaseTransform):
 class DenseSampleFrames(SampleFrames):
     """Select frames from the video by dense sample strategy.
 
-    Required keys are "filename", added or modified keys are "total_frames",
-    "frame_inds", "frame_interval" and "num_clips".
+    Required keys:
+
+    - total_frames
+    - start_index
+
+    Added keys:
+
+    - frame_inds
+    - clip_len
+    - frame_interval
+    - num_clips
 
     Args:
         clip_len (int): Frames of each sampled output clip.
         frame_interval (int): Temporal interval of adjacent sampled frames.
-            Default: 1.
-        num_clips (int): Number of clips to be sampled. Default: 1.
+           Defaults to 1.
+        num_clips (int): Number of clips to be sampled. Defaults to 1.
         sample_range (int): Total sample range for dense sample.
-            Default: 64.
+            Defaults to 64.
         num_sample_positions (int): Number of sample start positions, Which is
-            only used in test mode. Default: 10. That is to say, by default,
+            only used in test mode. Defaults to 10. That is to say, by default,
             there are at least 10 clips for one input sample in test mode.
         temporal_jitter (bool): Whether to apply temporal jittering.
-            Default: False.
+            Defaults to False.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
+            Defaults to False.
     """
 
     def __init__(self,
                  *args,
-                 sample_range=64,
-                 num_sample_positions=10,
+                 sample_range: int = 64,
+                 num_sample_positions: int = 10,
                  **kwargs):
         super().__init__(*args, **kwargs)
         self.sample_range = sample_range
         self.num_sample_positions = num_sample_positions
 
-    def _get_train_clips(self, num_frames):
+    def _get_train_clips(self, num_frames: int) -> np.array:
         """Get clip offsets by dense sample strategy in train mode.
 
         It will calculate a sample position and sample interval and set
@@ -507,7 +516,7 @@ class DenseSampleFrames(SampleFrames):
         clip_offsets = (base_offsets + start_idx) % num_frames
         return clip_offsets
 
-    def _get_test_clips(self, num_frames):
+    def _get_test_clips(self, num_frames: int) -> np.array:
         """Get clip offsets by dense sample strategy in test mode.
 
         It will calculate a sample position and sample interval and evenly
@@ -531,6 +540,61 @@ class DenseSampleFrames(SampleFrames):
             clip_offsets.extend((base_offsets + start_idx) % num_frames)
         clip_offsets = np.array(clip_offsets)
         return clip_offsets
+
+    def _sample_clips(self, num_frames: int) -> np.array:
+        """Choose clip offsets for the video in a given mode.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+
+        Returns:
+            np.ndarray: Sampled frame indices.
+        """
+        if self.test_mode:
+            clip_offsets = self._get_test_clips(num_frames)
+        else:
+            clip_offsets = self._get_train_clips(num_frames)
+
+        return clip_offsets
+
+    def transform(self, results: dict) -> dict:
+        """Perform the SampleFrames loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        total_frames = results['total_frames']
+
+        clip_offsets = self._sample_clips(total_frames)
+        frame_inds = clip_offsets[:, None] + np.arange(
+            self.clip_len)[None, :] * self.frame_interval
+        frame_inds = np.concatenate(frame_inds)
+
+        if self.temporal_jitter:
+            perframe_offsets = np.random.randint(
+                self.frame_interval, size=len(frame_inds))
+            frame_inds += perframe_offsets
+
+        frame_inds = frame_inds.reshape((-1, self.clip_len))
+        if self.out_of_bound_opt == 'loop':
+            frame_inds = np.mod(frame_inds, total_frames)
+        elif self.out_of_bound_opt == 'repeat_last':
+            safe_inds = frame_inds < total_frames
+            unsafe_inds = 1 - safe_inds
+            last_ind = np.max(safe_inds * frame_inds, axis=1)
+            new_inds = (safe_inds * frame_inds + (unsafe_inds.T * last_ind).T)
+            frame_inds = new_inds
+        else:
+            raise ValueError('Illegal out_of_bound option.')
+
+        start_index = results['start_index']
+        frame_inds = np.concatenate(frame_inds) + start_index
+        results['frame_inds'] = frame_inds.astype(np.int32)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = self.frame_interval
+        results['num_clips'] = self.num_clips
+        return results
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
