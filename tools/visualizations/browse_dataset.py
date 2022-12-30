@@ -190,13 +190,10 @@ def main():
                                       intermediate_imgs)
 
     # init visualizer
-    vis_backends = [
-        dict(
-            type='LocalVisBackend',
-            out_type='video',
-            save_dir=args.output_dir,
-            fps=args.fps)
-    ]
+    vis_backends = [dict(
+        type='LocalVisBackend',
+        save_dir=args.output_dir,
+    )]
     visualizer = ActionVisualizer(
         vis_backends=vis_backends, save_dir='place_holder')
 
@@ -233,7 +230,8 @@ def main():
 
         file_id = f'video_{i}'
         video = [x[..., ::-1] for x in video]
-        visualizer.add_datasample(file_id, video, data_sample)
+        visualizer.add_datasample(
+            file_id, video, data_sample, fps=args.fps, out_type='video')
         progress_bar.update()
 
 
