@@ -2,7 +2,7 @@ decord >= 0.4.1
 einops
 matplotlib
 numpy
-opencv-contrib-python
+opencv-python
 Pillow
 scipy
 torch>=1.3
