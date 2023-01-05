@@ -5,7 +5,7 @@ from .c3d import C3D
 from .mobilenet_v2 import MobileNetV2
 from .mobilenet_v2_tsm import MobileNetV2TSM
 from .mvit import MViT
-from .omni_resnet import OmniResNet
+from .resnet_omni import OmniResNet
 from .resnet import ResNet
 from .resnet2plus1d import ResNet2Plus1d
 from .resnet3d import ResNet3d, ResNet3dLayer

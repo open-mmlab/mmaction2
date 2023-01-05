@@ -13,17 +13,10 @@ class RecognizerOmni(BaseModel):
     """"""
 
     def __init__(self, backbone: ConfigType, cls_head: ConfigType,
-                 image_preprocessor: ConfigType,
-                 video_preprocessor: ConfigType) -> None:
-        super().__init__()
+                 data_preprocessor: OptConfigType) -> None:
+        super().__init__(data_preprocessor=data_preprocessor)
         self.backbone = MODELS.build(backbone)
         self.cls_head = MODELS.build(cls_head)
-        self.image_preprocessor = MODELS.build(image_preprocessor)
-        self.video_preprocessor = MODELS.build(video_preprocessor)
-
-    def init_weights(self) -> None:
-        """Initiate the parameters from scratch."""
-        pass
 
     def forward(self, *data_samples, mode: str, **kwargs) -> ForwardResults:
         """The unified entry for a forward process in both training and test.
@@ -56,30 +49,21 @@ class RecognizerOmni(BaseModel):
         """
 
         if mode == 'loss' or mode == 'predict':
-            preprocessed = []
-            for item in data_samples:
-                assert type(item) == dict
-                if len(item['inputs'][0].shape) == 3:
-                    item = self.image_preprocessor(item, self.training)
-                else:
-                    item = self.video_preprocessor(item, self.training)
-                preprocessed.append(item)
             if mode == 'loss':
-                return self.loss(preprocessed, **kwargs)
-            return self.predict(preprocessed, **kwargs)
+                return self.loss(data_samples, **kwargs)
+            return self.predict(data_samples, **kwargs)
 
         elif mode == 'tensor':
 
             assert isinstance(data_samples, torch.Tensor)
 
-            if len(data_samples.shape) == 4:
+            data_ndim = data_samples.ndim
+            if data_ndim == 4:
                 print('Input a 4D tensor, using image mode.')
-                # data_samples = self.image_preprocessor(item, self.training)
-            elif len(data_samples.shape) == 5:
+            elif data_ndim == 5:
                 print('Input a 5D tensor, using video mode.')
-                # data_samples = self.video_preprocessor(item, self.training)
             else:
-                info = 'Input is a %dD tensor. ' % len(data_samples.shape)
+                info = f'Input is a {data_ndim}D tensor. '
                 info += 'Only 4D (BCHW) or 5D (BCTHW) tensors are supported!'
                 raise ValueError(info)
 

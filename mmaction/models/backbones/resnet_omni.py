@@ -29,8 +29,8 @@ def batch_norm(inputs: torch.Tensor,
         training = module.training
     return F.batch_norm(
         input=inputs,
-        running_mean=module.running_mean,
-        running_var=module.running_var,
+        running_mean=None if training else module.running_mean,
+        running_var=None if training else module.running_var,
         weight=module.weight,
         bias=module.bias,
         training=training,
@@ -98,7 +98,7 @@ class BottleNeck(BaseModule):
 
         Accept both 3D (BCTHW for videos) and 2D (BCHW for images) tensors.
         """
-        if len(x.shape) == 4:
+        if x.ndim == 4:
             return self.forward_2d(x)
 
         # Forward call for 3D tensors.
@@ -210,7 +210,7 @@ class OmniResNet(BaseModel):
         for key in param3d:
             if key in param2d:
                 weight = param2d[key]
-                if len(weight.shape) == 4:
+                if weight.ndim == 4:
                     t = param3d[key].shape[2]
                     weight = weight.unsqueeze(2)
                     weight = weight.expand(-1, -1, t, -1, -1)
@@ -223,7 +223,7 @@ class OmniResNet(BaseModel):
 
         Accept both 3D (BCTHW for videos) and 2D (BCHW for images) tensors.
         """
-        if len(x.shape) == 4:
+        if x.ndim == 4:
             return self.forward_2d(x)
 
         # Forward call for 3D tensors.

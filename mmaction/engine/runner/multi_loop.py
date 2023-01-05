@@ -26,8 +26,12 @@ class EpochMultiLoader:
     def __next__(self):
         """Get the next iter's data of multiple loaders."""
         data = tuple([next(loader) for loader in self.iter_loaders])
+        data_dict = data[0]
+        for i in range(1, len(data)):
+            for key in data[i]:
+                data_dict[key + f'_{i}'] = data[i][key]
 
-        return data
+        return data_dict
 
     def __len__(self):
         """Get the length of loader."""
@@ -59,8 +63,8 @@ class MultiLoaderEpochBasedTrainLoop(EpochBasedTrainLoop):
                  val_interval: int = 1) -> None:
         super().__init__(runner, dataloader, max_epochs, val_begin,
                          val_interval)
-        multi_loaders = []
-        for loader in [dataloader] + other_loaders:
+        multi_loaders = [self.dataloader]
+        for loader in other_loaders:
             if isinstance(loader, dict):
                 loader = runner.build_dataloader(loader, seed=runner.seed)
             multi_loaders.append(loader)
@@ -71,6 +75,10 @@ class MultiLoaderEpochBasedTrainLoop(EpochBasedTrainLoop):
         """Iterate one epoch."""
         self.runner.call_hook('before_train_epoch')
         self.runner.model.train()
+
+        for loader in self.multi_loaders:
+            if hasattr(loader, 'sampler') and hasattr(loader.sampler, 'set_epoch'):
+                loader.sampler.set_epoch(self._epoch)
 
         for idx, data_batch in enumerate(EpochMultiLoader(self.multi_loaders)):
             self.run_iter(idx, data_batch)

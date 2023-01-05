@@ -59,9 +59,6 @@ class OmniHead(BaseHead):
                 nn.BatchNorm1d(in_channels), nn.Dropout(video_dropout_ratio),
                 nn.Linear(in_channels, video_classes))
 
-    def init_weights(self) -> None:
-        pass
-
     def forward(self, x: Tensor, **kwargs) -> Tensor:
         """Defines the computation performed at every call.
 

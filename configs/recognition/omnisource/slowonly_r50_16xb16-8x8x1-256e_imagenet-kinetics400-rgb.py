@@ -1,10 +1,9 @@
 _base_ = ['../../_base_/default_runtime.py']
 
 # model settings
-pytorch_pretrain = 'https://download.pytorch.org/models/resnet50-11ad3fa6.pth'
 model = dict(
     type='RecognizerOmni',
-    backbone=dict(type='OmniResNet', pretrain_2d=pytorch_pretrain),
+    backbone=dict(type='OmniResNet'),
     cls_head=dict(
         type='OmniHead',
         image_classes=1000,
@@ -39,17 +38,9 @@ num_gpus = 8
 num_iter = num_videos // (batchsize_video * num_gpus)
 batchsize_image = num_images // (num_iter * num_gpus)
 
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict({
-        'data/kinetics400':
-        's3://openmmlab/datasets/action/Kinetics400',
-        'data/imagenet':
-        's3://openmmlab/datasets/classification/imagenet'
-    }))
 
 train_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -61,7 +52,7 @@ train_pipeline = [
 ]
 
 val_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -76,7 +67,7 @@ val_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -125,17 +116,9 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-file_client_args = dict(
-    backend='petrel',
-    path_mapping=dict({
-        'data/kinetics400':
-        's3://openmmlab/datasets/action/Kinetics400',
-        'data/imagenet':
-        's3://openmmlab/datasets/classification/imagenet'
-    }))
 
 imagenet_pipeline = [
-    dict(type='mmcls.LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadRGBFromFile'),
     dict(type='mmcls.RandomResizedCrop', scale=224),
     dict(type='mmcls.RandomFlip', prob=0.5, direction='horizontal'),
     dict(type='mmcls.PackClsInputs'),
@@ -159,23 +142,34 @@ test_evaluator = val_evaluator
 train_cfg = dict(
     type='MultiLoaderEpochBasedTrainLoop',
     other_loaders=[image_dataloader],
-    max_epochs=150)
+    max_epochs=256,
+    val_interval=4)
 
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 # learning policy
 param_scheduler = [
-    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=10),
+    dict(type='LinearLR',
+         start_factor=0.1,
+         by_epoch=True,
+         begin=0,
+         end=34,
+         convert_to_iter_based=True),
     dict(
-        type='MultiStepLR',
-        begin=10,
-        end=150,
+        type='CosineAnnealingLR',
+        T_max=222,
+        eta_min=0,
         by_epoch=True,
-        milestones=[90, 130],
-        gamma=0.1)
+        begin=34,
+        end=256,
+        convert_to_iter_based=True)
 ]
 
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.04, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
+
+# runtime settings
+default_hooks = dict(checkpoint=dict(interval=4, max_keep_ckpts=3))
+
