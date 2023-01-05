@@ -70,6 +70,7 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 ## What's New
 
+- (2023-1-5) We support STGCN++ on NTU-RGB+D.
 - (2022-11-30) We refine our skeleton-based pipelines and support the joint training of multi-stream skeleton information, including **joint, bone, joint-motion, and bone-motion**.
 - (2022-10-11) We support **Video Swin Transformer** on Kinetics400 and additionally train a Swin-L model on Kinetics700 to extract video features for downstream tasks.
 - (2022-10-25) We support **VideoMAE** on Kinetics400.
@@ -149,7 +150,7 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/posec3d/README.md">PoseC3D</a> (CVPR'2022)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcnpp/README.md">STGCN++</a> (ArXiv'2022)</td>
     <td></td>
   </tr>
 </table>
