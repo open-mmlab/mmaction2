@@ -1,10 +1,10 @@
-_base_ = 'stgcn++_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py'
+_base_ = 'stgcnpp_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py'
 
 dataset_type = 'PoseDataset'
 ann_file = 'data/skeleton/ntu60_2d.pkl'
 train_pipeline = [
     dict(type='PreNormalize2D'),
-    dict(type='GenSkeFeat', dataset='coco', feats=['jm']),
+    dict(type='GenSkeFeat', dataset='coco', feats=['bm']),
     dict(type='UniformSampleFrames', clip_len=100),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', num_person=2),
@@ -12,7 +12,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(type='PreNormalize2D'),
-    dict(type='GenSkeFeat', dataset='coco', feats=['jm']),
+    dict(type='GenSkeFeat', dataset='coco', feats=['bm']),
     dict(
         type='UniformSampleFrames', clip_len=100, num_clips=1, test_mode=True),
     dict(type='PoseDecode'),
@@ -21,7 +21,7 @@ val_pipeline = [
 ]
 test_pipeline = [
     dict(type='PreNormalize2D'),
-    dict(type='GenSkeFeat', dataset='coco', feats=['jm']),
+    dict(type='GenSkeFeat', dataset='coco', feats=['bm']),
     dict(
         type='UniformSampleFrames', clip_len=100, num_clips=10,
         test_mode=True),

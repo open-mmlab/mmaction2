@@ -1,18 +1,18 @@
-_base_ = 'stgcn++_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py'
+_base_ = 'stgcnpp_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py'
 
 dataset_type = 'PoseDataset'
-ann_file = 'data/skeleton/ntu60_3d.pkl'
+ann_file = 'data/skeleton/ntu60_2d.pkl'
 train_pipeline = [
-    dict(type='PreNormalize3D'),
-    dict(type='GenSkeFeat', dataset='nturgb+d', feats=['b']),
+    dict(type='PreNormalize2D'),
+    dict(type='GenSkeFeat', dataset='coco', feats=['b']),
     dict(type='UniformSampleFrames', clip_len=100),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', num_person=2),
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='PreNormalize3D'),
-    dict(type='GenSkeFeat', dataset='nturgb+d', feats=['b']),
+    dict(type='PreNormalize2D'),
+    dict(type='GenSkeFeat', dataset='coco', feats=['b']),
     dict(
         type='UniformSampleFrames', clip_len=100, num_clips=1, test_mode=True),
     dict(type='PoseDecode'),
@@ -20,8 +20,8 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='PreNormalize3D'),
-    dict(type='GenSkeFeat', dataset='nturgb+d', feats=['b']),
+    dict(type='PreNormalize2D'),
+    dict(type='GenSkeFeat', dataset='coco', feats=['b']),
     dict(
         type='UniformSampleFrames', clip_len=100, num_clips=10,
         test_mode=True),
