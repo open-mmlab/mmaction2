@@ -61,3 +61,11 @@ def test_agcn():
         '2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py')
     input_shape = (1, 2, 30, 17, 3)  # N M T V C
     train_test_step(config, input_shape=input_shape)
+
+
+def test_stgcn_plusplus():
+    register_all_modules()
+    config = get_skeletongcn_cfg(
+        'stgcn++/stgcn++_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py')
+    input_shape = (1, 2, 30, 17, 3)  # N M T V C
+    train_test_step(config, input_shape=input_shape)
