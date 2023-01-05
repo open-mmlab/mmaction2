@@ -19,4 +19,5 @@ Import:
 - configs/detection/acrn/metafile.yml
 - configs/skeleton/stgcn/metafile.yml
 - configs/skeleton/2s-agcn/metafile.yml
+- configs/skeleton/stgcnpp/metafile.yml
 - configs/skeleton/posec3d/metafile.yml
