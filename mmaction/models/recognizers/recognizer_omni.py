@@ -13,7 +13,7 @@ class RecognizerOmni(BaseModel):
     """"""
 
     def __init__(self, backbone: ConfigType, cls_head: ConfigType,
-                 data_preprocessor: OptConfigType) -> None:
+                 data_preprocessor: ConfigType) -> None:
         super().__init__(data_preprocessor=data_preprocessor)
         self.backbone = MODELS.build(backbone)
         self.cls_head = MODELS.build(cls_head)

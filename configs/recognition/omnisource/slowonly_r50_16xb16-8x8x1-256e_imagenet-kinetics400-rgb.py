@@ -10,17 +10,20 @@ model = dict(
         video_classes=400,
         in_channels=2048,
         average_clips='prob'),
-    image_preprocessor=dict(
-        type='mmcls.ClsDataPreprocessor',
-        mean=[123.675, 116.28, 103.53],
-        std=[58.395, 57.12, 57.375],
-        num_classes=1000,
-        to_rgb=True),
-    video_preprocessor=dict(
-        type='ActionDataPreprocessor',
-        mean=[123.675, 116.28, 103.53],
-        std=[58.395, 57.12, 57.375],
-        format_shape='NCTHW'))
+    data_preprocessor=dict(
+        type='MultiDataPreprocessor',
+        config_lists=[
+            dict(
+                type='ActionDataPreprocessor',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                format_shape='NCTHW'),  # video inputs
+            dict(
+                type='ActionDataPreprocessor',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                format_shape='NCHW'),  # image inputs
+        ]))
 
 # dataset settings
 image_root = 'data/imagenet/'
@@ -38,9 +41,17 @@ num_gpus = 8
 num_iter = num_videos // (batchsize_video * num_gpus)
 batchsize_image = num_images // (num_iter * num_gpus)
 
+file_client_args = dict(
+    io_backend='petrel',
+    path_mapping=dict({
+        'data/kinetics400':
+        's3://openmmlab/datasets/action/Kinetics400',
+        'data/imagenet':
+        's3://openmmlab/datasets/classification/imagenet'
+    }))
 
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -52,7 +63,7 @@ train_pipeline = [
 ]
 
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -67,7 +78,7 @@ val_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -116,9 +127,8 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-
 imagenet_pipeline = [
-    dict(type='LoadRGBFromFile'),
+    dict(type='LoadRGBFromFile', **file_client_args),
     dict(type='mmcls.RandomResizedCrop', scale=224),
     dict(type='mmcls.RandomFlip', prob=0.5, direction='horizontal'),
     dict(type='mmcls.PackClsInputs'),
@@ -150,12 +160,13 @@ test_cfg = dict(type='TestLoop')
 
 # learning policy
 param_scheduler = [
-    dict(type='LinearLR',
-         start_factor=0.1,
-         by_epoch=True,
-         begin=0,
-         end=34,
-         convert_to_iter_based=True),
+    dict(
+        type='LinearLR',
+        start_factor=0.1,
+        by_epoch=True,
+        begin=0,
+        end=34,
+        convert_to_iter_based=True),
     dict(
         type='CosineAnnealingLR',
         T_max=222,
@@ -172,4 +183,3 @@ optim_wrapper = dict(
 
 # runtime settings
 default_hooks = dict(checkpoint=dict(interval=4, max_keep_ckpts=3))
-

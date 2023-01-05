@@ -77,7 +77,8 @@ class MultiLoaderEpochBasedTrainLoop(EpochBasedTrainLoop):
         self.runner.model.train()
 
         for loader in self.multi_loaders:
-            if hasattr(loader, 'sampler') and hasattr(loader.sampler, 'set_epoch'):
+            if hasattr(loader, 'sampler') and hasattr(loader.sampler,
+                                                      'set_epoch'):
                 loader.sampler.set_epoch(self._epoch)
 
         for idx, data_batch in enumerate(EpochMultiLoader(self.multi_loaders)):

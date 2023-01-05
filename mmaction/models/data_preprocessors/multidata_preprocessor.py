@@ -1,12 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
-import torch
 import torch.nn as nn
 from mmengine.model import BaseDataPreprocessor
 
-from mmaction.utils import ConfigType
 from mmaction.registry import MODELS
+from mmaction.utils import ConfigType
 
 
 @MODELS.register_module()
@@ -15,13 +14,14 @@ class MultiDataPreprocessor(BaseDataPreprocessor):
 
     Args:
         config_lists (List[Union[ConfigType, nn.Module]]): a list of data
-            pre-processor configs or nn.Module. The length of config_lists 
-            should equal to the number of dataloader you use. The order of 
+            pre-processor configs or nn.Module. The length of config_lists
+            should equal to the number of dataloader you use. The order of
             the configs should match the dataloader order in
             `MultiLoaderEpochBasedTrainLoop`.
     """
 
-    def __init__(self, config_lists: List[Union[ConfigType, nn.Module]]) -> None:
+    def __init__(self, config_lists: List[Union[ConfigType,
+                                                nn.Module]]) -> None:
         super().__init__()
         module_list = []
         for config in config_lists:
@@ -33,7 +33,6 @@ class MultiDataPreprocessor(BaseDataPreprocessor):
 
         self.data_preprocessors = nn.ModuleList(module_list)
         self.num_preprocessors = len(config_lists)
-
 
     def forward(self, data: Tuple[dict], training: bool = False) -> List[dict]:
         """Perform data pre-processor for multi-dataset tasks.
@@ -56,4 +55,3 @@ class MultiDataPreprocessor(BaseDataPreprocessor):
             data_sample = self.data_preprocessors[idx](data_sample)
             output.append(data_sample)
         return data_sample
-
