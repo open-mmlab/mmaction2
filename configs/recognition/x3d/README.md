@@ -28,11 +28,9 @@ This paper presents X3D, a family of efficient video networks that progressively
 \[1\] The models are ported from the repo [SlowFast](https://github.com/facebookresearch/SlowFast/) and tested on our data. Currently, we only support the testing of X3D models, training will be available soon.
 
 1. The values in columns named after "reference" are the results got by testing the checkpoint released on the original repo and codes, using the same dataset with ours.
-2. The validation set of Kinetics400 we used is same as the repo [SlowFast](https://github.com/facebookresearch/SlowFast/).
+2. The validation set of Kinetics400 we used is same as the repo [SlowFast](https://github.com/facebookresearch/SlowFast/), which is available [here](https://github.com/facebookresearch/video-nonlocal-net/issues/67).
 
-For more details on data preparation, you can refer to
-
-- [preparing_kinetics](/tools/data/kinetics/README.md)
+For more details on data preparation, you can refer to [Kinetics400](/tools/data/kinetics/README.md).
 
 ## Test
 
