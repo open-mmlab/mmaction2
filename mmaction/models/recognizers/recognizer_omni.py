@@ -58,11 +58,7 @@ class RecognizerOmni(BaseModel):
             assert isinstance(data_samples, torch.Tensor)
 
             data_ndim = data_samples.ndim
-            if data_ndim == 4:
-                print('Input a 4D tensor, using image mode.')
-            elif data_ndim == 5:
-                print('Input a 5D tensor, using video mode.')
-            else:
+            if data_ndim not in [4, 5]:
                 info = f'Input is a {data_ndim}D tensor. '
                 info += 'Only 4D (BCHW) or 5D (BCTHW) tensors are supported!'
                 raise ValueError(info)

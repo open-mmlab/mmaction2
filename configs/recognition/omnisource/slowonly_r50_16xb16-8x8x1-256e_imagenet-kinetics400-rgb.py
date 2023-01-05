@@ -34,7 +34,7 @@ video_root_val = 'data/kinetics400/videos_val'
 video_ann_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 video_ann_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
-num_images = 1281167  # number of training samples in ImageNet dataset
+num_images = 1281167  # number of training samples in the ImageNet dataset
 num_videos = 240435  # number of training samples in the Kinetics400 dataset
 batchsize_video = 16
 num_gpus = 8
