@@ -4,6 +4,7 @@ import io
 import os
 import os.path as osp
 import shutil
+from typing import Optional
 
 import mmcv
 import numpy as np
@@ -111,6 +112,10 @@ class SampleFrames(BaseTransform):
             Defaults to False.
         keep_tail_frames (bool): Whether to keep tail frames when sampling.
             Defaults to False.
+        target_fps (optional, int): Convert input videos with arbitrary frame
+            rates to the unified target FPS before sampling frames. If
+            ``None``, the frame rate will not be adjusted. Defaults to
+            ``None``.
     """
 
     def __init__(self,
@@ -122,7 +127,7 @@ class SampleFrames(BaseTransform):
                  out_of_bound_opt: str = 'loop',
                  test_mode: bool = False,
                  keep_tail_frames: bool = False,
-                 target_fps=None,
+                 target_fps: Optional[int] = None,
                  **kwargs) -> None:
 
         self.clip_len = clip_len
