@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-# from .aagcn import AAGCN
 from .aagcn import AAGCN
 from .c2d import C2D
 from .c3d import C3D
@@ -24,7 +23,7 @@ from .vit_mae import VisionTransformer
 from .x3d import X3D
 
 __all__ = [
-    'AGCN', 'C2D', 'C3D', 'MViT', 'MobileNetV2', 'MobileNetV2TSM',
+    'AAGCN', 'C2D', 'C3D', 'MViT', 'MobileNetV2', 'MobileNetV2TSM',
     'OmniResNet', 'ResNet', 'ResNet2Plus1d', 'ResNet3d', 'ResNet3dCSN',
     'ResNet3dLayer', 'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNetAudio',
     'ResNetTIN', 'ResNetTSM', 'STGCN', 'SwinTransformer3D', 'TANet',
