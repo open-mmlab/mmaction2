@@ -10,12 +10,17 @@ import torch
 from mmengine.testing import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal
 
-from mmaction.datasets.transforms import (
-    AudioDecode, AudioDecodeInit, DecordDecode, DecordInit,
-    GenerateLocalizationLabels, LoadAudioFeature, LoadHVULabel,
-    LoadLocalizationFeature, LoadProposals, LoadRGBFromFile, OpenCVDecode,
-    OpenCVInit, PIMSDecode, PIMSInit, PyAVDecode, PyAVDecodeMotionVector,
-    PyAVInit, RawFrameDecode)
+from mmaction.datasets.transforms import (AudioDecode, AudioDecodeInit,
+                                          DecordDecode, DecordInit,
+                                          GenerateLocalizationLabels,
+                                          LoadAudioFeature, LoadHVULabel,
+                                          LoadLocalizationFeature,
+                                          LoadProposals, LoadRGBFromFile,
+                                          OpenCVDecode, OpenCVInit, PIMSDecode,
+                                          PIMSInit, PyAVDecode,
+                                          PyAVDecodeMotionVector, PyAVInit)
+
+from mmaction.datasets.transforms import RawFrameDecode  # isort:skip
 
 
 class BaseTestLoading:
