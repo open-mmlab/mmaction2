@@ -32,7 +32,6 @@ num_gpus = 8
 num_iter = num_videos // (batchsize_video * num_gpus)
 batchsize_image = num_images // (num_iter * num_gpus)
 
-
 train_pipeline = [
     dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),

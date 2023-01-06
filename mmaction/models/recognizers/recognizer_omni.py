@@ -10,10 +10,11 @@ from mmaction.utils import ConfigType, ForwardResults, SampleList
 
 @MODELS.register_module()
 class RecognizerOmni(BaseModel):
-    """
-    An Omni-souce recognizer model framework for joint-training of image and
-    video recognition tasks. The `backbone` and `cls_head` should be able to
-    accept both images and videos as inputs.
+    """An Omni-souce recognizer model framework for joint-training of image and
+    video recognition tasks.
+
+    The `backbone` and `cls_head` should be able to accept both images and
+    videos as inputs.
     """
 
     def __init__(self, backbone: ConfigType, cls_head: ConfigType,
