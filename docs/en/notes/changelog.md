@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0rc2 (1/4/2023)
+## 1.0.0rc2 (1/6/2023)
 
 **Highlights**
 
@@ -10,6 +10,8 @@
 - Support MViT V2 ([#2007](https://github.com/open-mmlab/mmaction2/pull/2007))
 - Supoort C2D ([#2022](https://github.com/open-mmlab/mmaction2/pull/2022))
 - Support AVA-Kinetics dataset ([#2080](https://github.com/open-mmlab/mmaction2/pull/2080))
+- Support STGCN++ ([#2156](https://github.com/open-mmlab/mmaction2/pull/2156))
+- Support export spatial temporal detection model on ONNX ([#2148](https://github.com/open-mmlab/mmaction2/pull/2148))
 
 **Improvements**
 
@@ -24,6 +26,7 @@
 - Update `SampleFrames` transform and improve most models' performance ([#1942](https://github.com/open-mmlab/mmaction2/pull/1942))
 - Support real-time webcam demo ([#2152](https://github.com/open-mmlab/mmaction2/pull/2152))
 - Refactor and enhance 2s-AGCN ([#2130](https://github.com/open-mmlab/mmaction2/pull/2130))
+- Support adjut fps in `SampleFrame` ([#2157](https://github.com/open-mmlab/mmaction2/pull/2157))
 
 **Bug Fixes**
 
@@ -41,7 +44,7 @@
 - Fix bug trigger by iporting decord ([#2104](https://github.com/open-mmlab/mmaction2/pull/2104))
 - Add `joint.pkl` and `bone.pkl` used in multi-stream fusion tool ([#2106](https://github.com/open-mmlab/mmaction2/pull/2106))
 - Fix lint CI config ([#2110](https://github.com/open-mmlab/mmaction2/pull/2110))
-- Update testing accuracy for modified `SampleFrames` ([#2117](https://github.com/open-mmlab/mmaction2/pull/2117)), ([#2121](https://github.com/open-mmlab/mmaction2/pull/2121)), ([#2122](https://github.com/open-mmlab/mmaction2/pull/2122)), ([#2124](https://github.com/open-mmlab/mmaction2/pull/2124)), ([#2125](https://github.com/open-mmlab/mmaction2/pull/2125)), ([#2126](https://github.com/open-mmlab/mmaction2/pull/2126)), ([#2129](https://github.com/open-mmlab/mmaction2/pull/2129))
+- Update testing accuracy for modified `SampleFrames` ([#2117](https://github.com/open-mmlab/mmaction2/pull/2117)), ([#2121](https://github.com/open-mmlab/mmaction2/pull/2121)), ([#2122](https://github.com/open-mmlab/mmaction2/pull/2122)), ([#2124](https://github.com/open-mmlab/mmaction2/pull/2124)), ([#2125](https://github.com/open-mmlab/mmaction2/pull/2125)), ([#2126](https://github.com/open-mmlab/mmaction2/pull/2126)), ([#2129](https://github.com/open-mmlab/mmaction2/pull/2129)), ([#2128](https://github.com/open-mmlab/mmaction2/pull/2128))
 - Fix timm related bug ([#1976](https://github.com/open-mmlab/mmaction2/pull/1976))
 - Fix `check_videos.py` script ([#2134](https://github.com/open-mmlab/mmaction2/pull/2134))
 - Update CI maximum torch version to 1.13.0 ([#2118](https://github.com/open-mmlab/mmaction2/pull/2118))
