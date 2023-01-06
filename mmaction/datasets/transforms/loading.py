@@ -58,6 +58,7 @@ class LoadRGBFromFile(BaseTransform):
         self.color_type = color_type
         self.imdecode_backend = imdecode_backend
         self.file_client = FileClient(io_backend, **kwargs)
+        self.io_backend = io_backend
 
     def transform(self, results: dict) -> dict:
         """Functions to load image.
