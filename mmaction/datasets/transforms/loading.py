@@ -4,6 +4,7 @@ import io
 import os
 import os.path as osp
 import shutil
+from typing import Optional
 
 import mmcv
 import numpy as np
@@ -111,6 +112,10 @@ class SampleFrames(BaseTransform):
             Defaults to False.
         keep_tail_frames (bool): Whether to keep tail frames when sampling.
             Defaults to False.
+        target_fps (optional, int): Convert input videos with arbitrary frame
+            rates to the unified target FPS before sampling frames. If
+            ``None``, the frame rate will not be adjusted. Defaults to
+            ``None``.
     """
 
     def __init__(self,
@@ -122,6 +127,7 @@ class SampleFrames(BaseTransform):
                  out_of_bound_opt: str = 'loop',
                  test_mode: bool = False,
                  keep_tail_frames: bool = False,
+                 target_fps: Optional[int] = None,
                  **kwargs) -> None:
 
         self.clip_len = clip_len
@@ -132,9 +138,11 @@ class SampleFrames(BaseTransform):
         self.out_of_bound_opt = out_of_bound_opt
         self.test_mode = test_mode
         self.keep_tail_frames = keep_tail_frames
+        self.target_fps = target_fps
         assert self.out_of_bound_opt in ['loop', 'repeat_last']
 
-    def _get_train_clips(self, num_frames: int) -> np.array:
+    def _get_train_clips(self, num_frames: int,
+                         ori_clip_len: float) -> np.array:
         """Get clip offsets in train mode.
 
         It will calculate the average interval for selected frames,
@@ -144,11 +152,11 @@ class SampleFrames(BaseTransform):
 
         Args:
             num_frames (int): Total number of frame in the video.
+            ori_clip_len (float): length of original sample clip.
 
         Returns:
             np.ndarray: Sampled frame indices in train mode.
         """
-        ori_clip_len = self.clip_len * self.frame_interval
 
         if self.keep_tail_frames:
             avg_interval = (num_frames - ori_clip_len + 1) / float(
@@ -178,7 +186,8 @@ class SampleFrames(BaseTransform):
 
         return clip_offsets
 
-    def _get_test_clips(self, num_frames: int) -> np.array:
+    def _get_test_clips(self, num_frames: int,
+                        ori_clip_len: float) -> np.array:
         """Get clip offsets in test mode.
 
         If the total number of frames is
@@ -186,6 +195,7 @@ class SampleFrames(BaseTransform):
 
         Args:
             num_frames (int): Total number of frame in the video.
+            ori_clip_len (float): length of original sample clip.
 
         Returns:
             np.ndarray: Sampled frame indices in test mode.
@@ -198,7 +208,6 @@ class SampleFrames(BaseTransform):
             if self.twice_sample:
                 clip_offsets = np.concatenate([clip_offsets, base_offsets])
         else:  # 3D recognizer
-            ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
             max_offset = max(num_frames - ori_clip_len, 0)
             if self.twice_sample:
                 num_clips = self.num_clips * 2
@@ -206,14 +215,19 @@ class SampleFrames(BaseTransform):
                 num_clips = self.num_clips
             if num_clips > 1:
                 num_segments = self.num_clips - 1
-                offset_between = max_offset / float(num_segments)
-                clip_offsets = np.arange(num_clips) * offset_between
-                clip_offsets = np.round(clip_offsets)
+                # align test sample strategy with `PySlowFast` repo
+                if self.target_fps is not None:
+                    offset_between = np.floor(max_offset / float(num_segments))
+                    clip_offsets = np.arange(num_clips) * offset_between
+                else:
+                    offset_between = max_offset / float(num_segments)
+                    clip_offsets = np.arange(num_clips) * offset_between
+                    clip_offsets = np.round(clip_offsets)
             else:
                 clip_offsets = np.array([max_offset // 2])
         return clip_offsets
 
-    def _sample_clips(self, num_frames: int) -> np.array:
+    def _sample_clips(self, num_frames: int, ori_clip_len: float) -> np.array:
         """Choose clip offsets for the video in a given mode.
 
         Args:
@@ -223,11 +237,28 @@ class SampleFrames(BaseTransform):
             np.ndarray: Sampled frame indices.
         """
         if self.test_mode:
-            clip_offsets = self._get_test_clips(num_frames)
+            clip_offsets = self._get_test_clips(num_frames, ori_clip_len)
         else:
-            clip_offsets = self._get_train_clips(num_frames)
+            clip_offsets = self._get_train_clips(num_frames, ori_clip_len)
 
         return clip_offsets
+
+    def _get_ori_clip_len(self, fps_scale_ratio: float) -> float:
+        """calculate length of clip segment for different strategy.
+
+        Args:
+            fps_scale_ratio (float): Scale ratio to adjust fps.
+        """
+        if self.target_fps is not None:
+            # align test sample strategy with `PySlowFast` repo
+            ori_clip_len = self.clip_len * self.frame_interval
+            ori_clip_len = np.maximum(1, ori_clip_len * fps_scale_ratio)
+        elif self.test_mode:
+            ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
+        else:
+            ori_clip_len = self.clip_len * self.frame_interval
+
+        return ori_clip_len
 
     def transform(self, results: dict) -> dict:
         """Perform the SampleFrames loading.
@@ -237,11 +268,23 @@ class SampleFrames(BaseTransform):
                 to the next transform in pipeline.
         """
         total_frames = results['total_frames']
+        # if can't get fps, same value of `fps` and `target_fps`
+        # will perform nothing
+        fps = results.get('fps')
+        if self.target_fps is None or not fps:
+            fps_scale_ratio = 1.0
+        else:
+            fps_scale_ratio = fps / self.target_fps
+        ori_clip_len = self._get_ori_clip_len(fps_scale_ratio)
+        clip_offsets = self._sample_clips(total_frames, ori_clip_len)
 
-        clip_offsets = self._sample_clips(total_frames)
-        frame_inds = clip_offsets[:, None] + np.arange(
-            self.clip_len)[None, :] * self.frame_interval
-        frame_inds = np.concatenate(frame_inds)
+        if self.target_fps:
+            frame_inds = clip_offsets[:, None] + np.linspace(
+                0, ori_clip_len - 1, self.clip_len).astype(np.int32)
+        else:
+            frame_inds = clip_offsets[:, None] + np.arange(
+                self.clip_len)[None, :] * self.frame_interval
+            frame_inds = np.concatenate(frame_inds)
 
         if self.temporal_jitter:
             perframe_offsets = np.random.randint(
@@ -419,35 +462,44 @@ class UntrimmedSampleFrames(BaseTransform):
 class DenseSampleFrames(SampleFrames):
     """Select frames from the video by dense sample strategy.
 
-    Required keys are "filename", added or modified keys are "total_frames",
-    "frame_inds", "frame_interval" and "num_clips".
+    Required keys:
+
+    - total_frames
+    - start_index
+
+    Added keys:
+
+    - frame_inds
+    - clip_len
+    - frame_interval
+    - num_clips
 
     Args:
         clip_len (int): Frames of each sampled output clip.
         frame_interval (int): Temporal interval of adjacent sampled frames.
-            Default: 1.
-        num_clips (int): Number of clips to be sampled. Default: 1.
+           Defaults to 1.
+        num_clips (int): Number of clips to be sampled. Defaults to 1.
         sample_range (int): Total sample range for dense sample.
-            Default: 64.
+            Defaults to 64.
         num_sample_positions (int): Number of sample start positions, Which is
-            only used in test mode. Default: 10. That is to say, by default,
+            only used in test mode. Defaults to 10. That is to say, by default,
             there are at least 10 clips for one input sample in test mode.
         temporal_jitter (bool): Whether to apply temporal jittering.
-            Default: False.
+            Defaults to False.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
+            Defaults to False.
     """
 
     def __init__(self,
                  *args,
-                 sample_range=64,
-                 num_sample_positions=10,
+                 sample_range: int = 64,
+                 num_sample_positions: int = 10,
                  **kwargs):
         super().__init__(*args, **kwargs)
         self.sample_range = sample_range
         self.num_sample_positions = num_sample_positions
 
-    def _get_train_clips(self, num_frames):
+    def _get_train_clips(self, num_frames: int) -> np.array:
         """Get clip offsets by dense sample strategy in train mode.
 
         It will calculate a sample position and sample interval and set
@@ -469,7 +521,7 @@ class DenseSampleFrames(SampleFrames):
         clip_offsets = (base_offsets + start_idx) % num_frames
         return clip_offsets
 
-    def _get_test_clips(self, num_frames):
+    def _get_test_clips(self, num_frames: int) -> np.array:
         """Get clip offsets by dense sample strategy in test mode.
 
         It will calculate a sample position and sample interval and evenly
@@ -493,6 +545,61 @@ class DenseSampleFrames(SampleFrames):
             clip_offsets.extend((base_offsets + start_idx) % num_frames)
         clip_offsets = np.array(clip_offsets)
         return clip_offsets
+
+    def _sample_clips(self, num_frames: int) -> np.array:
+        """Choose clip offsets for the video in a given mode.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+
+        Returns:
+            np.ndarray: Sampled frame indices.
+        """
+        if self.test_mode:
+            clip_offsets = self._get_test_clips(num_frames)
+        else:
+            clip_offsets = self._get_train_clips(num_frames)
+
+        return clip_offsets
+
+    def transform(self, results: dict) -> dict:
+        """Perform the SampleFrames loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        total_frames = results['total_frames']
+
+        clip_offsets = self._sample_clips(total_frames)
+        frame_inds = clip_offsets[:, None] + np.arange(
+            self.clip_len)[None, :] * self.frame_interval
+        frame_inds = np.concatenate(frame_inds)
+
+        if self.temporal_jitter:
+            perframe_offsets = np.random.randint(
+                self.frame_interval, size=len(frame_inds))
+            frame_inds += perframe_offsets
+
+        frame_inds = frame_inds.reshape((-1, self.clip_len))
+        if self.out_of_bound_opt == 'loop':
+            frame_inds = np.mod(frame_inds, total_frames)
+        elif self.out_of_bound_opt == 'repeat_last':
+            safe_inds = frame_inds < total_frames
+            unsafe_inds = 1 - safe_inds
+            last_ind = np.max(safe_inds * frame_inds, axis=1)
+            new_inds = (safe_inds * frame_inds + (unsafe_inds.T * last_ind).T)
+            frame_inds = new_inds
+        else:
+            raise ValueError('Illegal out_of_bound option.')
+
+        start_index = results['start_index']
+        frame_inds = np.concatenate(frame_inds) + start_index
+        results['frame_inds'] = frame_inds.astype(np.int32)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = self.frame_interval
+        results['num_clips'] = self.num_clips
+        return results
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
@@ -914,6 +1021,7 @@ class DecordInit(BaseTransform):
 
         file_obj = io.BytesIO(self.file_client.get(results['filename']))
         container = decord.VideoReader(file_obj, num_threads=self.num_threads)
+        results['fps'] = container.get_avg_fps()
         results['video_reader'] = container
         results['total_frames'] = len(container)
         return results

@@ -11,6 +11,7 @@ test_pipeline = [
         clip_len=16,
         frame_interval=5,
         num_clips=10,
+        target_fps=30,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
