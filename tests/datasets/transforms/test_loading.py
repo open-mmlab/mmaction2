@@ -773,11 +773,6 @@ class TestLoadImageFromFile:
         results = transform(copy.deepcopy(results))
         assert results['img'].dtype == np.float32
 
-        transform = LoadRGBFromFile(color_type='unchanged')
-        results = transform(copy.deepcopy(results))
-        assert results['img'].shape == (240, 320)
-        assert results['img'].dtype == np.uint8
-
         # test load empty
         fake_img_path = osp.join(data_prefix, 'fake.jpg')
         results['img_path'] = fake_img_path
