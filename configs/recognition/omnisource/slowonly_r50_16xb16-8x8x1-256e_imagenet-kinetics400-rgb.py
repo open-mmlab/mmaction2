@@ -32,17 +32,9 @@ num_gpus = 8
 num_iter = num_videos // (batchsize_video * num_gpus)
 batchsize_image = num_images // (num_iter * num_gpus)
 
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict({
-        'data/kinetics400':
-        's3://openmmlab/datasets/action/Kinetics400',
-        'data/imagenet':
-        's3://openmmlab/datasets/classification/imagenet'
-    }))
 
 train_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -54,7 +46,7 @@ train_pipeline = [
 ]
 
 val_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -69,7 +61,7 @@ val_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -119,7 +111,7 @@ test_dataloader = dict(
         test_mode=True))
 
 imagenet_pipeline = [
-    dict(type='LoadRGBFromFile', **file_client_args),
+    dict(type='LoadRGBFromFile'),
     dict(type='mmcls.RandomResizedCrop', scale=224),
     dict(type='mmcls.RandomFlip', prob=0.5, direction='horizontal'),
     dict(type='mmcls.PackClsInputs'),
