@@ -761,7 +761,7 @@ class TestLoadImageFromFile:
         assert results['ori_shape'] == (240, 320)
         assert repr(transform) == transform.__class__.__name__ + \
             "(ignore_empty=False, to_float32=False, color_type='color', " + \
-            "imdecode_backend='cv2')"
+            "imdecode_backend='cv2',io_backend='disk')"
 
         # to_float32
         transform = LoadRGBFromFile(to_float32=True)
