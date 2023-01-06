@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import gc
 from typing import Dict, List, Union
 
 from mmengine.runner import EpochBasedTrainLoop
@@ -26,12 +27,7 @@ class EpochMultiLoader:
     def __next__(self):
         """Get the next iter's data of multiple loaders."""
         data = tuple([next(loader) for loader in self.iter_loaders])
-        data_dict = data[0]
-        for i in range(1, len(data)):
-            for key in data[i]:
-                data_dict[key + f'_{i}'] = data[i][key]
-
-        return data_dict
+        return data
 
     def __len__(self):
         """Get the length of loader."""
@@ -76,6 +72,7 @@ class MultiLoaderEpochBasedTrainLoop(EpochBasedTrainLoop):
         self.runner.call_hook('before_train_epoch')
         self.runner.model.train()
 
+        gc.collect()
         for loader in self.multi_loaders:
             if hasattr(loader, 'sampler') and hasattr(loader.sampler,
                                                       'set_epoch'):

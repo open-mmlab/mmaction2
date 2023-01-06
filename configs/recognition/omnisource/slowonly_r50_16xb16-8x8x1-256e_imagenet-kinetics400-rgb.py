@@ -11,19 +11,10 @@ model = dict(
         in_channels=2048,
         average_clips='prob'),
     data_preprocessor=dict(
-        type='MultiDataPreprocessor',
-        config_lists=[
-            dict(
-                type='ActionDataPreprocessor',
-                mean=[123.675, 116.28, 103.53],
-                std=[58.395, 57.12, 57.375],
-                format_shape='NCTHW'),  # video inputs
-            dict(
-                type='ActionDataPreprocessor',
-                mean=[123.675, 116.28, 103.53],
-                std=[58.395, 57.12, 57.375],
-                format_shape='NCHW'),  # image inputs
-        ]))
+        type='ActionDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        format_shape='MIX2d3d'))
 
 # dataset settings
 image_root = 'data/imagenet/'
@@ -94,7 +85,7 @@ test_pipeline = [
 
 train_dataloader = dict(
     batch_size=batchsize_video,
-    num_workers=8,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -105,7 +96,7 @@ train_dataloader = dict(
 
 val_dataloader = dict(
     batch_size=16,
-    num_workers=8,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -176,9 +167,13 @@ param_scheduler = [
         end=256,
         convert_to_iter_based=True)
 ]
-
+"""
+The learning rate is for total_batch_size = 16 x 16 (num_gpus x batch_size)
+If you want to use other batch size or number of GPU settings, please update
+the learning rate with the linear scaling rule.
+"""
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.04, momentum=0.9, weight_decay=0.0001),
+    optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
 
 # runtime settings

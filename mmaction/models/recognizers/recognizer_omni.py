@@ -50,8 +50,8 @@ class RecognizerOmni(BaseModel):
 
         if mode == 'loss' or mode == 'predict':
             if mode == 'loss':
-                return self.loss(data_samples, **kwargs)
-            return self.predict(data_samples, **kwargs)
+                return self.loss(data_samples)
+            return self.predict(data_samples)
 
         elif mode == 'tensor':
 
@@ -65,7 +65,7 @@ class RecognizerOmni(BaseModel):
 
             return self._forward(data_samples, **kwargs)
 
-    def loss(self, data_samples: Sequence[SampleList], **kwargs) -> dict:
+    def loss(self, data_samples: Sequence[SampleList]) -> dict:
         """Calculate losses from a batch of inputs and data samples.
 
         Args:
@@ -84,8 +84,7 @@ class RecognizerOmni(BaseModel):
                 loss_dict[key + f'_{idx}'] = loss_cls[key]
         return loss_dict
 
-    def predict(self, data_samples: Sequence[SampleList],
-                **kwargs) -> SampleList:
+    def predict(self, data_samples: Sequence[SampleList]) -> SampleList:
         """Predict results from a batch of inputs and data samples with post-
         processing.
 
