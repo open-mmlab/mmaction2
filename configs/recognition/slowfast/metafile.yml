@@ -13,10 +13,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 256
-      FLOPs: 36441296896
-      Parameters: 34479288
+      FLOPs: 36.3G
+      Parameters: 34.5M
       Pretrained: None
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -24,8 +24,8 @@ Models:
       - Dataset: Kinetics-400
         Task: Action Recognition
         Metrics:
-          Top 1 Accuracy: 75.27
-          Top 5 Accuracy: 92.27
+          Top 1 Accuracy: 75.55
+          Top 5 Accuracy: 92.35
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb_20220901-701b0f6f.pth
 
@@ -36,10 +36,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 256
-      FLOPs: 66222034944
-      Parameters: 34565560
+      FLOPs: 66.1G
+      Parameters: 34.6M
       Pretrained: None
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -47,8 +47,8 @@ Models:
       - Dataset: Kinetics-400
         Task: Action Recognition
         Metrics:
-          Top 1 Accuracy: 76.31
-          Top 5 Accuracy: 92.88
+          Top 1 Accuracy: 76.80
+          Top 5 Accuracy: 92.99
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r50_8xb8-8x8x1-256e_kinetics400-rgb/slowfast_r50_8xb8-8x8x1-256e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r50_8xb8-8x8x1-256e_kinetics400-rgb/slowfast_r50_8xb8-8x8x1-256e_kinetics400-rgb_20220818-1cb6dfc8.pth
 
@@ -59,10 +59,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 256
-      FLOPs: 66222034944
-      Parameters: 34565560
+      FLOPs: 66.1G
+      Parameters: 34.6M
       Pretrained: None
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -70,8 +70,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 76.33
-        Top 5 Accuracy: 92.66
+        Top 1 Accuracy: 76.65
+        Top 5 Accuracy: 92.86
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r50_8xb8-8x8x1-steplr-256e_kinetics400-rgb/slowfast_r50_8xb8-8x8x1-steplr-256e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r50_8xb8-8x8x1-steplr-256e_kinetics400-rgb/slowfast_r50_8xb8-8x8x1-steplr-256e_kinetics400-rgb_20220818-b62a501f.pth
 
@@ -82,10 +82,10 @@ Models:
       Architecture: ResNet101
       Batch Size: 8
       Epochs: 256
-      FLOPs: 127070375936
-      Parameters: 62912312
+      FLOPs: 126G
+      Parameters: 62.9M
       Pretrained: None
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -93,8 +93,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 78.30
-        Top 5 Accuracy: 93.77
+        Top 1 Accuracy: 78.65
+        Top 5 Accuracy: 93.88
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb_20220901-9c0e09bd.pth
 
@@ -105,18 +105,18 @@ Models:
       Architecture: ResNet101 + ResNet50
       Batch Size: 8
       Epochs: 256
-      FLOPs: 65042780160
-      Parameters: 62384312
+      FLOPs: 64.9G
+      Parameters: 62.4M
       Pretrained: None
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 32 GPUs
     Modality: RGB
     Results:
     - Dataset: Kinetics-400
       Metrics:
-        Top 1 Accuracy: 76.68
-        Top 5 Accuracy: 92.82
+        Top 1 Accuracy: 77.03
+        Top 5 Accuracy: 92.99
       Task: Action Recognition
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb_20220901-a77ac3ee.pth

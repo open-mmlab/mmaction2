@@ -20,27 +20,25 @@ Video data is with complex temporal dynamics due to various factors such as came
 
 ### Kinetics-400
 
-| frame sampling strategy |   resolution   | gpus | backbone | pretrain | top1 acc | top5 acc |   reference top1 acc    |   reference top5 acc    | testing protocol  | inference time(video/s) | gpu_mem(M) |    config    |    ckpt    |    log    |
-| :---------------------: | :------------: | :--: | :------: | :------: | :------: | :------: | :---------------------: | :---------------------: | :---------------: | :---------------------: | :--------: | :----------: | :--------: | :-------: |
-|       dense-1x1x8       | short-side 320 |  8   | ResNet50 | ImageNet |  76.25   |  92.41   | [76.22](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | [92.53](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | 80 clips x 3 crop |            x            |    7627    | [config](/configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20220919-a34346bc.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.log) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc |      reference top1 acc       |      reference top5 acc       | testing protocol | FLOPs | params |      config       |      ckpt       |      log       |
+| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :---------------------------: | :---------------------------: | :--------------: | :---: | :----: | :---------------: | :-------------: | :------------: |
+|       dense-1x1x8       |  224x224   |  8   | ResNet50 | ImageNet |  76.25   |  92.41   | [76.22](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | [92.53](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | 8 clips x 3 crop | 43.0G | 25.6M  | [config](/configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20220919-a34346bc.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.log) |
 
 ### Something-Something V1
 
-| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | testing protocol | inference time(video/s) | gpu_mem(M) |     config      |     ckpt      |     log      |
-| :---------------------: | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------------: | :---------------------: | :--------: | :-------------: | :-----------: | :----------: |
-|          1x1x8          | height 100 |  8   | ResNet50 | ImageNet |          46.98/49.71          |          75.75/77.43          | 8 clips x 3 crop |            x            |    7116    | [config](/configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb_20220906-de50e4ef.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb.log) |
-|         1x1x16          | height 100 |  8   | ResNet50 | ImageNet |          48.24/50.95          |          78.16/79.28          | 8 clips x 3 crop |            x            |   10464    | [config](/configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb_20220919-cc37e9b8.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb.log) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain |  top1 acc   |  top5 acc   | testing protocol  | FLOPs | params |               config               |               ckpt               |               log               |
+| :---------------------: | :--------: | :--: | :------: | :------: | :---------: | :---------: | :---------------: | :---: | :----: | :--------------------------------: | :------------------------------: | :-----------------------------: |
+|          1x1x8          |  224x224   |  8   | ResNet50 | ImageNet | 46.98/49.71 | 75.75/77.43 | 16 clips x 3 crop | 43.1G | 25.1M  | [config](/configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb_20220906-de50e4ef.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb.log) |
+|         1x1x16          |  224x224   |  8   | ResNet50 | ImageNet | 48.24/50.95 | 78.16/79.28 | 16 clips x 3 crop | 86.1G | 25.1M  | [config](/configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb_20220919-cc37e9b8.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb.log) |
 
-1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 8 GPUs x 8 videos/gpu and lr=0.04 for 16 GPUs x 16 videos/gpu.
+1. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
 2. The values in columns named after "reference" are the results got by testing on our dataset, using the checkpoints provided by the author with same model settings. The checkpoints for reference repo can be downloaded [here](https://drive.google.com/drive/folders/1sFfmP3yrfc7IzRshEELOby7-aEoymIFL?usp=sharing).
 3. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/v1.0/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/v1.0/dataset/k400_val/kinetics_class2ind.txt) are also available.
 
 For more details on data preparation, you can refer to
 
-- [preparing_kinetics](/tools/data/kinetics/README.md)
-- [preparing_sthv1](/tools/data/sthv1/README.md)
+- [Kinetics400](/tools/data/kinetics/README.md)
+- [Something-something V1](/tools/data/sthv1/README.md)
 
 ## Train
 
@@ -54,7 +52,7 @@ Example: train TANet model on Kinetics-400 dataset in a deterministic option wit
 
 ```shell
 python tools/train.py configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py \
-    --cfg-options randomness.seed=0 randomness.deterministic=True
+    --seed=0 --deterministic
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).

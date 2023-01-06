@@ -7,13 +7,13 @@ import torch.nn as nn
 from mmengine.model import BaseModule, ModuleList
 
 from mmaction.registry import MODELS
-from ..utils import Graph, unit_gcn, unit_tcn
+from ..utils import Graph, mstcn, unit_gcn, unit_tcn
 
 EPS = 1e-4
 
 
 class STGCNBlock(BaseModule):
-    """The basic block of ST-GCN.
+    """The basic block of STGCN.
 
     Args:
         in_channels (int): Number of input channels.
@@ -22,6 +22,8 @@ class STGCNBlock(BaseModule):
             with shape of `(num_subsets, num_nodes, num_nodes)`.
         stride (int): Stride of the temporal convolution. Defaults to 1.
         residual (bool): Whether to use residual connection. Defaults to True.
+        init_cfg (dict or list[dict], optional): Config to control
+            the initialization. Defaults to None.
     """
 
     def __init__(self,
@@ -30,8 +32,9 @@ class STGCNBlock(BaseModule):
                  A: torch.Tensor,
                  stride: int = 1,
                  residual: bool = True,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None,
                  **kwargs) -> None:
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
 
         gcn_kwargs = {k[4:]: v for k, v in kwargs.items() if k[:4] == 'gcn_'}
         tcn_kwargs = {k[4:]: v for k, v in kwargs.items() if k[:4] == 'tcn_'}
@@ -42,7 +45,7 @@ class STGCNBlock(BaseModule):
         assert len(kwargs) == 0, f'Invalid arguments: {kwargs}'
 
         tcn_type = tcn_kwargs.pop('type', 'unit_tcn')
-        assert tcn_type in ['unit_tcn']
+        assert tcn_type in ['unit_tcn', 'mstcn']
         gcn_type = gcn_kwargs.pop('type', 'unit_gcn')
         assert gcn_type in ['unit_gcn']
 
@@ -51,7 +54,9 @@ class STGCNBlock(BaseModule):
         if tcn_type == 'unit_tcn':
             self.tcn = unit_tcn(
                 out_channels, out_channels, 9, stride=stride, **tcn_kwargs)
-
+        elif tcn_type == 'mstcn':
+            self.tcn = mstcn(
+                out_channels, out_channels, stride=stride, **tcn_kwargs)
         self.relu = nn.ReLU()
 
         if not residual:
@@ -71,10 +76,12 @@ class STGCNBlock(BaseModule):
 
 @MODELS.register_module()
 class STGCN(BaseModule):
-    """ STGCN
-    A PyTorch implement of : `Spatial Temporal Graph Convolutional
-    Networks for Skeleton-Based Action Recognition`  -
-        https://arxiv.org/abs/1801.07455
+    """STGCN backbone.
+
+    Spatial Temporal Graph Convolutional
+    Networks for Skeleton-Based Action Recognition.
+    More details can be found in the `paper
+    <https://arxiv.org/abs/1801.07455>`__ .
 
     Args:
         graph_cfg (dict): Config for building the graph.
@@ -107,7 +114,7 @@ class STGCN(BaseModule):
         >>> model = STGCN(graph_cfg=dict(layout='openpose', mode=mode))
         >>> model.init_weights()
         >>> inputs = torch.randn(batch_size, num_person,
-        >>>                      num_frames, num_joints, 3)
+        ...                      num_frames, num_joints, 3)
         >>> output = model(inputs)
         >>> print(output.shape)
         >>>
@@ -116,7 +123,7 @@ class STGCN(BaseModule):
         >>> model = STGCN(graph_cfg=dict(layout='nturgb+d', mode=mode))
         >>> model.init_weights()
         >>> inputs = torch.randn(batch_size, num_person,
-        >>>                      num_frames, num_joints, 3)
+        ...                      num_frames, num_joints, 3)
         >>> output = model(inputs)
         >>> print(output.shape)
         >>>
@@ -125,15 +132,15 @@ class STGCN(BaseModule):
         >>> model = STGCN(graph_cfg=dict(layout='coco', mode=mode))
         >>> model.init_weights()
         >>> inputs = torch.randn(batch_size, num_person,
-        >>>                      num_frames, num_joints, 3)
+        ...                      num_frames, num_joints, 3)
         >>> output = model(inputs)
         >>> print(output.shape)
         >>>
         >>> # custom settings
-        >>> # add additional residual connection for the first four gcns
-        >>> stage_cfgs = {'gcn_with_res': [True] * 4 + [False] * 6}
-        >>> model = STGCN(graph_cfg=dict(layout='coco', mode=mode),
-        >>>               num_stages=10, stage_cfgs=stage_cfgs)
+        >>> # instantiate STGCN++
+        >>> model = STGCN(graph_cfg=dict(layout='coco', mode='spatial'),
+        ...               gcn_adaptive='init', gcn_with_res=True,
+        ...               tcn_type='mstcn')
         >>> model.init_weights()
         >>> output = model(inputs)
         >>> print(output.shape)
@@ -153,8 +160,8 @@ class STGCN(BaseModule):
                  num_stages: int = 10,
                  inflate_stages: List[int] = [5, 8],
                  down_stages: List[int] = [5, 8],
-                 stage_cfgs: Dict = dict(),
-                 init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None,
+                 **kwargs) -> None:
         super().__init__(init_cfg=init_cfg)
 
         self.graph = Graph(**graph_cfg)
@@ -169,8 +176,8 @@ class STGCN(BaseModule):
         else:
             self.data_bn = nn.Identity()
 
-        lw_kwargs = [cp.deepcopy(stage_cfgs) for i in range(num_stages)]
-        for k, v in stage_cfgs.items():
+        lw_kwargs = [cp.deepcopy(kwargs) for i in range(num_stages)]
+        for k, v in kwargs.items():
             if isinstance(v, (tuple, list)) and len(v) == num_stages:
                 for i in range(num_stages):
                     lw_kwargs[i][k] = v[i]

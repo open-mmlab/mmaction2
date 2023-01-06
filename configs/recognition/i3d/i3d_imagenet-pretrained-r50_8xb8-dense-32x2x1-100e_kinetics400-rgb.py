@@ -7,8 +7,10 @@ data_root_val = 'data/kinetics400/videos_val'
 ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
+
+file_client_args = dict(io_backend='disk')
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='DenseSampleFrames', clip_len=32, frame_interval=2, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -24,7 +26,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='DenseSampleFrames',
         clip_len=32,
@@ -38,7 +40,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='DenseSampleFrames',
         clip_len=32,

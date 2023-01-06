@@ -1,9 +1,9 @@
 Collections:
-- Name: Swin
-  README: configs/recognition/swin/README.md
-  Paper:
-    URL: https://arxiv.org/abs/2106.13230
-    Title: 'Video Swin Transformer'
+  - Name: Swin
+    README: configs/recognition/swin/README.md
+    Paper:
+      URL: https://arxiv.org/abs/2106.13230
+      Title: 'Video Swin Transformer'
 
 Models:
   - Name: swin-tiny-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb
@@ -16,7 +16,7 @@ Models:
       FLOPs: 88G
       Parameters: 28.2M
       Pretrained: ImageNet-1K
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -24,8 +24,8 @@ Models:
       - Dataset: Kinetics-400
         Task: Action Recognition
         Metrics:
-              Top 1 Accuracy: 78.29
-              Top 5 Accuracy: 93.58
+          Top 1 Accuracy: 78.90
+          Top 5 Accuracy: 93.77
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-tiny-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb/swin-tiny-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-tiny-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb/swin-tiny-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb_20220930-241016b2.pth
 
@@ -39,7 +39,7 @@ Models:
       FLOPs: 166G
       Parameters: 49.8M
       Pretrained: ImageNet-1K
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -47,8 +47,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 80.23
-        Top 5 Accuracy: 94.32
+        Top 1 Accuracy: 80.54
+        Top 5 Accuracy: 94.46
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-small-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb/swin-small-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-small-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb/swin-small-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb_20220930-e91ab986.pth
 
@@ -62,7 +62,7 @@ Models:
       FLOPs: 282G
       Parameters: 88.0M
       Pretrained: ImageNet-1K
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -70,8 +70,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 80.21
-        Top 5 Accuracy: 94.32
+        Top 1 Accuracy: 80.57
+        Top 5 Accuracy: 94.49
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-base-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb/swin-base-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-base-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb/swin-base-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb_20220930-182ec6cc.pth
 
@@ -85,7 +85,7 @@ Models:
       FLOPs: 604G
       Parameters: 197M
       Pretrained: ImageNet-22K
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -93,8 +93,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 83.15
-        Top 5 Accuracy: 95.76
+        Top 1 Accuracy: 83.46
+        Top 5 Accuracy: 95.91
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-large-p244-w877_in22k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb/swin-large-p244-w877_in22k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-large-p244-w877_in22k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb/swin-large-p244-w877_in22k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb_20220930-78ad8b11.pth
 
@@ -108,7 +108,7 @@ Models:
       FLOPs: 604G
       Parameters: 197M
       Pretrained: ImageNet-22K
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-700
       Training Resources: 16 GPUs
     Modality: RGB
@@ -116,7 +116,7 @@ Models:
     - Dataset: Kinetics-700
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 75.26
-        Top 5 Accuracy: 92.44
+        Top 1 Accuracy: 75.92
+        Top 5 Accuracy: 92.72
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb_20220930-f8d74db7.pth

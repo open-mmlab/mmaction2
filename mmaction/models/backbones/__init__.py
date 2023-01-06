@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .agcn import AGCN
+# from .aagcn import AAGCN
+from .aagcn import AAGCN
 from .c2d import C2D
 from .c3d import C3D
 from .mobilenet_v2 import MobileNetV2

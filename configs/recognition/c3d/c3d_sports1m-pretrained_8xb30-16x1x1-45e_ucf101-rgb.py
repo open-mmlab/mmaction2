@@ -11,8 +11,10 @@ split = 1  # official train/test splits. valid numbers: 1, 2, 3
 ann_file_train = f'data/ucf101/ucf101_train_split_{split}_videos.txt'
 ann_file_val = f'data/ucf101/ucf101_val_split_{split}_videos.txt'
 ann_file_test = f'data/ucf101/ucf101_val_split_{split}_videos.txt'
+
+file_client_args = dict(io_backend='disk')
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=16, frame_interval=1, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 128)),
@@ -22,7 +24,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=16,
@@ -36,7 +38,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=16,
@@ -106,3 +108,9 @@ optim_wrapper = dict(
     clip_grad=dict(max_norm=40, norm_type=2))
 
 default_hooks = dict(checkpoint=dict(interval=5))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (30 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=240)
