@@ -97,7 +97,7 @@ class LoadRGBFromFile(BaseTransform):
                     f'to_float32={self.to_float32}, '
                     f"color_type='{self.color_type}', "
                     f"imdecode_backend='{self.imdecode_backend}', "
-                    f'io_backend={self.io_backend}')
+                    f'io_backend={self.io_backend})')
         return repr_str
 
 
