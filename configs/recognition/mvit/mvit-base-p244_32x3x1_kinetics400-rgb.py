@@ -118,7 +118,6 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(
-    type='AmpOptimWrapper',
     optimizer=dict(
         type='AdamW', lr=1.6e-3, betas=(0.9, 0.999), weight_decay=0.05))
 
