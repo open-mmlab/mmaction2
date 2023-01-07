@@ -677,7 +677,7 @@ class MViT(BaseModule):
             kernel_size=(3, 7, 7), stride=(2, 4, 4), padding=(1, 3, 3)),
         init_cfg: Optional[Union[Dict, List[Dict]]] = [
             dict(type='TruncNormal', layer=['Conv2d', 'Conv3d'], std=0.02),
-            dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
+            dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.02),
             dict(type='Constant', layer='LayerNorm', val=1., bias=0.02),
         ]
     ) -> None:
