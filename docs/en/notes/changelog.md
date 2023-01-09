@@ -12,6 +12,7 @@
 - Support AVA-Kinetics dataset ([#2080](https://github.com/open-mmlab/mmaction2/pull/2080))
 - Support STGCN++ ([#2156](https://github.com/open-mmlab/mmaction2/pull/2156))
 - Support exporting spatial-temporal detection models to ONNX ([#2148](https://github.com/open-mmlab/mmaction2/pull/2148))
+- Support Omni-Sourece training on ImageNet and Kinetics datasets ([#2143](https://github.com/open-mmlab/mmaction2/pull/2143))
 
 **Improvements**
 
