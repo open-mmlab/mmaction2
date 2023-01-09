@@ -72,7 +72,7 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 **Release**: v1.0.0rc2 with the following new features:
 
-- We Support export spatial temporal detection model on ONNX.
+- We support exporting spatial-temporal detection models to ONNX.
 - We support **STGCN++** on NTU-RGB+D.
 - We support **MViT V2** on Kinetics 400 and something-V2.
 - We refine our skeleton-based pipelines and support the joint training of multi-stream skeleton information, including **joint, bone, joint-motion, and bone-motion**.
