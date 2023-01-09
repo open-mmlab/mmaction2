@@ -15,10 +15,12 @@ from mmaction.datasets.transforms import (AudioDecode, AudioDecodeInit,
                                           GenerateLocalizationLabels,
                                           LoadAudioFeature, LoadHVULabel,
                                           LoadLocalizationFeature,
-                                          LoadProposals, OpenCVDecode,
-                                          OpenCVInit, PIMSDecode, PIMSInit,
-                                          PyAVDecode, PyAVDecodeMotionVector,
-                                          PyAVInit, RawFrameDecode)
+                                          LoadProposals, LoadRGBFromFile,
+                                          OpenCVDecode, OpenCVInit, PIMSDecode,
+                                          PIMSInit, PyAVDecode,
+                                          PyAVDecodeMotionVector, PyAVInit)
+
+from mmaction.datasets.transforms import RawFrameDecode  # isort:skip
 
 
 class BaseTestLoading:
@@ -747,3 +749,35 @@ class TestLocalization(BaseTestLoading):
         assert_array_almost_equal(
             generate_localization_labels_result['gt_bbox'], [[0.375, 0.625]],
             decimal=4)
+
+
+class TestLoadImageFromFile:
+
+    def test_load_img(self):
+        data_prefix = osp.join(osp.dirname(__file__), '../../data')
+
+        results = dict(img_path=osp.join(data_prefix, 'test.jpg'))
+        transform = LoadRGBFromFile()
+        results = transform(copy.deepcopy(results))
+        assert results['img_path'] == osp.join(data_prefix, 'test.jpg')
+        assert results['img'].shape == (240, 320, 3)
+        assert results['img'].dtype == np.uint8
+        assert results['img_shape'] == (240, 320)
+        assert results['ori_shape'] == (240, 320)
+        assert repr(transform) == transform.__class__.__name__ + \
+            "(ignore_empty=False, to_float32=False, color_type='color', " + \
+            "imdecode_backend='cv2', io_backend='disk')"
+
+        # to_float32
+        transform = LoadRGBFromFile(to_float32=True)
+        results = transform(copy.deepcopy(results))
+        assert results['img'].dtype == np.float32
+
+        # test load empty
+        fake_img_path = osp.join(data_prefix, 'fake.jpg')
+        results['img_path'] = fake_img_path
+        transform = LoadRGBFromFile(ignore_empty=False)
+        with pytest.raises(FileNotFoundError):
+            transform(copy.deepcopy(results))
+        transform = LoadRGBFromFile(ignore_empty=True)
+        assert transform(copy.deepcopy(results)) is None
