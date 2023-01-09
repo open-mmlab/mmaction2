@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Optional, Sequence, Union
+from typing import Optional, Sequence, Tuple, Union
 
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
@@ -49,7 +49,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             self._enable_normalize = True
             if self.format_shape == 'NCHW':
                 normalizer_shape = (-1, 1, 1)
-            elif self.format_shape == 'NCTHW' or self.format_shape == 'NCTVM':
+            elif self.format_shape in ['NCTHW', 'NCTVM', 'MIX2d3d']:
                 normalizer_shape = (-1, 1, 1, 1)
             else:
                 raise ValueError(f'Invalid format shape: {format_shape}')
@@ -70,16 +70,41 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
         else:
             self.blending = None
 
-    def forward(self, data: Sequence[dict], training: bool = False) -> tuple:
+    def forward(self,
+                data: Union[dict, Tuple[dict]],
+                training: bool = False) -> Union[dict, Tuple[dict]]:
         """Perform normalization, padding, bgr2rgb conversion and batch
         augmentation based on ``BaseDataPreprocessor``.
 
         Args:
-            data (Sequence[dict]): data sampled from dataloader.
+            data (dict or Tuple[dict]): data sampled from dataloader.
             training (bool): Whether to enable training time augmentation.
 
         Returns:
-            Tuple[torch.Tensor, list]: Data in the same format as the model
+            dict or Tuple[dict]: Data in the same format as the model
+                input.
+        """
+        if isinstance(data, dict):
+            return self.forward_onesample(data, training)
+        elif isinstance(data, tuple):
+            outputs = []
+            for data_sample in data:
+                output = self.forward_onesample(data_sample, training)
+                outputs.append(output)
+            return tuple(outputs)
+        else:
+            raise TypeError('Unsupported data type for `data`!')
+
+    def forward_onesample(self, data: dict, training: bool = False) -> dict:
+        """Perform normalization, padding, bgr2rgb conversion and batch
+        augmentation on one data sample.
+
+        Args:
+            data (dict): data sampled from dataloader.
+            training (bool): Whether to enable training time augmentation.
+
+        Returns:
+            dict: Data in the same format as the model
                 input.
         """
         data = self.cast_data(data)
@@ -89,18 +114,31 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
         batch_inputs = stack_batch(inputs, self.pad_size_divisor,
                                    self.pad_value)
 
+        if self.format_shape == 'MIX2d3d':
+            if batch_inputs.ndim == 4:
+                format_shape, view_shape = 'NCHW', (-1, 1, 1)
+            else:
+                format_shape, view_shape = 'NCTHW', None
+        else:
+            format_shape, view_shape = self.format_shape, None
+
         # ------ To RGB ------
         if self.to_rgb:
-            if self.format_shape == 'NCHW':
+            if format_shape == 'NCHW':
                 batch_inputs = batch_inputs[..., [2, 1, 0], :, :]
-            elif self.format_shape == 'NCTHW':
+            elif format_shape == 'NCTHW':
                 batch_inputs = batch_inputs[..., [2, 1, 0], :, :, :]
             else:
-                raise ValueError(f'Invalid format shape: {self.format_shape}')
+                raise ValueError(f'Invalid format shape: {format_shape}')
 
         # -- Normalization ---
         if self._enable_normalize:
-            batch_inputs = (batch_inputs - self.mean) / self.std
+            if view_shape is None:
+                batch_inputs = (batch_inputs - self.mean) / self.std
+            else:
+                mean = self.mean.view(view_shape)
+                std = self.std.view(view_shape)
+                batch_inputs = (batch_inputs - mean) / std
         else:
             batch_inputs = batch_inputs.to(torch.float32)
 

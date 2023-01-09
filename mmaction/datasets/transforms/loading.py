@@ -17,6 +17,92 @@ from mmaction.utils import get_random_string, get_shm_dir, get_thread_id
 
 
 @TRANSFORMS.register_module()
+class LoadRGBFromFile(BaseTransform):
+    """Load a RGB image from file.
+
+    Required Keys:
+
+    - img_path
+
+    Modified Keys:
+
+    - img
+    - img_shape
+    - ori_shape
+
+    Args:
+        to_float32 (bool): Whether to convert the loaded image to a float32
+            numpy array. If set to False, the loaded image is an uint8 array.
+            Defaults to False.
+        color_type (str): The flag argument for :func:``mmcv.imfrombytes``.
+            Defaults to 'color'.
+        imdecode_backend (str): The image decoding backend type. The backend
+            argument for :func:``mmcv.imfrombytes``.
+            See :func:``mmcv.imfrombytes`` for details.
+            Defaults to 'cv2'.
+        io_backend (str): io backend where frames are store.
+            Default: 'disk'.
+        ignore_empty (bool): Whether to allow loading empty image or file path
+            not existent. Defaults to False.
+        kwargs (dict): Args for file client.
+    """
+
+    def __init__(self,
+                 to_float32: bool = False,
+                 color_type: str = 'color',
+                 imdecode_backend: str = 'cv2',
+                 io_backend: str = 'disk',
+                 ignore_empty: bool = False,
+                 **kwargs) -> None:
+        self.ignore_empty = ignore_empty
+        self.to_float32 = to_float32
+        self.color_type = color_type
+        self.imdecode_backend = imdecode_backend
+        self.file_client = FileClient(io_backend, **kwargs)
+        self.io_backend = io_backend
+
+    def transform(self, results: dict) -> dict:
+        """Functions to load image.
+
+        Args:
+            results (dict): Result dict from :obj:``mmcv.BaseDataset``.
+
+        Returns:
+            dict: The dict contains loaded image and meta information.
+        """
+
+        filename = results['img_path']
+        try:
+            img_bytes = self.file_client.get(filename)
+            img = mmcv.imfrombytes(
+                img_bytes,
+                flag=self.color_type,
+                channel_order='rgb',
+                backend=self.imdecode_backend)
+        except Exception as e:
+            if self.ignore_empty:
+                return None
+            else:
+                raise e
+        if self.to_float32:
+            img = img.astype(np.float32)
+
+        results['img'] = img
+        results['img_shape'] = img.shape[:2]
+        results['ori_shape'] = img.shape[:2]
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'ignore_empty={self.ignore_empty}, '
+                    f'to_float32={self.to_float32}, '
+                    f"color_type='{self.color_type}', "
+                    f"imdecode_backend='{self.imdecode_backend}', "
+                    f"io_backend='{self.io_backend}')")
+        return repr_str
+
+
+@TRANSFORMS.register_module()
 class LoadHVULabel(BaseTransform):
     """Convert the HVU label from dictionaries to torch tensors.
 
