@@ -34,7 +34,7 @@
 - Fix VideoSwin readme ([#2010](https://github.com/open-mmlab/mmaction2/pull/2010))
 - Fix tools and mim error ([#2028](https://github.com/open-mmlab/mmaction2/pull/2028))
 - Fix Imgaug wrapper ([#2024](https://github.com/open-mmlab/mmaction2/pull/2024))
-- Remove usuless scripts ([#2032](https://github.com/open-mmlab/mmaction2/pull/2032))
+- Remove useless scripts ([#2032](https://github.com/open-mmlab/mmaction2/pull/2032))
 - Fix multi-view inference ([#2045](https://github.com/open-mmlab/mmaction2/pull/2045))
 - Update mmcv maximum version to 1.8.0 ([#2047](https://github.com/open-mmlab/mmaction2/pull/2047))
 - Fix torchserver dependency ([#2053](https://github.com/open-mmlab/mmaction2/pull/2053))
