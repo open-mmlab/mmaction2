@@ -11,7 +11,7 @@
 - Supoort C2D ([#2022](https://github.com/open-mmlab/mmaction2/pull/2022))
 - Support AVA-Kinetics dataset ([#2080](https://github.com/open-mmlab/mmaction2/pull/2080))
 - Support STGCN++ ([#2156](https://github.com/open-mmlab/mmaction2/pull/2156))
-- Support export spatial temporal detection model on ONNX ([#2148](https://github.com/open-mmlab/mmaction2/pull/2148))
+- Support exporting spatial-temporal detection models to ONNX ([#2148](https://github.com/open-mmlab/mmaction2/pull/2148))
 
 **Improvements**
 
