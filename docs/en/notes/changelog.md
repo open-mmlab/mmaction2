@@ -25,7 +25,7 @@
 - Update `SampleFrames` transform and improve most models' performance ([#1942](https://github.com/open-mmlab/mmaction2/pull/1942))
 - Support real-time webcam demo ([#2152](https://github.com/open-mmlab/mmaction2/pull/2152))
 - Refactor and enhance 2s-AGCN ([#2130](https://github.com/open-mmlab/mmaction2/pull/2130))
-- Support adjut fps in `SampleFrame` ([#2157](https://github.com/open-mmlab/mmaction2/pull/2157))
+- Support adjusting fps in `SampleFrame` ([#2157](https://github.com/open-mmlab/mmaction2/pull/2157))
 
 **Bug Fixes**
 
