@@ -16,13 +16,12 @@
 **Improvements**
 
 - Support get FLOPs tool powered by fvcore ([#1997](https://github.com/open-mmlab/mmaction2/pull/1997))
-- Support Sometimes augment in Imgaug ([#2015](https://github.com/open-mmlab/mmaction2/pull/2015))
 - Support Spatial-temporal detection demo ([#2019](https://github.com/open-mmlab/mmaction2/pull/2019))
 - Add SyncBufferHook and add randomness config in train.py ([#2044](https://github.com/open-mmlab/mmaction2/pull/2044))
-- Support gradcam ([#2049](https://github.com/open-mmlab/mmaction2/pull/2049))
+- Refactor gradcam ([#2049](https://github.com/open-mmlab/mmaction2/pull/2049))
 - Support init_cfg in Swin and ViTMAE ([#2055](https://github.com/open-mmlab/mmaction2/pull/2055))
 - Refactor STGCN and related pipelines ([#2087](https://github.com/open-mmlab/mmaction2/pull/2087))
-- Update visualization tools ([#2092](https://github.com/open-mmlab/mmaction2/pull/2092))
+- Refactor visualization tools ([#2092](https://github.com/open-mmlab/mmaction2/pull/2092))
 - Update `SampleFrames` transform and improve most models' performance ([#1942](https://github.com/open-mmlab/mmaction2/pull/1942))
 - Support real-time webcam demo ([#2152](https://github.com/open-mmlab/mmaction2/pull/2152))
 - Refactor and enhance 2s-AGCN ([#2130](https://github.com/open-mmlab/mmaction2/pull/2130))
@@ -41,14 +40,12 @@
 - Fix torchserver dependency ([#2053](https://github.com/open-mmlab/mmaction2/pull/2053))
 - Fix `gen_ntu_rgbd_raw` script ([#2076](https://github.com/open-mmlab/mmaction2/pull/2076))
 - Update AVA-Kinetics experiment configs and results ([#2099](https://github.com/open-mmlab/mmaction2/pull/2099))
-- Fix bug trigger by iporting decord ([#2104](https://github.com/open-mmlab/mmaction2/pull/2104))
 - Add `joint.pkl` and `bone.pkl` used in multi-stream fusion tool ([#2106](https://github.com/open-mmlab/mmaction2/pull/2106))
 - Fix lint CI config ([#2110](https://github.com/open-mmlab/mmaction2/pull/2110))
 - Update testing accuracy for modified `SampleFrames` ([#2117](https://github.com/open-mmlab/mmaction2/pull/2117)), ([#2121](https://github.com/open-mmlab/mmaction2/pull/2121)), ([#2122](https://github.com/open-mmlab/mmaction2/pull/2122)), ([#2124](https://github.com/open-mmlab/mmaction2/pull/2124)), ([#2125](https://github.com/open-mmlab/mmaction2/pull/2125)), ([#2126](https://github.com/open-mmlab/mmaction2/pull/2126)), ([#2129](https://github.com/open-mmlab/mmaction2/pull/2129)), ([#2128](https://github.com/open-mmlab/mmaction2/pull/2128))
 - Fix timm related bug ([#1976](https://github.com/open-mmlab/mmaction2/pull/1976))
 - Fix `check_videos.py` script ([#2134](https://github.com/open-mmlab/mmaction2/pull/2134))
 - Update CI maximum torch version to 1.13.0 ([#2118](https://github.com/open-mmlab/mmaction2/pull/2118))
-- Fix bug in visualize heatmap demo ([#2149](https://github.com/open-mmlab/mmaction2/pull/2149))
 
 **Documentation**
 
