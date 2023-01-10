@@ -16,6 +16,7 @@
 
 **Improvements**
 
+- Support repeat batch data augmentation ([#2170](https://github.com/open-mmlab/mmaction2/pull/2170))
 - Support calculating FLOPs tool powered by fvcore ([#1997](https://github.com/open-mmlab/mmaction2/pull/1997))
 - Support Spatial-temporal detection demo ([#2019](https://github.com/open-mmlab/mmaction2/pull/2019))
 - Add SyncBufferHook and add randomness config in train.py ([#2044](https://github.com/open-mmlab/mmaction2/pull/2044))
