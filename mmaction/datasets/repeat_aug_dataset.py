@@ -72,11 +72,13 @@ class RepeatAugDataset(VideoDataset):
                  modality: str = 'RGB',
                  **kwargs) -> None:
 
-        flag = get_type(pipeline[0]) == 'DecordInit' and \
+        use_decord = get_type(pipeline[0]) == 'DecordInit' and \
                get_type(pipeline[2]) == 'DecordDecode'
 
-        assert flag, ('RepeatAugDataset requires decord as the video loading'
-                      ' backend, will support more backends in the future')
+        assert use_decord, (
+            'RepeatAugDataset requires decord as the video '
+            'loading backend, will support more backends in the '
+            'future')
 
         super().__init__(
             ann_file,
