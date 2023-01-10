@@ -1,13 +1,16 @@
+url = ('https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/'
+       'slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics400-'
+       'rgb/slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_'
+       'kinetics400-rgb_20220901-e7b65fad.pth')
+
 model = dict(
     type='FastRCNN',
     _scope_='mmdet',
+    init_cfg=dict(type='Pretrained', checkpoint=url),
     backbone=dict(
         type='ResNet3dSlowOnly',
         depth=50,
-        pretrained=(
-            'https://download.openmmlab.com/mmaction/recognition/slowonly/'
-            'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
-            'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth'),
+        pretrained=None,
         pretrained2d=False,
         lateral=False,
         num_stages=4,

@@ -131,6 +131,7 @@ class NonLocalLayer(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def forward(self, st_feat, lt_feat):
+        """Defines the computation performed at every call."""
         n, c = st_feat.size(0), self.latent_channels
         num_st_feat, num_lt_feat = self.num_st_feat, self.num_lt_feat
 
@@ -249,6 +250,8 @@ class FBONonLocal(nn.Module):
             self.non_local_layers.append(layer_name)
 
     def init_weights(self, pretrained=None):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         if isinstance(pretrained, str):
             logger = MMLogger.get_current_instance()
             load_checkpoint(self, pretrained, strict=False, logger=logger)
@@ -262,6 +265,7 @@ class FBONonLocal(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def forward(self, st_feat, lt_feat):
+        """Defines the computation performed at every call."""
         # prepare st_feat
         st_feat = self.st_feat_conv(st_feat)
         if self.st_feat_dropout_ratio > 0:
@@ -309,10 +313,11 @@ class FBOMax(nn.Module):
         self.max_pool = nn.AdaptiveMaxPool3d((1, None, None))
 
     def init_weights(self, pretrained=None):
-        # FBOMax has no parameters to be initialized.
+        """FBOMax has no parameters to be initialized."""
         pass
 
     def forward(self, st_feat, lt_feat):
+        """Defines the computation performed at every call."""
         out = self.max_pool(lt_feat)
         return out
 
@@ -385,6 +390,7 @@ class FBOHead(nn.Module):
         return lt_feat.unsqueeze(-1).unsqueeze(-1)
 
     def forward(self, x, rois, img_metas, **kwargs):
+        """Defines the computation performed at every call."""
         # [N, C, 1, 1, 1]
         st_feat = self.temporal_pool(x)
         st_feat = self.spatial_pool(st_feat)

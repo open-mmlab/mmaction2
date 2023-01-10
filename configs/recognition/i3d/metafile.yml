@@ -1,9 +1,9 @@
 Collections:
-- Name: I3D
-  README: configs/recognition/i3d/README.md
-  Paper:
-    URL: https://arxiv.org/abs/1705.07750
-    Title: 'Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset'
+  - Name: I3D
+    README: configs/recognition/i3d/README.md
+    Paper:
+      URL: https://arxiv.org/abs/1705.07750
+      Title: 'Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset'
 
 Models:
   - Name: i3d_imagenet-pretrained-r50-nl-dot-product_8xb8-32x2x1-100e_kinetics400-rgb
@@ -13,10 +13,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 100
-      FLOPs: 54334488576
-      Parameters: 35397840
+      FLOPs: 59.3G
+      Parameters: 35.4M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -24,8 +24,8 @@ Models:
       - Dataset: Kinetics-400
         Task: Action Recognition
         Metrics:
-              Top 1 Accuracy: 74.76
-              Top 5 Accuracy: 91.84
+          Top 1 Accuracy: 74.80
+          Top 5 Accuracy: 92.07
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50-nl-dot-product_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50-nl-dot-product_8xb8-32x2x1-100e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50-nl-dot-product_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50-nl-dot-product_8xb8-32x2x1-100e_kinetics400-rgb_20220812-8e1f2148.pth
 
@@ -36,10 +36,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 100
-      FLOPs: 54334488576
-      Parameters: 35397840
+      FLOPs: 59.3G
+      Parameters: 35.4M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -47,10 +47,10 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 74.69
-        Top 5 Accuracy: 91.69
+        Top 1 Accuracy: 74.73
+        Top 5 Accuracy: 91.80
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50-nl-embedded-gaussian_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50-nl-embedded-gaussian_8xb8-32x2x1-100e_kinetics400-rgb.log
-    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50-nl-embedded-gaussian_8xb8-32x2x1-100e_kinetics400-rgb/ii3d_imagenet-pretrained-r50-nl-embedded-gaussian_8xb8-32x2x1-100e_kinetics400-rgb_20220812-afd8f562.pth
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50-nl-embedded-gaussian_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50-nl-embedded-gaussian_8xb8-32x2x1-100e_kinetics400-rgb_20220812-afd8f562.pth
 
   - Name: i3d_imagenet-pretrained-r50-nl-gaussian_8xb8-32x2x1-100e_kinetics400-rgb
     Config: configs/recognition/i3d/i3d_imagenet-pretrained-r50-nl-gaussian_8xb8-32x2x1-100e_kinetics400-rgb.py
@@ -59,10 +59,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 100
-      FLOPs: 48962109440
-      Parameters: 31723728
+      FLOPs: 56.5G
+      Parameters: 31.7M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -70,8 +70,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 73.90
-        Top 5 Accuracy: 91.15
+        Top 1 Accuracy: 73.97
+        Top 5 Accuracy: 91.33
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50-nl-gaussian_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50-nl-gaussian_8xb8-32x2x1-100e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50-nl-gaussian_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50-nl-gaussian_8xb8-32x2x1-100e_kinetics400-rgb_20220812-0c5cbf5a.pth
 
@@ -82,10 +82,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 100
-      FLOPs: 43564040192
-      Parameters: 28043472
+      FLOPs: 43.5G
+      Parameters: 28.0M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -93,8 +93,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 73.22
-        Top 5 Accuracy: 91.11
+        Top 1 Accuracy: 73.47
+        Top 5 Accuracy: 91.27
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50_8xb8-32x2x1-100e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50_8xb8-32x2x1-100e_kinetics400-rgb_20220812-e213c223.pth
 
@@ -105,10 +105,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 100
-      FLOPs: 43564040192
-      Parameters: 28043472
+      FLOPs: 43.5G
+      Parameters: 28.0M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -128,8 +128,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 100
+      FLOPs: 166.3G
+      Parameters: 33.0M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -137,7 +139,7 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 76.08
-        Top 5 Accuracy: 92.34
+        Top 1 Accuracy: 76.21
+        Top 5 Accuracy: 92.48
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50-heavy_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50-heavy_8xb8-32x2x1-100e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/i3d/i3d_imagenet-pretrained-r50-heavy_8xb8-32x2x1-100e_kinetics400-rgb/i3d_imagenet-pretrained-r50-heavy_8xb8-32x2x1-100e_kinetics400-rgb_20220812-ed501b31.pth

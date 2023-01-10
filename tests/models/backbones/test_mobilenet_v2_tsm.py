@@ -2,7 +2,7 @@
 import torch
 
 from mmaction.models import MobileNetV2TSM
-from ..base import generate_backbone_demo_inputs
+from mmaction.testing import generate_backbone_demo_inputs
 
 
 def test_mobilenetv2_tsm_backbone():

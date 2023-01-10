@@ -763,6 +763,7 @@ class ResNet3d(nn.Module):
                         f': {remaining_names}')
 
     def inflate_weights(self, logger: MMLogger) -> None:
+        """Inflate weights."""
         self._inflate_weights(self, logger)
 
     def _make_stem_layer(self) -> None:
@@ -844,6 +845,7 @@ class ResNet3d(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def init_weights(self, pretrained: Optional[str] = None) -> None:
+        """Initialize weights."""
         self._init_weights(self, pretrained)
 
     def forward(self, x: Tensor) -> Union[Tensor, Tuple[Tensor]]:
@@ -1004,6 +1006,7 @@ class ResNet3dLayer(nn.Module):
         self.add_module(self.layer_name, res_layer)
 
     def inflate_weights(self, logger: MMLogger) -> None:
+        """Inflate weights."""
         self._inflate_weights(self, logger)
 
     def _freeze_stages(self) -> None:
@@ -1016,6 +1019,7 @@ class ResNet3dLayer(nn.Module):
                 param.requires_grad = False
 
     def init_weights(self, pretrained: Optional[str] = None) -> None:
+        """Initialize weights."""
         self._init_weights(self, pretrained)
 
     def forward(self, x: Tensor) -> Tensor:

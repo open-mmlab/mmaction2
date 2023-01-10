@@ -64,15 +64,21 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 - **Modular design**: We decompose a video understanding framework into different components. One can easily construct a customized video understanding framework by combining different modules.
 
-- **Support four major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, and skeleton-based action detection. We support **27** different algorithms and **20** different datasets for the four major tasks.
+- **Support four major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, and skeleton-based action detection.
 
 - **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
 
 ## What's New
 
-- (2022-10-11) We support **Video Swin Transformer** on Kinetics400 and additionally train a Swin-L model on Kinetics700 to extract video features for downstream tasks.
+**Release**: v1.0.0rc2 with the following new features:
 
-**Release**: v1.0.0rc1 was released in 14/10/2022. Please refer to [changelog.md](docs/en/notes/changelog.md) for details and release history.
+- We Support Omni-Sourece training on ImageNet and Kinetics datasets.
+- We support exporting spatial-temporal detection models to ONNX.
+- We support **STGCN++** on NTU-RGB+D.
+- We support **MViT V2** on Kinetics 400 and something-V2.
+- We refine our skeleton-based pipelines and support the joint training of multi-stream skeleton information, including **joint, bone, joint-motion, and bone-motion**.
+- We support **VideoMAE** on Kinetics400.
+- We support **C2D** on Kinetics400, achieve 73.57% Top-1 accuracy (higher than 71.8% in the [paper](https://arxiv.org/abs/1711.07971)).
 
 ## Installation
 
@@ -88,17 +94,18 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/c3d/README.md">C3D</a> (CVPR'2014)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tsn/README.md">TSN</a> (ECCV'2016)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/i3d/README.md">I3D</a> (CVPR'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/c2d/README.md">C2D</a> (CVPR'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/i3d/README.md">I3D Non-Local</a> (CVPR'2018)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/r2plus1d/README.md">R(2+1)D</a> (CVPR'2018)</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/r2plus1d/README.md">R(2+1)D</a> (CVPR'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/trn/README.md">TRN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tsm/README.md">TSM</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tsm/README.md">TSM Non-Local</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/slowonly/README.md">SlowOnly</a> (ICCV'2019)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/slowfast/README.md">SlowFast</a> (ICCV'2019)</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/slowfast/README.md">SlowFast</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/csn/README.md">CSN</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tin/README.md">TIN</a> (AAAI'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tpn/README.md">TPN</a> (CVPR'2020)</td>
@@ -109,6 +116,14 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tanet/README.md">TANet</a> (ArXiv'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/timesformer/README.md">TimeSformer</a> (ICML'2021)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/swin/README.md">VideoSwin</a> (CVPR'2022)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/videomae/README.md">VideoMAE</a> (NeurIPS'2022)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/configs/recognition/mvit/README.md">MViT V2</a> (CVPR'2022)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
   </tr>
   <tr>
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
@@ -137,7 +152,7 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/posec3d/README.md">PoseC3D</a> (CVPR'2022)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcnpp/README.md">STGCN++</a> (ArXiv'2022)</td>
     <td></td>
   </tr>
 </table>
@@ -161,10 +176,10 @@ If you have any feature requests, please feel free to leave a comment in [Issues
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/kinetics/README.md">Kinetics-[400/600/700]</a> (<a href="https://deepmind.com/research/open-source/kinetics/">Homepage</a>) (CVPR'2017)</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/sthv1/README.md">SthV1</a> (<a href="https://20bn.com/datasets/something-something/v1/">Homepage</a>) (ICCV'2017)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/sthv2/README.md">SthV2</a> (<a href="https://20bn.com/datasets/something-something/">Homepage</a>) (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/sthv1/README.md">SthV1</a>  (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/sthv2/README.md">SthV2</a> (<a href="https://developer.qualcomm.com/software/ai-datasets/something-something">Homepage</a>) (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/diving48/README.md">Diving48</a> (<a href="http://www.svcl.ucsd.edu/projects/resound/dataset.html">Homepage</a>) (ECCV'2018)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/jester/README.md">Jester</a> (<a href="https://20bn.com/datasets/jester/v1">Homepage</a>) (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/jester/README.md">Jester</a> (<a href="https://developer.qualcomm.com/software/ai-datasets/jester">Homepage</a>) (ICCV'2019)</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/mit/README.md">Moments in Time</a> (<a href="http://moments.csail.mit.edu/">Homepage</a>) (TPAMI'2019)</td>

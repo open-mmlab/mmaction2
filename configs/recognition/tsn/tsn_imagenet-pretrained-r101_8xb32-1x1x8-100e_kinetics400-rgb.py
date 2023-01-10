@@ -1,4 +1,4 @@
-_base_ = ['tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb']
+_base_ = ['tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py']
 
 model = dict(
     backbone=dict(

@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
-from torch import Tensor
+import torch
 
 
-def bbox2result(bboxes: Tensor,
-                labels: Tensor,
+def bbox2result(bboxes: torch.Tensor,
+                labels: torch.Tensor,
                 num_classes: int,
                 thr: float = 0.01) -> list:
     """Convert detection results to a list of numpy arrays.
@@ -12,16 +12,15 @@ def bbox2result(bboxes: Tensor,
     This identifies single-label classification (as opposed to multi-label)
     through the thr parameter which is set to a negative value.
 
-    Currently, the way to set this is to set
-       `test_cfg.rcnn.action_thr=-1.0`
     ToDo: The ideal way would be for this to be automatically set when the
+    Currently, the way to set this is to set ``test_cfg.rcnn.action_thr=-1.0``
     model cfg uses multilabel=False, however this could be a breaking change
     and is left as a future exercise.
     NB - this should not interfere with the evaluation in any case.
 
     Args:
-        bboxes (Tensor): shape ``(n, 4)``.
-        labels (Tensor): shape ``(n, num_classes)``.
+        bboxes (torch.Tensor): shape ``(n, 4)``.
+        labels (torch.Tensor): shape ``(n, num_classes)``.
         num_classes (int): class number, including background class.
         thr (float): The score threshold used when converting predictions to
             detection results. If a single negative value, uses single-label

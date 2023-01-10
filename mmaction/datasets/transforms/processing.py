@@ -1,12 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import random
 import warnings
+from numbers import Number
+from typing import Sequence
 
 import cv2
 import mmcv
 import mmengine
 import numpy as np
 from mmcv.transforms import BaseTransform
+from mmcv.transforms.utils import cache_randomness
 from torch.nn.modules.utils import _pair
 
 from mmaction.registry import TRANSFORMS
@@ -55,109 +58,6 @@ def _init_lazy_if_proper(results, lazy):
 
 
 @TRANSFORMS.register_module()
-class PoseCompact(BaseTransform):
-    """Convert the coordinates of keypoints to make it more compact.
-    Specifically, it first find a tight bounding box that surrounds all joints
-    in each frame, then we expand the tight box by a given padding ratio. For
-    example, if 'padding == 0.25', then the expanded box has unchanged center,
-    and 1.25x width and height.
-
-    Required keys in results are "img_shape", "keypoint", add or modified keys
-    are "img_shape", "keypoint", "crop_quadruple".
-
-    Args:
-        padding (float): The padding size. Default: 0.25.
-        threshold (int): The threshold for the tight bounding box. If the width
-            or height of the tight bounding box is smaller than the threshold,
-            we do not perform the compact operation. Default: 10.
-        hw_ratio (float | tuple[float] | None): The hw_ratio of the expanded
-            box. Float indicates the specific ratio and tuple indicates a
-            ratio range. If set as None, it means there is no requirement on
-            hw_ratio. Default: None.
-        allow_imgpad (bool): Whether to allow expanding the box outside the
-            image to meet the hw_ratio requirement. Default: True.
-
-    Returns:
-        type: Description of returned object.
-    """
-
-    def __init__(self,
-                 padding=0.25,
-                 threshold=10,
-                 hw_ratio=None,
-                 allow_imgpad=True):
-
-        self.padding = padding
-        self.threshold = threshold
-        if hw_ratio is not None:
-            hw_ratio = _pair(hw_ratio)
-
-        self.hw_ratio = hw_ratio
-
-        self.allow_imgpad = allow_imgpad
-        assert self.padding >= 0
-
-    def transform(self, results):
-        img_shape = results['img_shape']
-        h, w = img_shape
-        kp = results['keypoint']
-
-        # Make NaN zero
-        kp[np.isnan(kp)] = 0.
-        kp_x = kp[..., 0]
-        kp_y = kp[..., 1]
-
-        min_x = np.min(kp_x[kp_x != 0], initial=np.Inf)
-        min_y = np.min(kp_y[kp_y != 0], initial=np.Inf)
-        max_x = np.max(kp_x[kp_x != 0], initial=-np.Inf)
-        max_y = np.max(kp_y[kp_y != 0], initial=-np.Inf)
-
-        # The compact area is too small
-        if max_x - min_x < self.threshold or max_y - min_y < self.threshold:
-            return results
-
-        center = ((max_x + min_x) / 2, (max_y + min_y) / 2)
-        half_width = (max_x - min_x) / 2 * (1 + self.padding)
-        half_height = (max_y - min_y) / 2 * (1 + self.padding)
-
-        if self.hw_ratio is not None:
-            half_height = max(self.hw_ratio[0] * half_width, half_height)
-            half_width = max(1 / self.hw_ratio[1] * half_height, half_width)
-
-        min_x, max_x = center[0] - half_width, center[0] + half_width
-        min_y, max_y = center[1] - half_height, center[1] + half_height
-
-        # hot update
-        if not self.allow_imgpad:
-            min_x, min_y = int(max(0, min_x)), int(max(0, min_y))
-            max_x, max_y = int(min(w, max_x)), int(min(h, max_y))
-        else:
-            min_x, min_y = int(min_x), int(min_y)
-            max_x, max_y = int(max_x), int(max_y)
-
-        kp_x[kp_x != 0] -= min_x
-        kp_y[kp_y != 0] -= min_y
-
-        new_shape = (max_y - min_y, max_x - min_x)
-        results['img_shape'] = new_shape
-
-        # the order is x, y, w, h (in [0, 1]), a tuple
-        crop_quadruple = results.get('crop_quadruple', (0., 0., 1., 1.))
-        new_crop_quadruple = (min_x / w, min_y / h, (max_x - min_x) / w,
-                              (max_y - min_y) / h)
-        crop_quadruple = _combine_quadruple(crop_quadruple, new_crop_quadruple)
-        results['crop_quadruple'] = crop_quadruple
-        return results
-
-    def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}(padding={self.padding}, '
-                    f'threshold={self.threshold}, '
-                    f'hw_ratio={self.hw_ratio}, '
-                    f'allow_imgpad={self.allow_imgpad})')
-        return repr_str
-
-
-@TRANSFORMS.register_module()
 class Fuse(BaseTransform):
     """Fuse lazy operations.
 
@@ -170,6 +70,12 @@ class Fuse(BaseTransform):
     """
 
     def transform(self, results):
+        """Fuse lazy operations.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         if 'lazy' not in results:
             raise ValueError('No lazy operation detected')
         lazyop = results['lazy']
@@ -223,10 +129,12 @@ class RandomCrop(BaseTransform):
 
     @staticmethod
     def _crop_kps(kps, crop_bbox):
+        """Static method for cropping keypoint."""
         return kps - crop_bbox[:2]
 
     @staticmethod
     def _crop_imgs(imgs, crop_bbox):
+        """Static method for cropping images."""
         x1, y1, x2, y2 = crop_bbox
         return [img[y1:y2, x1:x2] for img in imgs]
 
@@ -733,6 +641,7 @@ class Resize(BaseTransform):
         self.lazy = lazy
 
     def _resize_imgs(self, imgs, new_w, new_h):
+        """Static method for resizing keypoint."""
         return [
             mmcv.imresize(
                 img, (new_w, new_h), interpolation=self.interpolation)
@@ -741,6 +650,7 @@ class Resize(BaseTransform):
 
     @staticmethod
     def _resize_kps(kps, scale_factor):
+        """Static method for resizing keypoint."""
         return kps * scale_factor
 
     @staticmethod
@@ -915,6 +825,7 @@ class Flip(BaseTransform):
         self.lazy = lazy
 
     def _flip_imgs(self, imgs, modality):
+        """Utility function for flipping images."""
         _ = [mmcv.imflip_(img, self.direction) for img in imgs]
         lt = len(imgs)
         if modality == 'Flow':
@@ -924,6 +835,7 @@ class Flip(BaseTransform):
         return imgs
 
     def _flip_kps(self, kps, kpscores, img_width):
+        """Utility function for flipping keypoint."""
         kp_x = kps[..., 0]
         kp_x[kp_x != 0] = img_width - kp_x[kp_x != 0]
         new_order = list(range(kps.shape[2]))
@@ -1075,6 +987,12 @@ class ColorJitter(BaseTransform):
         self.fn_idx = np.random.permutation(4)
 
     def transform(self, results):
+        """Perform ColorJitter.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         imgs = results['imgs']
         num_clips, clip_len = 1, len(imgs)
 
@@ -1466,4 +1384,171 @@ class MelSpectrogram(BaseTransform):
                     f'step_size={self.step_size}, '
                     f'n_mels={self.n_mels}, '
                     f'fixed_length={self.fixed_length})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class RandomErasing(BaseTransform):
+    """Randomly selects a rectangle region in an image and erase pixels.
+    basically refer mmcls.
+
+    **Required Keys:**
+
+    - img
+
+    **Modified Keys:**
+
+    - img
+
+    Args:
+        erase_prob (float): Probability that image will be randomly erased.
+            Default: 0.5
+        min_area_ratio (float): Minimum erased area / input image area
+            Default: 0.02
+        max_area_ratio (float): Maximum erased area / input image area
+            Default: 1/3
+        aspect_range (sequence | float): Aspect ratio range of erased area.
+            if float, it will be converted to (aspect_ratio, 1/aspect_ratio)
+            Default: (3/10, 10/3)
+        mode (str): Fill method in erased area, can be:
+
+            - const (default): All pixels are assign with the same value.
+            - rand: each pixel is assigned with a random value in [0, 255]
+
+        fill_color (sequence | Number): Base color filled in erased area.
+            Defaults to (128, 128, 128).
+        fill_std (sequence | Number, optional): If set and ``mode`` is 'rand',
+            fill erased area with random color from normal distribution
+            (mean=fill_color, std=fill_std); If not set, fill erased area with
+            random color from uniform distribution (0~255). Defaults to None.
+
+    Note:
+        See `Random Erasing Data Augmentation
+        <https://arxiv.org/pdf/1708.04896.pdf>`_
+
+        This paper provided 4 modes: RE-R, RE-M, RE-0, RE-255, and use RE-M as
+        default. The config of these 4 modes are:
+
+        - RE-R: RandomErasing(mode='rand')
+        - RE-M: RandomErasing(mode='const', fill_color=(123.67, 116.3, 103.5))
+        - RE-0: RandomErasing(mode='const', fill_color=0)
+        - RE-255: RandomErasing(mode='const', fill_color=255)
+    """
+
+    def __init__(self,
+                 erase_prob=0.5,
+                 min_area_ratio=0.02,
+                 max_area_ratio=1 / 3,
+                 aspect_range=(3 / 10, 10 / 3),
+                 mode='const',
+                 fill_color=(128, 128, 128),
+                 fill_std=None):
+        assert isinstance(erase_prob, float) and 0. <= erase_prob <= 1.
+        assert isinstance(min_area_ratio, float) and 0. <= min_area_ratio <= 1.
+        assert isinstance(max_area_ratio, float) and 0. <= max_area_ratio <= 1.
+        assert min_area_ratio <= max_area_ratio, \
+            'min_area_ratio should be smaller than max_area_ratio'
+        if isinstance(aspect_range, float):
+            aspect_range = min(aspect_range, 1 / aspect_range)
+            aspect_range = (aspect_range, 1 / aspect_range)
+        assert isinstance(aspect_range, Sequence) and len(aspect_range) == 2 \
+            and all(isinstance(x, float) for x in aspect_range), \
+            'aspect_range should be a float or Sequence with two float.'
+        assert all(x > 0 for x in aspect_range), \
+            'aspect_range should be positive.'
+        assert aspect_range[0] <= aspect_range[1], \
+            'In aspect_range (min, max), min should be smaller than max.'
+        assert mode in ['const', 'rand'], \
+            'Please select `mode` from ["const", "rand"].'
+        if isinstance(fill_color, Number):
+            fill_color = [fill_color] * 3
+        assert isinstance(fill_color, Sequence) and len(fill_color) == 3 \
+            and all(isinstance(x, Number) for x in fill_color), \
+            'fill_color should be a float or Sequence with three int.'
+        if fill_std is not None:
+            if isinstance(fill_std, Number):
+                fill_std = [fill_std] * 3
+            assert isinstance(fill_std, Sequence) and len(fill_std) == 3 \
+                and all(isinstance(x, Number) for x in fill_std), \
+                'fill_std should be a float or Sequence with three int.'
+
+        self.erase_prob = erase_prob
+        self.min_area_ratio = min_area_ratio
+        self.max_area_ratio = max_area_ratio
+        self.aspect_range = aspect_range
+        self.mode = mode
+        self.fill_color = fill_color
+        self.fill_std = fill_std
+
+    def _img_fill_pixels(self, img, top, left, h, w):
+        """Fill pixels to the patch of image."""
+        if self.mode == 'const':
+            patch = np.empty((h, w, 3), dtype=np.uint8)
+            patch[:, :] = np.array(self.fill_color, dtype=np.uint8)
+        elif self.fill_std is None:
+            # Uniform distribution
+            patch = np.random.uniform(0, 256, (h, w, 3)).astype(np.uint8)
+        else:
+            # Normal distribution
+            patch = np.random.normal(self.fill_color, self.fill_std, (h, w, 3))
+            patch = np.clip(patch.astype(np.int32), 0, 255).astype(np.uint8)
+
+        img[top:top + h, left:left + w] = patch
+        return img
+
+    def _fill_pixels(self, imgs, top, left, h, w):
+        """Fill pixels to the patch of each image in frame clip."""
+        return [self._img_fill_pixels(img, top, left, h, w) for img in imgs]
+
+    @cache_randomness
+    def random_disable(self):
+        """Randomly disable the transform."""
+        return np.random.rand() > self.erase_prob
+
+    @cache_randomness
+    def random_patch(self, img_h, img_w):
+        """Randomly generate patch the erase."""
+        # convert the aspect ratio to log space to equally handle width and
+        # height.
+        log_aspect_range = np.log(
+            np.array(self.aspect_range, dtype=np.float32))
+        aspect_ratio = np.exp(np.random.uniform(*log_aspect_range))
+        area = img_h * img_w
+        area *= np.random.uniform(self.min_area_ratio, self.max_area_ratio)
+
+        h = min(int(round(np.sqrt(area * aspect_ratio))), img_h)
+        w = min(int(round(np.sqrt(area / aspect_ratio))), img_w)
+        top = np.random.randint(0, img_h - h) if img_h > h else 0
+        left = np.random.randint(0, img_w - w) if img_w > w else 0
+        return top, left, h, w
+
+    def transform(self, results):
+        """
+        Args:
+            results (dict): Results dict from pipeline
+
+        Returns:
+            dict: Results after the transformation.
+        """
+        if self.random_disable():
+            return results
+
+        imgs = results['imgs']
+        img_h, img_w = imgs[0].shape[:2]
+
+        imgs = self._fill_pixels(imgs, *self.random_patch(img_h, img_w))
+
+        results['imgs'] = imgs
+
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(erase_prob={self.erase_prob}, '
+        repr_str += f'min_area_ratio={self.min_area_ratio}, '
+        repr_str += f'max_area_ratio={self.max_area_ratio}, '
+        repr_str += f'aspect_range={self.aspect_range}, '
+        repr_str += f'mode={self.mode}, '
+        repr_str += f'fill_color={self.fill_color}, '
+        repr_str += f'fill_std={self.fill_std})'
         return repr_str

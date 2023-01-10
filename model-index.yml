@@ -13,8 +13,11 @@ Import:
 - configs/recognition/tanet/metafile.yml
 - configs/recognition/x3d/metafile.yml
 - configs/recognition/trn/metafile.yml
+- configs/recognition/swin/metafile.yml
+- configs/recognition/c2d/metafile.yml
 - configs/detection/ava/metafile.yml
 - configs/detection/acrn/metafile.yml
 - configs/skeleton/stgcn/metafile.yml
 - configs/skeleton/2s-agcn/metafile.yml
+- configs/skeleton/stgcnpp/metafile.yml
 - configs/skeleton/posec3d/metafile.yml

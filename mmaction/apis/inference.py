@@ -20,11 +20,11 @@ def init_recognizer(config: Union[str, Path, mmengine.Config],
     """Initialize a recognizer from config file.
 
     Args:
-        config (Union[str, :obj:`Path`, :obj:`mmengine.Config`]): Config file
+        config (str or :obj:`Path` or :obj:`mmengine.Config`): Config file
             path, :obj:`Path` or the config object.
         checkpoint (str, optional): Checkpoint path/url. If set to None,
             the model will not load any weights. Defaults to None.
-        device (Union[str, torch.device]): The desired device of returned
+        device (str | torch.device): The desired device of returned
             tensor. Defaults to ``'cuda:0'``.
 
     Returns:
@@ -127,7 +127,8 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
                           '`init_detector` from `mmdet.apis`. These apis are '
                           'required in this inference api! ')
 
-    model = init_detector(det_config, det_checkpoint, device)
+    model = init_detector(
+        config=det_config, checkpoint=det_checkpoint, device=device)
 
     results = []
     data_samples = []

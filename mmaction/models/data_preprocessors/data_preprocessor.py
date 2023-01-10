@@ -1,11 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Sequence, Union
+from typing import Optional, Sequence, Tuple, Union
 
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
 
 from mmaction.registry import MODELS
-from mmaction.utils import OptConfigType
 
 
 @MODELS.register_module()
@@ -14,26 +13,27 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
 
     Args:
         mean (Sequence[float or int, optional): The pixel mean of channels
-            of images or stacked optical flow. Default: None.
+            of images or stacked optical flow. Defaults to None.
         std (Sequence[float or int], optional): The pixel standard deviation
-            of channels of images or stacked optical flow. Default: None.
+            of channels of images or stacked optical flow. Defaults to None.
         pad_size_divisor (int): The size of padded image should be
-            divisible by ``pad_size_divisor``. Default: 1.
-        pad_value (float or int): The padded pixel value. Default: 0.
+            divisible by ``pad_size_divisor``. Defaults to 1.
+        pad_value (float or int): The padded pixel value. Defaults to 0.
         to_rgb (bool): Whether to convert image from BGR to RGB.
-            Default: False.
-        blending (dict or ConfigDict, optional): Config for batch blending.
-            Default: None.
-        format_shape (str): Format shape of input data. Default: 'NCHW'.
+            Defaults to False.
+        blending (dict, optional): Config for batch blending.
+            Defaults to None.
+        format_shape (str): Format shape of input data.
+            Defaults to ``'NCHW'``.
     """
 
     def __init__(self,
-                 mean: Sequence[Union[float, int]] = None,
-                 std: Sequence[Union[float, int]] = None,
+                 mean: Optional[Sequence[Union[float, int]]] = None,
+                 std: Optional[Sequence[Union[float, int]]] = None,
                  pad_size_divisor: int = 1,
                  pad_value: Union[float, int] = 0,
                  to_rgb: bool = False,
-                 blending: OptConfigType = None,
+                 blending: Optional[dict] = None,
                  format_shape: str = 'NCHW') -> None:
         super().__init__()
         self.pad_size_divisor = pad_size_divisor
@@ -49,17 +49,19 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             self._enable_normalize = True
             if self.format_shape == 'NCHW':
                 normalizer_shape = (-1, 1, 1)
-            elif self.format_shape == 'NCTHW' or self.format_shape == 'NCTVM':
+            elif self.format_shape in ['NCTHW', 'NCTVM', 'MIX2d3d']:
                 normalizer_shape = (-1, 1, 1, 1)
             else:
                 raise ValueError(f'Invalid format shape: {format_shape}')
 
-            self.register_buffer('mean',
-                                 torch.tensor(mean).view(normalizer_shape),
-                                 False)
-            self.register_buffer('std',
-                                 torch.tensor(std).view(normalizer_shape),
-                                 False)
+            self.register_buffer(
+                'mean',
+                torch.tensor(mean, dtype=torch.float32).view(normalizer_shape),
+                False)
+            self.register_buffer(
+                'std',
+                torch.tensor(std, dtype=torch.float32).view(normalizer_shape),
+                False)
         else:
             self._enable_normalize = False
 
@@ -68,37 +70,75 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
         else:
             self.blending = None
 
-    def forward(self, data: Sequence[dict], training: bool = False) -> tuple:
+    def forward(self,
+                data: Union[dict, Tuple[dict]],
+                training: bool = False) -> Union[dict, Tuple[dict]]:
         """Perform normalization, padding, bgr2rgb conversion and batch
         augmentation based on ``BaseDataPreprocessor``.
 
         Args:
-            data (Sequence[dict]): data sampled from dataloader.
+            data (dict or Tuple[dict]): data sampled from dataloader.
             training (bool): Whether to enable training time augmentation.
 
         Returns:
-            Tuple[Tensor, list]: Data in the same format as the model
-            input.
+            dict or Tuple[dict]: Data in the same format as the model
+                input.
         """
-        data = super().forward(data)
+        if isinstance(data, dict):
+            return self.forward_onesample(data, training)
+        elif isinstance(data, tuple):
+            outputs = []
+            for data_sample in data:
+                output = self.forward_onesample(data_sample, training)
+                outputs.append(output)
+            return tuple(outputs)
+        else:
+            raise TypeError('Unsupported data type for `data`!')
+
+    def forward_onesample(self, data: dict, training: bool = False) -> dict:
+        """Perform normalization, padding, bgr2rgb conversion and batch
+        augmentation on one data sample.
+
+        Args:
+            data (dict): data sampled from dataloader.
+            training (bool): Whether to enable training time augmentation.
+
+        Returns:
+            dict: Data in the same format as the model
+                input.
+        """
+        data = self.cast_data(data)
         inputs, data_samples = data['inputs'], data['data_samples']
 
         # --- Pad and stack --
         batch_inputs = stack_batch(inputs, self.pad_size_divisor,
                                    self.pad_value)
 
+        if self.format_shape == 'MIX2d3d':
+            if batch_inputs.ndim == 4:
+                format_shape, view_shape = 'NCHW', (-1, 1, 1)
+            else:
+                format_shape, view_shape = 'NCTHW', None
+        else:
+            format_shape, view_shape = self.format_shape, None
+
         # ------ To RGB ------
         if self.to_rgb:
-            if self.format_shape == 'NCHW':
+            if format_shape == 'NCHW':
                 batch_inputs = batch_inputs[..., [2, 1, 0], :, :]
-            elif self.format_shape == 'NCTHW':
+            elif format_shape == 'NCTHW':
                 batch_inputs = batch_inputs[..., [2, 1, 0], :, :, :]
             else:
-                raise ValueError(f'Invalid format shape: {self.format_shape}')
+                raise ValueError(f'Invalid format shape: {format_shape}')
 
         # -- Normalization ---
         if self._enable_normalize:
-            batch_inputs = (batch_inputs - self.mean) / self.std
+            if view_shape is None:
+                batch_inputs = (batch_inputs - self.mean) / self.std
+            else:
+                mean = self.mean.view(view_shape)
+                std = self.std.view(view_shape)
+                batch_inputs = (batch_inputs - mean) / std
         else:
             batch_inputs = batch_inputs.to(torch.float32)
 

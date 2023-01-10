@@ -13,10 +13,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 100
-      FLOPs: 32965562368
-      Parameters: 24327632
+      FLOPs: 32.88G
+      Parameters: 23.87M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -24,8 +24,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 72.95
-        Top 5 Accuracy: 90.45
+        Top 1 Accuracy: 73.18
+        Top 5 Accuracy: 90.56
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb_20220831-64d69186.pth
 
@@ -36,10 +36,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 100
-      FLOPs: 32965562368
-      Parameters: 24327632
+      FLOPs: 32.88G
+      Parameters: 23.87M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -47,22 +47,22 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 73.11
-        Top 5 Accuracy: 90.06
+        Top 1 Accuracy: 73.22
+        Top 5 Accuracy: 90.22
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb_20220831-a6db1e5d.pth
 
   - Name: tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb
-    Config: tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb.py
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb.py
     In Collection: TSM
     Metadata:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 100
-      FLOPs: 65931124736
-      Parameters: 24327632
+      FLOPs: 65.75G
+      Parameters: 23.87M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -70,8 +70,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 74.64
-        Top 5 Accuracy: 91.42
+        Top 1 Accuracy: 75.12
+        Top 5 Accuracy: 91.55
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb_20220831-042b1748.pth
 
@@ -82,10 +82,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 100
-      FLOPs: 32965562368
-      Parameters: 24327632
+      FLOPs: 32.88G
+      Parameters: 23.87M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -93,22 +93,22 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 73.39
+        Top 1 Accuracy: 73.38
         Top 5 Accuracy: 90.78
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb_20220831-f55d3c2b.pth
 
-  - Name: tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb
-    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb.py
+  - Name: tsm_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-1x1x8-50e_kinetics400-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-1x1x8-50e_kinetics400-rgb.py
     In Collection: TSM
     Metadata:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 100
-      FLOPs: 49457811456
-      Parameters: 31682000
+      FLOPs: 61.30G
+      Parameters: 31.68M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -116,8 +116,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 74.45
-        Top 5 Accuracy: 91.11
+        Top 1 Accuracy: 74.34
+        Top 5 Accuracy: 91.23
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-1x1x8-50e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-1x1x8-50e_kinetics400-rgb_20220831-35eddb57.pth
 
@@ -128,10 +128,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 100
-      FLOPs: 49457811456
-      Parameters: 31682000
+      FLOPs: 61.30G
+      Parameters: 31.68M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -139,8 +139,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 74.17
-        Top 5 Accuracy: 90.95
+        Top 1 Accuracy: 74.49
+        Top 5 Accuracy: 91.15
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb_20220831-108bfde5.pth
 
@@ -151,10 +151,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 16
       Epochs: 100
-      FLOPs: 41231355904
-      Parameters: 28007888
+      FLOPs: 59.06G
+      Parameters: 28.00M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -162,7 +162,76 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 73.37
-        Top 5 Accuracy: 90.82
+        Top 1 Accuracy: 73.66
+        Top 5 Accuracy: 90.99
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb_20220831-7e54dacf.pth
+
+  - Name: tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.py
+    In Collection: TSM
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 100
+      FLOPs: 32.88G
+      Parameters: 23.87M
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 60.20
+        Top 5 Accuracy: 86.13
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb_20221122-446d261a.pth
+
+  - Name: tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_sthv2-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_sthv2-rgb.py
+    In Collection: TSM
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 100
+      FLOPs: 65.75G
+      Parameters: 23.87M
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 62.46
+        Top 5 Accuracy: 87.75
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_sthv2-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_sthv2-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_sthv2-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_sthv2-rgb_20221122-b1fb8264.pth
+
+  - Name: tsm_imagenet-pretrained-r101_8xb16-1x1x8-50e_sthv2-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r101_8xb16-1x1x8-50e_sthv2-rgb.py
+    In Collection: TSM
+    Metadata:
+      Architecture: ResNet101
+      Batch Size: 16
+      Epochs: 100
+      FLOPs: 62.66G
+      Parameters: 42.86M
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 60.49
+        Top 5 Accuracy: 85.99
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r101_8xb16-1x1x8-50e_sthv2-rgb/tsm_imagenet-pretrained-r101_8xb16-1x1x8-50e_sthv2-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r101_8xb16-1x1x8-50e_sthv2-rgb/tsm_imagenet-pretrained-r101_8xb16-1x1x8-50e_sthv2-rgb_20221122-cb2cc64e.pth

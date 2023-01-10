@@ -20,19 +20,17 @@ We present a convolution-free approach to video classification built exclusively
 
 ### Kinetics-400
 
-| frame sampling strategy |   resolution   | gpus |        backbone         |   pretrain   | top1 acc | top5 acc | inference_time(video/s) | gpu_mem(M) |           config           |           ckpt            |           log            |
-| :---------------------: | :------------: | :--: | :---------------------: | :----------: | :------: | :------: | :---------------------: | :--------: | :------------------------: | :-----------------------: | :----------------------: |
-|         8x32x1          | short-side 320 |  8   |   TimeSformer (divST)   | ImageNet-21K |  77.96   |  93.57   |            x            |   15235    | [config](/configs/recognition/timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb_20220815-a4d0d01f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb.log) |
-|         8x32x1          | short-side 320 |  8   |  TimeSformer (jointST)  | ImageNet-21K |  76.93   |  93.27   |            x            |   33358    | [config](/configs/recognition/timesformer/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb_20220815-8022d1c0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb.log) |
-|         8x32x1          | short-side 320 |  8   | TimeSformer (spaceOnly) | ImageNet-21K |  76.98   |  92.83   |            x            |   12355    | [config](/configs/recognition/timesformer/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb_20220815-78f05367.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb.log) |
+| frame sampling strategy | resolution | gpus |        backbone         |   pretrain   | top1 acc | top5 acc | testing protocol | FLOPs | params |             config             |             ckpt             |             log             |
+| :---------------------: | :--------: | :--: | :---------------------: | :----------: | :------: | :------: | :--------------: | :---: | :----: | :----------------------------: | :--------------------------: | :-------------------------: |
+|         8x32x1          |  224x224   |  8   |   TimeSformer (divST)   | ImageNet-21K |  77.69   |  93.45   | 1 clip x 3 crop  | 196G  |  122M  | [config](/configs/recognition/timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb_20220815-a4d0d01f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb.log) |
+|         8x32x1          |  224x224   |  8   |  TimeSformer (jointST)  | ImageNet-21K |  76.95   |  93.28   | 1 clip x 3 crop  | 180G  | 86.11M | [config](/configs/recognition/timesformer/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb_20220815-8022d1c0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_jointST_8xb8-8x32x1-15e_kinetics400-rgb.log) |
+|         8x32x1          |  224x224   |  8   | TimeSformer (spaceOnly) | ImageNet-21K |  76.93   |  92.88   | 1 clip x 3 crop  | 141G  | 86.11M | [config](/configs/recognition/timesformer/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb_20220815-78f05367.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/timesformer/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb/timesformer_spaceOnly_8xb8-8x32x1-15e_kinetics400-rgb.log) |
 
-1. The **gpus** indicates the number of gpu (80G A100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.005 for 8 GPUs x 8 videos/gpu and lr=0.00375 for 8 GPUs x 6 videos/gpu.
+1. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
 2. We keep the test setting with the [original repo](https://github.com/facebookresearch/TimeSformer) (three crop x 1 clip).
 3. The pretrained model `vit_base_patch16_224.pth` used by TimeSformer was converted from [vision_transformer](https://github.com/google-research/vision_transformer).
 
-For more details on data preparation, you can refer to the **Prepare videos** part in the [Data Preparation Tutorial](/docs/en/user_guides/2_data_prepare.md).
+For more details on data preparation, you can refer to [Kinetics400](/tools/data/kinetics/README.md).
 
 ## Train
 
@@ -46,7 +44,7 @@ Example: train TimeSformer model on Kinetics-400 dataset in a deterministic opti
 
 ```shell
 python tools/train.py configs/recognition/timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb.py \
-    --cfg-options randomness.seed=0 randomness.deterministic=True
+    --seed=0 --deterministic
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).

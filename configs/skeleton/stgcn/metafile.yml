@@ -1,110 +1,311 @@
 Collections:
-- Name: STGCN
-  README: configs/skeleton/stgcn/README.md
+  - Name: STGCN
+    README: configs/skeleton/stgcn/README.md
+    Paper:
+      URL: https://arxiv.org/abs/1801.07455
+      Title: 'Spatial Temporal Graph Convolutional Networks for Skeleton-Based Action Recognition'
+
 Models:
-- Config: configs/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py
-  In Collection: STGCN
-  Metadata:
-    Architecture: STGCN
-    Batch Size: 16
-    Epochs: 80
-    Parameters: 3088704
-    Training Data: NTU60-XSub
-    Training Resources: 2 GPUs
-  Name: stgcn_1xb16-80e_ntu60-xsub-keypoint
-  Results:
-    Dataset: NTU60-XSub
-    Metrics:
-      Top 1 Accuracy: 86.91
-    Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint/stgcn_1xb16-80e_ntu60-xsub-keypoint.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint/stgcn_1xb16-80e_ntu60-xsub-keypoint-e7bb9653.pth
-- Config: configs/skeleton/stgcn/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d.py
-  In Collection: STGCN
-  Metadata:
-    Architecture: STGCN
-    Batch Size: 32
-    Epochs: 80
-    Parameters: 3088704
-    Training Data: NTU60-XSub
-    Training Resources: 1 GPU
-  Name: stgcn_1xb32-80e-ntu60_xsub-keypoint-3d
-  Results:
-    Dataset: NTU60-XSub
-    Metrics:
-      Top 1 Accuracy: 84.61
-    Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d-13e7ccf0.pth
-- Config: configs/skeleton/stgcn/stgcn_8xb16-80e_babel60.py
-  In Collection: STGCN
-  Metadata:
-    Architecture: STGCN
-    Batch Size: 128
-    Epochs: 80
-    Parameters: 3088704
-    Training Data: BABEL60
-    Training Resources: 8 GPU
-  Name: stgcn_8xb16-80e_babel60
-  Results:
-    Dataset: BABEL60
-    Metrics:
-      Top 1 Accuracy: 42.39
-      Mean Top 1 Accuracy: 28.28
-    Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel60/stgcn_8xb16-80e_babel60.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel60/stgcn_8xb16-80e_babel60-3d206418.pth
-- Config: configs/skeleton/stgcn/stgcn_8xb16-80e-babel60-wfl.py
-  In Collection: STGCN
-  Metadata:
-    Architecture: STGCN
-    Batch Size: 128
-    Epochs: 80
-    Parameters: 3088704
-    Training Data: BABEL60
-    Training Resources: 8 GPU
-  Name: stgcn_8xb16-80e-babel60-wfl
-  Results:
-    Dataset: BABEL60
-    Metrics:
-      Top 1 Accuracy: 40.31
-      Mean Top 1 Accuracy: 29.79
-    Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e-babel60-wfl/stgcn_8xb16-80e-babel60-wfl.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e-babel60-wfl/stgcn_8xb16-80e-babel60-wfl-1a9102d7.pth
-- Config: configs/skeleton/stgcn/stgcn_8xb16-80e_babel120.py
-  In Collection: STGCN
-  Metadata:
-    Architecture: STGCN
-    Batch Size: 128
-    Epochs: 80
-    Parameters: 3104320
-    Training Data: BABEL120
-    Training Resources: 8 GPU
-  Name: stgcn_8xb16-80e_babel120
-  Results:
-    Dataset: BABEL120
-    Metrics:
-      Top 1 Accuracy: 38.95
-      Mean Top 1 Accuracy: 20.58
-    Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120/stgcn_8xb16-80e_babel120.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120/stgcn_8xb16-80e_babel120-e41eb6d7.pth
-- Config: configs/skeleton/stgcn/stgcn_8xb16-80e_babel120-wfl.py
-  In Collection: STGCN
-  Metadata:
-    Architecture: STGCN
-    Batch Size: 128
-    Epochs: 80
-    Parameters: 3104320
-    Training Data: BABEL120
-    Training Resources: 8 GPU
-  Name: stgcn_8xb16-80e_babel120-wfl
-  Results:
-    Dataset: BABEL120
-    Metrics:
-      Top 1 Accuracy: 33.00
-      Mean Top 1 Accuracy: 24.33
-    Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120-wfl/stgcn_8xb16-80e_babel120-wfl.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120-wfl/stgcn_8xb16-80e_babel120-wfl-3f2c100d.pth
+  - Name: stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 3.8G
+      Parameters: 3.1M
+      Training Data: NTU60-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 88.95
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20221129-484a394a.pth
+
+  - Name: stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 3.8G
+      Parameters: 3.1M
+      Training Data: NTU60-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 91.69
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d_20221129-c4b44488.pth
+
+  - Name: stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 3.8G
+      Parameters: 3.1M
+      Training Data: NTU60-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 86.90
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d_20221129-f18eb408.pth
+
+  - Name: stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 3.8G
+      Parameters: 3.1M
+      Training Data: NTU60-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 87.86
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d_20221129-99c60e2d.pth
+
+  - Name: stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 5.7G
+      Parameters: 3.1M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 88.11
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d_20221129-850308e1.pth
+
+  - Name: stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 5.7G
+      Parameters: 3.1M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 88.76
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d_20221129-9c8d2970.pth
+
+  - Name: stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 5.7G
+      Parameters: 3.1M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 86.06
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d_20221129-927648ea.pth
+
+  - Name: stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 5.7G
+      Parameters: 3.1M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 85.49
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d_20221129-593162ca.pth
+
+  - Name: stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 3.8G
+      Parameters: 3.1M
+      Training Data: NTU120-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU120-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 83.19
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d_20221129-612416c6.pth
+
+  - Name: stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 3.8G
+      Parameters: 3.1M
+      Training Data: NTU120-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU120-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 83.36
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d_20221129-131e63c3.pth
+
+  - Name: stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 3.8G
+      Parameters: 3.1M
+      Training Data: NTU120-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU120-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 78.87
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d_20221129-7cb38ec2.pth
+
+  - Name: stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 3.8G
+      Parameters: 3.1M
+      Training Data: NTU120-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU120-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 79.55
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d_20221129-f5b19892.pth
+
+  - Name: stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 5.7G
+      Parameters: 3.1M
+      Training Data: NTU120-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU120-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 82.15
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d_20221129-0484f579.pth
+
+  - Name: stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 5.7G
+      Parameters: 3.1M
+      Training Data: NTU120-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU120-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 84.28
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d_20221129-bc007510.pth
+
+  - Name: stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 5.7G
+      Parameters: 3.1M
+      Training Data: NTU120-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU120-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 78.93
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d_20221129-5d54f525.pth
+
+  - Name: stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d
+    Config: configs/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d.py
+    In Collection: STGCN
+    Metadata:
+      Architecture: STGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 5.7G
+      Parameters: 3.1M
+      Training Data: NTU120-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU120-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 80.02
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d_20221129-3cb0e4e1.pth

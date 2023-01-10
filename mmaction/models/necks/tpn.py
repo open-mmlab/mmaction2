@@ -6,7 +6,6 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmengine.model.weight_init import constant_init, normal_init, xavier_init
-from torch import Tensor
 
 from mmaction.registry import MODELS
 from mmaction.utils import ConfigType, OptConfigType, SampleList
@@ -74,7 +73,8 @@ class DownSample(nn.Module):
         self.pool = nn.MaxPool3d(
             downsample_scale, downsample_scale, (0, 0, 0), ceil_mode=True)
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Defines the computation performed at every call."""
         if self.downsample_position == 'before':
             x = self.pool(x)
             x = self.conv(x)
@@ -140,7 +140,8 @@ class LevelFusion(nn.Module):
             norm_cfg=dict(type='BN3d', requires_grad=True),
             act_cfg=dict(type='ReLU', inplace=True))
 
-    def forward(self, x: Tuple[Tensor]) -> Tensor:
+    def forward(self, x: Tuple[torch.Tensor]) -> torch.Tensor:
+        """Defines the computation performed at every call."""
         out = [self.downsamples[i](feature) for i, feature in enumerate(x)]
         out = torch.cat(out, 1)
         out = self.fusion_conv(out)
@@ -187,7 +188,8 @@ class SpatialModulation(nn.Module):
                             act_cfg=dict(type='ReLU', inplace=True)))
             self.spatial_modulation.append(op)
 
-    def forward(self, x: Tuple[Tensor]) -> list:
+    def forward(self, x: Tuple[torch.Tensor]) -> list:
+        """Defines the computation performed at every call."""
         out = []
         for i, _ in enumerate(x):
             if isinstance(self.spatial_modulation[i], nn.ModuleList):
@@ -248,7 +250,8 @@ class AuxHead(nn.Module):
             if isinstance(m, nn.BatchNorm3d):
                 constant_init(m, 1)
 
-    def loss(self, x: Tensor, data_samples: Optional[SampleList]) -> dict:
+    def loss(self, x: torch.Tensor,
+             data_samples: Optional[SampleList]) -> dict:
         """Calculate auxiliary loss."""
         x = self(x)
         labels = [x.gt_labels.item for x in data_samples]
@@ -261,7 +264,7 @@ class AuxHead(nn.Module):
         losses['loss_aux'] = self.loss_weight * self.loss_cls(x, labels)
         return losses
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Auxiliary head forward function."""
         x = self.conv(x)
         x = self.avg_pool(x).squeeze(-1).squeeze(-1).squeeze(-1)
@@ -302,7 +305,8 @@ class TemporalModulation(nn.Module):
                                  (downsample_scale, 1, 1), (0, 0, 0),
                                  ceil_mode=True)
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Defines the computation performed at every call."""
         x = self.conv(x)
         x = self.pool(x)
         return x
@@ -428,8 +432,9 @@ class TPN(nn.Module):
             self.aux_head.init_weights()
 
     def forward(self,
-                x: Tuple[Tensor],
+                x: Tuple[torch.Tensor],
                 data_samples: Optional[SampleList] = None) -> tuple:
+        """Defines the computation performed at every call."""
 
         loss_aux = dict()
         # Calculate auxiliary loss if `self.aux_head`

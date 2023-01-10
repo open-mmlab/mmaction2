@@ -10,13 +10,13 @@ Models:
     Config: configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py
     In Collection: TANet
     Metadata:
-      Architecture: TANet
+      Architecture: ResNet50
       Batch Size: 8
       Epochs: 100
-      FLOPs: 43065983104
-      Parameters: 25590320
+      FLOPs: 43.0G
+      Parameters: 25.6M
       Pretrained: ImageNet
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -28,17 +28,18 @@ Models:
         Top 5 Accuracy: 92.41
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20220919-a34346bc.pth
+
   - Name: tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb
     Config: configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb.py
     In Collection: TANet
     Metadata:
-      Architecture: TANet
+      Architecture: ResNet50
       Batch Size: 8
       Epochs: 50
-      FLOPs: 32972787840
-      Parameters: 25127246
+      FLOPs: 43.1G
+      Parameters: 25.1M
       Pretrained: ImageNet
-      Resolution: height 100
+      Resolution: 224x224
       Training Data: SthV1
       Training Resources: 8 GPUs
     Modality: RGB
@@ -52,17 +53,18 @@ Models:
         Top 5 Accuracy (efficient): 75.75
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb_20220906-de50e4ef.pth
+
   - Name: tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb
     Config: configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb.py
     In Collection: TANet
     Metadata:
-      Architecture: TANet
-      Batch Size: 8
+      Architecture: ResNet50
+      Batch Size: 6
       Epochs: 50
-      FLOPs: 65946542336
-      Parameters: 25134670
+      FLOPs: 86.1G
+      Parameters: 25.1M
       Pretrained: ImageNet
-      Resolution: height 100
+      Resolution: 224x224
       Training Data: SthV1
       Training Resources: 8 GPUs
     Modality: RGB

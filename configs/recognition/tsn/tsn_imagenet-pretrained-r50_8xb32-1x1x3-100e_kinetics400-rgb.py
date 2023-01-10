@@ -10,8 +10,10 @@ data_root_val = 'data/kinetics400/videos_val'
 ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
+file_client_args = dict(io_backend='disk')
+
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -27,7 +29,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=1,
@@ -41,7 +43,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=1,
@@ -92,3 +94,9 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (32 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=256)

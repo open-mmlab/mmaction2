@@ -6,38 +6,154 @@ Collections:
       Title: 'Two-Stream Adaptive Graph Convolutional Networks for Skeleton-Based Action Recognition'
 
 Models:
-  - Name: 2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d
-    Config: configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.py
+  - Name: 2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py
     In Collection: AGCN
     Metadata:
       Architecture: AGCN
       Batch Size: 16
       Epochs: 80
-      Parameters: 3472176
-      Training Data: NTU60-XSub
-      Training Resources: 4 GPUS
+      FLOPs: 4.4G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-2D
+      Training Resources: 8 GPUs
     Results:
-      Dataset: NTU60-XSub
+      Dataset: NTU60-XSub-2D
       Task: Skeleton-based Action Recognition
       Metrics:
-        Top 1 Accuracy: 85.92
-    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.log
-    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d_20220918-3108f53f.pth
+        Top 1 Accuracy: 88.60
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20221222-4c0ed77e.pth
 
-  - Name: 2sagcn_4xb16-80e_ntu60-xsub-bone-3d
-    Config: configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.py
+  - Name: 2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d.py
     In Collection: AGCN
     Metadata:
       Architecture: AGCN
       Batch Size: 16
       Epochs: 80
-      Parameters: 3472176
-      Training Data: NTU60-XSub
-      Training Resources: 4 GPUS
+      FLOPs: 4.4G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-2D
+      Training Resources: 8 GPUs
     Results:
-      Dataset: NTU60-XSub
+      Dataset: NTU60-XSub-2D
       Task: Skeleton-based Action Recognition
       Metrics:
-        Top 1 Accuracy: 87.02
-    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.log
-    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d/2sagcn_4xb16-80e_ntu60-xsub-bone-3d_20220918-46a76b9b.pth
+        Top 1 Accuracy: 91.59
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d_20221222-293878b5.pth
+
+  - Name: 2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 4.4G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 88.02
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d_20221222-0c86e3a1.pth
+
+  - Name: 2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 4.4G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-2D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-2D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 88.82
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d_20221222-87996f0d.pth
+
+  - Name: 2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 6.5G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 88.26
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d_20221222-24dabf78.pth
+
+  - Name: 2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 6.5G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 89.22
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d_20221222-abe70a7f.pth
+
+  - Name: 2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 6.5G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 86.73
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d_20221222-923cd3c3.pth
+
+  - Name: 2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d
+    Config: configs/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d.py
+    In Collection: AGCN
+    Metadata:
+      Architecture: AGCN
+      Batch Size: 16
+      Epochs: 80
+      FLOPs: 6.5G
+      Parameters: 3.5M
+      Training Data: NTU60-XSub-3D
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: NTU60-XSub-3D
+      Task: Skeleton-based Action Recognition
+      Metrics:
+        Top 1 Accuracy: 86.41
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/2s-agcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d_20221222-3d8f6f43.pth

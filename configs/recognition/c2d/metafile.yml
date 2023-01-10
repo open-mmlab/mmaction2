@@ -1,0 +1,99 @@
+Collections:
+  - Name: C2D
+    README: configs/recognition/c2d/README.md
+    Paper:
+      URL: https://arxiv.org/abs/1711.07971
+      Title: 'Non-local Neural Networks'
+
+Models:
+  - Name: c2d_r50-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb
+    Config: configs/recognition/c2d/c2d_r50-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb.py
+    In Collection: C2D
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 33G
+      Parameters: 24.3M
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: Kinetics-400
+        Task: Action Recognition
+        Metrics:
+              Top 1 Accuracy: 73.44
+              Top 5 Accuracy: 91.00
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/c2d/c2d_r50-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb/c2d_r50-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/c2d/c2d_r50-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb/c2d_r50-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb_20221027-e0227b22.pth
+
+  - Name: c2d_r101-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb
+    Config: configs/recognition/c2d/c2d_r101-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb.py
+    In Collection: C2D
+    Metadata:
+      Architecture: ResNet101
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 63G
+      Parameters: 43.3M
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 74.97
+        Top 5 Accuracy: 91.77
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/c2d/c2d_r101-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb/c2d_r101-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/c2d/c2d_r101-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb/c2d_r101-in1k-pre-nopool_8xb32-8x8x1-100e_kinetics400-rgb_20221027-557bd8bc.pth
+
+  - Name: c2d_r50-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb
+    Config: configs/recognition/c2d/c2d_r50-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb.py
+    In Collection: C2D
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 19G
+      Parameters: 24.3M
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 73.89
+        Top 5 Accuracy: 91.21
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/c2d/c2d_r50-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb/c2d_r50-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/c2d/c2d_r50-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb/c2d_r50-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb_20221027-3ca304fa.pth
+
+  - Name: c2d_r50-in1k-pre_8xb32-16x4x1-100e_kinetics400-rgb
+    Config: configs/recognition/c2d/c2d_r50-in1k-pre_8xb32-16x4x1-100e_kinetics400-rgb
+    In Collection: C2D
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 39G
+      Parameters: 24.3M
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 74.97
+        Top 5 Accuracy: 91.91
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/c2d/c2d_r50-in1k-pre_8xb32-16x4x1-100e_kinetics400-rgb/c2d_r50-in1k-pre_8xb32-16x4x1-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/c2d/c2d_r50-in1k-pre_8xb32-16x4x1-100e_kinetics400-rgb/c2d_r50-in1k-pre_8xb32-16x4x1-100e_kinetics400-rgb_20221027-5f382a43.pth

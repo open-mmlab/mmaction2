@@ -18,23 +18,52 @@ Dynamics of human body skeletons convey significant information for human action
 
 ## Results and Models
 
-### NTU60_XSub
+### NTU60_XSub_2D
 
-| frame sampling strategy | keypoint | gpus | backbone | Top-1 |                        config                        |                        ckpt                        |                        log                         |
-| :---------------------: | :------: | :--: | :------: | :---: | :--------------------------------------------------: | :------------------------------------------------: | :------------------------------------------------: |
-|       padding 300       |    2d    |  1   |  STGCN   | 86.91 | [config](/configs/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint/stgcn_1xb16-80e_ntu60-xsub-keypoint-e7bb9653.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint/stgcn_1xb16-80e_ntu60-xsub-keypoint.log) |
-|       padding 300       |    3d    |  1   |  STGCN   | 86.91 | [config](/configs/skeleton/stgcn/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d-13e7ccf0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d.log) |
+| frame sampling strategy |   modality   | gpus | backbone | top1 acc | testing protocol | FLOPs | params |                  config                   |                  ckpt                   |                  log                   |
+| :---------------------: | :----------: | :--: | :------: | :------: | :--------------: | :---: | :----: | :---------------------------------------: | :-------------------------------------: | :------------------------------------: |
+|       uniform 100       |    joint     |  8   |  STGCN   |  88.95   |     10 clips     | 3.8G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20221129-484a394a.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.log) |
+|       uniform 100       |     bone     |  8   |  STGCN   |  91.69   |     10 clips     | 3.8G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d_20221129-c4b44488.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d.log) |
+|       uniform 100       | joint-motion |  8   |  STGCN   |  86.90   |     10 clips     | 3.8G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d_20221129-f18eb408.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-2d.log) |
+|       uniform 100       | bone-motion  |  8   |  STGCN   |  87.86   |     10 clips     | 3.8G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d_20221129-99c60e2d.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-2d.log) |
+|                         |  two-stream  |      |          |  92.12   |                  |       |        |                                           |                                         |                                        |
+|                         | four-stream  |      |          |  92.34   |                  |       |        |                                           |                                         |                                        |
 
-### BABEL
+### NTU60_XSub_3D
 
-|   dataset    | gpus | backbone |   Top-1   | Mean Top-1 | Top-1 Official (AGCN) | Mean Top-1 Official (AGCN) |                 config                 |                 ckpt                 |                 log                  |
-| :----------: | :--: | :------: | :-------: | :--------: | :-------------------: | :------------------------: | :------------------------------------: | :----------------------------------: | :----------------------------------: |
-|   babel60    |  8   |  STGCN   | **42.39** | **28.28**  |         41.14         |           24.46            | [config](/configs/skeleton/stgcn/stgcn_8xb16-80e_babel60.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel60/stgcn_8xb16-80e_babel60-3d206418.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel60/stgcn_8xb16-80e_babel60.log) |
-| babel60-wfl  |  8   |  STGCN   | **40.31** |   29.79    |         33.41         |         **30.42**          | [config](/configs/skeleton/stgcn/stgcn_8xb16-80e-babel60-wfl.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e-babel60-wfl/stgcn_8xb16-80e-babel60-wfl-1a9102d7.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel60/stgcn_8xb16-80e-babel60-wfl.log) |
-|   babel120   |  8   |  ST-GCN  | **38.95** | **20.58**  |         38.41         |           17.56            | [config](/configs/skeleton/stgcn/stgcn_8xb16-80e_babel120.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120/stgcn_8xb16-80e_babel120-e41eb6d7.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel60/stgcn_8xb16-80e_babel120.log) |
-| babel120-wfl |  8   |  ST-GCN  | **33.00** |   24.33    |         27.91         |        **26.17**\*         | [config](/configs/skeleton/stgcn/stgcn_8xb16-80e_babel120-wfl.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120-wfl/stgcn_8xb16-80e_babel120-wfl-3f2c100d.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel60/stgcn_8xb16-80e_babel120-wfl.log) |
+| frame sampling strategy |   modality   | gpus | backbone | top1 acc | testing protocol | FLOPs | params |                  config                   |                  ckpt                   |                  log                   |
+| :---------------------: | :----------: | :--: | :------: | :------: | :--------------: | :---: | :----: | :---------------------------------------: | :-------------------------------------: | :------------------------------------: |
+|       uniform 100       |    joint     |  8   |  STGCN   |  88.11   |     10 clips     | 5.7G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d_20221129-850308e1.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.log) |
+|       uniform 100       |     bone     |  8   |  STGCN   |  88.76   |     10 clips     | 5.7G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d_20221129-9c8d2970.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-3d.log) |
+|       uniform 100       | joint-motion |  8   |  STGCN   |  86.06   |     10 clips     | 5.7G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d_20221129-927648ea.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-joint-motion-u100-80e_ntu60-xsub-keypoint-3d.log) |
+|       uniform 100       | bone-motion  |  8   |  STGCN   |  85.49   |     10 clips     | 5.7G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d_20221129-593162ca.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d/stgcn_8xb16-bone-motion-u100-80e_ntu60-xsub-keypoint-3d.log) |
+|                         |  two-stream  |      |          |  90.14   |                  |       |        |                                           |                                         |                                        |
+|                         | four-stream  |      |          |  90.39   |                  |       |        |                                           |                                         |                                        |
 
-\* The number is copied from the [paper](https://arxiv.org/pdf/2106.09696.pdf), the performance of the [released checkpoints](https://github.com/abhinanda-punnakkal/BABEL/tree/main/action_recognition) for BABEL-120 is inferior.
+### NTU120_XSub_2D
+
+| frame sampling strategy |   modality   | gpus | backbone | top1 acc | testing protocol | FLOPs | params |                  config                   |                  ckpt                   |                  log                   |
+| :---------------------: | :----------: | :--: | :------: | :------: | :--------------: | :---: | :----: | :---------------------------------------: | :-------------------------------------: | :------------------------------------: |
+|       uniform 100       |    joint     |  8   |  STGCN   |  83.19   |     10 clips     | 3.8G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d_20221129-612416c6.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-2d.log) |
+|       uniform 100       |     bone     |  8   |  STGCN   |  83.36   |     10 clips     | 3.8G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d_20221129-131e63c3.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-2d.log) |
+|       uniform 100       | joint-motion |  8   |  STGCN   |  78.87   |     10 clips     | 3.8G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d_20221129-7cb38ec2.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-2d.log) |
+|       uniform 100       | bone-motion  |  8   |  STGCN   |  79.55   |     10 clips     | 3.8G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d_20221129-f5b19892.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-2d.log) |
+|                         |  two-stream  |      |          |  84.84   |                  |       |        |                                           |                                         |                                        |
+|                         | four-stream  |      |          |  85.23   |                  |       |        |                                           |                                         |                                        |
+
+### NTU120_XSub_3D
+
+| frame sampling strategy |   modality   | gpus | backbone | top1 acc | testing protocol | FLOPs | params |                  config                   |                  ckpt                   |                  log                   |
+| :---------------------: | :----------: | :--: | :------: | :------: | :--------------: | :---: | :----: | :---------------------------------------: | :-------------------------------------: | :------------------------------------: |
+|       uniform 100       |    joint     |  8   |  STGCN   |  82.15   |     10 clips     | 5.7G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d_20221129-0484f579.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d.log) |
+|       uniform 100       |     bone     |  8   |  STGCN   |  84.28   |     10 clips     | 5.7G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d_20221129-bc007510.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-bone-u100-80e_ntu120-xsub-keypoint-3d.log) |
+|       uniform 100       | joint-motion |  8   |  STGCN   |  78.93   |     10 clips     | 5.7G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d_20221129-5d54f525.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-joint-motion-u100-80e_ntu120-xsub-keypoint-3d.log) |
+|       uniform 100       | bone-motion  |  8   |  STGCN   |  80.02   |     10 clips     | 5.7G  |  3.1M  | [config](/configs/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d_20221129-3cb0e4e1.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d/stgcn_8xb16-bone-motion-u100-80e_ntu120-xsub-keypoint-3d.log) |
+|                         |  two-stream  |      |          |  85.68   |                  |       |        |                                           |                                         |                                        |
+|                         | four-stream  |      |          |  86.19   |                  |       |        |                                           |                                         |                                        |
+
+1. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size, and the original batch size.
+2. For two-stream fusion, we use **joint : bone = 1 : 1**. For four-stream fusion, we use **joint : joint-motion : bone : bone-motion = 2 : 1 : 2 : 1**. For more details about multi-stream fusion, please refer to this [tutorial](/docs/en/user_guides/useful_tools.md#multi-stream-fusion).
 
 ## Train
 
@@ -44,12 +73,11 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train STGCN model on NTU60 dataset in a deterministic option with periodic validation.
+Example: train STGCN model on NTU60-2D dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py \
-    --work-dir work_dirs/stgcn_1xb16-80e_ntu60-xsub-keypoint \
-    --cfg-options randomness.seed=0 randomness.deterministic=True
+python tools/train.py configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py \
+    --seed 0 --deterministic
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
@@ -62,12 +90,11 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test STGCN model on NTU60 dataset and dump the result to a pickle file.
+Example: test STGCN model on NTU60-2D dataset and dump the result to a pickle file.
 
 ```shell
-python tools/test.py configs/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.pkl
+python tools/test.py configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
 For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).

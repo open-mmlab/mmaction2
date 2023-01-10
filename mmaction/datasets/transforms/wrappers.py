@@ -32,6 +32,12 @@ class TorchVisionWrapper(BaseTransform):
         self.trans = trans(**kwargs)
 
     def transform(self, results):
+        """Perform Torchvision augmentations.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         assert 'imgs' in results
 
         imgs = [x.transpose(2, 0, 1) for x in results['imgs']]
@@ -77,6 +83,12 @@ class PytorchVideoWrapper(BaseTransform):
         self.op = op
 
     def transform(self, results):
+        """Perform PytorchVideoTrans augmentations.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         assert 'imgs' in results
 
         assert 'gt_bboxes' not in results,\
@@ -294,10 +306,11 @@ class ImgAug(BaseTransform):
             raise TypeError(
                 f'type must be a str or valid type, but got {type(obj_type)}')
 
-        if 'children' in args:
-            args['children'] = [
-                self.imgaug_builder(child) for child in args['children']
-            ]
+        for aug_list_key in ['children', 'then_list', 'else_list']:
+            if aug_list_key in args:
+                args[aug_list_key] = [
+                    self.imgaug_builder(child) for child in args[aug_list_key]
+                ]
 
         return obj_cls(**args)
 
@@ -306,6 +319,12 @@ class ImgAug(BaseTransform):
         return repr_str
 
     def transform(self, results):
+        """Perform Imgaug augmentations.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         assert results['modality'] == 'RGB', 'Imgaug only support RGB images.'
         in_type = results['imgs'][0].dtype
 

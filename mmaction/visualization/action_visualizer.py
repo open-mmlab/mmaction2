@@ -203,7 +203,7 @@ class ActionVisualizer(Visualizer):
 
         resulted_video = []
         for frame_idx, frame in enumerate(video):
-            frame_name = 'frame %d of %s' % (frame_idx, name)
+            frame_name = 'frame %d of %s' % (frame_idx + 1, name)
             if rescale_factor is not None:
                 frame = mmcv.imrescale(frame, rescale_factor)
 
@@ -243,16 +243,16 @@ class ActionVisualizer(Visualizer):
                 texts.append(prefix + ('\n' + ' ' * len(prefix)).join(labels))
 
             img_scale = _get_adaptive_scale(frame.shape[:2])
-            text_cfg = {
+            _text_cfg = {
                 'positions':
                 np.array([(img_scale * 5, ) * 2]).astype(np.int32),
                 'font_sizes': int(img_scale * 7),
                 'font_families': 'monospace',
                 'colors': 'white',
                 'bboxes': dict(facecolor='black', alpha=0.5, boxstyle='Round'),
-                **text_cfg
             }
-            self.draw_texts('\n'.join(texts), **text_cfg)
+            _text_cfg.update(text_cfg)
+            self.draw_texts('\n'.join(texts), **_text_cfg)
             drawn_img = self.get_image()
             resulted_video.append(drawn_img)
 

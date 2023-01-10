@@ -14,6 +14,7 @@ from .ava_evaluation import standard_fields
 
 
 def det2csv(results, custom_classes):
+    """Convert detection results to csv file."""
     csv_results = []
     for idx in range(len(results)):
         video_id = results[idx]['video_id']
@@ -35,6 +36,7 @@ def det2csv(results, custom_classes):
 
 # results is organized by class
 def results2csv(results, out_file, custom_classes=None):
+    """Convert detection results to csv file."""
     csv_results = det2csv(results, custom_classes)
 
     # save space for float
@@ -50,6 +52,7 @@ def results2csv(results, out_file, custom_classes=None):
 
 
 def print_time(message, start):
+    """Print processing time."""
     print('==> %g seconds to %s' % (time.time() - start, message), flush=True)
 
 
@@ -162,7 +165,7 @@ def ava_eval(result_file,
              exclude_file,
              verbose=True,
              custom_classes=None):
-
+    """Perform ava evaluation."""
     assert result_type in ['mAP']
 
     start = time.time()

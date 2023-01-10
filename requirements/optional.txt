@@ -1,5 +1,6 @@
 av>=9.0
 future
+fvcore
 imgaug
 librosa
 lmdb

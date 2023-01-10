@@ -179,7 +179,6 @@ if __name__ == '__main__':
             'License :: OSI Approved :: Apache Software License',
             'Operating System :: OS Independent',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
@@ -191,5 +190,6 @@ if __name__ == '__main__':
             'all': parse_requirements('requirements.txt'),
             'tests': parse_requirements('requirements/tests.txt'),
             'optional': parse_requirements('requirements/optional.txt'),
+            'mim': parse_requirements('requirements/mminstall.txt'),
         },
         zip_safe=False)

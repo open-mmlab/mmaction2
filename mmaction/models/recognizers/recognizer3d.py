@@ -3,7 +3,7 @@ import torch
 from torch import Tensor
 
 from mmaction.registry import MODELS
-from mmaction.utils import SampleList
+from mmaction.utils import OptSampleList
 from .base import BaseRecognizer
 
 
@@ -14,20 +14,20 @@ class Recognizer3D(BaseRecognizer):
     def extract_feat(self,
                      inputs: Tensor,
                      stage: str = 'neck',
-                     data_samples: SampleList = None,
+                     data_samples: OptSampleList = None,
                      test_mode: bool = False) -> tuple:
         """Extract features of different stages.
 
         Args:
-            inputs (Tensor): The input data.
+            inputs (torch.Tensor): The input data.
             stage (str): Which stage to output the feature.
-                Defaults to ``neck``.
-            data_samples (List[:obj:`ActionDataSample`]): Action data
+                Defaults to ``'neck'``.
+            data_samples (list[:obj:`ActionDataSample`], optional): Action data
                 samples, which are only needed in training. Defaults to None.
-            test_mode: (bool): Whether in test mode. Defaults to False.
+            test_mode (bool): Whether in test mode. Defaults to False.
 
         Returns:
-                Tensor: The extracted features.
+                torch.Tensor: The extracted features.
                 dict: A dict recording the kwargs for downstream
                     pipeline. These keys are usually included:
                     ``loss_aux``.
@@ -46,7 +46,7 @@ class Recognizer3D(BaseRecognizer):
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
         inputs = inputs.view((-1, ) + inputs.shape[2:])
 
-        # Check settings of test.
+        # Check settings of test
         if test_mode:
             if self.test_cfg is not None:
                 loss_predict_kwargs['fcn_test'] = self.test_cfg.get(
@@ -69,14 +69,22 @@ class Recognizer3D(BaseRecognizer):
                         feat, _ = self.neck(feat)
                     feats.append(feat)
                     view_ptr += max_testing_views
-                # should consider the case that feat is a tuple
+                # recursively traverse feats until it's a tensor, then concat
+
+                def recursively_cat(feats):
+                    out_feats = []
+                    for e_idx, elem in enumerate(feats[0]):
+                        batch_elem = [feat[e_idx] for feat in feats]
+                        if not isinstance(elem, torch.Tensor):
+                            batch_elem = recursively_cat(batch_elem)
+                        else:
+                            batch_elem = torch.cat(batch_elem)
+                        out_feats.append(batch_elem)
+
+                    return tuple(out_feats)
+
                 if isinstance(feats[0], tuple):
-                    len_tuple = len(feats[0])
-                    feats = [
-                        torch.cat([each[i] for each in feats])
-                        for i in range(len_tuple)
-                    ]
-                    x = tuple(feats)
+                    x = recursively_cat(feats)
                 else:
                     x = torch.cat(feats)
             else:
@@ -86,7 +94,7 @@ class Recognizer3D(BaseRecognizer):
 
             return x, loss_predict_kwargs
         else:
-            # Return features extracted through backbone.
+            # Return features extracted through backbone
             x = self.backbone(inputs)
             if stage == 'backbone':
                 return x, loss_predict_kwargs
@@ -95,7 +103,7 @@ class Recognizer3D(BaseRecognizer):
             if self.with_neck:
                 x, loss_aux = self.neck(x, data_samples=data_samples)
 
-            # Return features extracted through neck.
+            # Return features extracted through neck
             loss_predict_kwargs['loss_aux'] = loss_aux
             if stage == 'neck':
                 return x, loss_predict_kwargs

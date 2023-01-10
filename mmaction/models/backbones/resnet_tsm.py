@@ -28,6 +28,7 @@ class NL3DWrapper(nn.Module):
         self.num_segments = num_segments
 
     def forward(self, x):
+        """Defines the computation performed at every call."""
         x = self.block(x)
 
         n, c, h, w = x.size()
@@ -168,6 +169,7 @@ class ResNetTSM(ResNet):
         self.init_structure()
 
     def init_structure(self):
+        """Initialize structure for tsm."""
         if self.is_shift:
             self.make_temporal_shift()
         if len(self.non_local_cfg) != 0:
@@ -264,6 +266,7 @@ class ResNetTSM(ResNet):
                     kernel_size=(3, 1, 1), stride=(2, 1, 1), padding=(1, 0, 0))
 
             def forward(self, x):
+                """Defines the computation performed at every call."""
                 # [N, C, H, W]
                 n, c, h, w = x.size()
                 # [N // num_segments, C, num_segments, H, W]
@@ -278,6 +281,7 @@ class ResNetTSM(ResNet):
         self.layer2 = TemporalPool(self.layer2, self.num_segments)
 
     def make_non_local(self):
+        """Wrap resnet layer into non local wrapper."""
         # This part is for ResNet50
         for i in range(self.num_stages):
             non_local_stage = self.non_local_stages[i]
@@ -294,4 +298,5 @@ class ResNetTSM(ResNet):
                                                  self.non_local_cfg)
 
     def init_weights(self):
+        """Initialize weights."""
         pass

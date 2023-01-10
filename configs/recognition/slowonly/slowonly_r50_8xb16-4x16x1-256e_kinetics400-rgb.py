@@ -12,8 +12,10 @@ data_root_val = 'data/kinetics400/videos_val'
 ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
+file_client_args = dict(io_backend='disk')
+
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=4, frame_interval=16, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -25,7 +27,7 @@ train_pipeline = [
 ]
 
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=4,
@@ -40,7 +42,7 @@ val_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=4,
@@ -108,14 +110,16 @@ param_scheduler = [
         begin=34,
         end=256)
 ]
-"""
-The learning rate is for total_batch_size = 8 x 16 (num_gpus x batch_size)
-If you want to use other batch size or number of GPU settings, please update
-the learning rate with the linear scaling rule.
-"""
+
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=1e-4),
     clip_grad=dict(max_norm=40, norm_type=2))
 
 # runtime settings
 default_hooks = dict(checkpoint=dict(interval=4, max_keep_ckpts=3))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (16 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=128)

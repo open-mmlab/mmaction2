@@ -34,6 +34,15 @@ def parse_args():
         action='store_true',
         help='whether to auto scale the learning rate according to the '
         'actual batch size and the original batch size.')
+    parser.add_argument('--seed', type=int, default=None, help='random seed')
+    parser.add_argument(
+        '--diff-rank-seed',
+        action='store_true',
+        help='whether or not set different seeds for different ranks')
+    parser.add_argument(
+        '--deterministic',
+        action='store_true',
+        help='whether to set deterministic options for CUDNN backend.')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
@@ -95,6 +104,13 @@ def merge_args(cfg, args):
     # enable auto scale learning rate
     if args.auto_scale_lr:
         cfg.auto_scale_lr.enable = True
+
+    # set random seeds
+    if cfg.get('randomness', None) is None:
+        cfg.randomness = dict(
+            seed=args.seed,
+            diff_rank_seed=args.diff_rank_seed,
+            deterministic=args.deterministic)
 
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)

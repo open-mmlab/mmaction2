@@ -81,12 +81,6 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         self.topk = topk
 
     @abstractmethod
-    def init_weights(self) -> None:
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        raise NotImplementedError
-
-    @abstractmethod
     def forward(self, x, **kwargs) -> Tensor:
         """Defines the computation performed at every call."""
         raise NotImplementedError
@@ -166,12 +160,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                 data samples.
 
         Returns:
-            List[:obj:`LabelData`]: Recognition results wrapped
-                by :obj:`LabelData`. Each item usually contains
-                following keys.
-
-                - item (Tensor): Classification scores, has a shape
-                    (num_classes, )
+             List[:obj:`ActionDataSample`]: Recognition results wrapped
+                by :obj:`ActionDataSample`.
         """
         cls_scores = self(feats, **kwargs)
         return self.predict_by_feat(cls_scores, data_samples)
@@ -189,21 +179,20 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                 information such as `gt_labels`.
 
         Returns:
-            List[:obj:`LabelData`]: Recognition results wrapped
-                by :obj:`LabelData`. Each item usually contains following
-                keys.
-
-                - item (Tensor): Classification scores, has a shape
-                    (num_classes, )
+            List[:obj:`ActionDataSample`]: Recognition results wrapped
+                by :obj:`ActionDataSample`.
         """
         num_segs = cls_scores.shape[0] // len(data_samples)
         cls_scores = self.average_clip(cls_scores, num_segs=num_segs)
+        pred_labels = cls_scores.argmax(dim=-1, keepdim=True).detach()
 
-        predictions: LabelList = []
-        for score in cls_scores:
-            label = LabelData(item=score)
-            predictions.append(label)
-        return predictions
+        for data_sample, score, pred_lable in zip(data_samples, cls_scores,
+                                                  pred_labels):
+            prediction = LabelData(item=score)
+            pred_label = LabelData(item=pred_lable)
+            data_sample.pred_scores = prediction
+            data_sample.pred_labels = pred_label
+        return data_samples
 
     def average_clip(self, cls_scores: Tensor, num_segs: int = 1) -> Tensor:
         """Averaging class scores over multiple clips.
@@ -225,13 +214,12 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                              f'Currently supported ones are '
                              f'["score", "prob", None]')
 
-        if self.average_clips is None:
-            return cls_scores
-
         batch_size = cls_scores.shape[0]
         cls_scores = cls_scores.view(batch_size // num_segs, num_segs, -1)
 
-        if self.average_clips == 'prob':
+        if self.average_clips is None:
+            return cls_scores
+        elif self.average_clips == 'prob':
             cls_scores = F.softmax(cls_scores, dim=2).mean(dim=1)
         elif self.average_clips == 'score':
             cls_scores = cls_scores.mean(dim=1)

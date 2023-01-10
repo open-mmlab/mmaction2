@@ -15,7 +15,7 @@
 }
 ```
 
-For basic dataset information, you can refer to the dataset [website](https://20bn.com/datasets/something-something/v2).
+For basic dataset information, you can refer to the dataset [website](https://developer.qualcomm.com/software/ai-datasets/something-something).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/sthv2/`.
 
 ## Step 1. Prepare Annotations
@@ -116,3 +116,4 @@ mmaction2
 ```
 
 For training and evaluating on Something-Something V2, please refer to [getting_started.md](/docs/getting_started.md).
+s/getting_started.md).
