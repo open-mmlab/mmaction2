@@ -4,6 +4,10 @@
 
 **Highlights**
 
+- Support Action Recognition model VideoMAE(NeurIPS'2022), MVit V2(CVPR'2022), C2D and skeleton-based action recognition model STGCN++
+- Support Omni-Source training on ImageNet and Kinetics datasets
+- Support exporting spatial-temporal detection models to ONNX
+
 **New Features**
 
 - Support VideoMAE ([#1942](https://github.com/open-mmlab/mmaction2/pull/1942))
@@ -12,7 +16,7 @@
 - Support AVA-Kinetics dataset ([#2080](https://github.com/open-mmlab/mmaction2/pull/2080))
 - Support STGCN++ ([#2156](https://github.com/open-mmlab/mmaction2/pull/2156))
 - Support exporting spatial-temporal detection models to ONNX ([#2148](https://github.com/open-mmlab/mmaction2/pull/2148))
-- Support Omni-Sourece training on ImageNet and Kinetics datasets ([#2143](https://github.com/open-mmlab/mmaction2/pull/2143))
+- Support Omni-Source training on ImageNet and Kinetics datasets ([#2143](https://github.com/open-mmlab/mmaction2/pull/2143))
 
 **Improvements**
 
