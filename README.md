@@ -70,13 +70,15 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 ## What's New
 
-- (2023-1-5) We support STGCN++ on NTU-RGB+D.
-- (2022-11-30) We refine our skeleton-based pipelines and support the joint training of multi-stream skeleton information, including **joint, bone, joint-motion, and bone-motion**.
-- (2022-10-11) We support **Video Swin Transformer** on Kinetics400 and additionally train a Swin-L model on Kinetics700 to extract video features for downstream tasks.
-- (2022-10-25) We support **VideoMAE** on Kinetics400.
-- (2022-10-28) We support **C2D** on Kinetics400, achieve 73.57% Top-1 accuracy (higher than 71.8% in the [paper](https://arxiv.org/abs/1711.07971)).
+**Release**: v1.0.0rc2 with the following new features:
 
-**Release**: v1.0.0rc1 was released in 14/10/2022. Please refer to [changelog.md](docs/en/notes/changelog.md) for details and release history.
+- We Support Omni-Sourece training on ImageNet and Kinetics datasets.
+- We support exporting spatial-temporal detection models to ONNX.
+- We support **STGCN++** on NTU-RGB+D.
+- We support **MViT V2** on Kinetics 400 and something-V2.
+- We refine our skeleton-based pipelines and support the joint training of multi-stream skeleton information, including **joint, bone, joint-motion, and bone-motion**.
+- We support **VideoMAE** on Kinetics400.
+- We support **C2D** on Kinetics400, achieve 73.57% Top-1 accuracy (higher than 71.8% in the [paper](https://arxiv.org/abs/1711.07971)).
 
 ## Installation
 

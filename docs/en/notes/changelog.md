@@ -1,6 +1,67 @@
 # Changelog
 
-## 1.0.0rc1 (14/10/2022)
+## 1.0.0rc2 (1/6/2023)
+
+**Highlights**
+
+**New Features**
+
+- Support VideoMAE ([#1942](https://github.com/open-mmlab/mmaction2/pull/1942))
+- Support MViT V2 ([#2007](https://github.com/open-mmlab/mmaction2/pull/2007))
+- Supoort C2D ([#2022](https://github.com/open-mmlab/mmaction2/pull/2022))
+- Support AVA-Kinetics dataset ([#2080](https://github.com/open-mmlab/mmaction2/pull/2080))
+- Support STGCN++ ([#2156](https://github.com/open-mmlab/mmaction2/pull/2156))
+- Support exporting spatial-temporal detection models to ONNX ([#2148](https://github.com/open-mmlab/mmaction2/pull/2148))
+- Support Omni-Sourece training on ImageNet and Kinetics datasets ([#2143](https://github.com/open-mmlab/mmaction2/pull/2143))
+
+**Improvements**
+
+- Support repeat batch data augmentation ([#2170](https://github.com/open-mmlab/mmaction2/pull/2170))
+- Support calculating FLOPs tool powered by fvcore ([#1997](https://github.com/open-mmlab/mmaction2/pull/1997))
+- Support Spatial-temporal detection demo ([#2019](https://github.com/open-mmlab/mmaction2/pull/2019))
+- Add SyncBufferHook and add randomness config in train.py ([#2044](https://github.com/open-mmlab/mmaction2/pull/2044))
+- Refactor gradcam ([#2049](https://github.com/open-mmlab/mmaction2/pull/2049))
+- Support init_cfg in Swin and ViTMAE ([#2055](https://github.com/open-mmlab/mmaction2/pull/2055))
+- Refactor STGCN and related pipelines ([#2087](https://github.com/open-mmlab/mmaction2/pull/2087))
+- Refactor visualization tools ([#2092](https://github.com/open-mmlab/mmaction2/pull/2092))
+- Update `SampleFrames` transform and improve most models' performance ([#1942](https://github.com/open-mmlab/mmaction2/pull/1942))
+- Support real-time webcam demo ([#2152](https://github.com/open-mmlab/mmaction2/pull/2152))
+- Refactor and enhance 2s-AGCN ([#2130](https://github.com/open-mmlab/mmaction2/pull/2130))
+- Support adjusting fps in `SampleFrame` ([#2157](https://github.com/open-mmlab/mmaction2/pull/2157))
+
+**Bug Fixes**
+
+- Fix CI upstream library dependency ([#2000](https://github.com/open-mmlab/mmaction2/pull/2000))
+- Fix SlowOnly readme typos and results ([#2006](https://github.com/open-mmlab/mmaction2/pull/2006))
+- Fix VideoSwin readme ([#2010](https://github.com/open-mmlab/mmaction2/pull/2010))
+- Fix tools and mim error ([#2028](https://github.com/open-mmlab/mmaction2/pull/2028))
+- Fix Imgaug wrapper ([#2024](https://github.com/open-mmlab/mmaction2/pull/2024))
+- Remove useless scripts ([#2032](https://github.com/open-mmlab/mmaction2/pull/2032))
+- Fix multi-view inference ([#2045](https://github.com/open-mmlab/mmaction2/pull/2045))
+- Update mmcv maximum version to 1.8.0 ([#2047](https://github.com/open-mmlab/mmaction2/pull/2047))
+- Fix torchserver dependency ([#2053](https://github.com/open-mmlab/mmaction2/pull/2053))
+- Fix `gen_ntu_rgbd_raw` script ([#2076](https://github.com/open-mmlab/mmaction2/pull/2076))
+- Update AVA-Kinetics experiment configs and results ([#2099](https://github.com/open-mmlab/mmaction2/pull/2099))
+- Add `joint.pkl` and `bone.pkl` used in multi-stream fusion tool ([#2106](https://github.com/open-mmlab/mmaction2/pull/2106))
+- Fix lint CI config ([#2110](https://github.com/open-mmlab/mmaction2/pull/2110))
+- Update testing accuracy for modified `SampleFrames` ([#2117](https://github.com/open-mmlab/mmaction2/pull/2117)), ([#2121](https://github.com/open-mmlab/mmaction2/pull/2121)), ([#2122](https://github.com/open-mmlab/mmaction2/pull/2122)), ([#2124](https://github.com/open-mmlab/mmaction2/pull/2124)), ([#2125](https://github.com/open-mmlab/mmaction2/pull/2125)), ([#2126](https://github.com/open-mmlab/mmaction2/pull/2126)), ([#2129](https://github.com/open-mmlab/mmaction2/pull/2129)), ([#2128](https://github.com/open-mmlab/mmaction2/pull/2128))
+- Fix timm related bug ([#1976](https://github.com/open-mmlab/mmaction2/pull/1976))
+- Fix `check_videos.py` script ([#2134](https://github.com/open-mmlab/mmaction2/pull/2134))
+- Update CI maximum torch version to 1.13.0 ([#2118](https://github.com/open-mmlab/mmaction2/pull/2118))
+
+**Documentation**
+
+- Add MMYOLO description in README ([#2011](https://github.com/open-mmlab/mmaction2/pull/2011))
+- Add v1.x introduction in README ([#2023](https://github.com/open-mmlab/mmaction2/pull/2023))
+- Fix link in README ([#2035](https://github.com/open-mmlab/mmaction2/pull/2035))
+- Refine some docs ([#2038](https://github.com/open-mmlab/mmaction2/pull/2038)), ([#2040](https://github.com/open-mmlab/mmaction2/pull/2040)), ([#2058](https://github.com/open-mmlab/mmaction2/pull/2058))
+- Update TSN/TSM Readme ([#2082](https://github.com/open-mmlab/mmaction2/pull/2082))
+- Add chinese document ([#2083](https://github.com/open-mmlab/mmaction2/pull/2083))
+- Adjust docment structure ([#2088](https://github.com/open-mmlab/mmaction2/pull/2088))
+- Fix Sth-Sth and Jester dataset links ([#2103](https://github.com/open-mmlab/mmaction2/pull/2103))
+- Fix doc link ([#2131](https://github.com/open-mmlab/mmaction2/pull/2131))
+
+## 1.0.0rc1 (10/14/2022)
 
 **Highlights**
 
