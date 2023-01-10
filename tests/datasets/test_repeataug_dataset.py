@@ -26,6 +26,12 @@ class TestVideoDataset(BaseTestDataset):
                 num_clips=1),
             dict(type='DecordDecode')
         ]
+
+        video_dataset = RepeatAugDataset(
+            self.video_ann_file,
+            self.video_pipeline,
+            data_prefix={'video': self.data_prefix},
+            start_index=3)
         assert len(video_dataset) == 2
         assert video_dataset.start_index == 3
 
