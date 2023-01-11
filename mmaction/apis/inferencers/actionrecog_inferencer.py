@@ -2,10 +2,10 @@
 from typing import Dict
 
 from mmaction.structures import ActionDataSample
-from .base_mmaction_inferencer import BaseMMActionInferencer
+from .base_mmaction_inferencer import BaseMMAction2Inferencer
 
 
-class ActionRecInferencer(BaseMMActionInferencer):
+class ActionRecInferencer(BaseMMAction2Inferencer):
 
     def pred2dict(self, data_sample: ActionDataSample) -> Dict:
         """Extract elements necessary to represent a prediction into a

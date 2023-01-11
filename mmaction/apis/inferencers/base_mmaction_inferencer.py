@@ -19,7 +19,7 @@ ImgType = Union[np.ndarray, Sequence[np.ndarray]]
 ResType = Union[Dict, List[Dict], InstanceData, List[InstanceData]]
 
 
-class BaseMMActionInferencer(BaseInferencer):
+class BaseMMAction2Inferencer(BaseInferencer):
     """Base inferencer.
 
     Args:
