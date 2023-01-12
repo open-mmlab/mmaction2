@@ -4,13 +4,13 @@ from collections import OrderedDict
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import torch
+import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import ConvModule, NonLocal3d, build_activation_layer
 from mmengine.logging import MMLogger
 from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
-from torch import Tensor, nn
 from torch.nn.modules.utils import _ntuple, _triple
 
 from mmaction.registry import MODELS
@@ -812,7 +812,7 @@ class ResNet3d(nn.Module):
         Args:
             pretrained (str | None): The path of the pretrained weight. Will
                 override the original `pretrained` if set. The arg is added to
-                be compatible with mmdet. Default: None.
+                be compatible with mmdet. Defaults to None.
         """
         if pretrained:
             self.pretrained = pretrained
@@ -823,7 +823,6 @@ class ResNet3d(nn.Module):
             if self.pretrained2d:
                 # Inflate 2D model into 3D model.
                 self.inflate_weights(logger)
-
             else:
                 # Directly load 3D model.
                 load_checkpoint(
@@ -849,15 +848,16 @@ class ResNet3d(nn.Module):
         """Initialize weights."""
         self._init_weights(self, pretrained)
 
-    def forward(self, x: Tensor) -> Union[Tensor, Tuple[Tensor]]:
+    def forward(self, x: torch.Tensor) \
+            -> Union[torch.Tensor, Tuple[torch.Tensor]]:
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): The input data.
+            x (torch.Tensor): The input data.
 
         Returns:
-            Tensor or Tuple[Tensor]: The feature of the input
-                samples extracted by the backbone.
+            torch.Tensor or tuple[torch.Tensor]: The feature of the input
+            samples extracted by the backbone.
         """
         x = self.conv1(x)
         if self.with_pool1:
