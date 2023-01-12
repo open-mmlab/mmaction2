@@ -1,13 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from argparse import ArgumentParser
 
-from mmaction.apis.inferencers import ActionRecInferencer
+from mmaction.apis.inferencers import MMAction2Inferencer
 
 
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument(
-        'inputs', type=str, help='Input image file or folder path.')
+        'inputs', type=str, help='Input video file or rawframes folder path.')
     parser.add_argument(
         '--vid-out-dir',
         type=str,
@@ -17,7 +17,7 @@ def parse_args():
         '--rec',
         type=str,
         default=None,
-        help='Pretrained text recognition algorithm. It\'s the path to the '
+        help='Pretrained action recognition algorithm. It\'s the path to the '
         'config file or the model name defined in metafile.')
     parser.add_argument(
         '--rec-weights',
@@ -26,6 +26,8 @@ def parse_args():
         help='Path to the custom checkpoint file of the selected recog model. '
         'If it is not specified and "rec" is a model name of metafile, the '
         'weights will be loaded from metafile.')
+    parser.add_argument(
+        '--label-file', type=str, default=None, help='label file for dataset.')
     parser.add_argument(
         '--device',
         type=str,
@@ -50,7 +52,7 @@ def parse_args():
 
     call_args = vars(parser.parse_args())
 
-    init_kws = ['rec', 'rec_weights', 'device']
+    init_kws = ['rec', 'rec_weights', 'device', 'label_file']
     init_args = {}
     for init_kw in init_kws:
         init_args[init_kw] = call_args.pop(init_kw)
@@ -60,8 +62,8 @@ def parse_args():
 
 def main():
     init_args, call_args = parse_args()
-    ocr = ActionRecInferencer(**init_args)
-    ocr(**call_args)
+    mmaction2 = MMAction2Inferencer(**init_args)
+    mmaction2(**call_args)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .actionrecog_inferencer import ActionRecInferencer
-from .base_mmaction_inferencer import BaseMMActionInferencer
+from .actionrecog_inferencer import ActionRecogInferencer
+from .base_mmaction_inferencer import BaseMMAction2Inferencer
+from .mmaction_inferencer import MMAction2Inferencer
 
-__all__ = ['ActionRecInferencer', 'BaseMMActionInferencer']
+__all__ = [
+    'ActionRecogInferencer', 'BaseMMAction2Inferencer', 'MMAction2Inferencer'
+]

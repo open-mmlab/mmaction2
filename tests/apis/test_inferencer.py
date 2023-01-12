@@ -6,7 +6,7 @@ from unittest import TestCase
 import torch
 from parameterized import parameterized
 
-from mmaction.apis import ActionRecInferencer
+from mmaction.apis import ActionRecogInferencer
 from mmaction.structures import ActionDataSample
 from mmaction.utils import register_all_modules
 
@@ -26,11 +26,11 @@ class TestInferencer(TestCase):
                 # Skip the test if cuda is required but unavailable
                 continue
 
-            _ = ActionRecInferencer(config, label=lable_file, device=device)
+            _ = ActionRecogInferencer(config, label=lable_file, device=device)
 
             # test `init_recognizer` with invalid config
             with self.assertRaisesRegex(ValueError, 'Cannot find model'):
-                _ = ActionRecInferencer(
+                _ = ActionRecogInferencer(
                     'slowfast_config', label=lable_file, device=device)
 
     @parameterized.expand([
@@ -47,7 +47,7 @@ class TestInferencer(TestCase):
                     continue
 
                 # test video file input and return datasample
-                inferencer = ActionRecInferencer(
+                inferencer = ActionRecogInferencer(
                     config, label=label_file, device=device)
                 results = inferencer(
                     video_path, vid_out_dir=tmp_dir, return_datasamples=True)
@@ -65,7 +65,7 @@ class TestInferencer(TestCase):
                              osp.basename(video_path).replace('mp4', 'gif')))
 
                 # test np.ndarray input
-                inferencer = ActionRecInferencer(
+                inferencer = ActionRecogInferencer(
                     config,
                     label=label_file,
                     device=device,

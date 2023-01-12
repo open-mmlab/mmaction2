@@ -284,6 +284,7 @@ class ActionVisualizer(Visualizer):
         else:
             self.add_video(
                 name, resulted_video, step=step, fps=fps, out_type=out_type)
+        return resulted_video
 
     @master_only
     def add_video(

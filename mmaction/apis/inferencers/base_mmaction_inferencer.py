@@ -32,7 +32,7 @@ class BaseMMAction2Inferencer(BaseInferencer):
             from metafile. Defaults to None.
         device (str, optional): Device to run inference. If None, the available
             device will be automatically used. Defaults to None.
-        label (str): label file for dataset.
+        label_file (str, optional): label file for dataset.
         input_format (str): Input video format, Choices are 'video',
             'rawframes', 'array'. 'video' means input data is a video file,
             'rawframes' means input data is a video frame folder, and 'array'
@@ -55,10 +55,10 @@ class BaseMMAction2Inferencer(BaseInferencer):
                  model: Union[ModelType, str],
                  weights: Optional[str] = None,
                  device: Optional[str] = None,
-                 scope: Optional[str] = 'mmaction2',
-                 label: Optional[str] = None,
+                 label_file: Optional[str] = None,
                  input_format: str = 'video',
-                 pack_cfg: dict = {}) -> None:
+                 pack_cfg: dict = {},
+                 scope: Optional[str] = 'mmaction2') -> None:
         # A global counter tracking the number of videos processed, for
         # naming of the output videos
         self.num_visualized_vids = 0
@@ -68,8 +68,9 @@ class BaseMMAction2Inferencer(BaseInferencer):
         super().__init__(
             model=model, weights=weights, device=device, scope=scope)
 
-        if label is not None:
-            self.visualizer.dataset_meta = dict(classes=list_from_file(label))
+        if label_file is not None:
+            self.visualizer.dataset_meta = dict(
+                classes=list_from_file(label_file))
 
     def __call__(self,
                  inputs: InputsType,
@@ -263,7 +264,7 @@ class BaseMMAction2Inferencer(BaseInferencer):
             out_path = osp.join(vid_out_dir, video_name) if vid_out_dir != '' \
                 else None
 
-            self.visualizer.add_datasample(
+            visualization = self.visualizer.add_datasample(
                 video_name,
                 frames,
                 pred,
@@ -276,7 +277,7 @@ class BaseMMAction2Inferencer(BaseInferencer):
                 out_path=out_path,
                 target_resolution=target_resolution,
             )
-            results.append(frames)
+            results.append(visualization)
             self.num_visualized_vids += 1
 
         return results
