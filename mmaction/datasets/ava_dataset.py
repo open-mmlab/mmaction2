@@ -4,9 +4,8 @@ from collections import defaultdict
 from typing import Callable, List, Optional, Union
 
 import numpy as np
-from mmengine.fileio import load
+from mmengine.fileio import exists, list_from_file, load
 from mmengine.logging import MMLogger
-from mmengine.utils import check_file_exist
 
 from mmaction.evaluation import read_labelmap
 from mmaction.registry import DATASETS
@@ -199,36 +198,36 @@ class AVADataset(BaseActionDataset):
 
     def load_data_list(self) -> List[dict]:
         """Load AVA annotations."""
-        check_file_exist(self.ann_file)
+        exists(self.ann_file)
         data_list = []
         records_dict_by_img = defaultdict(list)
-        with open(self.ann_file, 'r') as fin:
-            for line in fin:
-                line_split = line.strip().split(',')
+        fin = list_from_file(self.ann_file)
+        for line in fin:
+            line_split = line.strip().split(',')
 
-                label = int(line_split[6])
-                if self.custom_classes is not None:
-                    if label not in self.custom_classes:
-                        continue
-                    label = self.custom_classes.index(label)
+            label = int(line_split[6])
+            if self.custom_classes is not None:
+                if label not in self.custom_classes:
+                    continue
+                label = self.custom_classes.index(label)
 
-                video_id = line_split[0]
-                timestamp = int(line_split[1])
-                img_key = f'{video_id},{timestamp:04d}'
+            video_id = line_split[0]
+            timestamp = int(line_split[1])
+            img_key = f'{video_id},{timestamp:04d}'
 
-                entity_box = np.array(list(map(float, line_split[2:6])))
-                entity_id = int(line_split[7])
-                shot_info = (0, (self.timestamp_end - self.timestamp_start) *
-                             self._FPS)
+            entity_box = np.array(list(map(float, line_split[2:6])))
+            entity_id = int(line_split[7])
+            shot_info = (0, (self.timestamp_end - self.timestamp_start) *
+                         self._FPS)
 
-                video_info = dict(
-                    video_id=video_id,
-                    timestamp=timestamp,
-                    entity_box=entity_box,
-                    label=label,
-                    entity_id=entity_id,
-                    shot_info=shot_info)
-                records_dict_by_img[img_key].append(video_info)
+            video_info = dict(
+                video_id=video_id,
+                timestamp=timestamp,
+                entity_box=entity_box,
+                label=label,
+                entity_id=entity_id,
+                shot_info=shot_info)
+            records_dict_by_img[img_key].append(video_info)
 
         for img_key in records_dict_by_img:
             video_id, timestamp = img_key.split(',')
@@ -530,36 +529,36 @@ class AVAKineticsDataset(BaseActionDataset):
 
     def load_data_list(self) -> List[dict]:
         """Load AVA annotations."""
-        check_file_exist(self.ann_file)
+        exists(self.ann_file)
         data_list = []
         records_dict_by_img = defaultdict(list)
-        with open(self.ann_file, 'r') as fin:
-            for line in fin:
-                line_split = line.strip().split(',')
+        fin = list_from_file(self.ann_file)
+        for line in fin:
+            line_split = line.strip().split(',')
 
-                label = int(line_split[6])
-                if self.custom_classes is not None:
-                    if label not in self.custom_classes:
-                        continue
-                    label = self.custom_classes.index(label)
+            label = int(line_split[6])
+            if self.custom_classes is not None:
+                if label not in self.custom_classes:
+                    continue
+                label = self.custom_classes.index(label)
 
-                video_id = line_split[0]
-                timestamp = int(line_split[1])
-                img_key = f'{video_id},{timestamp:04d}'
+            video_id = line_split[0]
+            timestamp = int(line_split[1])
+            img_key = f'{video_id},{timestamp:04d}'
 
-                entity_box = np.array(list(map(float, line_split[2:6])))
-                entity_id = int(line_split[7])
-                start, end = self.get_timestamp(video_id)
-                shot_info = (1, (end - start) * self._FPS + 1)
+            entity_box = np.array(list(map(float, line_split[2:6])))
+            entity_id = int(line_split[7])
+            start, end = self.get_timestamp(video_id)
+            shot_info = (1, (end - start) * self._FPS + 1)
 
-                video_info = dict(
-                    video_id=video_id,
-                    timestamp=timestamp,
-                    entity_box=entity_box,
-                    label=label,
-                    entity_id=entity_id,
-                    shot_info=shot_info)
-                records_dict_by_img[img_key].append(video_info)
+            video_info = dict(
+                video_id=video_id,
+                timestamp=timestamp,
+                entity_box=entity_box,
+                label=label,
+                entity_id=entity_id,
+                shot_info=shot_info)
+            records_dict_by_img[img_key].append(video_info)
 
         for img_key in records_dict_by_img:
             video_id, timestamp = img_key.split(',')

@@ -1,8 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Callable, List, Optional, Union
 
-from mmengine.fileio import load
-from mmengine.utils import check_file_exist
+from mmengine.fileio import exists, load
 
 from mmaction.registry import DATASETS
 from mmaction.utils import ConfigType
@@ -48,7 +47,7 @@ class PoseDataset(BaseActionDataset):
     def load_data_list(self) -> List[dict]:
         """Load annotation file to get skeleton information."""
         assert self.ann_file.endswith('.pkl')
-        check_file_exist(self.ann_file)
+        exists(self.ann_file)
         data_list = load(self.ann_file)
 
         if self.split is not None:
