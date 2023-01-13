@@ -3,10 +3,11 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import mmengine
 import numpy as np
+from mmengine.infer import BaseInferencer
 from mmengine.structures import InstanceData
 
+from mmaction.utils import ConfigType
 from .actionrecog_inferencer import ActionRecogInferencer
-from .base_mmaction_inferencer import BaseMMAction2Inferencer
 
 InstanceList = List[InstanceData]
 InputType = Union[str, np.ndarray]
@@ -15,10 +16,10 @@ PredType = Union[InstanceData, InstanceList]
 ResType = Union[Dict, List[Dict], InstanceData, List[InstanceData]]
 
 
-class MMAction2Inferencer(BaseMMAction2Inferencer):
-    """MMAction2 Inferencer. It's a wrapper around base task inferenecers:
-    ActionRecog, and it can be used to perform end-to-end action recognition
-    inference.
+class MMAction2Inferencer(BaseInferencer):
+    """MMAction2 Inferencer. It's a unified inferencer interface for video
+    analyse task, including: ActionRecog. and it can be used to perform end-to-
+    end action recognition inference.
 
     Args:
         rec (str, optional): Pretrained action recognition
@@ -37,6 +38,16 @@ class MMAction2Inferencer(BaseMMAction2Inferencer):
             means input data is a np.ndarray. Defaults to 'video'.
     """
 
+    preprocess_kwargs: set = set()
+    forward_kwargs: set = set()
+    visualize_kwargs: set = {
+        'return_vis', 'show', 'wait_time', 'vid_out_dir', 'draw_pred', 'fps',
+        'out_type', 'target_resolution'
+    }
+    postprocess_kwargs: set = {
+        'print_result', 'pred_out_file', 'return_datasample'
+    }
+
     def __init__(self,
                  rec: Optional[str] = None,
                  rec_weights: Optional[str] = None,
@@ -54,6 +65,9 @@ class MMAction2Inferencer(BaseMMAction2Inferencer):
             self.actionrecog_inferencer = ActionRecogInferencer(
                 rec, rec_weights, device, label_file, input_format)
             self.mode = 'rec'
+
+    def _init_pipeline(self, cfg: ConfigType) -> None:
+        pass
 
     def forward(self, inputs: InputType, batch_size: int,
                 **forward_kwargs) -> PredType:
@@ -143,6 +157,29 @@ class MMAction2Inferencer(BaseMMAction2Inferencer):
             **visualize_kwargs)  # type: ignore  # noqa: E501
         results = self.postprocess(preds, visualization, **postprocess_kwargs)
         return results
+
+    def _inputs_to_list(self, inputs: InputsType) -> list:
+        """Preprocess the inputs to a list. The main difference from mmengine
+        version is that we don't list a directory cause input could be a frame
+        folder.
+
+        Preprocess inputs to a list according to its type:
+
+        - list or tuple: return inputs
+        - str: return a list containing the string. The string
+              could be a path to file, a url or other types of string according
+              to the task.
+
+        Args:
+            inputs (InputsType): Inputs for the inferencer.
+
+        Returns:
+            list: List of input for the :meth:`preprocess`.
+        """
+        if not isinstance(inputs, (list, tuple)):
+            inputs = [inputs]
+
+        return list(inputs)
 
     def postprocess(self,
                     preds: PredType,
