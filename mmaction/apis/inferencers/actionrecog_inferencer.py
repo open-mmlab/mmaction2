@@ -1,10 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Dict
 
+from mmaction.registry import INFERENCERS
 from mmaction.structures import ActionDataSample
 from .base_mmaction_inferencer import BaseMMAction2Inferencer
 
 
+@INFERENCERS.register_module(name='action-recognition')
+@INFERENCERS.register_module()
 class ActionRecogInferencer(BaseMMAction2Inferencer):
 
     def pred2dict(self, data_sample: ActionDataSample) -> Dict:
