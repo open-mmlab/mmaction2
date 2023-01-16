@@ -11,12 +11,13 @@ from mmengine.logging import MMLogger
 from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
+from mmengine.model import BaseModule, Sequential
 from torch.nn.modules.utils import _ntuple, _triple
 
 from mmaction.registry import MODELS
 
 
-class BasicBlock3d(nn.Module):
+class BasicBlock3d(BaseModule):
     """BasicBlock 3d block for ResNet3D.
 
     Args:
@@ -44,6 +45,8 @@ class BasicBlock3d(nn.Module):
             Defaults to ``dict(type='ReLU')``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Defaults to False.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Defaults to None.
     """
     expansion = 1
 
@@ -62,8 +65,9 @@ class BasicBlock3d(nn.Module):
                  norm_cfg: Dict = dict(type='BN3d'),
                  act_cfg: Dict = dict(type='ReLU'),
                  with_cp: bool = False,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None,
                  **kwargs) -> None:
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
         assert style in ['pytorch', 'caffe']
         # make sure that only ``inflate_style`` is passed into kwargs
         assert set(kwargs).issubset(['inflate_style'])
@@ -158,7 +162,7 @@ class BasicBlock3d(nn.Module):
         return out
 
 
-class Bottleneck3d(nn.Module):
+class Bottleneck3d(BaseModule):
     """Bottleneck 3d block for ResNet3D.
 
     Args:
@@ -189,6 +193,8 @@ class Bottleneck3d(nn.Module):
             Defaults to ``dict(type='ReLU')``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Defaults to False.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Defaults to None.
     """
     expansion = 4
 
@@ -207,8 +213,9 @@ class Bottleneck3d(nn.Module):
                  conv_cfg: Dict = dict(type='Conv3d'),
                  norm_cfg: Dict = dict(type='BN3d'),
                  act_cfg: Dict = dict(type='ReLU'),
-                 with_cp: bool = False) -> None:
-        super().__init__()
+                 with_cp: bool = False,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
+        super().__init__(init_cfg=init_cfg)
         assert style in ['pytorch', 'caffe']
         assert inflate_style in ['3x1x1', '3x3x3']
 
@@ -327,7 +334,7 @@ class Bottleneck3d(nn.Module):
 
 
 @MODELS.register_module()
-class ResNet3d(nn.Module):
+class ResNet3d(BaseModule):
     """ResNet 3d backbone.
 
     Args:
@@ -391,6 +398,8 @@ class ResNet3d(nn.Module):
         zero_init_residual (bool):
             Whether to use zero initialization for residual block,
             Defaults to True.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Defaults to None.
     """
 
     arch_settings = {
@@ -409,7 +418,7 @@ class ResNet3d(nn.Module):
                  in_channels: int = 3,
                  num_stages: int = 4,
                  base_channels: int = 64,
-                 out_indices: Sequence[int] = (3, ),
+                 out_indices: Sequence[int] = (3,),
                  spatial_strides: Sequence[int] = (1, 2, 2, 2),
                  temporal_strides: Sequence[int] = (1, 1, 1, 1),
                  dilations: Sequence[int] = (1, 1, 1, 1),
@@ -432,8 +441,9 @@ class ResNet3d(nn.Module):
                  non_local: Sequence[int] = (0, 0, 0, 0),
                  non_local_cfg: Dict = dict(),
                  zero_init_residual: bool = True,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None,
                  **kwargs) -> None:
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
         self.depth = depth
@@ -491,7 +501,7 @@ class ResNet3d(nn.Module):
             spatial_stride = spatial_strides[i]
             temporal_stride = temporal_strides[i]
             dilation = dilations[i]
-            planes = self.base_channels * 2**i
+            planes = self.base_channels * 2 ** i
             res_layer = self.make_res_layer(
                 self.block,
                 self.inplanes + lateral_inplanes[i],
@@ -515,8 +525,8 @@ class ResNet3d(nn.Module):
             self.add_module(layer_name, res_layer)
             self.res_layers.append(layer_name)
 
-        self.feat_dim = self.block.expansion * self.base_channels * 2**(
-            len(self.stage_blocks) - 1)
+        self.feat_dim = self.block.expansion * \
+            self.base_channels * 2 ** (len(self.stage_blocks) - 1)
 
     @staticmethod
     def make_res_layer(block: nn.Module,
@@ -558,7 +568,7 @@ class ResNet3d(nn.Module):
                 for each block. Defaults to 1.
             inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines
                 the kernel sizes and padding strides for conv1 and conv2
-                in each block. Default: ``3x1x1``.
+                in each block. Default: ``'3x1x1'``.
             non_local (int | Sequence[int]): Determine whether to apply
                 non-local module in the corresponding block of each stages.
                 Defaults to 0.
@@ -578,9 +588,9 @@ class ResNet3d(nn.Module):
             nn.Module: A residual layer for the given config.
         """
         inflate = inflate if not isinstance(inflate, int) \
-            else (inflate, ) * blocks
+            else (inflate,) * blocks
         non_local = non_local if not isinstance(non_local, int) \
-            else (non_local, ) * blocks
+            else (non_local,) * blocks
         assert len(inflate) == blocks and len(non_local) == blocks
         downsample = None
         if spatial_stride != 1 or inplanes != planes * block.expansion:
@@ -633,7 +643,7 @@ class ResNet3d(nn.Module):
                     with_cp=with_cp,
                     **kwargs))
 
-        return nn.Sequential(*layers)
+        return Sequential(*layers)
 
     @staticmethod
     def _inflate_conv_params(conv3d: nn.Module, state_dict_2d: OrderedDict,
@@ -646,7 +656,7 @@ class ResNet3d(nn.Module):
             state_dict_2d (OrderedDict): The state dict of pretrained 2d model.
             module_name_2d (str): The name of corresponding conv module in the
                 2d model.
-            inflated_param_names (List[str]): List of parameters that have been
+            inflated_param_names (list[str]): List of parameters that have been
                 inflated.
         """
         weight_2d_name = module_name_2d + '.weight'
@@ -675,7 +685,7 @@ class ResNet3d(nn.Module):
             state_dict_2d (OrderedDict): The state dict of pretrained 2d model.
             module_name_2d (str): The name of corresponding bn module in the
                 2d model.
-            inflated_param_names (List[str]): List of parameters that have been
+            inflated_param_names (list[str]): List of parameters that have been
                 inflated.
         """
         for param_name, param in bn3d.named_parameters():
@@ -886,7 +896,7 @@ class ResNet3d(nn.Module):
 
 
 @MODELS.register_module()
-class ResNet3dLayer(nn.Module):
+class ResNet3dLayer(BaseModule):
     """ResNet 3d Layer.
 
     Args:
@@ -909,7 +919,7 @@ class ResNet3dLayer(nn.Module):
         inflate (int): Inflate dims of each block. Defaults to 1.
         inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines the
             kernel sizes and padding strides for conv1 and conv2 in each block.
-            Defaults to ``3x1x1``.
+            Defaults to ``'3x1x1'``.
         conv_cfg (dict): Config for conv layers.
             Required keys are ``type``. Defaults to ``dict(type='Conv3d')``.
         norm_cfg (dict): Config for norm layers.
@@ -924,6 +934,8 @@ class ResNet3dLayer(nn.Module):
         zero_init_residual (bool):
             Whether to use zero initialization for residual block,
             Defaults to True.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Defaults to None.
     """
 
     def __init__(self,
@@ -945,8 +957,9 @@ class ResNet3dLayer(nn.Module):
                  norm_eval: bool = False,
                  with_cp: bool = False,
                  zero_init_residual: bool = True,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None,
                  **kwargs) -> None:
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
         self.arch_settings = ResNet3d.arch_settings
         assert depth in self.arch_settings
 
@@ -982,8 +995,8 @@ class ResNet3dLayer(nn.Module):
 
         block, stage_blocks = self.arch_settings[depth]
         stage_block = stage_blocks[stage]
-        planes = 64 * 2**stage
-        inplanes = 64 * 2**(stage - 1) * block.expansion
+        planes = 64 * 2 ** stage
+        inplanes = 64 * 2 ** (stage - 1) * block.expansion
 
         res_layer = self.make_res_layer(
             block,
