@@ -7,8 +7,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import build_activation_layer, build_norm_layer
 from mmcv.cnn.bricks import DropPath
+from mmengine.logging import MMLogger
 from mmengine.model import BaseModule, ModuleList
 from mmengine.model.weight_init import trunc_normal_
+from mmengine.runner.checkpoint import _load_checkpoint_with_prefix
 from mmengine.utils import to_3tuple
 
 from mmaction.registry import MODELS
@@ -557,6 +559,11 @@ class MViT(BaseModule):
         temporal_size (int): The expected input temporal_size shape.
             Defaults to 224.
         in_channels (int): The num of input channels. Defaults to 3.
+        pretrained (str, optional): Name of pretrained model.
+            Defaults to None.
+        pretrained_type (str, optional): Type of pretrained model. choose from
+            'imagenet', 'maskfeat', None. Defaults to None, which means load
+            from same architecture.
         out_scales (int | Sequence[int]): The output scale indices.
             They should not exceed the length of ``downscale_indices``.
             Defaults to -1, which means the last scale.
@@ -656,6 +663,7 @@ class MViT(BaseModule):
         temporal_size: int = 16,
         in_channels: int = 3,
         pretrained: Optional[str] = None,
+        pretrained_type: Optional[str] = None,
         out_scales: Union[int, Sequence[int]] = -1,
         drop_path_rate: float = 0.,
         use_abs_pos_embed: bool = False,
@@ -682,8 +690,9 @@ class MViT(BaseModule):
         ]
     ) -> None:
         if pretrained:
-            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+            init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         super().__init__(init_cfg=init_cfg)
+        self.pretrained_type = pretrained_type
 
         if isinstance(arch, str):
             arch = arch.lower()
@@ -803,12 +812,44 @@ class MViT(BaseModule):
                     self.add_module(f'norm{stage_index}', norm_layer)
 
     def init_weights(self, pretrained: Optional[str] = None) -> None:
-        super().init_weights()
+        # interpolate maskfeat relative position embedding
+        if self.pretrained_type == 'maskfeat':
+            logger = MMLogger.get_current_instance()
+            pretrained = self.init_cfg['checkpoint']
+            logger.info(f'load pretrained model from {pretrained}')
+            state_dict = _load_checkpoint_with_prefix(
+                'backbone.', pretrained, map_location='cpu')
+            attn_rel_pos_keys = [
+                k for k in state_dict.keys() if 'attn.rel_pos' in k
+            ]
+            for k in attn_rel_pos_keys:
+                attn_rel_pos_pretrained = state_dict[k]
+                attn_rel_pos_current = self.state_dict()[k]
+                L1, dim1 = attn_rel_pos_pretrained.size()
+                L2, dim2 = attn_rel_pos_current.size()
+                if dim1 != dim2:
+                    logger.warning(f'Dim mismatch in loading {k}, passing')
+                else:
+                    if L1 != L2:
+                        interp_param = torch.nn.functional.interpolate(
+                            attn_rel_pos_pretrained.t().unsqueeze(0),
+                            size=L2,
+                            mode='linear')
+                        interp_param = \
+                            interp_param.view(dim2, L2).permute(1, 0)
+                        state_dict[k] = interp_param
+                        logger.info(
+                            f'{k} reshaped from {(L1, dim1)} to {L2, dim2}')
+            msg = self.load_state_dict(state_dict, strict=False)
+            logger.info(msg)
 
-        if (isinstance(self.init_cfg, dict)
-                and self.init_cfg['type'] == 'Pretrained'):
-            # Suppress default init if use pretrained model.
-            return
+        elif self.pretrained_type is None:
+            super().init_weights()
+
+            if (isinstance(self.init_cfg, dict)
+                    and self.init_cfg['type'] == 'Pretrained'):
+                # Suppress default init if use pretrained model.
+                return
 
         if self.use_abs_pos_embed:
             trunc_normal_(self.pos_embed, std=0.02)

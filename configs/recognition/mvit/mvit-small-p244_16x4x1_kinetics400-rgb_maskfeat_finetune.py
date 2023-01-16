@@ -3,7 +3,13 @@ _base_ = [
 ]
 
 model = dict(
-    backbone=dict(drop_path_rate=0.1, dim_mul_in_attention=False),
+    backbone=dict(
+        drop_path_rate=0.1,
+        dim_mul_in_attention=False,
+        pretrained=  # noqa: E251
+        'work_dirs/3_download_ckpts/k400_MVIT_S_MaskFeat_PT-converted-cat-qkv.pth',  # noqa
+        pretrained_type='maskfeat',
+    ),
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[114.75, 114.75, 114.75],
