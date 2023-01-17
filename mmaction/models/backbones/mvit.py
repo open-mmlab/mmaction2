@@ -691,7 +691,7 @@ class MViT(BaseModule):
     ) -> None:
         if pretrained:
             init_cfg = dict(type='Pretrained', checkpoint=pretrained)
-        super().__init__(init_cfg=init_cfg)
+        super().__init__(init_cfg=init_cfg.copy())
         self.pretrained_type = pretrained_type
 
         if isinstance(arch, str):
@@ -711,6 +711,9 @@ class MViT(BaseModule):
         self.num_layers = self.arch_settings['num_layers']
         self.num_heads = self.arch_settings['num_heads']
         self.downscale_indices = self.arch_settings['downscale_indices']
+        # Defaults take downscale_indices as downscale_indices
+        self.dim_mul_indices = self.arch_settings.get(
+            'dim_mul_indices', self.downscale_indices.copy())
         self.num_scales = len(self.downscale_indices) + 1
         self.stage_indices = {
             index - 1: i
@@ -767,19 +770,21 @@ class MViT(BaseModule):
         stride_kv = adaptive_kv_stride
         input_size = self.patch_resolution
         for i in range(self.num_layers):
-            if i in self.downscale_indices:
+            if i in self.downscale_indices or i in self.dim_mul_indices:
                 num_heads *= head_mul
+
+            if i in self.downscale_indices:
                 stride_q = [1, 2, 2]
                 stride_kv = [max(s // 2, 1) for s in stride_kv]
             else:
                 stride_q = [1, 1, 1]
 
             # Set output embed_dims
-            if dim_mul_in_attention and i in self.downscale_indices:
-                # multiply embed_dims in downscale layers.
+            if dim_mul_in_attention and i in self.dim_mul_indices:
+                # multiply embed_dims in dim_mul_indices layers.
                 out_dims = out_dims_list[-1] * dim_mul
-            elif not dim_mul_in_attention and i + 1 in self.downscale_indices:
-                # multiply embed_dims before downscale layers.
+            elif not dim_mul_in_attention and i + 1 in self.dim_mul_indices:
+                # multiply embed_dims before dim_mul_indices layers.
                 out_dims = out_dims_list[-1] * dim_mul
             else:
                 out_dims = out_dims_list[-1]
