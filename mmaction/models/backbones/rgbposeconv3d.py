@@ -19,13 +19,31 @@ class RGBPoseConv3D(BaseModule):
 
     Args:
         pretrained (str): The file path to a pretrained model.
+            Defaults to None.
         speed_ratio (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
             :math:`\\alpha` in the paper. Defaults to 4.
         channel_ratio (int): Reduce the channel number of fast pathway
             by ``channel_ratio``, corresponding to :math:`\\beta` in the paper.
             Defaults to 4.
-        rgb_pathway (dict):
+        rgb_detach (bool):
+        pose_detach (bool):
+        rgb_drop_path (float):
+        pose_drop_path (float):
+        rgb_pathway (dict): Configuration of rgb branch. Defaults to
+            ``dict(num_stages=4, lateral=True, lateral_infl=1,
+            lateral_activate=(0, 0, 1, 1), fusion_kernel=7, base_channels=64,
+            conv1_kernel=(1, 7, 7), inflate=(0, 0, 1, 1))``.
+        pose_pathway (dict): Configuration of pose branch. Defaults to
+            ``dict(num_stages=3, stage_blocks=(4, 6, 3), lateral=True,
+            lateral_inv=True, lateral_infl=16, lateral_activate=(0, 1, 1),
+            fusion_kernel=7, in_channels=17, base_channels=32,
+            out_indices=(2, ), conv1_kernel=(1, 7, 7), conv1_stride_s=1,
+            conv1_stride_t=1, pool1_stride_s=1, pool1_stride_t=1,
+            inflate=(0, 1, 1), spatial_strides=(2, 2, 2),
+            temporal_strides=(1, 1, 1))``.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Defaults to None.
     """
 
     def __init__(self,
@@ -45,7 +63,7 @@ class RGBPoseConv3D(BaseModule):
                      base_channels=64,
                      conv1_kernel=(1, 7, 7),
                      inflate=(0, 0, 1, 1)),
-                 pose_pathway=dict(
+                 pose_pathway: Dict = dict(
                      num_stages=3,
                      stage_blocks=(4, 6, 3),
                      lateral=True,
