@@ -73,7 +73,10 @@ The models are ported from the repo [UniFormerV2](https://github.com/OpenGVLab/U
 5. Due to some differences between [SlowFast](https://github.com/facebookresearch/SlowFast) and MMAction2, there are some gaps between their performances.
 6. Kinetics-710 is used for pretraining, which helps improve the performance on other datasets efficiently. You can find more details in the [paper](https://arxiv.org/abs/2211.09552).
 
-For more details on data preparation, you can refer to [preparing_kinetics](/tools/data/kinetics/README.md).
+For more details on data preparation, you can refer to
+
+- [preparing_kinetics](/tools/data/kinetics/README.md)
+- [preparing_mit](/tools/data/mit/README.md)
 
 ## Test
 
