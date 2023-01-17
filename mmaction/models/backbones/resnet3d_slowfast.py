@@ -1,18 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 from collections import OrderedDict
-from typing import List, Optional, Sequence, Union, Tuple, Dict
+from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmengine.logging import MMLogger, print_log
+from mmengine.model import BaseModule
 from mmengine.model.weight_init import kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
-from mmengine.model import BaseModule
 
 from mmaction.registry import MODELS
-from mmaction.utils import ConfigType, OptConfigType
 from .resnet3d import ResNet3d
 
 
@@ -31,6 +30,7 @@ class DeConvModule(BaseModule):
         with_bn (bool): Whether to add a BN layer. Defaults to True.
         with_relu (bool): Whether to add a ReLU layer. Defaults to True.
     """
+
     def __init__(self,
                  in_channels: int,
                  out_channels: int,
@@ -125,7 +125,7 @@ class ResNet3dPathway(ResNet3d):
             if self.lateral_inv:
                 self.conv1_lateral = DeConvModule(
                     self.inplanes * self.channel_ratio,
-                    self.inplanes * self.channel_ratio // self.lateral_infl,
+                    self.inplanes * self.channel_ratio // lateral_infl,
                     kernel_size=(fusion_kernel, 1, 1),
                     stride=(self.speed_ratio, 1, 1),
                     padding=((fusion_kernel - 1) // 2, 0, 0),
@@ -148,13 +148,14 @@ class ResNet3dPathway(ResNet3d):
             planes = self.base_channels * 2**i
             self.inplanes = planes * self.block.expansion
 
-            if lateral and i != self.num_stages - 1 and self.lateral_activate[i + 1]:
+            if lateral and i != self.num_stages - 1 \
+                    and self.lateral_activate[i + 1]:
                 # no lateral connection needed in final stage
                 lateral_name = f'layer{(i + 1)}_lateral'
                 if self.lateral_inv:
                     conv_module = DeConvModule(
                         self.inplanes * self.channel_ratio,
-                        self.inplanes * self.channel_ratio // self.lateral_infl,
+                        self.inplanes * self.channel_ratio // lateral_infl,
                         kernel_size=(fusion_kernel, 1, 1),
                         stride=(self.speed_ratio, 1, 1),
                         padding=((fusion_kernel - 1) // 2, 0, 0),
@@ -176,21 +177,24 @@ class ResNet3dPathway(ResNet3d):
                 self.lateral_connections.append(lateral_name)
 
     def _calculate_lateral_inplanes(self, kwargs):
-        """Calculate inplanes for lateral connecttion."""
+        """Calculate inplanes for lateral connection."""
         depth = kwargs.get('depth', 50)
         expansion = 1 if depth < 50 else 4
         base_channels = kwargs.get('base_channels', 64)
         lateral_inplanes = []
         for i in range(kwargs.get('num_stages', 4)):
             if expansion % 2 == 0:
-                planes = base_channels * (2 ** i) * ((expansion // 2) ** (i > 0))
+                planes = base_channels * (2 ** i) * \
+                         ((expansion // 2) ** (i > 0))
             else:
-                planes = base_channels * (2 ** i) // (2 ** (i > 0))
+                planes = base_channels * (2**i) // (2**(i > 0))
             if self.lateral and self.lateral_activate[i]:
                 if self.lateral_inv:
-                    lateral_inplane = planes * self.channel_ratio // self.lateral_infl
+                    lateral_inplane = planes * \
+                                      self.channel_ratio // self.lateral_infl
                 else:
-                    lateral_inplane = planes * self.lateral_infl // self.channel_ratio
+                    lateral_inplane = planes * \
+                                      self.lateral_infl // self.channel_ratio
             else:
                 lateral_inplane = 0
             lateral_inplanes.append(lateral_inplane)
@@ -403,32 +407,30 @@ class ResNet3dSlowFast(BaseModule):
             Defaults to None.
     """
 
-    def __init__(
-        self,
-        pretrained: Optional[str] = None,
-        resample_rate: int = 8,
-        speed_ratio: int = 8,
-        channel_ratio: int = 8,
-        slow_pathway: Dict = dict(
-            type='resnet3d',
-            depth=50,
-            pretrained=None,
-            lateral=True,
-            conv1_kernel=(1, 7, 7),
-            conv1_stride_t=1,
-            pool1_stride_t=1,
-            inflate=(0, 0, 1, 1)),
-        fast_pathway: Dict = dict(
-            type='resnet3d',
-            depth=50,
-            pretrained=None,
-            lateral=False,
-            base_channels=8,
-            conv1_kernel=(5, 7, 7),
-            conv1_stride_t=1,
-            pool1_stride_t=1),
-        init_cfg: Optional[Union[Dict, List[Dict]]] = None
-    ) -> None:
+    def __init__(self,
+                 pretrained: Optional[str] = None,
+                 resample_rate: int = 8,
+                 speed_ratio: int = 8,
+                 channel_ratio: int = 8,
+                 slow_pathway: Dict = dict(
+                     type='resnet3d',
+                     depth=50,
+                     pretrained=None,
+                     lateral=True,
+                     conv1_kernel=(1, 7, 7),
+                     conv1_stride_t=1,
+                     pool1_stride_t=1,
+                     inflate=(0, 0, 1, 1)),
+                 fast_pathway: Dict = dict(
+                     type='resnet3d',
+                     depth=50,
+                     pretrained=None,
+                     lateral=False,
+                     base_channels=8,
+                     conv1_kernel=(5, 7, 7),
+                     conv1_stride_t=1,
+                     pool1_stride_t=1),
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(init_cfg=init_cfg)
         self.pretrained = pretrained
         self.resample_rate = resample_rate

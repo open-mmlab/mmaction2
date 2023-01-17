@@ -8,10 +8,10 @@ import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import ConvModule, NonLocal3d, build_activation_layer
 from mmengine.logging import MMLogger
+from mmengine.model import BaseModule, Sequential
 from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
-from mmengine.model import BaseModule, Sequential
 from torch.nn.modules.utils import _ntuple, _triple
 
 from mmaction.registry import MODELS
@@ -418,7 +418,7 @@ class ResNet3d(BaseModule):
                  in_channels: int = 3,
                  num_stages: int = 4,
                  base_channels: int = 64,
-                 out_indices: Sequence[int] = (3,),
+                 out_indices: Sequence[int] = (3, ),
                  spatial_strides: Sequence[int] = (1, 2, 2, 2),
                  temporal_strides: Sequence[int] = (1, 1, 1, 1),
                  dilations: Sequence[int] = (1, 1, 1, 1),
@@ -501,7 +501,7 @@ class ResNet3d(BaseModule):
             spatial_stride = spatial_strides[i]
             temporal_stride = temporal_strides[i]
             dilation = dilations[i]
-            planes = self.base_channels * 2 ** i
+            planes = self.base_channels * 2**i
             res_layer = self.make_res_layer(
                 self.block,
                 self.inplanes + lateral_inplanes[i],
@@ -995,8 +995,8 @@ class ResNet3dLayer(BaseModule):
 
         block, stage_blocks = self.arch_settings[depth]
         stage_block = stage_blocks[stage]
-        planes = 64 * 2 ** stage
-        inplanes = 64 * 2 ** (stage - 1) * block.expansion
+        planes = 64 * 2**stage
+        inplanes = 64 * 2**(stage - 1) * block.expansion
 
         res_layer = self.make_res_layer(
             block,
