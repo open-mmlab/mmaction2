@@ -1,9 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
-from collections import OrderedDict
-from typing import Any, Optional, Sequence, Tuple, Union
+from typing import Any, Sequence, Tuple
 
-import numpy as np
 from mmeval import Accuracy as MMEVAL_Accuracy
 
 from mmaction.registry import METRICS
@@ -35,6 +32,7 @@ class AccMetric(MMEVAL_Accuracy):
 
     def evaluate(self, *args, **kwargs) -> dict:
         """Returns metric results and reset state.
+
         This method would be invoked by ``mmengine.Evaluator``.
         """
         metric_results = self.compute(*args, **kwargs)
