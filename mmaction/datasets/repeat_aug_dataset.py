@@ -66,6 +66,7 @@ class RepeatAugDataset(VideoDataset):
                  pipeline: List[Union[dict, Callable]],
                  data_prefix: ConfigType = dict(video=''),
                  num_repeats: int = 4,
+                 sample_once: bool = False,
                  multi_class: bool = False,
                  num_classes: Optional[int] = None,
                  start_index: int = 0,
@@ -91,6 +92,7 @@ class RepeatAugDataset(VideoDataset):
             test_mode=False,
             **kwargs)
         self.num_repeats = num_repeats
+        self.sample_once = sample_once
 
     def prepare_data(self, idx) -> List[dict]:
         """Get data processed by ``self.pipeline``.
@@ -112,11 +114,20 @@ class RepeatAugDataset(VideoDataset):
             total_frames=data_info['total_frames'],
             start_index=data_info['start_index'])
 
-        for repeat in range(self.num_repeats):
+        if not self.sample_once:
+            for repeat in range(self.num_repeats):
+                data_info_ = transforms[1](fake_data_info)  # SampleFrames
+                frame_inds = data_info_['frame_inds']
+                frame_inds_list.append(frame_inds.reshape(-1))
+                frame_inds_length.append(frame_inds.size +
+                                         frame_inds_length[-1])
+        else:
             data_info_ = transforms[1](fake_data_info)  # SampleFrames
             frame_inds = data_info_['frame_inds']
-            frame_inds_list.append(frame_inds.reshape(-1))
-            frame_inds_length.append(frame_inds.size + frame_inds_length[-1])
+            for repeat in range(self.num_repeats):
+                frame_inds_list.append(frame_inds.reshape(-1))
+                frame_inds_length.append(frame_inds.size +
+                                         frame_inds_length[-1])
 
         for key in data_info_:
             data_info[key] = data_info_[key]
