@@ -339,6 +339,7 @@ class ResNet3d(BaseModule):
 
     Args:
         depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
+            Defaults to 50.
         pretrained (str, optional): Name of pretrained model. Defaults to None.
         stage_blocks (tuple, optional): Set number of stages for each res
             layer. Defaults to None.
@@ -411,7 +412,7 @@ class ResNet3d(BaseModule):
     }
 
     def __init__(self,
-                 depth: int,
+                 depth: int = 50,
                  pretrained: Optional[str] = None,
                  stage_blocks: Optional[Tuple] = None,
                  pretrained2d: bool = True,

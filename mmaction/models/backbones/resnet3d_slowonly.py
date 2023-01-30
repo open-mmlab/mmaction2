@@ -16,8 +16,6 @@ class ResNet3dSlowOnly(ResNet3dPathway):
     """SlowOnly backbone based on ResNet3dPathway.
 
     Args:
-        lateral (bool): Determines whether to enable the lateral connection
-            from another pathway. Defaults to False.
         conv1_kernel (Sequence[int]): Kernel size of the first conv layer.
             Defaults to ``(1, 7, 7)``.
         conv1_stride_t (int): Temporal stride of the first conv layer.
@@ -30,8 +28,6 @@ class ResNet3dSlowOnly(ResNet3dPathway):
     """
 
     def __init__(self,
-                 *args,
-                 lateral: bool = False,
                  conv1_kernel: Sequence[int] = (1, 7, 7),
                  conv1_stride_t: int = 1,
                  pool1_stride_t: int = 1,
@@ -39,8 +35,6 @@ class ResNet3dSlowOnly(ResNet3dPathway):
                  with_pool2: bool = False,
                  **kwargs) -> None:
         super().__init__(
-            *args,
-            lateral=lateral,
             conv1_kernel=conv1_kernel,
             conv1_stride_t=conv1_stride_t,
             pool1_stride_t=pool1_stride_t,

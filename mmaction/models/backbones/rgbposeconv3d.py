@@ -26,14 +26,18 @@ class RGBPoseConv3D(BaseModule):
         channel_ratio (int): Reduce the channel number of fast pathway
             by ``channel_ratio``, corresponding to :math:`\\beta` in the paper.
             Defaults to 4.
-        rgb_detach (bool):
-        pose_detach (bool):
-        rgb_drop_path (float):
-        pose_drop_path (float):
+        rgb_detach (bool): Whether to detach the gradients from the pose path.
+            Defaults to False.
+        pose_detach (bool): Whether to detach the gradients from the rgb path.
+            Defaults to False.
+        rgb_drop_path (float): The drop rate for droping the features from
+            the pose path. Defaults to 0.
+        pose_drop_path (float): The drop rate for droping the features from
+            the rgb path. Defaults to 0.
         rgb_pathway (dict): Configuration of rgb branch. Defaults to
             ``dict(num_stages=4, lateral=True, lateral_infl=1,
             lateral_activate=(0, 0, 1, 1), fusion_kernel=7, base_channels=64,
-            conv1_kernel=(1, 7, 7), inflate=(0, 0, 1, 1))``.
+            conv1_kernel=(1, 7, 7), inflate=(0, 0, 1, 1), with_pool2=False)``.
         pose_pathway (dict): Configuration of pose branch. Defaults to
             ``dict(num_stages=3, stage_blocks=(4, 6, 3), lateral=True,
             lateral_inv=True, lateral_infl=16, lateral_activate=(0, 1, 1),
@@ -41,7 +45,7 @@ class RGBPoseConv3D(BaseModule):
             out_indices=(2, ), conv1_kernel=(1, 7, 7), conv1_stride_s=1,
             conv1_stride_t=1, pool1_stride_s=1, pool1_stride_t=1,
             inflate=(0, 1, 1), spatial_strides=(2, 2, 2),
-            temporal_strides=(1, 1, 1))``.
+            temporal_strides=(1, 1, 1), with_pool2=False)``.
         init_cfg (dict or list[dict], optional): Initialization config dict.
             Defaults to None.
     """
@@ -62,7 +66,8 @@ class RGBPoseConv3D(BaseModule):
                      fusion_kernel=7,
                      base_channels=64,
                      conv1_kernel=(1, 7, 7),
-                     inflate=(0, 0, 1, 1)),
+                     inflate=(0, 0, 1, 1),
+                     with_pool2=False),
                  pose_pathway: Dict = dict(
                      num_stages=3,
                      stage_blocks=(4, 6, 3),
@@ -81,9 +86,10 @@ class RGBPoseConv3D(BaseModule):
                      pool1_stride_t=1,
                      inflate=(0, 1, 1),
                      spatial_strides=(2, 2, 2),
-                     temporal_strides=(1, 1, 1)),
+                     temporal_strides=(1, 1, 1),
+                     dilations=(1, 1, 1),
+                     with_pool2=False),
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
-
         super().__init__(init_cfg=init_cfg)
         self.pretrained = pretrained
         self.speed_ratio = speed_ratio
@@ -127,7 +133,7 @@ class RGBPoseConv3D(BaseModule):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    def forward(self, imgs, heatmap_imgs):
+    def forward(self, imgs: torch.Tensor, heatmap_imgs: torch.Tensor) -> tuple:
         """Defines the computation performed at every call.
 
         Args:
