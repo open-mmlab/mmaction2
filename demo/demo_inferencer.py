@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument(
         '--show',
         action='store_true',
-        help='Display the image in a popup window.')
+        help='Display the video in a popup window.')
     parser.add_argument(
         '--print-result',
         action='store_true',

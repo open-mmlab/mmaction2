@@ -43,6 +43,7 @@ class ActionRecogInferencer(BaseInferencer):
             means input data is a np.ndarray. Defaults to 'video'.
         pack_cfg (dict, optional): Config for `InferencerPackInput` to load
             input. Defaults to empty dict.
+        scope (str, optional): The scope of the model. Defaults to "mmaction".
     """
 
     preprocess_kwargs: set = set()
@@ -62,7 +63,7 @@ class ActionRecogInferencer(BaseInferencer):
                  label_file: Optional[str] = None,
                  input_format: str = 'video',
                  pack_cfg: dict = {},
-                 scope: Optional[str] = 'mmaction2') -> None:
+                 scope: Optional[str] = 'mmaction') -> None:
         # A global counter tracking the number of videos processed, for
         # naming of the output videos
         self.num_visualized_vids = 0

@@ -26,12 +26,13 @@ class TestInferencer(TestCase):
                 # Skip the test if cuda is required but unavailable
                 continue
 
-            _ = ActionRecogInferencer(config, label=lable_file, device=device)
+            _ = ActionRecogInferencer(
+                config, label_file=lable_file, device=device)
 
             # test `init_recognizer` with invalid config
             with self.assertRaisesRegex(ValueError, 'Cannot find model'):
                 _ = ActionRecogInferencer(
-                    'slowfast_config', label=lable_file, device=device)
+                    'slowfast_config', label_file=lable_file, device=device)
 
     @parameterized.expand([
         (('tsn'), ('tools/data/kinetics/label_map_k400.txt'),
@@ -48,7 +49,7 @@ class TestInferencer(TestCase):
 
                 # test video file input and return datasample
                 inferencer = ActionRecogInferencer(
-                    config, label=label_file, device=device)
+                    config, label_file=label_file, device=device)
                 results = inferencer(
                     video_path, vid_out_dir=tmp_dir, return_datasamples=True)
                 self.assertIn('predictions', results)
@@ -67,7 +68,7 @@ class TestInferencer(TestCase):
                 # test np.ndarray input
                 inferencer = ActionRecogInferencer(
                     config,
-                    label=label_file,
+                    label_file=label_file,
                     device=device,
                     input_format='array')
                 import decord
