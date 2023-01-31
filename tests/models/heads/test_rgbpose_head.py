@@ -7,8 +7,10 @@ from mmaction.models import RGBPoseHead
 
 def test_rgbpose_head():
     """Test RGBPoseHead."""
-    rgbpose_head = RGBPoseHead(num_classes=4, in_channels=[2048, 512],
-                               dropout=dict(rgb=0.51, pose=0.49))
+    rgbpose_head = RGBPoseHead(
+        num_classes=4,
+        in_channels=[2048, 512],
+        dropout=dict(rgb=0.51, pose=0.49))
     rgbpose_head.init_weights()
 
     assert rgbpose_head.num_classes == 4
