@@ -30,9 +30,9 @@ class RGBPoseConv3D(BaseModule):
             Defaults to False.
         pose_detach (bool): Whether to detach the gradients from the rgb path.
             Defaults to False.
-        rgb_drop_path (float): The drop rate for droping the features from
+        rgb_drop_path (float): The drop rate for dropping the features from
             the pose path. Defaults to 0.
-        pose_drop_path (float): The drop rate for droping the features from
+        pose_drop_path (float): The drop rate for dropping the features from
             the rgb path. Defaults to 0.
         rgb_pathway (dict): Configuration of rgb branch. Defaults to
             ``dict(num_stages=4, lateral=True, lateral_infl=1,

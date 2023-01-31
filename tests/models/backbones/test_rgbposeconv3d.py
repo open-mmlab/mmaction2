@@ -5,6 +5,7 @@ import torch
 from mmaction.models import RGBPoseConv3D
 from mmaction.testing import generate_backbone_demo_inputs
 
+
 def test_rgbposeconv3d():
     """Test RGBPoseConv3D backbone."""
 

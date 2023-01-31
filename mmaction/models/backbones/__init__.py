@@ -15,6 +15,7 @@ from .resnet_audio import ResNetAudio
 from .resnet_omni import OmniResNet
 from .resnet_tin import ResNetTIN
 from .resnet_tsm import ResNetTSM
+from .rgbposeconv3d import RGBPoseConv3D
 from .stgcn import STGCN
 from .swin import SwinTransformer3D
 from .tanet import TANet
@@ -23,7 +24,6 @@ from .uniformer import UniFormer
 from .uniformerv2 import UniFormerV2
 from .vit_mae import VisionTransformer
 from .x3d import X3D
-from .rgbposeconv3d import RGBPoseConv3D
 
 __all__ = [
     'AAGCN', 'C2D', 'C3D', 'MViT', 'MobileNetV2', 'MobileNetV2TSM',
