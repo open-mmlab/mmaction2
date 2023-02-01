@@ -4,7 +4,7 @@ import io
 import os
 import os.path as osp
 import shutil
-from typing import Optional, Dict, Union
+from typing import Optional, Dict, List, Union
 
 import mmcv
 import numpy as np
@@ -1153,35 +1153,32 @@ class DecordDecode(BaseTransform):
 
     Decord: https://github.com/dmlc/decord
 
-    Required keys are "video_reader", "filename" and "frame_inds",
-    added or modified keys are "imgs" and "original_shape".
+    Required Keys:
+
+        - video_reader
+        - frame_inds
+
+    Added Keys:
+
+        - imgs
+        - original_shape
+        - img_shape
 
     Args:
         mode (str): Decoding mode. Options are 'accurate' and 'efficient'.
             If set to 'accurate', it will decode videos into accurate frames.
             If set to 'efficient', it will adopt fast seeking but only return
             key frames, which may be duplicated and inaccurate, and more
-            suitable for large scene-based video datasets. Default: 'accurate'.
+            suitable for large scene-based video datasets.
+            Defaults to ``'accurate'``.
     """
 
-    def __init__(self, mode='accurate'):
+    def __init__(self, mode: str = 'accurate') -> None:
         self.mode = mode
         assert mode in ['accurate', 'efficient']
 
-    def transform(self, results):
-        """Perform the Decord decoding.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        container = results['video_reader']
-
-        if results['frame_inds'].ndim != 1:
-            results['frame_inds'] = np.squeeze(results['frame_inds'])
-
-        frame_inds = results['frame_inds']
-
+    def _decord_load_frames(self, container: object,
+                            frame_inds: np.ndarray) -> List[np.ndarray]:
         if self.mode == 'accurate':
             imgs = container.get_batch(frame_inds).asnumpy()
             imgs = list(imgs)
@@ -1193,6 +1190,24 @@ class DecordDecode(BaseTransform):
                 container.seek(idx)
                 frame = container.next()
                 imgs.append(frame.asnumpy())
+        return imgs
+
+    def transform(self, results: Dict) -> Dict:
+        """Perform the Decord decoding.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        container = results['video_reader']
+
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        frame_inds = results['frame_inds']
+        imgs = self._decord_load_frames(container, frame_inds)
 
         results['video_reader'] = None
         del container
@@ -1203,7 +1218,7 @@ class DecordDecode(BaseTransform):
 
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = f'{self.__class__.__name__}(mode={self.mode})'
         return repr_str
 

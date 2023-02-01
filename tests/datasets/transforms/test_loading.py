@@ -276,7 +276,7 @@ class TestDecode(BaseTestLoading):
     def test_decord_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape']
 
-        # test Decord with 2 dim input and start_index = 0
+        # test Decord with 2 dim input using accurate mode
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(0, self.total_frames,
                                                3)[:, np.newaxis]
@@ -291,7 +291,7 @@ class TestDecode(BaseTestLoading):
         assert np.shape(decord_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
 
-        # test Decord with 1 dim input and start_index = 0
+        # test Decord with 1 dim input using accurate mode
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(0, self.total_frames, 3)
         decord_init = DecordInit()
@@ -305,7 +305,7 @@ class TestDecode(BaseTestLoading):
         assert np.shape(decord_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
 
-        # test Decord with 2 dim input and start_index = 0
+        # test Decord with 2 dim input using efficient mode
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(0, self.total_frames,
                                                3)[:, np.newaxis]
@@ -313,14 +313,14 @@ class TestDecode(BaseTestLoading):
         decord_init_result = decord_init(video_result)
         video_result['video_reader'] = decord_init_result['video_reader']
 
-        decord_decode = DecordDecode()
+        decord_decode = DecordDecode(mode='efficient')
         decord_decode_result = decord_decode(video_result)
         assert assert_dict_has_keys(decord_decode_result, target_keys)
         assert decord_decode_result['original_shape'] == (256, 340)
         assert np.shape(decord_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
 
-        # test Decord with 1 dim input
+        # test Decord with 1 dim input using efficient mode
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(1, self.total_frames, 3)
         decord_init = DecordInit()
