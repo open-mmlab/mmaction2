@@ -36,7 +36,6 @@ def test_rgbpose_head():
     feat_rgb = torch.rand((2, 2048, 8, 7, 7))
     feat_pose = torch.rand((2, 512, 32, 7, 7))
 
-    # i3d head inference
     cls_scores = rgbpose_head((feat_rgb, feat_pose))
     assert cls_scores['rgb'].shape == torch.Size([2, 4])
     assert cls_scores['pose'].shape == torch.Size([2, 4])
