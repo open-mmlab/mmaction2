@@ -24,12 +24,6 @@ ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
 file_client_args = dict(io_backend='disk')
-# file_client_args = dict(
-#     io_backend='petrel',
-#     path_mapping=dict({
-#         'data/kinetics400':
-#         's254:s3://openmmlab/datasets/action/Kinetics400'
-#     }))
 
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
@@ -71,7 +65,7 @@ test_pipeline = [
         num_clips=5,
         test_mode=True),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(-1, 256)),
+    dict(type='Resize', scale=(-1, 224)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
@@ -148,7 +142,7 @@ param_scheduler = [
 ]
 
 default_hooks = dict(
-    checkpoint=dict(interval=1, max_keep_ckpts=20), logger=dict(interval=100))
+    checkpoint=dict(interval=3, max_keep_ckpts=5), logger=dict(interval=100))
 
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically

@@ -22,7 +22,8 @@ def get_type(transform: Union[dict, Callable]) -> str:
 
 @DATASETS.register_module()
 class RepeatAugDataset(VideoDataset):
-    """Video dataset for action recognition.
+    """Video dataset for action recognition use repeat augment.
+    https://arxiv.org/pdf/1901.09335.pdf.
 
     The dataset loads raw videos and apply specified transforms to return a
     dict containing the frame tensors and other information.
@@ -47,6 +48,10 @@ class RepeatAugDataset(VideoDataset):
             data transforms.
         data_prefix (dict or ConfigDict): Path to a directory where videos
             are held. Defaults to ``dict(video='')``.
+        num_repeats (int): Number of repeat time of one video in a batch.
+            Defaults to 4.
+        sample_once (bool): Determines whether use same frame index for
+            repeat samples. Defaults to False.
         multi_class (bool): Determines whether the dataset is a multi-class
             dataset. Defaults to False.
         num_classes (int, optional): Number of classes of the dataset, used in
