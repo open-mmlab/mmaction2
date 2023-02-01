@@ -16,7 +16,8 @@ from mmaction.datasets.transforms import (GeneratePoseTarget, GenSkeFeat,
                                           MergeSkeFeat, PadTo, PoseCompact,
                                           PoseDecode, PreNormalize2D,
                                           PreNormalize3D, ToMotion,
-                                          UniformSampleFrames)
+                                          UniformSampleFrames,
+                                          MMUniformSampleFrames)
 
 
 class TestPoseTransforms:
@@ -587,3 +588,50 @@ class TestPoseTransforms:
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['keypoint'], kp)
         assert_array_almost_equal(decode_results['keypoint_score'], kpscore)
+
+    @staticmethod
+    def test_mm_uniform_sample_frames():
+        results = dict(total_frames=64, modality='Pose')
+        sampling = MMUniformSampleFrames(clip_len=dict(RGB=8, Pose=32),
+                                         num_clips=1, test_mode=True, seed=0)
+        assert repr(sampling) == ("MMUniformSampleFrames("
+                                  "clip_len={'RGB': 8, 'Pose': 32}, "
+                                  "num_clips=1, test_mode=True, seed=0)")
+
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == dict(RGB=8, Pose=32)
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert sampling_results['modality'] == ['RGB', 'Pose']
+        assert_array_equal(sampling_results['RGB_inds'],
+                           np.array([4, 15, 21, 24, 35, 43, 51, 63]))
+        assert_array_equal(sampling_results['Pose_inds'],
+                           np.array([0, 3, 5, 6, 9, 11, 13, 15, 17, 19,
+                                     21, 22, 24, 27, 28, 30, 32, 34, 36,
+                                     39, 40, 43, 45, 46, 48, 51, 53, 55,
+                                     57, 58, 61, 62]))
+
+        results = dict(total_frames=64, modality='Pose')
+        sampling = MMUniformSampleFrames(clip_len=dict(RGB=8, Pose=32),
+                                         num_clips=10, test_mode=True, seed=0)
+        assert repr(sampling) == ("MMUniformSampleFrames("
+                                  "clip_len={'RGB': 8, 'Pose': 32}, "
+                                  "num_clips=10, test_mode=True, seed=0)")
+
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == dict(RGB=8, Pose=32)
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 10
+        assert sampling_results['modality'] == ['RGB', 'Pose']
+        assert len(sampling_results['RGB_inds']) == 80
+        assert len(sampling_results['Pose_inds']) == 320
+
+        results = dict(total_frames=64, modality='Pose')
+        sampling = MMUniformSampleFrames(
+            clip_len=dict(RGB=8, Pose=32), num_clips=1, test_mode=False)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == dict(RGB=8, Pose=32)
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert len(sampling_results['RGB_inds']) == 8
+        assert len(sampling_results['Pose_inds']) == 32

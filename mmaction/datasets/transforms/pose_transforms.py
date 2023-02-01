@@ -1167,7 +1167,7 @@ class UniformSampleFrames(BaseTransform):
         results['num_clips'] = self.num_clips
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'clip_len={self.clip_len}, '
                     f'num_clips={self.num_clips}, '
@@ -1287,3 +1287,35 @@ class PoseDecode(BaseTransform):
     def __repr__(self) -> str:
         repr_str = f'{self.__class__.__name__}()'
         return repr_str
+
+
+@TRANSFORMS.register_module()
+class MMUniformSampleFrames(UniformSampleFrames):
+    """Uniformly sample frames from the multi-modal data."""
+
+    def __call__(self, results: Dict) -> Dict:
+        """The transform function of :class:`MMUniformSampleFrames`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        num_frames = results['total_frames']
+        modalities = []
+        for modality, clip_len in self.clip_len.items():
+            if self.test_mode:
+                inds = self._get_test_clips(num_frames, clip_len)
+            else:
+                inds = self._get_train_clips(num_frames, clip_len)
+            inds = np.mod(inds, num_frames)
+            results[f'{modality}_inds'] = inds.astype(np.int)
+            modalities.append(modality)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = None
+        results['num_clips'] = self.num_clips
+        if not isinstance(results['modality'], list):
+            # should override
+            results['modality'] = modalities
+        return results
