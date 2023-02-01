@@ -4,7 +4,7 @@ import io
 import os
 import os.path as osp
 import shutil
-from typing import Optional, Union
+from typing import Optional, Dict, Union
 
 import mmcv
 import numpy as np
@@ -1077,29 +1077,32 @@ class DecordInit(BaseTransform):
 
     Decord: https://github.com/dmlc/decord
 
-    Required keys are "filename",
-    added or modified keys are "video_reader" and "total_frames".
+    Required Keys:
+
+        - filename
+
+    Added Keys:
+
+        - video_reader
+        - total_frames
 
     Args:
         io_backend (str): io backend where frames are store.
-            Default: 'disk'.
-        num_threads (int): Number of thread to decode the video. Default: 1.
+            Defaults to ``'disk'``.
+        num_threads (int): Number of thread to decode the video. Defaults to 1.
         kwargs (dict): Args for file client.
     """
 
-    def __init__(self, io_backend='disk', num_threads=1, **kwargs):
+    def __init__(self, io_backend: str = 'disk',
+                 num_threads: int = 1, **kwargs) -> None:
         self.io_backend = io_backend
         self.num_threads = num_threads
         self.kwargs = kwargs
         self.file_client = None
 
-    def transform(self, results):
-        """Perform the Decord initialization.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
+    def _get_video_reader(self, filename: str) -> object:
+        if osp.splitext(filename)[0] == filename:
+            filename = filename + '.mp4'
         try:
             import decord
         except ImportError:
@@ -1108,15 +1111,36 @@ class DecordInit(BaseTransform):
 
         if self.file_client is None:
             self.file_client = FileClient(self.io_backend, **self.kwargs)
-
-        file_obj = io.BytesIO(self.file_client.get(results['filename']))
+        file_obj = io.BytesIO(self.file_client.get(filename))
         container = decord.VideoReader(file_obj, num_threads=self.num_threads)
-        results['avg_fps'] = container.get_avg_fps()
+        return container
+
+    def transform(self, results: Dict) -> Dict:
+        """Perform the Decord initialization.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        if 'filename' not in results:
+            assert 'frame_dir' in results
+            results['filename'] = results['frame_dir'] + '.mp4'
+
+        container = self._get_video_reader(results['filename'])
+        if 'total_frames' in results:
+            assert results['total_frames'] == len(container), (
+                'SkeFrames', results['total_frames'], 'VideoFrames', len(results['video_reader'])
+            )
+        else:
+            results['total_frames'] = len(results['video_reader'])
+
         results['video_reader'] = container
-        results['total_frames'] = len(container)
+        results['avg_fps'] = container.get_avg_fps()
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'io_backend={self.io_backend}, '
                     f'num_threads={self.num_threads})')

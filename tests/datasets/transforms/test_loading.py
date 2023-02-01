@@ -260,16 +260,18 @@ class TestDecode(BaseTestLoading):
             video_result['frame_inds']), 256, 340, 3)
 
     def test_decord_init(self):
-        target_keys = ['video_reader', 'total_frames']
+        target_keys = ['video_reader', 'total_frames', 'avg_fps']
         video_result = copy.deepcopy(self.video_results)
         decord_init = DecordInit()
         decord_init_result = decord_init(video_result)
         assert assert_dict_has_keys(decord_init_result, target_keys)
         assert decord_init_result['total_frames'] == len(
             decord_init_result['video_reader'])
+        assert decord_init_result['avg_fps'] == 30
+
         assert repr(decord_init) == (f'{decord_init.__class__.__name__}('
                                      f'io_backend=disk, '
-                                     f'num_threads={1})')
+                                     f'num_threads=1)')
 
     def test_decord_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape']
