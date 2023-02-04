@@ -1124,10 +1124,6 @@ class DecordInit(BaseTransform):
         Returns:
             dict: The result dict.
         """
-        if 'filename' not in results:
-            assert 'frame_dir' in results
-            results['filename'] = results['frame_dir'] + '.mp4'
-
         container = self._get_video_reader(results['filename'])
         if 'total_frames' in results:
             assert results['total_frames'] == len(container), (

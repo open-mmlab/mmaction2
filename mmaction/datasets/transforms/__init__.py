@@ -14,7 +14,7 @@ from .pose_transforms import (GeneratePoseTarget, GenSkeFeat, JointToBone,
                               LoadKineticsPose, MergeSkeFeat, PadTo,
                               PoseCompact, PoseDecode, PreNormalize2D,
                               PreNormalize3D, ToMotion, UniformSampleFrames,
-                              MMUniformSampleFrames)
+                              MMUniformSampleFrames, MMDecode)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, RandomCrop,
                          RandomRescale, RandomResizedCrop, Resize, TenCrop,
@@ -37,5 +37,6 @@ __all__ = [
     'RandomCrop', 'RandomRescale', 'RandomResizedCrop', 'RawFrameDecode',
     'Resize', 'SampleAVAFrames', 'SampleFrames', 'TenCrop', 'ThreeCrop',
     'ToMotion', 'TorchVisionWrapper', 'Transpose', 'UniformSample',
-    'UniformSampleFrames', 'UntrimmedSampleFrames', 'MMUniformSampleFrames'
+    'UniformSampleFrames', 'UntrimmedSampleFrames', 'MMUniformSampleFrames',
+    'MMDecode'
 ]

@@ -12,6 +12,7 @@ from torch.nn.modules.utils import _pair
 
 from mmaction.registry import TRANSFORMS
 from .processing import Flip, _combine_quadruple
+from .loading import DecordInit, DecordDecode
 
 
 @TRANSFORMS.register_module()
@@ -1253,6 +1254,15 @@ class PoseDecode(BaseTransform):
         - keypoint_score (optional)
     """
 
+    @staticmethod
+    def _load_kp(kp: np.ndarray, frame_inds: np.ndarray) -> np.ndarray:
+        return kp[:, frame_inds].astype(np.float32)
+
+    @staticmethod
+    def _load_kpscore(kpscore: np.ndarray,
+                      frame_inds: np.ndarray) -> np.ndarray:
+        return kpscore[:, frame_inds].astype(np.float32)
+
     def transform(self, results: Dict) -> Dict:
         """The transform function of :class:`PoseDecode`.
 
@@ -1274,13 +1284,10 @@ class PoseDecode(BaseTransform):
         offset = results.get('offset', 0)
         frame_inds = results['frame_inds'] + offset
 
-        results['keypoint'] = results['keypoint'][:, frame_inds].astype(
-            np.float32)
-
         if 'keypoint_score' in results:
-            kpscore = results['keypoint_score']
-            results['keypoint_score'] = kpscore[:,
-                                                frame_inds].astype(np.float32)
+            results['keypoint_score'] = self._load_kpscore(results['keypoint_score'], frame_inds)
+
+        results['keypoint'] = self._load_kp(results['keypoint'], frame_inds)
 
         return results
 
@@ -1293,7 +1300,7 @@ class PoseDecode(BaseTransform):
 class MMUniformSampleFrames(UniformSampleFrames):
     """Uniformly sample frames from the multi-modal data."""
 
-    def __call__(self, results: Dict) -> Dict:
+    def transform(self, results: Dict) -> Dict:
         """The transform function of :class:`MMUniformSampleFrames`.
 
         Args:
@@ -1319,3 +1326,68 @@ class MMUniformSampleFrames(UniformSampleFrames):
             # should override
             results['modality'] = modalities
         return results
+
+
+@TRANSFORMS.register_module()
+class MMDecode(DecordInit, DecordDecode, PoseDecode):
+    """Decode RGB videos and skeletons."""
+
+    def __init__(self, io_backend: str = 'disk', **kwargs) -> None:
+        DecordInit.__init__(self, io_backend=io_backend, **kwargs)
+        DecordDecode.__init__(self)
+        self.io_backend = io_backend
+        self.kwargs = kwargs
+        self.file_client = None
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`MMDecode`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        for mod in results['modality']:
+            if results[f'{mod}_inds'].ndim != 1:
+                results[f'{mod}_inds'] = np.squeeze(results[f'{mod}_inds'])
+            frame_inds = results[f'{mod}_inds']
+            if mod == 'RGB':
+                if 'filename' not in results:
+                    results['filename'] = results['frame_dir'] + '.mp4'
+                video_reader = self._get_video_reader(results['filename'])
+                imgs = self._decord_load_frames(video_reader, frame_inds)
+                del video_reader
+                results['imgs'] = imgs
+            elif mod == 'Pose':
+                assert 'keypoint' in results
+                if 'keypoint_score' not in results:
+                    keypoint_score = [
+                        np.ones(keypoint.shape[:-1], dtype=np.float32)
+                        for keypoint in results['keypoint']
+                    ]
+                    results['keypoint_score'] = np.stack(keypoint_score)
+                results['keypoint'] = self._load_kp(results['keypoint'], frame_inds)
+                results['keypoint_score'] = self._load_kpscore(results['keypoint_score'], frame_inds)
+            else:
+                raise NotImplementedError(f'MMDecode: Modality {mod} not supported')
+
+        # We need to scale human keypoints to the new image size
+        if 'imgs' in results and 'keypoint' in results:
+            real_img_shape = results['imgs'][0].shape[:2]
+            if real_img_shape != results['img_shape']:
+                oh, ow = results['img_shape']
+                nh, nw = real_img_shape
+
+                assert results['keypoint'].shape[-1] in [2, 3]
+                results['keypoint'][..., 0] *= (nw / ow)
+                results['keypoint'][..., 1] *= (nh / oh)
+                results['img_shape'] = real_img_shape
+                results['original_shape'] = real_img_shape
+
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend})')
+        return repr_str
