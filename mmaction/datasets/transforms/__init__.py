@@ -11,10 +11,10 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       PyAVInit, RawFrameDecode, SampleAVAFrames, SampleFrames,
                       UniformSample, UntrimmedSampleFrames)
 from .pose_transforms import (GeneratePoseTarget, GenSkeFeat, JointToBone,
-                              LoadKineticsPose, MergeSkeFeat, PadTo,
-                              PoseCompact, PoseDecode, PreNormalize2D,
-                              PreNormalize3D, ToMotion, UniformSampleFrames,
-                              MMUniformSampleFrames, MMDecode)
+                              LoadKineticsPose, MergeSkeFeat, MMDecode,
+                              MMUniformSampleFrames, PadTo, PoseCompact,
+                              PoseDecode, PreNormalize2D, PreNormalize3D,
+                              ToMotion, UniformSampleFrames)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, RandomCrop,
                          RandomRescale, RandomResizedCrop, Resize, TenCrop,

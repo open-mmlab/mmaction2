@@ -11,8 +11,8 @@ from scipy.stats import mode
 from torch.nn.modules.utils import _pair
 
 from mmaction.registry import TRANSFORMS
+from .loading import DecordDecode, DecordInit
 from .processing import Flip, _combine_quadruple
-from .loading import DecordInit, DecordDecode
 
 
 @TRANSFORMS.register_module()
@@ -1285,7 +1285,8 @@ class PoseDecode(BaseTransform):
         frame_inds = results['frame_inds'] + offset
 
         if 'keypoint_score' in results:
-            results['keypoint_score'] = self._load_kpscore(results['keypoint_score'], frame_inds)
+            results['keypoint_score'] = self._load_kpscore(
+                results['keypoint_score'], frame_inds)
 
         results['keypoint'] = self._load_kp(results['keypoint'], frame_inds)
 
@@ -1367,10 +1368,13 @@ class MMDecode(DecordInit, DecordDecode, PoseDecode):
                         for keypoint in results['keypoint']
                     ]
                     results['keypoint_score'] = np.stack(keypoint_score)
-                results['keypoint'] = self._load_kp(results['keypoint'], frame_inds)
-                results['keypoint_score'] = self._load_kpscore(results['keypoint_score'], frame_inds)
+                results['keypoint'] = self._load_kp(results['keypoint'],
+                                                    frame_inds)
+                results['keypoint_score'] = self._load_kpscore(
+                    results['keypoint_score'], frame_inds)
             else:
-                raise NotImplementedError(f'MMDecode: Modality {mod} not supported')
+                raise NotImplementedError(
+                    f'MMDecode: Modality {mod} not supported')
 
         # We need to scale human keypoints to the new image size
         if 'imgs' in results and 'keypoint' in results:

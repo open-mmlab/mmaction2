@@ -4,7 +4,7 @@ import io
 import os
 import os.path as osp
 import shutil
-from typing import Optional, Dict, List, Union
+from typing import Dict, List, Optional
 
 import mmcv
 import numpy as np
@@ -1094,8 +1094,10 @@ class DecordInit(BaseTransform):
         kwargs (dict): Args for file client.
     """
 
-    def __init__(self, io_backend: str = 'disk',
-                 num_threads: int = 1, **kwargs) -> None:
+    def __init__(self,
+                 io_backend: str = 'disk',
+                 num_threads: int = 1,
+                 **kwargs) -> None:
         self.io_backend = io_backend
         self.num_threads = num_threads
         self.kwargs = kwargs
@@ -1128,8 +1130,8 @@ class DecordInit(BaseTransform):
         container = self._get_video_reader(results['filename'])
         if 'total_frames' in results:
             assert results['total_frames'] == len(container), (
-                'SkeFrames', results['total_frames'], 'VideoFrames', len(results['video_reader'])
-            )
+                'SkeFrames', results['total_frames'], 'VideoFrames',
+                len(results['video_reader']))
         else:
             results['total_frames'] = len(container)
 
