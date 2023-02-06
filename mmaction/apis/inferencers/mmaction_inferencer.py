@@ -18,8 +18,8 @@ ResType = Union[Dict, List[Dict], InstanceData, List[InstanceData]]
 
 class MMAction2Inferencer(BaseInferencer):
     """MMAction2 Inferencer. It's a unified inferencer interface for video
-    analyse task, including: ActionRecog. and it can be used to perform end-to-
-    end action recognition inference.
+    analyse task, currently including: ActionRecog. and it can be used to
+    perform end-to-end action recognition inference.
 
     Args:
         rec (str, optional): Pretrained action recognition

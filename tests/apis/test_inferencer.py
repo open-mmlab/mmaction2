@@ -6,41 +6,33 @@ from unittest import TestCase
 import torch
 from parameterized import parameterized
 
-from mmaction.apis import ActionRecogInferencer
-from mmaction.structures import ActionDataSample
+from mmaction.apis import MMAction2Inferencer
 from mmaction.utils import register_all_modules
 
 
-class TestInferencer(TestCase):
+class TestMMActionInferencer(TestCase):
 
     def setUp(self):
         register_all_modules()
 
-    @parameterized.expand([
-        (('tsn'), ('tools/data/kinetics/label_map_k400.txt'), ('cpu', 'cuda'))
-    ])
-    def test_init_recognizer(self, config, lable_file, devices):
+    def test_init_recognizer(self):
+        # Initialzied by alias
+        _ = MMAction2Inferencer(rec='tsn')
 
-        for device in devices:
-            if device == 'cuda' and not torch.cuda.is_available():
-                # Skip the test if cuda is required but unavailable
-                continue
+        # Initialzied by config
+        _ = MMAction2Inferencer(
+            rec='tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb'
+        )  # noqa: E501
 
-            _ = ActionRecogInferencer(
-                config, label_file=lable_file, device=device)
-
-            # test `init_recognizer` with invalid config
-            with self.assertRaisesRegex(ValueError, 'Cannot find model'):
-                _ = ActionRecogInferencer(
-                    'slowfast_config', label_file=lable_file, device=device)
+        with self.assertRaisesRegex(ValueError,
+                                    'rec algorithm should provided.'):
+            _ = MMAction2Inferencer()
 
     @parameterized.expand([
         (('tsn'), ('tools/data/kinetics/label_map_k400.txt'),
          ('demo/demo.mp4'), ('cpu', 'cuda'))
     ])
-    def test_inference_recognizer(self, config, label_file, video_path,
-                                  devices):
-
+    def test_infer_recognizer(self, config, label_file, video_path, devices):
         with TemporaryDirectory() as tmp_dir:
             for device in devices:
                 if device == 'cuda' and not torch.cuda.is_available():
@@ -48,14 +40,11 @@ class TestInferencer(TestCase):
                     continue
 
                 # test video file input and return datasample
-                inferencer = ActionRecogInferencer(
+                inferencer = MMAction2Inferencer(
                     config, label_file=label_file, device=device)
-                results = inferencer(
-                    video_path, vid_out_dir=tmp_dir, return_datasamples=True)
+                results = inferencer(video_path, vid_out_dir=tmp_dir)
                 self.assertIn('predictions', results)
                 self.assertIn('visualization', results)
-                self.assertIsInstance(results['predictions'][0],
-                                      ActionDataSample)
                 assert osp.exists(osp.join(tmp_dir, osp.basename(video_path)))
 
                 results = inferencer(
@@ -66,7 +55,7 @@ class TestInferencer(TestCase):
                              osp.basename(video_path).replace('mp4', 'gif')))
 
                 # test np.ndarray input
-                inferencer = ActionRecogInferencer(
+                inferencer = MMAction2Inferencer(
                     config,
                     label_file=label_file,
                     device=device,
