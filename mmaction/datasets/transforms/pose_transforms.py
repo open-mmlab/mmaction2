@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy as cp
 import pickle
-from typing import Dict, List, Tuple, Union, Optional
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from mmcv.transforms import BaseTransform, KeyMapper
@@ -1407,8 +1407,8 @@ class MMDecode(DecordInit, DecordDecode, PoseDecode):
 
 @TRANSFORMS.register_module()
 class MMCompact(BaseTransform):
-    """Convert the coordinates of keypoints and crop the images
-    to make them more compact.
+    """Convert the coordinates of keypoints and crop the images to make them
+    more compact.
 
     Required Keys:
 
@@ -1434,6 +1434,7 @@ class MMCompact(BaseTransform):
         allow_imgpad (bool): Whether to allow expanding the box outside the
             image to meet the hw_ratio requirement. Defaults to True.
     """
+
     def __init__(self,
                  padding: float = 0.25,
                  threshold: int = 10,
@@ -1484,8 +1485,8 @@ class MMCompact(BaseTransform):
             max_x, max_y = int(max_x), int(max_y)
         return min_x, min_y, max_x, max_y
 
-    def _compact_images(self, imgs: List[np.ndarray],
-                        img_shape: Tuple[int], box: Tuple[int]) -> List:
+    def _compact_images(self, imgs: List[np.ndarray], img_shape: Tuple[int],
+                        box: Tuple[int]) -> List:
         """Crop the images acoordding the bounding box."""
         h, w = img_shape
         min_x, min_y, max_x, max_y = box
@@ -1507,9 +1508,10 @@ class MMCompact(BaseTransform):
 
         if pad_l > 0 or pad_r > 0 or pad_u > 0 or pad_d > 0:
             imgs = [
-                np.pad(img, ((pad_u, pad_d), (pad_l, pad_r), (0, 0))) for img in imgs
+                np.pad(img, ((pad_u, pad_d), (pad_l, pad_r), (0, 0)))
+                for img in imgs
             ]
-        imgs = [img[min_y: max_y, min_x: max_x] for img in imgs]
+        imgs = [img[min_y:max_y, min_x:max_x] for img in imgs]
         return imgs
 
     def transform(self, results: Dict) -> Dict:
@@ -1533,8 +1535,7 @@ class MMCompact(BaseTransform):
 
         new_shape = (max_y - min_y, max_x - min_x)
         results['img_shape'] = new_shape
-        results['imgs'] = self._compact_images(results['imgs'],
-                                               img_shape,
+        results['imgs'] = self._compact_images(results['imgs'], img_shape,
                                                (min_x, min_y, max_x, max_y))
         return results
 

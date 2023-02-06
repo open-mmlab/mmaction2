@@ -13,12 +13,11 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.transforms import (GeneratePoseTarget, GenSkeFeat,
                                           JointToBone, LoadKineticsPose,
-                                          MergeSkeFeat, MMDecode,
+                                          MergeSkeFeat, MMCompact, MMDecode,
                                           MMUniformSampleFrames, PadTo,
                                           PoseCompact, PoseDecode,
                                           PreNormalize2D, PreNormalize3D,
-                                          ToMotion, UniformSampleFrames,
-                                          MMCompact)
+                                          ToMotion, UniformSampleFrames)
 
 
 class TestPoseTransforms:
