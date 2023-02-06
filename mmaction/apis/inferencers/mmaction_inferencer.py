@@ -22,14 +22,18 @@ class MMAction2Inferencer(BaseInferencer):
     perform end-to-end action recognition inference.
 
     Args:
-        rec (str, optional): Pretrained action recognition
-            algorithm. It's the path to the config file or the model name
-            defined in metafile. Defaults to None.
+        rec (str, optional): Pretrained action recognition algorithm.
+            It's the path to the config file or the model name
+            defined in metafile. For example, it could be "slowfast",
+            "slowfast_r50_8xb8-8x8x1-256e_kinetics400-rgb" or
+            "configs/recognition/slowfast/slowfast_r50_8xb8-8x8x1-256e_kinetics400-rgb.py".
+            Defaults to None.
         rec_weights (str, optional): Path to the custom checkpoint file of
             the selected rec model. If it is not specified and "rec" is a model
             name of metafile, the weights will be loaded from metafile.
             Defaults to None.
-        device (str, optional): Device to run inference. If None, the available
+        device (str, optional): Device to run inference. For example,
+            it could be 'cuda' or 'cpu'. If None, the available
             device will be automatically used. Defaults to None.
         label_file (str, optional): label file for dataset.
         input_format (str): Input video format, Choices are 'video',

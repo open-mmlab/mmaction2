@@ -251,7 +251,7 @@ python demo/demo_skeleton.py demo/demo_skeleton.mp4 demo/demo_skeleton_out.mp4 \
 
 ## Inferencer
 
-MMAction2 provides a demo script to implement fast predict for video analysis tasks based on unified inferencer interface, currently only supports action recognition task.
+MMAction2 provides a demo script to implement fast prediction for video analysis tasks based on unified inferencer interface, currently only supports action recognition task.
 
 ```shell
 python demo/demo.py ${INPUTS} \
