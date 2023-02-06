@@ -1085,6 +1085,7 @@ class DecordInit(BaseTransform):
 
         - video_reader
         - total_frames
+        - fps
 
     Args:
         io_backend (str): io backend where frames are store.
@@ -1130,7 +1131,7 @@ class DecordInit(BaseTransform):
                 'SkeFrames', results['total_frames'], 'VideoFrames', len(results['video_reader'])
             )
         else:
-            results['total_frames'] = len(results['video_reader'])
+            results['total_frames'] = len(container)
 
         results['video_reader'] = container
         results['avg_fps'] = container.get_avg_fps()
