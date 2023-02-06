@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy as cp
 import pickle
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union, Optional
 
 import numpy as np
 from mmcv.transforms import BaseTransform, KeyMapper
@@ -469,30 +469,38 @@ class PoseCompact(BaseTransform):
     example, if 'padding == 0.25', then the expanded box has unchanged center,
     and 1.25x width and height.
 
-    Required keys in results are "img_shape", "keypoint", add or modified keys
-    are "img_shape", "keypoint", "crop_quadruple".
+    Required Keys:
+
+        - keypoint
+        - img_shape
+
+    Modified Keys:
+
+        - img_shape
+        - keypoint
+
+    Added Keys:
+
+        - crop_quadruple
 
     Args:
-        padding (float): The padding size. Default: 0.25.
+        padding (float): The padding size. Defaults to 0.25.
         threshold (int): The threshold for the tight bounding box. If the width
             or height of the tight bounding box is smaller than the threshold,
-            we do not perform the compact operation. Default: 10.
+            we do not perform the compact operation. Defaults to 10.
         hw_ratio (float | tuple[float] | None): The hw_ratio of the expanded
             box. Float indicates the specific ratio and tuple indicates a
             ratio range. If set as None, it means there is no requirement on
-            hw_ratio. Default: None.
+            hw_ratio. Defaults to None.
         allow_imgpad (bool): Whether to allow expanding the box outside the
-            image to meet the hw_ratio requirement. Default: True.
-
-    Returns:
-        type: Description of returned object.
+            image to meet the hw_ratio requirement. Defaults to True.
     """
 
     def __init__(self,
-                 padding=0.25,
-                 threshold=10,
-                 hw_ratio=None,
-                 allow_imgpad=True):
+                 padding: float = 0.25,
+                 threshold: int = 10,
+                 hw_ratio: Optional[Union[float, Tuple[float]]] = None,
+                 allow_imgpad: bool = True) -> None:
 
         self.padding = padding
         self.threshold = threshold
@@ -504,7 +512,7 @@ class PoseCompact(BaseTransform):
         self.allow_imgpad = allow_imgpad
         assert self.padding >= 0
 
-    def transform(self, results):
+    def transform(self, results: Dict) -> Dict:
         """Convert the coordinates of keypoints to make it more compact.
 
         Args:
@@ -562,7 +570,7 @@ class PoseCompact(BaseTransform):
         results['crop_quadruple'] = crop_quadruple
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}(padding={self.padding}, '
                     f'threshold={self.threshold}, '
                     f'hw_ratio={self.hw_ratio}, '
@@ -1394,4 +1402,145 @@ class MMDecode(DecordInit, DecordDecode, PoseDecode):
     def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'io_backend={self.io_backend})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class MMCompact(BaseTransform):
+    """Convert the coordinates of keypoints and crop the images
+    to make them more compact.
+
+    Required Keys:
+
+        - imgs
+        - keypoint
+        - img_shape
+
+    Modified Keys:
+
+        - imgs
+        - keypoint
+        - img_shape
+
+    Args:
+        padding (float): The padding size. Defaults to 0.25.
+        threshold (int): The threshold for the tight bounding box. If the width
+            or height of the tight bounding box is smaller than the threshold,
+            we do not perform the compact operation. Defaults to 10.
+        hw_ratio (float | tuple[float]): The hw_ratio of the expanded
+            box. Float indicates the specific ratio and tuple indicates a
+            ratio range. If set as None, it means there is no requirement on
+            hw_ratio. Defaults to 1.
+        allow_imgpad (bool): Whether to allow expanding the box outside the
+            image to meet the hw_ratio requirement. Defaults to True.
+    """
+    def __init__(self,
+                 padding: float = 0.25,
+                 threshold: int = 10,
+                 hw_ratio: Union[float, Tuple[float]] = 1,
+                 allow_imgpad: bool = True) -> None:
+
+        self.padding = padding
+        self.threshold = threshold
+        if hw_ratio is not None:
+            hw_ratio = _pair(hw_ratio)
+        self.hw_ratio = hw_ratio
+        self.allow_imgpad = allow_imgpad
+        assert self.padding >= 0
+
+    def _get_box(self, keypoint: np.ndarray, img_shape: Tuple[int]) -> Tuple:
+        """Calculate the bounding box surrounding all joints in the frames."""
+        h, w = img_shape
+
+        kp_x = keypoint[..., 0]
+        kp_y = keypoint[..., 1]
+
+        min_x = np.min(kp_x[kp_x != 0], initial=np.Inf)
+        min_y = np.min(kp_y[kp_y != 0], initial=np.Inf)
+        max_x = np.max(kp_x[kp_x != 0], initial=-np.Inf)
+        max_y = np.max(kp_y[kp_y != 0], initial=-np.Inf)
+
+        # The compact area is too small
+        if max_x - min_x < self.threshold or max_y - min_y < self.threshold:
+            return 0, 0, w, h
+
+        center = ((max_x + min_x) / 2, (max_y + min_y) / 2)
+        half_width = (max_x - min_x) / 2 * (1 + self.padding)
+        half_height = (max_y - min_y) / 2 * (1 + self.padding)
+
+        if self.hw_ratio is not None:
+            half_height = max(self.hw_ratio[0] * half_width, half_height)
+            half_width = max(1 / self.hw_ratio[1] * half_height, half_width)
+
+        min_x, max_x = center[0] - half_width, center[0] + half_width
+        min_y, max_y = center[1] - half_height, center[1] + half_height
+
+        # hot update
+        if not self.allow_imgpad:
+            min_x, min_y = int(max(0, min_x)), int(max(0, min_y))
+            max_x, max_y = int(min(w, max_x)), int(min(h, max_y))
+        else:
+            min_x, min_y = int(min_x), int(min_y)
+            max_x, max_y = int(max_x), int(max_y)
+        return min_x, min_y, max_x, max_y
+
+    def _compact_images(self, imgs: List[np.ndarray],
+                        img_shape: Tuple[int], box: Tuple[int]) -> List:
+        """Crop the images acoordding the bounding box."""
+        h, w = img_shape
+        min_x, min_y, max_x, max_y = box
+        pad_l, pad_u, pad_r, pad_d = 0, 0, 0, 0
+        if min_x < 0:
+            pad_l = -min_x
+            min_x, max_x = 0, max_x + pad_l
+            w += pad_l
+        if min_y < 0:
+            pad_u = -min_y
+            min_y, max_y = 0, max_y + pad_u
+            h += pad_u
+        if max_x > w:
+            pad_r = max_x - w
+            w = max_x
+        if max_y > h:
+            pad_d = max_y - h
+            h = max_y
+
+        if pad_l > 0 or pad_r > 0 or pad_u > 0 or pad_d > 0:
+            imgs = [
+                np.pad(img, ((pad_u, pad_d), (pad_l, pad_r), (0, 0))) for img in imgs
+            ]
+        imgs = [img[min_y: max_y, min_x: max_x] for img in imgs]
+        return imgs
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`MMCompact`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        img_shape = results['img_shape']
+        kp = results['keypoint']
+        # Make NaN zero
+        kp[np.isnan(kp)] = 0.
+        min_x, min_y, max_x, max_y = self._get_box(kp, img_shape)
+
+        kp_x, kp_y = kp[..., 0], kp[..., 1]
+        kp_x[kp_x != 0] -= min_x
+        kp_y[kp_y != 0] -= min_y
+
+        new_shape = (max_y - min_y, max_x - min_x)
+        results['img_shape'] = new_shape
+        results['imgs'] = self._compact_images(results['imgs'],
+                                               img_shape,
+                                               (min_x, min_y, max_x, max_y))
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = (f'{self.__class__.__name__}(padding={self.padding}, '
+                    f'threshold={self.threshold}, '
+                    f'hw_ratio={self.hw_ratio}, '
+                    f'allow_imgpad={self.allow_imgpad})')
         return repr_str

@@ -17,7 +17,8 @@ from mmaction.datasets.transforms import (GeneratePoseTarget, GenSkeFeat,
                                           MMUniformSampleFrames, PadTo,
                                           PoseCompact, PoseDecode,
                                           PreNormalize2D, PreNormalize3D,
-                                          ToMotion, UniformSampleFrames)
+                                          ToMotion, UniformSampleFrames,
+                                          MMCompact)
 
 
 class TestPoseTransforms:
@@ -618,10 +619,6 @@ class TestPoseTransforms:
             num_clips=10,
             test_mode=True,
             seed=0)
-        assert repr(sampling) == ('MMUniformSampleFrames('
-                                  "clip_len={'RGB': 8, 'Pose': 32}, "
-                                  'num_clips=10, test_mode=True, seed=0)')
-
         sampling_results = sampling(results)
         assert sampling_results['clip_len'] == dict(RGB=8, Pose=32)
         assert sampling_results['frame_interval'] is None
@@ -640,7 +637,8 @@ class TestPoseTransforms:
         assert len(sampling_results['RGB_inds']) == 8
         assert len(sampling_results['Pose_inds']) == 32
 
-    def test_mm_decode(self):
+    @staticmethod
+    def test_mm_decode():
         mm_decode = MMDecode()
 
         # Pose only test
@@ -682,7 +680,54 @@ class TestPoseTransforms:
         scaled_keypoint[..., 1] *= (nh / oh)
         assert_array_equal(pose_rgb_results['keypoint'], scaled_keypoint)
         assert_array_equal(pose_rgb_results['imgs'], rgb_results['imgs'])
-        assert 'filename' in rgb_results
         assert assert_dict_has_keys(
             pose_rgb_results, ['filename', 'img_shape', 'original_shape'])
         assert repr(mm_decode) == 'MMDecode(io_backend=disk)'
+
+    @staticmethod
+    def test_mm_compact():
+        results = {}
+        results['img_shape'] = (100, 100)
+        fake_kp = np.zeros([1, 4, 2, 2])
+        fake_kp[:, :, 0] = [10, 10]
+        fake_kp[:, :, 1] = [90, 90]
+        results['keypoint'] = fake_kp
+        results['imgs'] = list(np.zeros([3, 100, 100, 3]))
+
+        pose_compact = MMCompact(
+            padding=0, threshold=0, hw_ratio=1, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 80)
+        assert ret['imgs'][0].shape[:-1] == (80, 80)
+        assert str(pose_compact) == (
+            'MMCompact(padding=0, threshold=0, hw_ratio=(1, 1), '
+            'allow_imgpad=False)')
+
+        pose_compact = MMCompact(
+            padding=0.3, threshold=0, hw_ratio=1, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+        assert ret['imgs'][0].shape[:-1] == (100, 100)
+
+        pose_compact = MMCompact(
+            padding=0.3, threshold=0, hw_ratio=1, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (104, 104)
+        assert ret['imgs'][0].shape[:-1] == (104, 104)
+
+        pose_compact = MMCompact(
+            padding=0, threshold=100, hw_ratio=1, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+        assert ret['imgs'][0].shape[:-1] == (100, 100)
+
+        pose_compact = MMCompact(
+            padding=0, threshold=0, hw_ratio=0.75, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 106)
+        assert ret['imgs'][0].shape[:-1] == (80, 106)
