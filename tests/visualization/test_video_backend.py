@@ -1,13 +1,19 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
+import os.path as osp
+import time
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import decord
 import torch
 from mmengine.structures import LabelData
 
 from mmaction.structures import ActionDataSample
+from mmaction.utils import register_all_modules
 from mmaction.visualization import ActionVisualizer
+
+register_all_modules()
 
 
 def test_local_visbackend():
@@ -16,18 +22,18 @@ def test_local_visbackend():
 
     data_sample = ActionDataSample()
     data_sample.gt_labels = LabelData(item=torch.tensor([2]))
+    with TemporaryDirectory() as tmp_dir:
+        vis = ActionVisualizer(
+            save_dir=tmp_dir, vis_backends=[dict(type='LocalVisBackend')])
+        vis.add_datasample('demo', video, data_sample)
+        for k in range(32):
+            frame_path = osp.join(tmp_dir, 'vis_data/demo/frames_0/%d.png' % k)
+            assert Path(frame_path).exists()
 
-    vis = ActionVisualizer(
-        save_dir='./outputs', vis_backends=[dict(type='LocalVisBackend')])
-    vis.add_datasample('demo', video, data_sample)
-    for k in range(32):
-        frame_path = 'outputs/vis_data/demo/frames_0/%d.png' % k
-        assert Path(frame_path).exists()
-
-    vis.add_datasample('demo', video, data_sample, step=1)
-    for k in range(32):
-        frame_path = 'outputs/vis_data/demo/frames_1/%d.png' % k
-        assert Path(frame_path).exists()
+        vis.add_datasample('demo', video, data_sample, step=1)
+        for k in range(32):
+            frame_path = osp.join(tmp_dir, 'vis_data/demo/frames_1/%d.png' % k)
+            assert Path(frame_path).exists()
     return
 
 
@@ -37,19 +43,21 @@ def test_tensorboard_visbackend():
 
     data_sample = ActionDataSample()
     data_sample.gt_labels = LabelData(item=torch.tensor([2]))
+    with TemporaryDirectory() as tmp_dir:
+        vis = ActionVisualizer(
+            save_dir=tmp_dir,
+            vis_backends=[dict(type='TensorboardVisBackend')])
+        vis.add_datasample('demo', video, data_sample, step=1)
 
-    vis = ActionVisualizer(
-        save_dir='./outputs',
-        vis_backends=[dict(type='TensorboardVisBackend')])
-    vis.add_datasample('demo', video, data_sample, step=1)
-
-    assert Path('outputs/vis_data/').exists()
-    flag = False
-    for item in os.listdir('outputs/vis_data/'):
-        if item.startswith('events.out.tfevents.'):
-            flag = True
-            break
-    assert flag, 'Cannot find tensorboard file!'
+        assert Path(osp.join(tmp_dir, 'vis_data')).exists()
+        flag = False
+        for item in os.listdir(osp.join(tmp_dir, 'vis_data')):
+            if item.startswith('events.out.tfevents.'):
+                flag = True
+                break
+        assert flag, 'Cannot find tensorboard file!'
+        # wait tensorboard store asynchronously
+        time.sleep(1)
     return
 
 

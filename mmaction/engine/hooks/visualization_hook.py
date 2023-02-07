@@ -91,7 +91,7 @@ class VisualizationHook(Hook):
 
             draw_args = self.draw_args
             if self.out_dir is not None:
-                draw_args['out_folder'] = self.file_client.join_path(
+                draw_args['out_path'] = self.file_client.join_path(
                     self.out_dir, f'{sample_name}_{step}')
 
             self._visualizer.add_datasample(
