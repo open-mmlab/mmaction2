@@ -24,10 +24,14 @@ class MMAction2Inferencer(BaseInferencer):
     Args:
         rec (str, optional): Pretrained action recognition algorithm.
             It's the path to the config file or the model name defined in
-            metafile. For example, it could be
-            model alias, e.g. ``'slowfast'``,
-            config name, e.g. ``'slowfast_r50_8xb8-8x8x1-256e_kinetics400-rgb'``, # noqa E501
-            or config path. Defaults to None.
+            metafile. For example, it could be:
+            
+            - model alias, e.g. ``'slowfast'``,
+            - config name, e.g. ``'slowfast_r50_8xb8-8x8x1-256e_kinetics400
+                -rgb'``,
+            - config path
+            
+            Defaults to ``None``.
         rec_weights (str, optional): Path to the custom checkpoint file of
             the selected rec model. If it is not specified and "rec" is a model
             name of metafile, the weights will be loaded from metafile.
