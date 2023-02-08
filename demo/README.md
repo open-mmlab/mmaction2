@@ -88,7 +88,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 MMAction2 provides a demo script to visualize GradCAM results using a single video.
 
 ```shell
-python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--use-frames] \
+python tools/visualizations/vis_cam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--use-frames] \
     [--device ${DEVICE_TYPE}] [--target-layer-name ${TARGET_LAYER_NAME}] [--fps {FPS}] \
     [--target-resolution ${TARGET_RESOLUTION}] [--resize-algorithm {RESIZE_ALGORITHM}] [--out-filename {OUT_FILE}]
 ```
@@ -109,7 +109,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 1. Get GradCAM results of a I3D model, using a video file as input and then generate an gif file with 10 fps.
 
    ```shell
-   python demo/demo_gradcam.py demo/demo_configs/i3d_r50_32x2x1_video_infer.py \
+   python tools/visualizations/vis_cam.py demo/demo_configs/i3d_r50_32x2x1_video_infer.py \
        checkpoints/i3d_imagenet-pretrained-r50_8xb8-32x2x1-100e_kinetics400-rgb_20220812-e213c223.pth demo/demo.mp4 \
        --target-layer-name backbone/layer4/1/relu --fps 10 \
        --out-filename demo/demo_gradcam.gif
@@ -118,7 +118,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 2. Get GradCAM results of a TSN model, using a video file as input and then generate an gif file, loading checkpoint from url.
 
    ```shell
-   python demo/demo_gradcam.py demo/demo_configs/tsn_r50_1x1x8_video_infer.py \
+   python tools/visualizations/vis_cam.py demo/demo_configs/tsn_r50_1x1x8_video_infer.py \
        https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb_20220906-dcbc6e01.pth \
        demo/demo.mp4 --target-layer-name backbone/layer4/1/relu --out-filename demo/demo_gradcam_tsn.gif
    ```
@@ -345,7 +345,7 @@ Assume that you are located at `$MMACTION2`.
 
    ```shell
    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-   python demo/demo_inferencer.py demo/demo.mp4
+   python demo/demo_inferencer.py demo/demo.mp4 \
        --rec configs/recognition/tsn/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
        --label-file tools/data/kinetics/label_map_k400.txt
    ```
@@ -354,7 +354,7 @@ Assume that you are located at `$MMACTION2`.
 
    ```shell
    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-   python demo/demo_inferencer.py demo/demo.mp4
+   python demo/demo_inferencer.py demo/demo.mp4 \
        --rec tsn \
        --label-file tools/data/kinetics/label_map_k400.txt
    ```
@@ -363,7 +363,7 @@ Assume that you are located at `$MMACTION2`.
 
    ```shell
    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-   python demo/demo_inferencer.py demo/demo.mp4
+   python demo/demo_inferencer.py demo/demo.mp4 \
        --vid-out-dir demo_out \
        --rec tsn \
        --label-file tools/data/kinetics/label_map_k400.txt

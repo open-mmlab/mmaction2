@@ -7,11 +7,12 @@ import numpy as np
 from mmengine.dataset import Compose
 from mmengine.fileio import list_from_file
 from mmengine.infer.infer import BaseInferencer, ModelType
+from mmengine.registry import init_default_scope
 from mmengine.structures import InstanceData
 
 from mmaction.registry import INFERENCERS
 from mmaction.structures import ActionDataSample
-from mmaction.utils import ConfigType, register_all_modules
+from mmaction.utils import ConfigType
 
 InstanceList = List[InstanceData]
 InputType = Union[str, np.ndarray]
@@ -69,7 +70,7 @@ class ActionRecogInferencer(BaseInferencer):
         self.num_visualized_vids = 0
         self.input_format = input_format
         self.pack_cfg = pack_cfg.copy()
-        register_all_modules()
+        init_default_scope(scope)
         super().__init__(
             model=model, weights=weights, device=device, scope=scope)
 

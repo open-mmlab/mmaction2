@@ -53,7 +53,7 @@ DATASETS = Registry(
 DATA_SAMPLERS = Registry(
     'data sampler',
     parent=MMENGINE_DATA_SAMPLERS,
-    locations=['mmaction.datasets.samplers'])
+    locations=['mmaction.engine'])
 TRANSFORMS = Registry(
     'transform',
     parent=MMENGINE_TRANSFORMS,
@@ -92,7 +92,7 @@ OPTIM_WRAPPER_CONSTRUCTORS = Registry(
 PARAM_SCHEDULERS = Registry(
     'parameter scheduler',
     parent=MMENGINE_PARAM_SCHEDULERS,
-    locations=['mmaction.engine.schedulers'])
+    locations=['mmaction.engine'])
 
 # manage all kinds of metrics
 METRICS = Registry(
