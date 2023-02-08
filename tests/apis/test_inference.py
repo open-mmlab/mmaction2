@@ -8,13 +8,9 @@ from parameterized import parameterized
 
 from mmaction.apis import inference_recognizer, init_recognizer
 from mmaction.structures import ActionDataSample
-from mmaction.utils import register_all_modules
 
 
 class TestInference(TestCase):
-
-    def setUp(self):
-        register_all_modules()
 
     @parameterized.expand([(('configs/recognition/tsn/'
                              'tsn_imagenet-pretrained-r50_8xb32-'

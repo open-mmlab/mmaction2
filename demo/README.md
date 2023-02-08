@@ -59,7 +59,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
    ```shell
    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-   python demo/demo.py configs/recognition/tsn/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
+   python demo/demo.py demo/demo_configs/tsn_r50_1x1x8_video_infer.py \
        checkpoints/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb_20220818-2692d16c.pth \
        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
    ```
@@ -68,7 +68,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
    ```shell
    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-   python demo/demo.py configs/recognition/tsn/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
+   python demo/demo.py demo/demo_configs/tsn_r50_1x1x8_video_infer.py \
        https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb_20220818-2692d16c.pth \
        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
    ```
@@ -77,7 +77,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
    ```shell
    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-   python demo/demo.py configs/recognition/tsn/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
+   python demo/demo.py demo/demo_configs/tsn_r50_1x1x8_video_infer.py \
        checkpoints/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb_20220818-2692d16c.pth \
        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --out-filename demo/demo_out.mp4
    ```

@@ -7,11 +7,9 @@ from multiprocessing import Manager, cpu_count
 
 import numpy as np
 from mmengine import Config, DictAction, track_parallel_progress
+from mmengine.registry import init_default_scope
 
 from mmaction.registry import DATASETS, TRANSFORMS
-from mmaction.utils import register_all_modules
-
-register_all_modules()
 
 
 def parse_args():
@@ -115,6 +113,7 @@ if __name__ == '__main__':
     # read config file
     cfg = Config.fromfile(args.config)
     cfg.merge_from_dict(args.cfg_options)
+    init_default_scope(cfg.get('default_scope', 'mmaction'))
 
     # build dataset
     dataset_cfg = cfg.get(f'{args.split}_dataloader').dataset

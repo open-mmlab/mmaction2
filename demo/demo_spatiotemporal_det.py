@@ -17,7 +17,6 @@ from mmengine.structures import InstanceData
 from mmaction.apis import detection_inference
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
-from mmaction.utils import register_all_modules
 
 try:
     import moviepy.editor as mpy
@@ -179,8 +178,7 @@ def pack_result(human_detection, result, img_h, img_w):
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
     parser.add_argument('video', help='video file/url')
-    parser.add_argument(
-        'out_filename', help='output filename', default='demo/stdet_demo.mp4')
+    parser.add_argument('out_filename', help='output filename')
     parser.add_argument(
         '--config',
         default=('configs/detection/ava/slowonly_kinetics400-pretrained-'
@@ -195,7 +193,7 @@ def parse_args():
         help='spatialtemporal detection model checkpoint file/url')
     parser.add_argument(
         '--det-config',
-        default='demo/skeleton_demo_cfg/faster-rcnn_r50_fpn_2x_coco_infer.py',
+        default='demo/demo_configs/faster-rcnn_r50_fpn_2x_coco_infer.py',
         help='human detection config file path (from mmdet)')
     parser.add_argument(
         '--det-checkpoint',
@@ -260,7 +258,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-    register_all_modules()
 
     frame_paths, original_frames = frame_extraction(args.video)
     num_frame = len(frame_paths)
