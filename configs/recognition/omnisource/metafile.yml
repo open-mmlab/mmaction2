@@ -1,0 +1,28 @@
+Collections:
+  - Name: Omnisource
+    README: configs/recognition/omnisource/README.md
+
+
+Models:
+  - Name: slowonly_r50_8xb16-8x8x1-256e_imagenet-kinetics400-rgb
+    Config: configs/recognition/omnisource/slowonly_r50_8xb16-8x8x1-256e_imagenet-kinetics400-rgb.py
+    In Collection: SlowOnly
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 256
+      FLOPs: 54.75G
+      Parameters: 32.45M
+      Pretrained: None
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: Kinetics-400
+        Task: Action Recognition
+        Metrics:
+          Top 1 Accuracy: 77.30
+          Top 5 Accuracy: 93.23
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/omnisource/slowonly_r50_8xb16-8x8x1-256e_imagenet-kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/omnisource/slowonly_r50_8xb16-8x8x1-256e_imagenet-kinetics400-rgb_20230208-61c4be0d.pth

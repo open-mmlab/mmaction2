@@ -159,7 +159,7 @@ param_scheduler = [
         convert_to_iter_based=True)
 ]
 """
-The learning rate is for total_batch_size = 16 x 16 (num_gpus x batch_size)
+The learning rate is for total_batch_size = 8 x 16 (num_gpus x batch_size)
 If you want to use other batch size or number of GPU settings, please update
 the learning rate with the linear scaling rule.
 """
