@@ -2,7 +2,7 @@
 from typing import Callable, List, Optional, Union
 
 import mmengine
-from mmengine.utils import check_file_exist
+from mmengine.fileio import exists
 
 from mmaction.registry import DATASETS
 from mmaction.utils import ConfigType
@@ -80,7 +80,7 @@ class ActivityNetDataset(BaseActionDataset):
 
     def load_data_list(self) -> List[dict]:
         """Load annotation file to get video information."""
-        check_file_exist(self.ann_file)
+        exists(self.ann_file)
         data_list = []
         anno_database = mmengine.load(self.ann_file)
         for video_name in anno_database:
