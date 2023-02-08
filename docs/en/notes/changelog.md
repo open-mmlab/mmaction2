@@ -1,10 +1,25 @@
 # Changelog
 
+## 1.0.0rc3 (2/8/2023)
+
+**Highlights**
+
+- Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
+-
+
+**New Features**
+
+**Improvements**
+
+**Bug Fixes**
+
+**Documentation**
+
 ## 1.0.0rc2 (1/10/2023)
 
 **Highlights**
 
-- Support Action Recognition model VideoMAE(NeurIPS'2022), MVit V2(CVPR'2022), C2D and skeleton-based action recognition model STGCN++
+- Support Action Recognition model VideoMAE(NeurIPS'2022), MViT V2(CVPR'2022), C2D and skeleton-based action recognition model STGCN++
 - Support Omni-Source training on ImageNet and Kinetics datasets
 - Support exporting spatial-temporal detection models to ONNX
 
