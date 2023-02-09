@@ -24,6 +24,7 @@ class TestPoseTransforms:
 
     @staticmethod
     def test_load_kinetics_pose():
+
         def get_mode(arr):
             cnt = defaultdict(lambda: 0)
             for num in arr:
@@ -126,8 +127,13 @@ class TestPoseTransforms:
             modality='Pose')
 
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left_kp=(1,), right_kp=(2,), left_limb=(0,),
-            right_limb=(1,), skeletons=())
+            sigma=1,
+            with_kp=True,
+            left_kp=(1, ),
+            right_kp=(2, ),
+            left_limb=(0, ),
+            right_limb=(1, ),
+            skeletons=())
         assert str(generate_pose_target) == ('GeneratePoseTarget(sigma=1, '
                                              'use_score=True, with_kp=True, '
                                              'with_limb=False, skeletons=(), '
@@ -148,7 +154,9 @@ class TestPoseTransforms:
                                   return_results['imgs'][1])
 
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=False, with_limb=True,
+            sigma=1,
+            with_kp=False,
+            with_limb=True,
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(copy.deepcopy(results))
         assert return_results['imgs'].shape == (8, 3, 64, 64)
@@ -181,7 +189,8 @@ class TestPoseTransforms:
             keypoint=kp,
             keypoint_score=kpscore,
             modality='Pose')
-        generate_pose_target = GeneratePoseTarget(sigma=1, with_kp=True, skeletons=())
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1, with_kp=True, skeletons=())
         return_results = generate_pose_target(copy.deepcopy(results))
         assert_array_almost_equal(return_results['imgs'], 0)
 
@@ -196,7 +205,9 @@ class TestPoseTransforms:
             keypoint_score=kpscore,
             modality='Pose')
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=False, with_limb=True,
+            sigma=1,
+            with_kp=False,
+            with_limb=True,
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(copy.deepcopy(results))
         assert_array_almost_equal(return_results['imgs'], 0)
@@ -226,7 +237,9 @@ class TestPoseTransforms:
             keypoint_score=kpscore,
             modality='Pose')
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=False, with_limb=True,
+            sigma=1,
+            with_kp=False,
+            with_limb=True,
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
@@ -311,6 +324,7 @@ class TestPoseTransforms:
 
     @staticmethod
     def test_pre_normalize2d():
+
         def check_pose_normalize(origin_kps, target_kps, h, w):
             target_kps[..., 0] = target_kps[..., 0] * w / 2 + w / 2
             target_kps[..., 1] = target_kps[..., 1] * h / 2 + h / 2
@@ -552,7 +566,7 @@ class TestPoseTransforms:
         assert repr(pose_decode) == 'PoseDecode()'
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['keypoint'], kp[:,
-                                                              frame_inds])
+                                                                 frame_inds])
         assert_array_almost_equal(decode_results['keypoint_score'],
                                   kpscore[:, frame_inds])
 

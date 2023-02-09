@@ -12,7 +12,7 @@ from torch.nn.modules.utils import _pair
 
 from mmaction.registry import TRANSFORMS
 from .loading import DecordDecode, DecordInit
-from .processing import Flip, _combine_quadruple
+from .processing import _combine_quadruple
 
 
 @TRANSFORMS.register_module()
@@ -188,10 +188,12 @@ class GeneratePoseTarget(BaseTransform):
         - heatmap_imgs
 
     Args:
-        sigma (float): The sigma of the generated gaussian map. Defaults to 0.6.
+        sigma (float): The sigma of the generated gaussian map.
+            Defaults to 0.6.
         use_score (bool): Use the confidence score of keypoints as the maximum
             of the gaussian maps. Defaults to True.
-        with_kp (bool): Generate pseudo heatmaps for keypoints. Defaults to True.
+        with_kp (bool): Generate pseudo heatmaps for keypoints.
+            Defaults to True.
         with_limb (bool): Generate pseudo heatmaps for limbs. At least one of
             'with_kp' and 'with_limb' should be True. Defaults to False.
         skeletons (tuple[tuple]): The definition of human skeletons.
@@ -221,9 +223,12 @@ class GeneratePoseTarget(BaseTransform):
                  use_score: bool = True,
                  with_kp: bool = True,
                  with_limb: bool = False,
-                 skeletons: Tuple[Tuple[int]] = ((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7),
-                                                 (7, 9), (0, 6), (6, 8), (8, 10), (5, 11), (11, 13),
-                                                 (13, 15), (6, 12), (12, 14), (14, 16), (11, 12)),
+                 skeletons: Tuple[Tuple[int]] = ((0, 1), (0, 2), (1, 3),
+                                                 (2, 4), (0, 5), (5, 7),
+                                                 (7, 9), (0, 6), (6, 8),
+                                                 (8, 10), (5, 11), (11, 13),
+                                                 (13, 15), (6, 12), (12, 14),
+                                                 (14, 16), (11, 12)),
                  double: bool = False,
                  left_kp: Tuple[int] = (1, 3, 5, 7, 9, 11, 13, 15),
                  right_kp: Tuple[int] = (2, 4, 6, 8, 10, 12, 14, 16),
@@ -282,7 +287,7 @@ class GeneratePoseTarget(BaseTransform):
                 continue
             y = y[:, None]
 
-            patch = np.exp(-((x - mu_x) ** 2 + (y - mu_y) ** 2) / 2 / sigma ** 2)
+            patch = np.exp(-((x - mu_x)**2 + (y - mu_y)**2) / 2 / sigma**2)
             patch = patch * max_value
             arr[st_y:ed_y, st_x:ed_x] = \
                 np.maximum(arr[st_y:ed_y, st_x:ed_x], patch)
@@ -301,8 +306,8 @@ class GeneratePoseTarget(BaseTransform):
                 corresponding limbs. Shape: M * 2.
             start_values (np.ndarray): The max values of one keypoint in the
                 corresponding limbs. Shape: M.
-            end_values (np.ndarray): The max values of the other keypoint in the
-                corresponding limbs. Shape: M.
+            end_values (np.ndarray): The max values of the other keypoint
+                in the corresponding limbs. Shape: M.
         """
 
         sigma = self.sigma
@@ -453,7 +458,8 @@ class GeneratePoseTarget(BaseTransform):
 
         if self.double:
             indices = np.arange(heatmap.shape[1], dtype=np.int64)
-            left, right = (self.left_kp, self.right_kp) if self.with_kp else (self.left_limb, self.right_limb)
+            left, right = (self.left_kp, self.right_kp) if self.with_kp else (
+                self.left_limb, self.right_limb)
             for l, r in zip(left, right):  # noqa: E741
                 indices[l] = r
                 indices[r] = l
@@ -1019,7 +1025,7 @@ class GenSkeFeat(BaseTransform):
         if 'keypoint_score' in results and 'keypoint' in results:
             assert self.dataset != 'nturgb+d'
             assert results['keypoint'].shape[
-                       -1] == 2, 'Only 2D keypoints have keypoint_score. '
+                -1] == 2, 'Only 2D keypoints have keypoint_score. '
             keypoint = results.pop('keypoint')
             keypoint_score = results.pop('keypoint_score')
             results['keypoint'] = np.concatenate(
