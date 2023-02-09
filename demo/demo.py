@@ -7,7 +7,6 @@ from typing import Optional, Tuple
 from mmengine import Config, DictAction
 
 from mmaction.apis import inference_recognizer, init_recognizer
-from mmaction.utils import register_all_modules
 from mmaction.visualization import ActionVisualizer
 
 
@@ -111,9 +110,6 @@ def get_output(
 
 def main():
     args = parse_args()
-
-    # Register all modules in mmaction2 into the registries
-    register_all_modules()
 
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:

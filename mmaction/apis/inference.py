@@ -7,6 +7,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from mmengine.dataset import Compose, pseudo_collate
+from mmengine.registry import init_default_scope
 from mmengine.runner import load_checkpoint
 from mmengine.utils import track_iter_progress
 
@@ -37,6 +38,8 @@ def init_recognizer(config: Union[str, Path, mmengine.Config],
                         f'but got {type(config)}')
 
     config.model.backbone.pretrained = None
+    init_default_scope(config.get('default_scope', 'mmaction'))
+
     model = MODELS.build(config.model)
 
     if checkpoint is not None:

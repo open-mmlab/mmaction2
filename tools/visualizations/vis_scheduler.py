@@ -12,11 +12,10 @@ import torch.nn as nn
 from mmengine.config import Config, DictAction
 from mmengine.hooks import Hook
 from mmengine.model import BaseModel
+from mmengine.registry import init_default_scope
 from mmengine.runner import Runner
 from mmengine.visualization import Visualizer
 from rich.progress import BarColumn, MofNCompleteColumn, Progress, TextColumn
-
-from mmaction.utils import register_all_modules
 
 
 class SimpleModel(BaseModel):
@@ -206,8 +205,7 @@ def main():
                                 osp.splitext(osp.basename(args.config))[0])
 
     cfg.log_level = args.log_level
-    # register all modules in mmcls into the registries
-    register_all_modules()
+    init_default_scope(cfg.get('default_scope', 'mmaction'))
 
     # make sure save_root exists
     if args.save_path and not args.save_path.parent.exists():

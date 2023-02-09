@@ -12,9 +12,9 @@ except ImportError:
           'to set up the environment')
 from fvcore.nn.print_model_statistics import _format_size
 from mmengine import Config
+from mmengine.registry import init_default_scope
 
 from mmaction.registry import MODELS
-from mmaction.utils import register_all_modules
 
 
 def parse_args():
@@ -48,8 +48,8 @@ def main():
         raise ValueError('invalid input shape')
 
     cfg = Config.fromfile(args.config)
+    init_default_scope(cfg.get('default_scope', 'mmaction'))
 
-    register_all_modules()
     model = MODELS.build(cfg.model)
     model.eval()
 

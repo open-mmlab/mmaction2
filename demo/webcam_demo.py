@@ -12,7 +12,6 @@ from mmengine import Config, DictAction
 from mmengine.dataset import Compose, pseudo_collate
 
 from mmaction.apis import init_recognizer
-from mmaction.utils import register_all_modules
 
 FONTFACE = cv2.FONT_HERSHEY_COMPLEX_SMALL
 FONTSCALE = 1
@@ -168,9 +167,6 @@ def main():
     global average_size, threshold, drawing_fps, inference_fps, \
         device, model, camera, data, label, sample_length, \
         test_pipeline, frame_queue, result_queue
-
-    # Register all modules in mmaction2 into the registries
-    register_all_modules()
 
     args = parse_args()
     average_size = args.average_size

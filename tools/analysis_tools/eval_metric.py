@@ -4,8 +4,7 @@ import argparse
 import mmengine
 from mmengine import Config, DictAction
 from mmengine.evaluator import Evaluator
-
-from mmaction.utils import register_all_modules
+from mmengine.registry import init_default_scope
 
 
 def parse_args():
@@ -30,12 +29,11 @@ def parse_args():
 def main():
     args = parse_args()
 
-    register_all_modules()
-
     # load config
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
+    init_default_scope(cfg.get('default_scope', 'mmaction'))
 
     data_samples = mmengine.load(args.pkl_results)
 

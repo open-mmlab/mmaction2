@@ -7,13 +7,9 @@ import torch
 from parameterized import parameterized
 
 from mmaction.apis import MMAction2Inferencer
-from mmaction.utils import register_all_modules
 
 
 class TestMMActionInferencer(TestCase):
-
-    def setUp(self):
-        register_all_modules()
 
     def test_init_recognizer(self):
         # Initialzied by alias
