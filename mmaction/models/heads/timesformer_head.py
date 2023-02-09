@@ -17,6 +17,8 @@ class TimeSformerHead(BaseHead):
         loss_cls (dict or ConfigDict): Config for building loss.
             Defaults to `dict(type='CrossEntropyLoss')`.
         init_std (float): Std value for Initiation. Defaults to 0.02.
+        dropout_ratio (float): Probability of dropout layer.
+            Defaults to : 0.0.
         kwargs (dict, optional): Any keyword argument to be used to initialize
             the head.
     """
@@ -26,9 +28,16 @@ class TimeSformerHead(BaseHead):
                  in_channels: int,
                  loss_cls: ConfigType = dict(type='CrossEntropyLoss'),
                  init_std: float = 0.02,
+                 dropout_ratio: float = 0.0,
                  **kwargs) -> None:
         super().__init__(num_classes, in_channels, loss_cls, **kwargs)
         self.init_std = init_std
+        self.dropout_ratio = dropout_ratio
+
+        if self.dropout_ratio != 0:
+            self.dropout = nn.Dropout(p=self.dropout_ratio)
+        else:
+            self.dropout = None
         self.fc_cls = nn.Linear(self.in_channels, self.num_classes)
 
     def init_weights(self) -> None:
@@ -44,6 +53,9 @@ class TimeSformerHead(BaseHead):
         Returns:
             Tensor: The classification scores for input samples.
         """
+        # [N, in_channels]
+        if self.dropout is not None:
+            x = self.dropout(x)
         # [N, in_channels]
         cls_score = self.fc_cls(x)
         # [N, num_classes]

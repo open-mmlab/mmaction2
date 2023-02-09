@@ -44,10 +44,12 @@ class VideoDataset(BaseActionDataset):
             different filename format. However, when taking videos as input,
             it should be set to 0, since frames loaded from videos count
             from 0. Defaults to 0.
-        modality (str): Modality of data. Support ``RGB``, ``Flow``.
-            Defaults to ``RGB``.
+        modality (str): Modality of data. Support ``'RGB'``, ``'Flow'``.
+            Defaults to ``'RGB'``.
         test_mode (bool): Store True when building test or validation dataset.
             Defaults to False.
+        delimiter (str): Delimiter for the annotation file.
+            Defaults to ``' '`` (whitespace).
     """
 
     def __init__(self,
@@ -59,7 +61,9 @@ class VideoDataset(BaseActionDataset):
                  start_index: int = 0,
                  modality: str = 'RGB',
                  test_mode: bool = False,
+                 delimiter: str = ' ',
                  **kwargs) -> None:
+        self.delimiter = delimiter
         super().__init__(
             ann_file,
             pipeline=pipeline,
@@ -77,7 +81,7 @@ class VideoDataset(BaseActionDataset):
         data_list = []
         fin = list_from_file(self.ann_file)
         for line in fin:
-            line_split = line.strip().split()
+            line_split = line.strip().split(self.delimiter)
             if self.multi_class:
                 assert self.num_classes is not None
                 filename, label = line_split[0], line_split[1:]

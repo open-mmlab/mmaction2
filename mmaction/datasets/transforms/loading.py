@@ -460,16 +460,20 @@ class UniformSample(BaseTransform):
         Returns:
             seq (list): the indexes of frames of sampled from the video.
         """
-        assert self.num_clips == 1
         seg_size = float(num_frames - 1) / self.clip_len
         inds = []
-        for i in range(self.clip_len):
-            start = int(np.round(seg_size * i))
-            end = int(np.round(seg_size * (i + 1)))
-            if not self.test_mode:
+        if not self.test_mode:
+            for i in range(self.clip_len):
+                start = int(np.round(seg_size * i))
+                end = int(np.round(seg_size * (i + 1)))
                 inds.append(np.random.randint(start, end + 1))
-            else:
-                inds.append((start + end) // 2)
+        else:
+            duration = seg_size / (self.num_clips + 1)
+            for k in range(self.num_clips):
+                for i in range(self.clip_len):
+                    start = int(np.round(seg_size * i))
+                    frame_index = start + int(duration * (k + 1))
+                    inds.append(frame_index)
 
         return np.array(inds)
 
