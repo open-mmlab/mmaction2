@@ -176,39 +176,60 @@ class GeneratePoseTarget(BaseTransform):
     Required keys are "keypoint", "img_shape", "keypoint_score" (optional),
     added or modified keys are "imgs".
 
+    Required Keys:
+
+        - keypoint
+        - keypoint_score (optional)
+        - img_shape
+
+    Added Keys:
+
+        - imgs
+        - heatmap_imgs
+
     Args:
-        sigma (float): The sigma of the generated gaussian map. Default: 0.6.
+        sigma (float): The sigma of the generated gaussian map. Defaults to 0.6.
         use_score (bool): Use the confidence score of keypoints as the maximum
-            of the gaussian maps. Default: True.
-        with_kp (bool): Generate pseudo heatmaps for keypoints. Default: True.
+            of the gaussian maps. Defaults to True.
+        with_kp (bool): Generate pseudo heatmaps for keypoints. Defaults to True.
         with_limb (bool): Generate pseudo heatmaps for limbs. At least one of
-            'with_kp' and 'with_limb' should be True. Default: False.
+            'with_kp' and 'with_limb' should be True. Defaults to False.
         skeletons (tuple[tuple]): The definition of human skeletons.
-            Default: ((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7), (7, 9),
-                      (0, 6), (6, 8), (8, 10), (5, 11), (11, 13), (13, 15),
-                      (6, 12), (12, 14), (14, 16), (11, 12)),
+            Defaults to ``((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7),
+                         (7, 9), (0, 6), (6, 8), (8, 10), (5, 11), (11, 13),
+                         (13, 15), (6, 12), (12, 14), (14, 16), (11, 12))``,
             which is the definition of COCO-17p skeletons.
         double (bool): Output both original heatmaps and flipped heatmaps.
-            Default: False.
+            Defaults to False.
         left_kp (tuple[int]): Indexes of left keypoints, which is used when
-            flipping heatmaps. Default: (1, 3, 5, 7, 9, 11, 13, 15),
+            flipping heatmaps. Defaults to (1, 3, 5, 7, 9, 11, 13, 15),
             which is left keypoints in COCO-17p.
         right_kp (tuple[int]): Indexes of right keypoints, which is used when
-            flipping heatmaps. Default: (2, 4, 6, 8, 10, 12, 14, 16),
+            flipping heatmaps. Defaults to (2, 4, 6, 8, 10, 12, 14, 16),
             which is right keypoints in COCO-17p.
+        left_limb (tuple[int]): Indexes of left limbs, which is used when
+            flipping heatmaps. Defaults to (0, 2, 4, 5, 6, 10, 11, 12),
+            which is left limbs of skeletons we defined for COCO-17p.
+        right_limb (tuple[int]): Indexes of right limbs, which is used when
+            flipping heatmaps. Defaults to (1, 3, 7, 8, 9, 13, 14, 15),
+            which is right limbs of skeletons we defined for COCO-17p.
+        scaling (float): The ratio to scale the heatmaps. Defaults to 1.
     """
 
     def __init__(self,
-                 sigma=0.6,
-                 use_score=True,
-                 with_kp=True,
-                 with_limb=False,
-                 skeletons=((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7),
-                            (7, 9), (0, 6), (6, 8), (8, 10), (5, 11), (11, 13),
-                            (13, 15), (6, 12), (12, 14), (14, 16), (11, 12)),
-                 double=False,
-                 left_kp=(1, 3, 5, 7, 9, 11, 13, 15),
-                 right_kp=(2, 4, 6, 8, 10, 12, 14, 16)):
+                 sigma: float = 0.6,
+                 use_score: bool = True,
+                 with_kp: bool = True,
+                 with_limb: bool = False,
+                 skeletons: Tuple[Tuple[int]] = ((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7),
+                                                 (7, 9), (0, 6), (6, 8), (8, 10), (5, 11), (11, 13),
+                                                 (13, 15), (6, 12), (12, 14), (14, 16), (11, 12)),
+                 double: bool = False,
+                 left_kp: Tuple[int] = (1, 3, 5, 7, 9, 11, 13, 15),
+                 right_kp: Tuple[int] = (2, 4, 6, 8, 10, 12, 14, 16),
+                 left_limb: Tuple[int] = (0, 2, 4, 5, 6, 10, 11, 12),
+                 right_limb: Tuple[int] = (1, 3, 7, 8, 9, 13, 14, 15),
+                 scaling: float = 1.) -> None:
 
         self.sigma = sigma
         self.use_score = use_score
@@ -225,29 +246,30 @@ class GeneratePoseTarget(BaseTransform):
         self.left_kp = left_kp
         self.right_kp = right_kp
         self.skeletons = skeletons
+        self.left_limb = left_limb
+        self.right_limb = right_limb
+        self.scaling = scaling
 
-    def generate_a_heatmap(self, img_h, img_w, centers, sigma, max_values):
+    def generate_a_heatmap(self, arr: np.ndarray, centers: np.ndarray,
+                           max_values: np.ndarray) -> None:
         """Generate pseudo heatmap for one keypoint in one frame.
 
         Args:
-            img_h (int): The height of the heatmap.
-            img_w (int): The width of the heatmap.
+            arr (np.ndarray): The array to store the generated heatmaps.
+                Shape: img_h * img_w.
             centers (np.ndarray): The coordinates of corresponding keypoints
-                (of multiple persons).
-            sigma (float): The sigma of generated gaussian.
-            max_values (np.ndarray): The max values of each keypoint.
-
-        Returns:
-            np.ndarray: The generated pseudo heatmap.
+                (of multiple persons). Shape: M * 2.
+            max_values (np.ndarray): The max values of each keypoint. Shape: M.
         """
 
-        heatmap = np.zeros([img_h, img_w], dtype=np.float32)
+        sigma = self.sigma
+        img_h, img_w = arr.shape
 
         for center, max_value in zip(centers, max_values):
-            mu_x, mu_y = center[0], center[1]
             if max_value < self.eps:
                 continue
 
+            mu_x, mu_y = center[0], center[1]
             st_x = max(int(mu_x - 3 * sigma), 0)
             ed_x = min(int(mu_x + 3 * sigma) + 1, img_w)
             st_y = max(int(mu_y - 3 * sigma), 0)
@@ -260,36 +282,31 @@ class GeneratePoseTarget(BaseTransform):
                 continue
             y = y[:, None]
 
-            patch = np.exp(-((x - mu_x)**2 + (y - mu_y)**2) / 2 / sigma**2)
+            patch = np.exp(-((x - mu_x) ** 2 + (y - mu_y) ** 2) / 2 / sigma ** 2)
             patch = patch * max_value
-            heatmap[st_y:ed_y,
-                    st_x:ed_x] = np.maximum(heatmap[st_y:ed_y, st_x:ed_x],
-                                            patch)
+            arr[st_y:ed_y, st_x:ed_x] = \
+                np.maximum(arr[st_y:ed_y, st_x:ed_x], patch)
 
-        return heatmap
-
-    def generate_a_limb_heatmap(self, img_h, img_w, starts, ends, sigma,
-                                start_values, end_values):
+    def generate_a_limb_heatmap(self, arr: np.ndarray, starts: np.ndarray,
+                                ends: np.ndarray, start_values: np.ndarray,
+                                end_values: np.ndarray) -> None:
         """Generate pseudo heatmap for one limb in one frame.
 
         Args:
-            img_h (int): The height of the heatmap.
-            img_w (int): The width of the heatmap.
+            arr (np.ndarray): The array to store the generated heatmaps.
+                Shape: img_h * img_w.
             starts (np.ndarray): The coordinates of one keypoint in the
-                corresponding limbs (of multiple persons).
+                corresponding limbs. Shape: M * 2.
             ends (np.ndarray): The coordinates of the other keypoint in the
-                corresponding limbs (of multiple persons).
-            sigma (float): The sigma of generated gaussian.
+                corresponding limbs. Shape: M * 2.
             start_values (np.ndarray): The max values of one keypoint in the
-                corresponding limbs.
-            end_values (np.ndarray): The max values of the other keypoint in
-                the corresponding limbs.
-
-        Returns:
-            np.ndarray: The generated pseudo heatmap.
+                corresponding limbs. Shape: M.
+            end_values (np.ndarray): The max values of the other keypoint in the
+                corresponding limbs. Shape: M.
         """
 
-        heatmap = np.zeros([img_h, img_w], dtype=np.float32)
+        sigma = self.sigma
+        img_h, img_w = arr.shape
 
         for start, end, start_value, end_value in zip(starts, ends,
                                                       start_values,
@@ -326,9 +343,7 @@ class GeneratePoseTarget(BaseTransform):
             d2_ab = ((start[0] - end[0])**2 + (start[1] - end[1])**2)
 
             if d2_ab < 1:
-                full_map = self.generate_a_heatmap(img_h, img_w, [start],
-                                                   sigma, [start_value])
-                heatmap = np.maximum(heatmap, full_map)
+                self.generate_a_heatmap(arr, start[None], start_value[None])
                 continue
 
             coeff = (d2_start - d2_end + d2_ab) / 2. / d2_ab
@@ -349,61 +364,50 @@ class GeneratePoseTarget(BaseTransform):
             patch = np.exp(-d2_seg / 2. / sigma**2)
             patch = patch * value_coeff
 
-            heatmap[min_y:max_y, min_x:max_x] = np.maximum(
-                heatmap[min_y:max_y, min_x:max_x], patch)
+            arr[min_y:max_y, min_x:max_x] = \
+                np.maximum(arr[min_y:max_y, min_x:max_x], patch)
 
-        return heatmap
-
-    def generate_heatmap(self, img_h, img_w, kps, sigma, max_values):
+    def generate_heatmap(self, arr: np.ndarray, kps: np.ndarray,
+                         max_values: np.ndarray) -> None:
         """Generate pseudo heatmap for all keypoints and limbs in one frame (if
         needed).
 
         Args:
-            img_h (int): The height of the heatmap.
-            img_w (int): The width of the heatmap.
+            arr (np.ndarray): The array to store the generated heatmaps.
+                Shape: V * img_h * img_w.
             kps (np.ndarray): The coordinates of keypoints in this frame.
-            sigma (float): The sigma of generated gaussian.
+                Shape: M * V * 2.
             max_values (np.ndarray): The confidence score of each keypoint.
-
-        Returns:
-            np.ndarray: The generated pseudo heatmap.
+                Shape: M * V.
         """
 
-        heatmaps = []
         if self.with_kp:
             num_kp = kps.shape[1]
             for i in range(num_kp):
-                heatmap = self.generate_a_heatmap(img_h, img_w, kps[:, i],
-                                                  sigma, max_values[:, i])
-                heatmaps.append(heatmap)
+                self.generate_a_heatmap(arr[i], kps[:, i], max_values[:, i])
 
         if self.with_limb:
-            for limb in self.skeletons:
+            for i, limb in enumerate(self.skeletons):
                 start_idx, end_idx = limb
                 starts = kps[:, start_idx]
                 ends = kps[:, end_idx]
 
                 start_values = max_values[:, start_idx]
                 end_values = max_values[:, end_idx]
-                heatmap = self.generate_a_limb_heatmap(img_h, img_w, starts,
-                                                       ends, sigma,
-                                                       start_values,
-                                                       end_values)
-                heatmaps.append(heatmap)
+                self.generate_a_limb_heatmap(arr[i], starts, ends,
+                                             start_values, end_values)
 
-        return np.stack(heatmaps, axis=-1)
-
-    def gen_an_aug(self, results):
+    def gen_an_aug(self, results: Dict) -> np.ndarray:
         """Generate pseudo heatmaps for all frames.
 
         Args:
             results (dict): The dictionary that contains all info of a sample.
 
         Returns:
-            list[np.ndarray]: The generated pseudo heatmaps.
+            np.ndarray: The generated pseudo heatmaps.
         """
 
-        all_kps = results['keypoint']
+        all_kps = results['keypoint'].astype(np.float32)
         kp_shape = all_kps.shape
 
         if 'keypoint_score' in results:
@@ -412,43 +416,53 @@ class GeneratePoseTarget(BaseTransform):
             all_kpscores = np.ones(kp_shape[:-1], dtype=np.float32)
 
         img_h, img_w = results['img_shape']
+
+        # scale img_h, img_w and kps
+        img_h = int(img_h * self.scaling + 0.5)
+        img_w = int(img_w * self.scaling + 0.5)
+        all_kps[..., :2] *= self.scaling
+
         num_frame = kp_shape[1]
+        num_c = 0
+        if self.with_kp:
+            num_c += all_kps.shape[2]
+        if self.with_limb:
+            num_c += len(self.skeletons)
 
-        imgs = []
+        ret = np.zeros([num_frame, num_c, img_h, img_w], dtype=np.float32)
+
         for i in range(num_frame):
-            sigma = self.sigma
+            # M, V, C
             kps = all_kps[:, i]
-            kpscores = all_kpscores[:, i]
+            # M, C
+            kpscores = all_kpscores[:, i] if self.use_score else \
+                np.ones_like(all_kpscores[:, i])
 
-            max_values = np.ones(kpscores.shape, dtype=np.float32)
-            if self.use_score:
-                max_values = kpscores
+            self.generate_heatmap(ret[i], kps, kpscores)
+        return ret
 
-            hmap = self.generate_heatmap(img_h, img_w, kps, sigma, max_values)
-            imgs.append(hmap)
-
-        return imgs
-
-    def transform(self, results):
+    def transform(self, results: Dict) -> Dict:
         """Generate pseudo heatmaps based on joint coordinates and confidence.
 
         Args:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-        if not self.double:
-            results['imgs'] = np.stack(self.gen_an_aug(results))
-        else:
-            results_ = cp.deepcopy(results)
-            flip = Flip(
-                flip_ratio=1, left_kp=self.left_kp, right_kp=self.right_kp)
-            results_ = flip(results_)
-            results['imgs'] = np.concatenate(
-                [self.gen_an_aug(results),
-                 self.gen_an_aug(results_)])
+        heatmap = self.gen_an_aug(results)
+        key = 'heatmap_imgs' if 'imgs' in results else 'imgs'
+
+        if self.double:
+            indices = np.arange(heatmap.shape[1], dtype=np.int64)
+            left, right = (self.left_kp, self.right_kp) if self.with_kp else (self.left_limb, self.right_limb)
+            for l, r in zip(left, right):  # noqa: E741
+                indices[l] = r
+                indices[r] = l
+            heatmap_flip = heatmap[..., ::-1][:, indices]
+            heatmap = np.concatenate([heatmap, heatmap_flip])
+        results[key] = heatmap
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'sigma={self.sigma}, '
                     f'use_score={self.use_score}, '
@@ -457,7 +471,10 @@ class GeneratePoseTarget(BaseTransform):
                     f'skeletons={self.skeletons}, '
                     f'double={self.double}, '
                     f'left_kp={self.left_kp}, '
-                    f'right_kp={self.right_kp})')
+                    f'right_kp={self.right_kp}, '
+                    f'left_limb={self.left_limb}, '
+                    f'right_limb={self.right_limb}, '
+                    f'scaling={self.scaling})')
         return repr_str
 
 
@@ -1002,7 +1019,7 @@ class GenSkeFeat(BaseTransform):
         if 'keypoint_score' in results and 'keypoint' in results:
             assert self.dataset != 'nturgb+d'
             assert results['keypoint'].shape[
-                -1] == 2, 'Only 2D keypoints have keypoint_score. '
+                       -1] == 2, 'Only 2D keypoints have keypoint_score. '
             keypoint = results.pop('keypoint')
             keypoint_score = results.pop('keypoint_score')
             results['keypoint'] = np.concatenate(
