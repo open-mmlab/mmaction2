@@ -70,15 +70,11 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 ## What's New
 
-**Release**: v1.0.0rc2 with the following new features:
+**Release (2022.02.10)**: v1.0.0rc3 with the following new features:
 
-- We Support Omni-Sourece training on ImageNet and Kinetics datasets.
-- We support exporting spatial-temporal detection models to ONNX.
-- We support **STGCN++** on NTU-RGB+D.
-- We support **MViT V2** on Kinetics 400 and something-V2.
-- We refine our skeleton-based pipelines and support the joint training of multi-stream skeleton information, including **joint, bone, joint-motion, and bone-motion**.
-- We support **VideoMAE** on Kinetics400.
-- We support **C2D** on Kinetics400, achieve 73.57% Top-1 accuracy (higher than 71.8% in the [paper](https://arxiv.org/abs/1711.07971)).
+- Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
+- Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
+- Add a new handy interface for inference MMAction2 models ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
 
 ## Installation
 
@@ -119,9 +115,9 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/videomae/README.md">VideoMAE</a> (NeurIPS'2022)</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/configs/recognition/mvit/README.md">MViT V2</a> (CVPR'2022)</td>
-    <td></td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/mvit/README.md">MViT V2</a> (CVPR'2022)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/uniformer/README.md">UniFormer V1</a> (ICLR'2022)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/uniformerv2/README.md">UniFormer V2</a> (Arxiv'2022)</td>
     <td></td>
     <td></td>
   </tr>
@@ -209,7 +205,7 @@ If you have any feature requests, please feel free to leave a comment in [Issues
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/ucf101_24/README.md">UCF101-24*</a> (<a href="http://www.thumos.info/download.html">Homepage</a>) (CRCV-IR-12-01)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/jhmdb/README.md">JHMDB*</a> (<a href="http://jhmdb.is.tue.mpg.de/">Homepage</a>) (ICCV'2015)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/ava/README.md">AVA</a> (<a href="https://research.google.com/ava/index.html">Homepage</a>) (CVPR'2018)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/ava_kinetics/README.md">AVA-Kinetics</a> (<a href="https://research.google.com/ava/index.html">Homepage</a>) (Arxiv'2020)</td>
   </tr>
   <tr>
     <td colspan="4" style="font-weight:bold;">Skeleton-based Action Recognition</td>

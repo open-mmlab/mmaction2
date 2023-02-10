@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
 import os.path as osp
+from typing import Optional
 
 import cv2
 import numpy as np
@@ -21,41 +22,15 @@ class LocalVisBackend(LocalVisBackend):
     """Local visualization backend class with video support.
 
     See mmengine.visualization.LocalVisBackend for more details.
-
-    Args:
-        save_dir (str, optional): The root directory to save the files
-            produced by the visualizer. If it is none, it means no data
-            is stored.
-        img_save_dir (str): The directory to save images.
-            Defaults to ``'vis_image'``.
-        config_save_file (str): The file name to save config.
-            Defaults to ``'config.py'``.
-        scalar_save_file (str):  The file name to save scalar values.
-            Defaults to ``'scalars.json'``.
-        out_type (str): Output format type, choose from 'img', 'gif',
-            'video'. Defaults to ``'img'``.
-        fps (int): Frames per second for saving video. Defaults to 5.
     """
-
-    def __init__(
-        self,
-        save_dir: str,
-        img_save_dir: str = 'vis_image',
-        config_save_file: str = 'config.py',
-        scalar_save_file: str = 'scalars.json',
-        out_type: str = 'img',
-        fps: int = 5,
-    ):
-        super().__init__(save_dir, img_save_dir, config_save_file,
-                         scalar_save_file)
-        self.out_type = out_type
-        self.fps = fps
 
     @force_init_env
     def add_video(self,
                   name: str,
                   frames: np.ndarray,
                   step: int = 0,
+                  fps: Optional[int] = 4,
+                  out_type: Optional[int] = 'img',
                   **kwargs) -> None:
         """Record the frames of a video to disk.
 
@@ -64,10 +39,13 @@ class LocalVisBackend(LocalVisBackend):
             frames (np.ndarray): The frames to be saved. The format
                 should be RGB. The shape should be (T, H, W, C).
             step (int): Global step value to record. Defaults to 0.
+            out_type (str): Output format type, choose from 'img', 'gif',
+            'video'. Defaults to ``'img'``.
+            fps (int): Frames per second for saving video. Defaults to 4.
         """
         assert frames.dtype == np.uint8
 
-        if self.out_type == 'img':
+        if out_type == 'img':
             frames_dir = osp.join(self._save_dir, name, f'frames_{step}')
             os.makedirs(frames_dir, exist_ok=True)
             for idx, frame in enumerate(frames):
@@ -82,12 +60,12 @@ class LocalVisBackend(LocalVisBackend):
                                   'output file.')
 
             frames = [x[..., ::-1] for x in frames]
-            video_clips = ImageSequenceClip(frames, fps=self.fps)
+            video_clips = ImageSequenceClip(frames, fps=fps)
             name = osp.splitext(name)[0]
-            if self.out_type == 'gif':
+            if out_type == 'gif':
                 out_path = osp.join(self._save_dir, name + '.gif')
                 video_clips.write_gif(out_path, logger=None)
-            elif self.out_type == 'video':
+            elif out_type == 'video':
                 out_path = osp.join(self._save_dir, name + '.mp4')
                 video_clips.write_videofile(
                     out_path, remove_temp=True, logger=None)

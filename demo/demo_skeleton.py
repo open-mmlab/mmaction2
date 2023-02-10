@@ -14,7 +14,7 @@ from mmengine.utils import track_iter_progress
 from mmaction.apis import (detection_inference, inference_recognizer,
                            init_recognizer, pose_inference)
 from mmaction.registry import VISUALIZERS
-from mmaction.utils import frame_extract, register_all_modules
+from mmaction.utils import frame_extract
 
 try:
     import moviepy.editor as mpy
@@ -168,12 +168,8 @@ def main():
     fake_anno['keypoint'] = keypoint.transpose((1, 0, 2, 3))
     fake_anno['keypoint_score'] = keypoint_score.transpose((1, 0, 2))
 
-    register_all_modules()
     config = mmengine.Config.fromfile(args.config)
     config.merge_from_dict(args.cfg_options)
-    if 'data_preprocessor' in config.model:
-        config.model.data_preprocessor['mean'] = (w // 2, h // 2, .5)
-        config.model.data_preprocessor['std'] = (w, h, 1.)
 
     model = init_recognizer(config, args.checkpoint, args.device)
     result = inference_recognizer(model, fake_anno)

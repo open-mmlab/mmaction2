@@ -4,11 +4,9 @@ import os.path as osp
 from operator import itemgetter
 from typing import Optional, Tuple
 
-import cv2
 from mmengine import Config, DictAction
 
 from mmaction.apis import inference_recognizer, init_recognizer
-from mmaction.utils import register_all_modules
 from mmaction.visualization import ActionVisualizer
 
 
@@ -88,34 +86,9 @@ def get_output(
     if video_path.startswith(('http://', 'https://')):
         raise NotImplementedError
 
-    try:
-        import decord
-    except ImportError:
-        raise ImportError('Please install decord to enable output file.')
-
-    # Channel Order is `BGR`
-    video = decord.VideoReader(video_path)
-    frames = [x.asnumpy()[..., ::-1] for x in video]
-    if target_resolution:
-        w, h = target_resolution
-        frame_h, frame_w, _ = frames[0].shape
-        if w == -1:
-            w = int(h / frame_h * frame_w)
-        if h == -1:
-            h = int(w / frame_w * frame_h)
-        frames = [cv2.resize(f, (w, h)) for f in frames]
-
     # init visualizer
     out_type = 'gif' if osp.splitext(out_filename)[1] == '.gif' else 'video'
-    vis_backends_cfg = [
-        dict(
-            type='LocalVisBackend',
-            out_type=out_type,
-            save_dir='demo',
-            fps=fps)
-    ]
-    visualizer = ActionVisualizer(
-        vis_backends=vis_backends_cfg, save_dir='place_holder')
+    visualizer = ActionVisualizer()
     visualizer.dataset_meta = dict(classes=labels)
 
     text_cfg = {'colors': font_color}
@@ -124,18 +97,19 @@ def get_output(
 
     visualizer.add_datasample(
         out_filename,
-        frames,
+        video_path,
         data_sample,
         draw_pred=True,
         draw_gt=False,
-        text_cfg=text_cfg)
+        text_cfg=text_cfg,
+        fps=fps,
+        out_type=out_type,
+        out_path=osp.join('demo', out_filename),
+        target_resolution=target_resolution)
 
 
 def main():
     args = parse_args()
-
-    # Register all modules in mmaction2 into the registries
-    register_all_modules()
 
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:

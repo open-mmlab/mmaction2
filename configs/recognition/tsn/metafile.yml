@@ -53,6 +53,8 @@ Models:
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb_20220906-65d68713.pth
 
   - Name: tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb
+    Alias:
+      - TSN
     Config: configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py
     In Collection: TSN
     Metadata:

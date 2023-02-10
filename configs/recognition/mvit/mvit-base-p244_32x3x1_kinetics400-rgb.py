@@ -76,13 +76,17 @@ test_pipeline = [
     dict(type='PackActionInputs')
 ]
 
+repeat_sample = 2
 train_dataloader = dict(
     batch_size=8,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
+    collate_fn=dict(type='repeat_pseudo_collate'),
     dataset=dict(
-        type=dataset_type,
+        type='RepeatAugDataset',
+        num_repeats=repeat_sample,
+        sample_once=True,
         ann_file=ann_file_train,
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
@@ -113,19 +117,21 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=30, val_begin=1, val_interval=3)
+    type='EpochBasedTrainLoop', max_epochs=200, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
+base_lr = 1.6e-3
 optim_wrapper = dict(
-    type='AmpOptimWrapper',
     optimizer=dict(
-        type='AdamW', lr=1.6e-3, betas=(0.9, 0.999), weight_decay=0.05))
+        type='AdamW', lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
+    paramwise_cfg=dict(norm_decay_mult=0.0, bias_decay_mult=0.0),
+    clip_grad=dict(max_norm=1, norm_type=2))
 
 param_scheduler = [
     dict(
         type='LinearLR',
-        start_factor=0.1,
+        start_factor=0.01,
         by_epoch=True,
         begin=0,
         end=30,
@@ -133,9 +139,9 @@ param_scheduler = [
     dict(
         type='CosineAnnealingLR',
         T_max=200,
-        eta_min=0,
+        eta_min=base_lr / 100,
         by_epoch=True,
-        begin=0,
+        begin=30,
         end=200,
         convert_to_iter_based=True)
 ]
@@ -147,4 +153,4 @@ default_hooks = dict(
 #   - `enable` means enable scaling LR automatically
 #       or not by default.
 #   - `base_batch_size` = (8 GPUs) x (8 samples per GPU).
-auto_scale_lr = dict(enable=False, base_batch_size=64)
+auto_scale_lr = dict(enable=False, base_batch_size=512 // repeat_sample)

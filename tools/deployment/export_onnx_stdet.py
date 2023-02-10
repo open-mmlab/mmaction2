@@ -6,10 +6,10 @@ import torch
 import torch.nn as nn
 from mmdet.structures.bbox import bbox2roi
 from mmengine import Config
+from mmengine.registry import init_default_scope
 from mmengine.runner import load_checkpoint
 
 from mmaction.registry import MODELS
-from mmaction.utils import register_all_modules
 
 
 def parse_args():
@@ -124,8 +124,8 @@ class STDet(nn.Module):
 
 def main():
     args = parse_args()
-    register_all_modules()
     config = Config.fromfile(args.config)
+    init_default_scope(config.get('default_scope', 'mmaction'))
 
     base_model = MODELS.build(config.model)
     load_checkpoint(base_model, args.checkpoint, map_location='cpu')

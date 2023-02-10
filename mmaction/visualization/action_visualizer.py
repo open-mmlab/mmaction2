@@ -1,13 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os
 import os.path as osp
-import warnings
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
-import matplotlib.pyplot as plt
 import mmcv
 import numpy as np
 from mmengine.dist import master_only
+from mmengine.fileio.io import isdir, isfile, join_path, list_dir_or_file
 from mmengine.visualization import Visualizer
 
 from mmaction.registry import VISBACKENDS, VISUALIZERS
@@ -45,11 +43,6 @@ class ActionVisualizer(Visualizer):
 
     Args:
         name (str): Name of the instance. Defaults to 'visualizer'.
-        video (Union[np.ndarray, Sequence[np.ndarray]]):
-            the origin video to draw. The format should be RGB.
-            For np.ndarray input, the video shape should be (N, H, W, C).
-            For Sequence[np.ndarray] input, the shape of each frame in
-             the sequence should be (H, W, C).
         vis_backends (list, optional): Visual backend config list.
             Defaults to None.
         save_dir (str, optional): Save file dir for all storage backends.
@@ -89,65 +82,65 @@ class ActionVisualizer(Visualizer):
     def __init__(
         self,
         name='visualizer',
-        video: Optional[np.ndarray] = None,
         vis_backends: Optional[List[Dict]] = None,
         save_dir: Optional[str] = None,
         fig_save_cfg=dict(frameon=False),
-        fig_show_cfg=dict(frameon=False, num='show')
+        fig_show_cfg=dict(frameon=False)
     ) -> None:
-        self._dataset_meta = None
-        self._vis_backends = dict()
+        super().__init__(
+            name=name,
+            image=None,
+            vis_backends=vis_backends,
+            save_dir=save_dir,
+            fig_save_cfg=fig_save_cfg,
+            fig_show_cfg=fig_show_cfg)
 
-        if save_dir is None:
-            warnings.warn('`Visualizer` backend is not initialized '
-                          'because save_dir is None.')
-        elif vis_backends is not None:
-            assert len(vis_backends) > 0, 'empty list'
-            names = [
-                vis_backend.get('name', None) for vis_backend in vis_backends
-            ]
-            if None in names:
-                if len(set(names)) > 1:
-                    raise RuntimeError(
-                        'If one of them has a name attribute, '
-                        'all backends must use the name attribute')
-                else:
-                    type_names = [
-                        vis_backend['type'] for vis_backend in vis_backends
-                    ]
-                    if len(set(type_names)) != len(type_names):
-                        raise RuntimeError(
-                            'The same vis backend cannot exist in '
-                            '`vis_backend` config. '
-                            'Please specify the name field.')
+    def _load_video(self,
+                    video: Union[np.ndarray, Sequence[np.ndarray], str],
+                    target_resolution: Optional[Tuple[int]] = None):
+        """Load video from multiple source and convert to target resolution.
 
-            if None not in names and len(set(names)) != len(names):
-                raise RuntimeError('The name fields cannot be the same')
+        Args:
+            video (np.ndarray, str): The video to draw.
+            target_resolution (Tuple[int], optional): Set to
+                (desired_width desired_height) to have resized frames. If
+                either dimension is None, the frames are resized by keeping
+                the existing aspect ratio. Defaults to None.
+        """
+        if isinstance(video, np.ndarray) or isinstance(video, list):
+            frames = video
+        elif isinstance(video, str):
+            # video file path
+            if isfile(video):
+                try:
+                    import decord
+                except ImportError:
+                    raise ImportError(
+                        'Please install decord to load video file.')
+                video = decord.VideoReader(video)
+                frames = [x.asnumpy()[..., ::-1] for x in video]
+            # rawframes folder path
+            elif isdir(video):
+                frame_list = sorted(list_dir_or_file(video, list_dir=False))
+                frames = [mmcv.imread(join_path(video, x)) for x in frame_list]
+        else:
+            raise TypeError(f'type of video {type(video)} not supported')
 
-            save_dir = osp.join(save_dir, 'vis_data')
+        if target_resolution is not None:
+            w, h = target_resolution
+            frame_h, frame_w, _ = frames[0].shape
+            if w == -1:
+                w = int(h / frame_h * frame_w)
+            if h == -1:
+                h = int(w / frame_w * frame_h)
+            frames = [mmcv.imresize(f, (w, h)) for f in frames]
 
-            for vis_backend in vis_backends:
-                name = vis_backend.pop('name', vis_backend['type'])
-                vis_backend.setdefault('save_dir', save_dir)
-                self._vis_backends[name] = VISBACKENDS.build(vis_backend)
-
-        self.is_inline = 'inline' in plt.get_backend()
-
-        self.fig_save = None
-        self.fig_show = None
-        self.fig_save_num = fig_save_cfg.get('num', None)
-        self.fig_show_num = fig_show_cfg.get('num', None)
-        self.fig_save_cfg = fig_save_cfg
-        self.fig_show_cfg = fig_show_cfg
-
-        (self.fig_save_canvas, self.fig_save,
-         self.ax_save) = self._initialize_fig(fig_save_cfg)
-        self.dpi = self.fig_save.get_dpi()
+        return frames
 
     @master_only
     def add_datasample(self,
                        name: str,
-                       video: Union[np.ndarray, Sequence[np.ndarray]],
+                       video: Union[np.ndarray, Sequence[np.ndarray], str],
                        data_sample: Optional[ActionDataSample] = None,
                        draw_gt: bool = True,
                        draw_pred: bool = True,
@@ -156,18 +149,22 @@ class ActionVisualizer(Visualizer):
                        show_frames: bool = False,
                        text_cfg: dict = dict(),
                        wait_time: float = 0.1,
-                       out_folder: Optional[str] = None,
-                       step: int = 0) -> None:
+                       out_path: Optional[str] = None,
+                       out_type: str = 'img',
+                       target_resolution: Optional[Tuple[int]] = None,
+                       step: int = 0,
+                       fps: int = 4) -> None:
         """Draw datasample and save to all backends.
 
-        - If ``out_folder`` is specified, all storage backends are ignored
-          and save the videos to the ``out_folder``.
+        - If ``out_path`` is specified, all storage backends are ignored
+          and save the videos to the ``out_path``.
         - If ``show_frames`` is True, plot the frames in a window sequentially,
           please confirm you are able to access the graphical interface.
 
         Args:
             name (str): The frame identifier.
-            video (np.ndarray): The video to draw.
+            video (np.ndarray, str): The video to draw. supports decoded
+                np.ndarray, video file path, rawframes folder path.
             data_sample (:obj:`ActionDataSample`, optional): The annotation of
                 the frame. Defaults to None.
             draw_gt (bool): Whether to draw ground truth labels.
@@ -185,14 +182,21 @@ class ActionVisualizer(Visualizer):
                 Defaults to an empty dict.
             wait_time (float): Delay in seconds. 0 is the special
                 value that means "forever". Defaults to 0.1.
-            out_folder (str, optional): Extra folder to save the visualization
+            out_path (str, optional): Extra folder to save the visualization
                 result. If specified, the visualizer will only save the result
-                frame to the out_folder and ignore its storage backends.
+                frame to the out_path and ignore its storage backends.
                 Defaults to None.
+            out_type (str): Output format type, choose from 'img', 'gif',
+                'video'. Defaults to ``'img'``.
+            target_resolution (Tuple[int], optional): Set to
+                (desired_width desired_height) to have resized frames. If
+                either dimension is None, the frames are resized by keeping
+                the existing aspect ratio. Defaults to None.
             step (int): Global step value to record. Defaults to 0.
+            fps (int): Frames per second for saving video. Defaults to 4.
         """
         classes = None
-        wait_time_in_milliseconds = wait_time * 10**6
+        video = self._load_video(video, target_resolution)
         tol_video = len(video)
 
         if self.dataset_meta is not None:
@@ -256,24 +260,41 @@ class ActionVisualizer(Visualizer):
             drawn_img = self.get_image()
             resulted_video.append(drawn_img)
 
-            if show_frames:
-                self.show(
-                    drawn_img,
-                    win_name=frame_name,
-                    wait_time=wait_time_in_milliseconds)
+        if show_frames:
+            frame_wait_time = 1. / fps
+            for frame_idx, drawn_img in enumerate(resulted_video):
+                frame_name = 'frame %d of %s' % (frame_idx + 1, name)
+                if frame_idx < len(resulted_video) - 1:
+                    wait_time = frame_wait_time
+                else:
+                    wait_time = wait_time
+                self.show(drawn_img, win_name=frame_name, wait_time=wait_time)
 
         resulted_video = np.array(resulted_video)
-        if out_folder is not None:
-            resulted_video = resulted_video[..., ::-1]
-            os.makedirs(out_folder, exist_ok=True)
-            # save the frame to the target file instead of vis_backends
-            for frame_idx, frame in enumerate(resulted_video):
-                mmcv.imwrite(frame, out_folder + '/%d.png' % frame_idx)
+        if out_path is not None:
+            save_dir, save_name = osp.split(out_path)
+            vis_backend_cfg = dict(type='LocalVisBackend', save_dir=save_dir)
+            tmp_local_vis_backend = VISBACKENDS.build(vis_backend_cfg)
+            tmp_local_vis_backend.add_video(
+                save_name,
+                resulted_video,
+                step=step,
+                fps=fps,
+                out_type=out_type)
         else:
-            self.add_video(name, resulted_video, step=step)
+            self.add_video(
+                name, resulted_video, step=step, fps=fps, out_type=out_type)
+        return resulted_video
 
     @master_only
-    def add_video(self, name: str, image: np.ndarray, step: int = 0) -> None:
+    def add_video(
+        self,
+        name: str,
+        image: np.ndarray,
+        step: int = 0,
+        fps: int = 4,
+        out_type: str = 'img',
+    ) -> None:
         """Record the image.
 
         Args:
@@ -281,6 +302,11 @@ class ActionVisualizer(Visualizer):
             image (np.ndarray, optional): The image to be saved. The format
                 should be RGB. Default to None.
             step (int): Global step value to record. Default to 0.
+            fps (int): Frames per second for saving video. Defaults to 4.
+            out_type (str): Output format type, choose from 'img', 'gif',
+                'video'. Defaults to ``'img'``.
         """
         for vis_backend in self._vis_backends.values():
-            vis_backend.add_video(name, image, step)  # type: ignore
+            vis_backend.add_video(
+                name, image, step=step, fps=fps,
+                out_type=out_type)  # type: ignore

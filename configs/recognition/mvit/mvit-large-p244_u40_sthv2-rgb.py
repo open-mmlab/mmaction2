@@ -110,7 +110,6 @@ test_cfg = dict(type='TestLoop')
 
 base_lr = 1.6e-3
 optim_wrapper = dict(
-    type='AmpOptimWrapper',
     optimizer=dict(
         type='AdamW', lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05))
 

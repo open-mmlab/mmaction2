@@ -4,7 +4,7 @@ import io
 import os
 import os.path as osp
 import shutil
-from typing import Optional
+from typing import Optional, Union
 
 import mmcv
 import numpy as np
@@ -460,16 +460,20 @@ class UniformSample(BaseTransform):
         Returns:
             seq (list): the indexes of frames of sampled from the video.
         """
-        assert self.num_clips == 1
         seg_size = float(num_frames - 1) / self.clip_len
         inds = []
-        for i in range(self.clip_len):
-            start = int(np.round(seg_size * i))
-            end = int(np.round(seg_size * (i + 1)))
-            if not self.test_mode:
+        if not self.test_mode:
+            for i in range(self.clip_len):
+                start = int(np.round(seg_size * i))
+                end = int(np.round(seg_size * (i + 1)))
                 inds.append(np.random.randint(start, end + 1))
-            else:
-                inds.append((start + end) // 2)
+        else:
+            duration = seg_size / (self.num_clips + 1)
+            for k in range(self.num_clips):
+                for i in range(self.clip_len):
+                    start = int(np.round(seg_size * i))
+                    frame_index = start + int(duration * (k + 1))
+                    inds.append(frame_index)
 
         return np.array(inds)
 
@@ -1396,6 +1400,61 @@ class RawFrameDecode(BaseTransform):
                     f'io_backend={self.io_backend}, '
                     f'decoding_backend={self.decoding_backend})')
         return repr_str
+
+
+@TRANSFORMS.register_module()
+class InferencerPackInput(BaseTransform):
+
+    def __init__(self,
+                 input_format='video',
+                 filename_tmpl='img_{:05}.jpg',
+                 modality='RGB',
+                 start_index=1) -> None:
+        self.input_format = input_format
+        self.filename_tmpl = filename_tmpl
+        self.modality = modality
+        self.start_index = start_index
+
+    def transform(self, video: Union[str, np.ndarray, dict]) -> dict:
+        if self.input_format == 'dict':
+            results = video
+        elif self.input_format == 'video':
+            results = dict(
+                filename=video, label=-1, start_index=0, modality='RGB')
+        elif self.input_format == 'rawframes':
+            import re
+
+            # count the number of frames that match the format of
+            # `filename_tmpl`
+            # RGB pattern example: img_{:05}.jpg -> ^img_\d+.jpg$
+            # Flow patteren example: {}_{:05d}.jpg -> ^x_\d+.jpg$
+            pattern = f'^{self.filename_tmpl}$'
+            if self.modality == 'Flow':
+                pattern = pattern.replace('{}', 'x')
+            pattern = pattern.replace(
+                pattern[pattern.find('{'):pattern.find('}') + 1], '\\d+')
+            total_frames = len(
+                list(
+                    filter(lambda x: re.match(pattern, x) is not None,
+                           os.listdir(video))))
+            results = dict(
+                frame_dir=video,
+                total_frames=total_frames,
+                label=-1,
+                start_index=self.start_index,
+                filename_tmpl=self.filename_tmpl,
+                modality=self.modality)
+        elif self.input_format == 'array':
+            modality_map = {2: 'Flow', 3: 'RGB'}
+            modality = modality_map.get(video.shape[-1])
+            results = dict(
+                total_frames=video.shape[0],
+                label=-1,
+                start_index=0,
+                array=video,
+                modality=modality)
+
+        return results
 
 
 @TRANSFORMS.register_module()

@@ -1,0 +1,70 @@
+Collections:
+- Name: UniFormer
+  README: configs/recognition/uniformer/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2201.04676
+    Title: "UniFormer: Unified Transformer for Efficient Spatiotemporal Representation Learning"
+
+Models:
+  - Name: uniformer-small_imagenet1k-pre_16x4x1_kinetics400-rgb
+    Config: configs/recognition/uniformer/uniformer-small_imagenet1k-pre_16x4x1_kinetics400-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormer-S
+      Pretrained: ImageNet-1K
+      Resolution: short-side 320
+      Frame: 16
+      Sampling rate: 4
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/Sense-X/UniFormer/blob/main/video_classification/README.md
+      Code: https://github.com/Sense-X/UniFormer/tree/main/video_classification
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 80.9
+        Top 5 Accuracy: 94.6
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv1/uniformer-small_imagenet1k-pre_16x4x1_kinetics400-rgb_20221219-c630a037.pth
+
+  - Name: uniformer-base_imagenet1k-pre_16x4x1_kinetics400-rgb
+    Config: configs/recognition/uniformer/uniformer-base_imagenet1k-pre_16x4x1_kinetics400-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormer-B
+      Pretrained: ImageNet-1K
+      Resolution: short-side 320
+      Frame: 16
+      Sampling rate: 4
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/Sense-X/UniFormer/blob/main/video_classification/README.md
+      Code: https://github.com/Sense-X/UniFormer/tree/main/video_classification
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 82.0
+        Top 5 Accuracy: 95.0
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv1/uniformer-base_imagenet1k-pre_16x4x1_kinetics400-rgb_20221219-157c2e66.pth
+
+  - Name: uniformer-base_imagenet1k-pre_32x4x1_kinetics400-rgb
+    Config: configs/recognition/uniformer/uniformer-base_imagenet1k-pre_32x4x1_kinetics400-rgb.py
+    In Collection: UniFormer
+    Metadata:
+      Architecture: UniFormer-B
+      Pretrained: ImageNet-1K
+      Resolution: short-side 320
+      Frame: 32
+      Sampling rate: 4
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/Sense-X/UniFormer/blob/main/video_classification/README.md
+      Code: https://github.com/Sense-X/UniFormer/tree/main/video_classification
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 83.1
+        Top 5 Accuracy: 95.3
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv1/uniformer-base_imagenet1k-pre_32x4x1_kinetics400-rgb_20221219-b776322c.pth

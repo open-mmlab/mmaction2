@@ -2,7 +2,7 @@
 import os.path as osp
 from typing import Callable, List, Optional, Union
 
-from mmengine.utils import check_file_exist
+from mmengine.fileio import exists, list_from_file
 
 from mmaction.registry import DATASETS
 from mmaction.utils import ConfigType
@@ -44,10 +44,12 @@ class VideoDataset(BaseActionDataset):
             different filename format. However, when taking videos as input,
             it should be set to 0, since frames loaded from videos count
             from 0. Defaults to 0.
-        modality (str): Modality of data. Support ``RGB``, ``Flow``.
-            Defaults to ``RGB``.
+        modality (str): Modality of data. Support ``'RGB'``, ``'Flow'``.
+            Defaults to ``'RGB'``.
         test_mode (bool): Store True when building test or validation dataset.
             Defaults to False.
+        delimiter (str): Delimiter for the annotation file.
+            Defaults to ``' '`` (whitespace).
     """
 
     def __init__(self,
@@ -59,7 +61,9 @@ class VideoDataset(BaseActionDataset):
                  start_index: int = 0,
                  modality: str = 'RGB',
                  test_mode: bool = False,
+                 delimiter: str = ' ',
                  **kwargs) -> None:
+        self.delimiter = delimiter
         super().__init__(
             ann_file,
             pipeline=pipeline,
@@ -73,19 +77,19 @@ class VideoDataset(BaseActionDataset):
 
     def load_data_list(self) -> List[dict]:
         """Load annotation file to get video information."""
-        check_file_exist(self.ann_file)
+        exists(self.ann_file)
         data_list = []
-        with open(self.ann_file, 'r') as fin:
-            for line in fin:
-                line_split = line.strip().split()
-                if self.multi_class:
-                    assert self.num_classes is not None
-                    filename, label = line_split[0], line_split[1:]
-                    label = list(map(int, label))
-                else:
-                    filename, label = line_split
-                    label = int(label)
-                if self.data_prefix['video'] is not None:
-                    filename = osp.join(self.data_prefix['video'], filename)
-                data_list.append(dict(filename=filename, label=label))
+        fin = list_from_file(self.ann_file)
+        for line in fin:
+            line_split = line.strip().split(self.delimiter)
+            if self.multi_class:
+                assert self.num_classes is not None
+                filename, label = line_split[0], line_split[1:]
+                label = list(map(int, label))
+            else:
+                filename, label = line_split
+                label = int(label)
+            if self.data_prefix['video'] is not None:
+                filename = osp.join(self.data_prefix['video'], filename)
+            data_list.append(dict(filename=filename, label=label))
         return data_list

@@ -11,7 +11,7 @@ from mmengine import Config, DictAction
 from mmengine.dataset import Compose, pseudo_collate
 
 from mmaction.apis import init_recognizer
-from mmaction.utils import GradCAM, register_all_modules
+from mmaction.utils import GradCAM
 
 
 def parse_args():
@@ -166,9 +166,6 @@ def _resize_frames(frame_list: List[np.ndarray],
 
 def main():
     args = parse_args()
-
-    # Register all modules in mmaction2 into the registries
-    register_all_modules()
 
     cfg = Config.fromfile(args.config)
     cfg.merge_from_dict(args.cfg_options)

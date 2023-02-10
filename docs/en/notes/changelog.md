@@ -1,10 +1,37 @@
 # Changelog
 
+## 1.0.0rc3 (2/10/2023)
+
+**Highlights**
+
+- Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
+- Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
+
+**New Features**
+
+- Support UniFormer V1/V2 ([#2153](https://github.com/open-mmlab/mmaction2/pull/2153))
+- Support training MViT, and MaskFeat fine-tuning ([#2186](https://github.com/open-mmlab/mmaction2/pull/2186))
+- Support a unified inference interface: Inferencer ([#2164](https://github.com/open-mmlab/mmaction2/pull/2164))
+
+**Improvements**
+
+- Support load data list from multi-backends ([#2176](https://github.com/open-mmlab/mmaction2/pull/2176))
+
+**Bug Fixes**
+
+- Upgrade isort to fix CI ([#2198](https://github.com/open-mmlab/mmaction2/pull/2198))
+- Fix bug in skeleton demo ([#2214](https://github.com/open-mmlab/mmaction2/pull/2214))
+
+**Documentation**
+
+- Add Chinese documentation for config.md ([#2188](https://github.com/open-mmlab/mmaction2/pull/2188))
+- Add readme for Omnisource ([#2205](https://github.com/open-mmlab/mmaction2/pull/2205))
+
 ## 1.0.0rc2 (1/10/2023)
 
 **Highlights**
 
-- Support Action Recognition model VideoMAE(NeurIPS'2022), MVit V2(CVPR'2022), C2D and skeleton-based action recognition model STGCN++
+- Support Action Recognition model VideoMAE(NeurIPS'2022), MViT V2(CVPR'2022), C2D and skeleton-based action recognition model STGCN++
 - Support Omni-Source training on ImageNet and Kinetics datasets
 - Support exporting spatial-temporal detection models to ONNX
 
@@ -12,7 +39,7 @@
 
 - Support VideoMAE ([#1942](https://github.com/open-mmlab/mmaction2/pull/1942))
 - Support MViT V2 ([#2007](https://github.com/open-mmlab/mmaction2/pull/2007))
-- Supoort C2D ([#2022](https://github.com/open-mmlab/mmaction2/pull/2022))
+- Support C2D ([#2022](https://github.com/open-mmlab/mmaction2/pull/2022))
 - Support AVA-Kinetics dataset ([#2080](https://github.com/open-mmlab/mmaction2/pull/2080))
 - Support STGCN++ ([#2156](https://github.com/open-mmlab/mmaction2/pull/2156))
 - Support exporting spatial-temporal detection models to ONNX ([#2148](https://github.com/open-mmlab/mmaction2/pull/2148))
@@ -61,7 +88,7 @@
 - Refine some docs ([#2038](https://github.com/open-mmlab/mmaction2/pull/2038)), ([#2040](https://github.com/open-mmlab/mmaction2/pull/2040)), ([#2058](https://github.com/open-mmlab/mmaction2/pull/2058))
 - Update TSN/TSM Readme ([#2082](https://github.com/open-mmlab/mmaction2/pull/2082))
 - Add chinese document ([#2083](https://github.com/open-mmlab/mmaction2/pull/2083))
-- Adjust docment structure ([#2088](https://github.com/open-mmlab/mmaction2/pull/2088))
+- Adjust document structure ([#2088](https://github.com/open-mmlab/mmaction2/pull/2088))
 - Fix Sth-Sth and Jester dataset links ([#2103](https://github.com/open-mmlab/mmaction2/pull/2103))
 - Fix doc link ([#2131](https://github.com/open-mmlab/mmaction2/pull/2131))
 

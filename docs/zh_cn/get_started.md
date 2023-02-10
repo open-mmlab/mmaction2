@@ -110,13 +110,11 @@ python demo/demo.py tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb
 
 ```python
 from mmaction.apis import init_recognizer, inference_recognizer
-from mmaction.utils import register_all_modules
 
 config_file = 'tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py'
 checkpoint_file = 'tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb_20220906-2692d16c.pth'
 video_file = 'demo/demo.mp4'
 label_file = 'tools/data/kinetics/label_map_k400.txt'
-register_all_modules()  # register all modules and set mmaction2 as the default scope.
 model = init_recognizer(config_file, checkpoint_file, device='cpu')  # or device='cuda:0'
 result = inference_recognizer(model, video_file)
 pred_scores = result.pred_scores.item.tolist()

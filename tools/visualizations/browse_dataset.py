@@ -9,11 +9,11 @@ import mmcv
 import numpy as np
 from mmengine.config import Config, DictAction
 from mmengine.dataset import Compose
+from mmengine.registry import init_default_scope
 from mmengine.utils import ProgressBar
 from mmengine.visualization import Visualizer
 
 from mmaction.registry import DATASETS
-from mmaction.utils import register_all_modules
 from mmaction.visualization import ActionVisualizer
 from mmaction.visualization.action_visualizer import _get_adaptive_scale
 
@@ -178,9 +178,7 @@ def main():
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
-
-    # register all modules in mmaction2 into the registries
-    register_all_modules()
+    init_default_scope(cfg.get('default_scope', 'mmaction'))
 
     dataset_cfg = cfg.get(args.phase + '_dataloader').get('dataset')
     dataset = DATASETS.build(dataset_cfg)
@@ -190,13 +188,10 @@ def main():
                                       intermediate_imgs)
 
     # init visualizer
-    vis_backends = [
-        dict(
-            type='LocalVisBackend',
-            out_type='video',
-            save_dir=args.output_dir,
-            fps=args.fps)
-    ]
+    vis_backends = [dict(
+        type='LocalVisBackend',
+        save_dir=args.output_dir,
+    )]
     visualizer = ActionVisualizer(
         vis_backends=vis_backends, save_dir='place_holder')
 
@@ -233,7 +228,8 @@ def main():
 
         file_id = f'video_{i}'
         video = [x[..., ::-1] for x in video]
-        visualizer.add_datasample(file_id, video, data_sample)
+        visualizer.add_datasample(
+            file_id, video, data_sample, fps=args.fps, out_type='video')
         progress_bar.update()
 
 

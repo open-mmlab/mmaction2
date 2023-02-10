@@ -7,6 +7,8 @@ Collections:
 
 Models:
   - Name: i3d_imagenet-pretrained-r50-nl-dot-product_8xb8-32x2x1-100e_kinetics400-rgb
+    Alias:
+      - i3d
     Config: configs/recognition/i3d/i3d_imagenet-pretrained-r50-nl-dot-product_8xb8-32x2x1-100e_kinetics400-rgb.py
     In Collection: I3D
     Metadata:
