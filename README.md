@@ -70,16 +70,11 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 ## What's New
 
-**Highlights**
+**Release (2022.02.10)**: v1.0.0rc3 with the following new features:
 
 - Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
 - Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
-
-**Release**: v1.0.0rc3 with the following new features:
-
-- We support **UniFormer V1** on Kinetics 400.
-- We support **UniFormer V2** on Kinetics 400/600/700/710, MiTv1.
-- We support training **MViT V2** on Kinetics 400 and something-V2, and MaskFeat fine-tuning.
+- Add a new handy interface for inference MMAction2 models ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
 
 ## Installation
 
