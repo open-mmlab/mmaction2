@@ -2,7 +2,7 @@
 
 MMAction2 使用 python 文件作为配置文件。其配置文件系统的设计将模块化与继承整合进来，方便用户进行各种实验。
 MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹下，用户可以通过运行命令
-`python tools/analysis/print_config.py /PATH/TO/CONFIG` 来查看完整的配置信息，从而方便检查所对应的配置文件。
+`python tools/analysis_tools/print_config.py /PATH/TO/CONFIG` 来查看完整的配置信息，从而方便检查所对应的配置文件。
 
 <!-- TOC -->
 
@@ -29,6 +29,7 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
   配置文件中，存在一些由字典组成的列表。例如，训练数据前处理流水线 data.train.pipeline 就是 python 列表。
   如，`[dict(type='SampleFrames'), ...]`。如果用户想更改其中的 `'SampleFrames'` 为 `'DenseSampleFrames'`，
   可以指定 `--cfg-options data.train.pipeline.0.type=DenseSampleFrames`。
+
 - 更新列表/元组的值。
 
   当配置文件中需要更新的是一个列表或者元组，例如，配置文件通常会设置 `model.data_preprocessor.mean=[123.675, 116.28, 103.53]`，用户如果想更改，
@@ -44,7 +45,7 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 所有其他的配置文件都应该继承 _原始配置_ 文件，这样就能保证配置文件的最大继承深度为 3。
 
 为了方便理解，MMAction2 推荐用户继承现有方法的配置文件。
-例如，如需修改 TSN 的配置文件，用户应先通过 `_base_ = '../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py'` 继承 TSN 配置文件的基本结构，
+例如，如需修改 TSN 的配置文件，用户应先通过 `_base_ = '../tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py'` 继承 TSN 配置文件的基本结构，
 并修改其中必要的内容以完成继承。
 
 如果用户想实现一个独立于任何一个现有的方法结构的新方法，则可以在 `configs/TASK` 中建立新的文件夹。
@@ -68,11 +69,11 @@ MMAction2 按照以下风格进行配置文件命名，代码库的贡献者需�
   - `[pretained info]`: 预训练信息,如 `kinetics400-pretrained`， `in1k-pre`等.
   - `{backbone}`: 主干网络类型和预训练信息，如 `r50`（ResNet-50）等。
   - `[backbone setting]`: 对于一些骨干网络的特殊设置，如`nl-dot-product`, `bnfrozen`, `nopool`等。
-- `training info`:
+- `{training info}`:
   - `{gpu x batch_per_gpu]}`: GPU 数量以及每个 GPU 上的采样。
   - `{pipeline setting}`: 采帧数据格式，形如 `dense`, `{clip_len}x{frame_interval}x{num_clips}`, `u48`等。
   - `{schedule}`: 训练策略设置，如 `20e` 表示 20 个周期（epoch）。
-- `data info`:
+- `{data info}`:
   - `{dataset}`:数据集名，如 `kinetics400`，`mmit`等。
   - `{modality}`: 帧的模态，如 `rgb`, `flow`, `keypoint-2d`等。
 
@@ -102,7 +103,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
           consensus=dict(type='AvgConsensus', dim=1),  # consensus 模块设置
           dropout_ratio=0.4,  # dropout 层概率
           init_std=0.01,  # 线性层初始化 std 值
-          average_clips='prob'),  # 平均多个剪辑结果的方法
+          average_clips='prob'),  # 平均多个 clip 结果的方法
       data_preprocessor=dict(  # 数据预处理器的字典设置
           type='ActionDataPreprocessor',  # 数据预处理器名
           mean=[123.675, 116.28, 103.53],  # 不同通道归一化所用的平均值
@@ -201,8 +202,8 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
 
   train_dataloader = dict(  # 训练过程 dataloader 的配置
       batch_size=32,  # 训练过程单个 GPU 的批大小
-      num_workers=8,  # 训练过程单个 GPU 的 数据预取的进程
-      persistent_workers=True,
+      num_workers=8,  # 训练过程单个 GPU 的 数据预取的进程数
+      persistent_workers=True,  # 保持`Dataset` 实例
       sampler=dict(type='DefaultSampler', shuffle=True),
       dataset=dict(
         type=dataset_type,
@@ -223,7 +224,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
   test_dataloader = dict(  # 测试过程 dataloader 的配置
       batch_size=32,  # 测试过程单个 GPU 的批大小
       num_workers=8,  # 测试过程单个 GPU 的 数据预取的进程
-      persistent_workers=True,  #保持`Dataset` 实例
+      persistent_workers=True,  # 保持`Dataset` 实例
       sampler=dict(type='DefaultSampler', shuffle=False),
       dataset=dict(
           type=dataset_type,
@@ -232,9 +233,9 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
           pipeline=test_pipeline,
           test_mode=True))
 
-  # 评估器设置
-  val_evaluator = dict(type='AccMetric')  # 用于计算验证指标的评估对象
-  test_evaluator = dict(type='AccMetric')  # 用于计算测试指标的评估对象
+  # 评测器设置
+  val_evaluator = dict(type='AccMetric')  # 用于计算验证指标的评测对象
+  test_evaluator = dict(type='AccMetric')  # 用于计算测试指标的评测对象
 
   train_cfg = dict(  # 训练循环的配置
       type='EpochBasedTrainLoop',  # 训练循环的名称
@@ -417,7 +418,6 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
           input_format='NCTHW',  # 最终的图片组成格式
           collapse=True),   # 去掉 N 梯度当 N == 1
       dict(type='PackActionInputs') # 打包输入数据
-
   ]
 
   train_dataloader = dict(  # 训练过程 dataloader 的配置
@@ -572,7 +572,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
       dict(
           type='PackLocalizationInputs',  # 时序数据打包
           keys=('gt_bbox'),  # 输入的键
-          meta_keys=('video_name')),  # 输入的元键
+          meta_keys=('video_name'))]  # 输入的元键
   val_pipeline = [  # 验证数据前处理流水线步骤组成的列表
       dict(type='LoadLocalizationFeature'),  # 加载时序动作检测特征
       dict(type='GenerateLocalizationLabels'),  # 生成时序动作检测标签
@@ -705,4 +705,3 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
   load_from = None  # 从给定路径加载模型checkpoint作为预训练模型。这不会恢复训练。
   resume = False  # 是否从`load_from`中定义的checkpoint恢复。如果“load_from”为“None”，它将恢复“work_dir”中的最新的checkpoint。
   ```
-
