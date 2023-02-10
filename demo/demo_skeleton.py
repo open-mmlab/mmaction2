@@ -170,9 +170,6 @@ def main():
 
     config = mmengine.Config.fromfile(args.config)
     config.merge_from_dict(args.cfg_options)
-    if 'data_preprocessor' in config.model:
-        config.model.data_preprocessor['mean'] = (w // 2, h // 2, .5)
-        config.model.data_preprocessor['std'] = (w, h, 1.)
 
     model = init_recognizer(config, args.checkpoint, args.device)
     result = inference_recognizer(model, fake_anno)
