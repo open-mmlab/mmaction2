@@ -173,9 +173,6 @@ class LoadKineticsPose(BaseTransform):
 class GeneratePoseTarget(BaseTransform):
     """Generate pseudo heatmaps based on joint coordinates and confidence.
 
-    Required keys are "keypoint", "img_shape", "keypoint_score" (optional),
-    added or modified keys are "imgs".
-
     Required Keys:
 
         - keypoint
@@ -184,8 +181,8 @@ class GeneratePoseTarget(BaseTransform):
 
     Added Keys:
 
-        - imgs
-        - heatmap_imgs
+        - imgs (optional)
+        - heatmap_imgs (optional)
 
     Args:
         sigma (float): The sigma of the generated gaussian map.
