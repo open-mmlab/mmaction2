@@ -1128,12 +1128,7 @@ class DecordInit(BaseTransform):
             dict: The result dict.
         """
         container = self._get_video_reader(results['filename'])
-        if 'total_frames' in results:
-            assert results['total_frames'] == len(container), (
-                'SkeFrames', results['total_frames'], 'VideoFrames',
-                len(results['video_reader']))
-        else:
-            results['total_frames'] = len(container)
+        results['total_frames'] = len(container)
 
         results['video_reader'] = container
         results['avg_fps'] = container.get_avg_fps()

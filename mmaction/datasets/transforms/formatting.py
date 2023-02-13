@@ -215,6 +215,9 @@ class FormatShape(BaseTransform):
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
+        if not isinstance(results['imgs'], np.ndarray):
+            results['imgs'] = np.array(results['imgs'])
+
         # [M x H x W x C]
         # M = 1 * N_crops * N_clips * T
         if self.collapse:

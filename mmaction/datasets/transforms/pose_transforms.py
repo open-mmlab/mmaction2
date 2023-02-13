@@ -1284,11 +1284,13 @@ class PoseDecode(BaseTransform):
 
     @staticmethod
     def _load_kp(kp: np.ndarray, frame_inds: np.ndarray) -> np.ndarray:
+        """Load keypoints according to sampled indexes."""
         return kp[:, frame_inds].astype(np.float32)
 
     @staticmethod
     def _load_kpscore(kpscore: np.ndarray,
                       frame_inds: np.ndarray) -> np.ndarray:
+        """Load keypoint scores according to sampled indexes."""
         return kpscore[:, frame_inds].astype(np.float32)
 
     def transform(self, results: Dict) -> Dict:

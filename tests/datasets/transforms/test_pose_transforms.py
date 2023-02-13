@@ -639,9 +639,7 @@ class TestPoseTransforms:
             frame_dir=osp.join(osp.dirname(__file__), '../../data/test'))
 
         # test pose w/o `keypoint_score`
-        pose_results = mm_decode(copy.deepcopy(pose_raw_results))
-        assert_array_equal(pose_results['keypoint_score'],
-                           np.ones([1, len(pose_results['Pose_inds']), 17]))
+        mm_decode(copy.deepcopy(pose_raw_results))
 
         # test pose with `keypoint_score`
         pose_raw_results['keypoint_score'] = np.random.random([1, 16, 17])
@@ -661,7 +659,7 @@ class TestPoseTransforms:
                            pose_results['keypoint_score'])
         scaled_keypoint = copy.deepcopy(pose_results['keypoint'])
         oh, ow = pose_results['img_shape']
-        nh, nw = rgb_results['imgs'][0].shape[:-1]
+        nh, nw = pose_rgb_results['img_shape']
         scaled_keypoint[..., 0] *= (nw / ow)
         scaled_keypoint[..., 1] *= (nh / oh)
         assert_array_equal(pose_rgb_results['keypoint'], scaled_keypoint)

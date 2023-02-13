@@ -184,8 +184,24 @@ def test_format_shape():
     target_keys = ['imgs', 'input_shape']
     assert assert_dict_has_keys(results, target_keys)
 
-    assert repr(format_shape) == format_shape.__class__.__name__ + \
-        "(input_format='NCTHW')"
+    # `NCTHW` input format with imgs and heatmap_imgs
+    results = dict(
+        imgs=np.random.randn(6, 224, 224, 3),
+        heatmap_imgs=np.random.randn(12, 17, 56, 56),
+        num_clips=2,
+        clip_len=dict(RGB=3, Pose=6))
+
+    results = format_shape(results)
+    assert results['input_shape'] == (2, 3, 3, 224, 224)
+    assert results['heatmap_input_shape'] == (2, 17, 6, 56, 56)
+
+    assert repr(format_shape) == "FormatShape(input_format='NCTHW')"
+
+    # `NCTHW_Heatmap` input format
+    results = dict(
+        imgs=np.random.randn(12, 17, 56, 56), num_clips=2, clip_len=6)
+    format_shape = FormatShape('NCTHW_Heatmap')
+    assert format_shape(results)['input_shape'] == (2, 17, 6, 56, 56)
 
     # `NCHW_Flow` input format
     results = dict(imgs=np.random.randn(6, 224, 224), num_clips=1, clip_len=3)
@@ -200,6 +216,7 @@ def test_format_shape():
         num_proposals=8)
     format_shape = FormatShape('NPTCHW')
     assert format_shape(results)['input_shape'] == (8, 9, 3, 224, 224)
+
 
 
 def test_format_audio_shape():
