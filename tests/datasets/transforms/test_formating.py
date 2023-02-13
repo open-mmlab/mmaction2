@@ -218,7 +218,6 @@ def test_format_shape():
     assert format_shape(results)['input_shape'] == (8, 9, 3, 224, 224)
 
 
-
 def test_format_audio_shape():
     with pytest.raises(ValueError):
         # invalid input format

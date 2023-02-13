@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-from typing import Callable, List, Optional, Union, Dict
+from typing import Callable, Dict, List, Optional, Union
 
 from mmengine.fileio import exists, load
 
@@ -38,10 +38,7 @@ class PoseDataset(BaseActionDataset):
                  **kwargs) -> None:
         self.split = split
         super().__init__(
-            ann_file,
-            pipeline=pipeline,
-            modality='Pose',
-            **kwargs)
+            ann_file, pipeline=pipeline, modality='Pose', **kwargs)
 
     def load_data_list(self) -> List[Dict]:
         """Load annotation file to get skeleton information."""

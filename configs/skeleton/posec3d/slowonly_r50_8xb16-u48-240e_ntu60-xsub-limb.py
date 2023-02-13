@@ -98,8 +98,11 @@ train_dataloader = dict(
     dataset=dict(
         type='RepeatDataset',
         times=10,
-        dataset=dict(type=dataset_type, ann_file=ann_file,
-                     split='xsub_train', pipeline=train_pipeline)))
+        dataset=dict(
+            type=dataset_type,
+            ann_file=ann_file,
+            split='xsub_train',
+            pipeline=train_pipeline)))
 val_dataloader = dict(
     batch_size=32,
     num_workers=8,
