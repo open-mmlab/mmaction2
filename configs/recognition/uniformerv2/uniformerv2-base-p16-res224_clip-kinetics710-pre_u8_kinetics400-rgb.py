@@ -115,7 +115,7 @@ val_dataloader = dict(
         pipeline=val_pipeline,
         test_mode=True))
 test_dataloader = dict(
-    batch_size=32,
+    batch_size=8,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -150,7 +150,7 @@ param_scheduler = [
     dict(
         type='CosineAnnealingLR',
         T_max=4,
-        eta_min=base_lr / 100,
+        eta_min_ratio=0.5,
         by_epoch=True,
         begin=1,
         end=5,
