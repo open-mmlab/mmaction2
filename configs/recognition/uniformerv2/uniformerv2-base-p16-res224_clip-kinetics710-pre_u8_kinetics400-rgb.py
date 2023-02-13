@@ -23,7 +23,13 @@ model = dict(
         n_head=12,
         mlp_factor=4.,
         drop_path_rate=0.,
-        mlp_dropout=[0.5, 0.5, 0.5, 0.5]),
+        mlp_dropout=[0.5, 0.5, 0.5, 0.5],
+        clip_pretrained=False,
+        init_cfg=dict(
+            type='Pretrained',
+            checkpoint=  # noqa: E251
+            'https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb_20221219-77d34f81.pth',  # noqa: E501
+            prefix='backbone.')),
     cls_head=dict(
         type='TimeSformerHead',
         dropout_ratio=0.5,
