@@ -137,7 +137,7 @@ optim_wrapper = dict(
     optimizer=dict(
         type='AdamW', lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
     paramwise_cfg=dict(norm_decay_mult=0.0, bias_decay_mult=0.0),
-    clip_grad=dict(max_norm=1, norm_type=20))
+    clip_grad=dict(max_norm=20, norm_type=2))
 
 param_scheduler = [
     dict(
