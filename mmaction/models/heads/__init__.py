@@ -12,10 +12,11 @@ from .trn_head import TRNHead
 from .tsm_head import TSMHead
 from .tsn_audio_head import TSNAudioHead
 from .tsn_head import TSNHead
+from .uniformer_head import UniFormerHead
 from .x3d_head import X3DHead
 
 __all__ = [
     'BaseHead', 'GCNHead', 'I3DHead', 'MViTHead', 'OmniHead', 'SlowFastHead',
     'TPNHead', 'TRNHead', 'TSMHead', 'TSNAudioHead', 'TSNHead',
-    'TimeSformerHead', 'X3DHead', 'RGBPoseHead'
+    'TimeSformerHead', 'UniFormerHead', 'RGBPoseHead', 'X3DHead'
 ]
