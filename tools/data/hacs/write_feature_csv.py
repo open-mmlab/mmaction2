@@ -1,12 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import pickle
-import csv
 import os
-
+import pickle
 
 with open('result.pkl', 'rb') as f:
     features = pickle.load(f)
-
 
 with open('hacs_data.txt', 'r') as f:
     video_list = f.readlines()
@@ -15,8 +12,6 @@ data_dir = '../../../data/HACS'
 os.makedirs(data_dir, exist_ok=True)
 feature_dir = f'{data_dir}/slowonly_feature'
 os.makedirs(feature_dir)
-
-
 
 head = ','.join([f'f{i}' for i in range(700)]) + '\n'
 

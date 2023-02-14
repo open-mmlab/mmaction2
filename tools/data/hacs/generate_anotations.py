@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
-import os
-import decord
 import multiprocessing
+import os
 
+import decord
 
 with open('HACS_v1.1.1/HACS_segments_v1.1.1.json') as f:
     all_annotations = json.load(f)['database']
@@ -14,7 +14,7 @@ def parse_anno(key):
     anno['duration_second'] = float(all_annotations[key]['duration'])
     anno['annotations'] = all_annotations[key]['annotations']
     anno['subset'] = all_annotations[key]['subset']
-    
+
     labels = set([i['label'] for i in anno['annotations']])
     num_frames = int(anno['duration_second'] * 30)
     for label in labels:
@@ -23,7 +23,7 @@ def parse_anno(key):
             vr = decord.VideoReader(path)
             num_frames = len(vr)
             break
-    
+
     anno['feature_frame'] = anno['duration_frame'] = num_frames
     anno['key'] = f'v_{key}'
     return anno
@@ -46,7 +46,6 @@ for anno in outputs:
         val_anno[key] = anno
     else:
         test_anno[key] = anno
-
 
 outdir = '../../../data/HACS'
 with open(f'{outdir}/hacs_anno_train.json', 'w') as f:

@@ -73,6 +73,5 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-
 test_evaluator = dict(type='DumpResults', out_file_path='result.pkl')
 test_cfg = dict(type='TestLoop')
