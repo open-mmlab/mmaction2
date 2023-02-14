@@ -43,7 +43,7 @@ model = dict(
         std=[58.395, 57.12, 57.375],
         format_shape='NCTHW'))
 
-data_root = 'data'
+data_root = './data'
 ann_file = 'hacs_data.txt'
 
 test_pipeline = [
