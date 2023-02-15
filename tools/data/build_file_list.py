@@ -5,7 +5,7 @@ import json
 import os.path as osp
 import random
 
-from mmcv.runner import set_random_seed
+from mmengine.runner import set_random_seed
 
 from tools.data.anno_txt2json import lines2dictlist
 from tools.data.parse_file_list import (parse_directory, parse_diving48_splits,
