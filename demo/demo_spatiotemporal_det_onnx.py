@@ -11,15 +11,10 @@ import mmengine
 import numpy as np
 import onnxruntime
 import torch
-
 from mmdet.structures.bbox import bbox2roi
 from mmengine import DictAction
-from mmengine.runner import load_checkpoint
-from mmengine.structures import InstanceData
 
 from mmaction.apis import detection_inference
-from mmaction.registry import MODELS
-from mmaction.structures import ActionDataSample
 
 try:
     import moviepy.editor as mpy
@@ -188,8 +183,7 @@ def parse_args():
                  'r50_8xb8-8x8x1-10e_ava-kinetics-rgb.py'),
         help='spatialtemporal detection model config file path')
     parser.add_argument(
-        '--onnx-file',
-        help='spatialtemporal detection onnx file path')
+        '--onnx-file', help='spatialtemporal detection onnx file path')
 
     parser.add_argument(
         '--det-config',
