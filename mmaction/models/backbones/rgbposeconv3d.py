@@ -202,4 +202,4 @@ class RGBPoseConv3D(BaseModule):
         x_rgb = self.rgb_path.layer4(x_rgb)
         x_pose = self.pose_path.layer3(x_pose)
 
-        return (x_rgb, x_pose)
+        return x_rgb, x_pose

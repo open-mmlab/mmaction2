@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, Sequence
+from typing import Dict, Sequence, Tuple, Optional
 
 import numpy as np
 import torch
@@ -38,9 +38,11 @@ class PackActionInputs(BaseTransform):
 
     def __init__(
         self,
+        collect_keys: Optional[Tuple[str]] = None,
         meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
                                     'timestamp')
     ) -> None:
+        self.collect_keys = collect_keys
         self.meta_keys = meta_keys
 
     def transform(self, results: Dict) -> Dict:
@@ -53,22 +55,27 @@ class PackActionInputs(BaseTransform):
             dict: The result dict.
         """
         packed_results = dict()
-        if 'imgs' in results:
-            imgs = results['imgs']
-            packed_results['inputs'] = to_tensor(imgs)
-        elif 'heatmap_imgs' in results:
-            heatmap_imgs = results['heatmap_imgs']
-            packed_results['heatmap_imgs'] = to_tensor(heatmap_imgs)
-        elif 'keypoint' in results:
-            keypoint = results['keypoint']
-            packed_results['inputs'] = to_tensor(keypoint)
-        elif 'audios' in results:
-            audios = results['audios']
-            packed_results['inputs'] = to_tensor(audios)
+        if self.collect_keys is not None:
+            packed_results['inputs'] = dict()
+            for key in self.collect_keys:
+                packed_results['inputs'][key] = to_tensor(results[key])
         else:
-            raise ValueError(
-                'Cannot get `imgs`, `keypoint`, `heatmap_imgs` or `audios` '
-                'in the input dict of `PackActionInputs`.')
+            if 'imgs' in results:
+                imgs = results['imgs']
+                packed_results['inputs'] = to_tensor(imgs)
+            elif 'heatmap_imgs' in results:
+                heatmap_imgs = results['heatmap_imgs']
+                packed_results['inputs'] = to_tensor(heatmap_imgs)
+            elif 'keypoint' in results:
+                keypoint = results['keypoint']
+                packed_results['inputs'] = to_tensor(keypoint)
+            elif 'audios' in results:
+                audios = results['audios']
+                packed_results['inputs'] = to_tensor(audios)
+            else:
+                raise ValueError(
+                    'Cannot get `imgs`, `keypoint`, `heatmap_imgs` '
+                    'or `audios` in the input dict of `PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
@@ -94,7 +101,8 @@ class PackActionInputs(BaseTransform):
 
     def __repr__(self) -> str:
         repr_str = self.__class__.__name__
-        repr_str += f'(meta_keys={self.meta_keys})'
+        repr_str += f'(collect_keys={self.collect_keys}, '
+        repr_str += f'meta_keys={self.meta_keys})'
         return repr_str
 
 
