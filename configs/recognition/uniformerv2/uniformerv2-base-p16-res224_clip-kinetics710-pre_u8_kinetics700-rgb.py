@@ -88,7 +88,7 @@ val_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='UniformSample', clip_len=num_frames, num_clips=4,
         test_mode=True),
