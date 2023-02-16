@@ -48,6 +48,13 @@ pip install -U openmim
 mim install mmengine 'mmcv>=2.0.0rc1'
 ```
 
+Note that some of the demo scripts in MMAction2 require [MMDetection](https://github.com/open-mmlab/mmdetection) (mmdet)  for human detection, and [MMPose](https://github.com/open-mmlab/mmpose) for pose estimation. If you want to run these demo scripts, you can easily install mmdet and mmpose as dependencies by running:
+
+```shell
+mim install "mmdet>=3.0.0rc5"
+mim install "mmpose>=1.0.0rc0"
+```
+
 **Step 2.** Install MMAction2.
 
 According to your needs, we support two install modes:

@@ -49,6 +49,13 @@ pip install -U openmim
 mim install mmengine 'mmcv>=2.0.0rc1'
 ```
 
+请注意，MMAction2 中的一些推理示例脚本需要使用 [MMDetection](https://github.com/open-mmlab/mmdetection) (mmdet) 检测人体，[MMPose](https://github.com/open-mmlab/mmpose) 进行姿态估计。如果你想要运行这些示例脚本，可以通过以下命令安装 mmdet 和 mmpose:
+
+```shell
+mim install "mmdet>=3.0.0rc5"
+mim install "mmpose>=1.0.0rc0"
+```
+
 **第二步** 安装 MMAction2。
 
 根据你的需要，我们支持两种安装模式：
