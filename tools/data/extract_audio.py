@@ -5,7 +5,7 @@ import os
 import os.path as osp
 from multiprocessing import Pool
 
-import mmcv
+import mmengine
 
 
 def extract_audio_wav(line):
@@ -47,7 +47,7 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    mmcv.mkdir_or_exist(args.dst_root)
+    mmengine.mkdir_or_exist(args.dst_root)
 
     print('Reading videos from folder: ', args.root)
     print('Extension of videos: ', args.ext)

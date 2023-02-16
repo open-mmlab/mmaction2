@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 
-import mmcv
+import mmengine
 
 
 def parse_args():
@@ -100,4 +100,4 @@ if __name__ == '__main__':
     result = lines2dictlist(lines, args.format)
     if args.output is None:
         args.output = args.annofile.replace('.txt', '.json')
-    mmcv.dump(result, args.output)
+    mmengine.dump(result, args.output)
