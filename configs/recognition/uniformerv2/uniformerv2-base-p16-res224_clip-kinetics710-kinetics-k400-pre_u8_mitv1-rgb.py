@@ -24,6 +24,7 @@ model = dict(
         mlp_factor=4.,
         drop_path_rate=0.,
         mlp_dropout=[0.5, 0.5, 0.5, 0.5],
+        clip_pretrained=False,
         init_cfg=dict(
             type='Pretrained',
             checkpoint=  # noqa: E251
