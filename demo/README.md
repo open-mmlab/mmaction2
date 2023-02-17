@@ -8,6 +8,7 @@
 - [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from a web camera.
 - [Skeleton-based Action Recognition Demo](#skeleton-based-action-recognition-demo): A demo script to predict the skeleton-based action recognition result using a single video.
 - [SpatioTemporal Action Detection Video Demo](#spatiotemporal-action-detection-video-demo): A demo script to predict the spatiotemporal action detection result using a single video.
+- [SpatioTemporal Action Detection ONNX Video Demo](#spatiotemporal-action-detection-onnx-video-demo): A demo script to predict the SpatioTemporal Action Detection result using the onnx file instead of building the PyTorch models.
 - [Inferencer Demo](#inferencer): A demo script to implement fast predict for video analysis tasks based on unified inferencer interface.
 
 ## Modify configs through script arguments
