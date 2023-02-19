@@ -29,8 +29,8 @@ class MultiModalDataPreprocessor(BaseDataPreprocessor):
         Returns:
             dict: Data in the same format as the model input.
         """
+        data = self.cast_data(data)
         inputs, data_samples = data['inputs'], data['data_samples']
-        inputs = self.cast_data(inputs)
         for modality, modality_data in inputs.items():
             preprocessor = self.preprocessors[modality]
             modality_data, data_samples = preprocessor.preprocess(

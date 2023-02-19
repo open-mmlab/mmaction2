@@ -35,7 +35,9 @@ class RGBPoseHead(BaseHead):
                  dropout: float = 0.5,
                  init_std: float = 0.01,
                  **kwargs) -> None:
-        super().__init__(num_classes, in_channels, loss_cls, **kwargs)
+        super().__init__(num_classes, in_channels, loss_cls,
+                         loss_components=loss_components,
+                         loss_weights=loss_weights, **kwargs)
         if isinstance(dropout, float):
             dropout = {'rgb': dropout, 'pose': dropout}
         assert isinstance(dropout, dict)
@@ -43,13 +45,6 @@ class RGBPoseHead(BaseHead):
         self.dropout = dropout
         self.init_std = init_std
         self.in_channels = in_channels
-
-        self.loss_components = loss_components
-        if isinstance(loss_weights, float):
-            loss_weights = [loss_weights] * len(loss_components)
-
-        assert len(loss_weights) == len(loss_components)
-        self.loss_weights = loss_weights
 
         self.dropout_rgb = nn.Dropout(p=self.dropout['rgb'])
         self.dropout_pose = nn.Dropout(p=self.dropout['pose'])
@@ -72,7 +67,7 @@ class RGBPoseHead(BaseHead):
         x_rgb = self.dropout_rgb(x_rgb)
         x_pose = self.dropout_pose(x_pose)
 
-        cls_scores = {}
+        cls_scores = dict()
         cls_scores['rgb'] = self.fc_rgb(x_rgb)
         cls_scores['pose'] = self.fc_pose(x_pose)
 

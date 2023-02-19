@@ -1,18 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
-from typing import Tuple, Union
+from typing import Tuple, Union, List, Optional, Dict
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.model import BaseModule
 from mmengine.structures import LabelData
-from torch import Tensor
 
 from mmaction.evaluation import top_k_accuracy
 from mmaction.registry import MODELS
-from mmaction.utils import (ConfigType, LabelList, OptConfigType,
-                            OptMultiConfig, SampleList)
+from mmaction.utils import LabelList, SampleList, ForwardResults
 
 
 class AvgConsensus(nn.Module):
@@ -27,7 +25,7 @@ class AvgConsensus(nn.Module):
         super().__init__()
         self.dim = dim
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call."""
         return x.mean(dim=self.dim, keepdim=True)
 
@@ -37,35 +35,40 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
 
     All Head should subclass it.
     All subclass should overwrite:
-    - :meth:`init_weights`, initializing weights in some modules.
     - :meth:`forward`, supporting to forward both for training and testing.
 
     Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
-        loss_cls (dict or ConfigDict): Config for building loss.
-            Default: dict(type='CrossEntropyLoss', loss_weight=1.0).
+        loss_cls (dict): Config for building loss.
+            Defaults to ``dict(type='CrossEntropyLoss', loss_weight=1.0)``.
         multi_class (bool): Determines whether it is a multi-class
-            recognition task. Default: False.
+            recognition task. Defaults to False.
         label_smooth_eps (float): Epsilon used in label smooth.
-            Reference: arxiv.org/abs/1906.02629. Default: 0.
-        topk (int or tuple): Top-k accuracy. Default: (1, 5).
-        average_clips (dict or ConfigDict, optional): Config for
-            averaging class scores over multiple clips. Default: None.
-        init_cfg (dict or ConfigDict, optional): Config to control the
-           initialization. Defaults to None.
+            Reference: arxiv.org/abs/1906.02629. Defaults to 0.
+        topk (int or tuple): Top-k accuracy. Defaults to ``(1, 5)``.
+        average_clips (dict, optional): Config for averaging class
+            scores over multiple clips. Defaults to None.
+        loss_components (list[str], optional): The components of the loss.
+            Defaults to None.
+        loss_weights (float or tuple[float]): The weights of the losses.
+            Defaults to 1.
+        init_cfg (dict, optional): Config to control the initialization.
+            Defaults to None.
     """
 
     def __init__(self,
                  num_classes: int,
                  in_channels: int,
-                 loss_cls: ConfigType = dict(
+                 loss_cls: Dict = dict(
                      type='CrossEntropyLoss', loss_weight=1.0),
                  multi_class: bool = False,
                  label_smooth_eps: float = 0.0,
                  topk: Union[int, Tuple[int]] = (1, 5),
-                 average_clips: OptConfigType = None,
-                 init_cfg: OptMultiConfig = None) -> None:
+                 average_clips: Optional[Dict] = None,
+                 loss_components: Optional[List[str]] = None,
+                 loss_weights: Union[float, Tuple[float]] = 1.,
+                 init_cfg: Optional[Dict] = None) -> None:
         super(BaseHead, self).__init__(init_cfg=init_cfg)
         self.num_classes = num_classes
         self.in_channels = in_channels
@@ -75,23 +78,31 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         self.average_clips = average_clips
         assert isinstance(topk, (int, tuple))
         if isinstance(topk, int):
-            topk = (topk, )
+            topk = (topk,)
         for _topk in topk:
             assert _topk > 0, 'Top-k should be larger than 0'
         self.topk = topk
 
+        if loss_components is not None:
+            self.loss_components = loss_components
+            if isinstance(loss_weights, float):
+                loss_weights = [loss_weights] * len(loss_components)
+
+            assert len(loss_weights) == len(loss_components)
+            self.loss_weights = loss_weights
+
     @abstractmethod
-    def forward(self, x, **kwargs) -> Tensor:
+    def forward(self, x, **kwargs) -> ForwardResults:
         """Defines the computation performed at every call."""
         raise NotImplementedError
 
-    def loss(self, feats: Union[Tensor, Tuple[Tensor]],
-             data_samples: SampleList, **kwargs) -> dict:
+    def loss(self, feats: Union[torch.Tensor, Tuple[torch.Tensor]],
+             data_samples: SampleList, **kwargs) -> Dict:
         """Perform forward propagation of head and loss calculation on the
         features of the upstream network.
 
         Args:
-            feats (Tensor or Tuple[Tensor]): Features from upstream network.
+            feats (torch.Tensor | tuple[torch.Tensor]): Features from upstream network.
             data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples.
 
@@ -101,33 +112,58 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         cls_scores = self(feats, **kwargs)
         return self.loss_by_feat(cls_scores, data_samples)
 
-    def loss_by_feat(self, cls_scores: Union[Tensor, Tuple[Tensor]],
-                     data_samples: SampleList) -> dict:
+    def loss_by_feat(self,
+                     cls_scores: Union[torch.Tensor, Dict[str, torch.Tensor]],
+                     data_samples: SampleList) -> Dict:
         """Calculate the loss based on the features extracted by the head.
 
         Args:
-            cls_scores (Tensor): Classification prediction results of
-                all class, has shape (batch_size, num_classes).
-            data_samples (List[:obj:`ActionDataSample`]): The batch
+            cls_scores (torch.Tensor | dict[str, torch.Tensor]):
+                Classification prediction results of all class,
+                has shape (batch_size, num_classes).
+            data_samples (list[:obj:`ActionDataSample`]): The batch
                 data samples.
 
         Returns:
             dict: A dictionary of loss components.
         """
-        labels = [x.gt_labels.item for x in data_samples]
-        labels = torch.stack(labels).to(cls_scores.device)
+        labels = torch.stack([x.gt_labels.item for x in data_samples])
         labels = labels.squeeze()
 
-        losses = dict()
         if labels.shape == torch.Size([]):
             labels = labels.unsqueeze(0)
         elif labels.dim() == 1 and labels.size()[0] == self.num_classes \
                 and cls_scores.size()[0] == 1:
             # Fix a bug when training with soft labels and batch size is 1.
-            # When using soft labels, `labels` and `cls_socre` share the same
+            # When using soft labels, `labels` and `cls_score` share the same
             # shape.
             labels = labels.unsqueeze(0)
 
+        if self.loss_components is not None:
+            losses = dict()
+            for loss_name, weight in zip(self.loss_components,
+                                         self.loss_weights):
+                cls_score = cls_scores[loss_name]
+                loss_cls = self.loss_by_scores(cls_score, labels)
+                loss_cls = {loss_name + '_' + k: v for k, v in loss_cls.items()}
+                loss_cls[f'{loss_name}_loss_cls'] *= weight
+                losses.update(loss_cls)
+            return losses
+        else:
+            return self.loss_by_scores(cls_scores, labels)
+
+    def loss_by_scores(self, cls_scores: torch.Tensor, labels: torch.Tensor) -> Dict:
+        """Calculate the loss based on the features extracted by the head.
+
+        Args:
+            cls_scores (torch.Tensor): Classification prediction
+                results of all class, has shape (batch_size, num_classes).
+            labels (torch.Tensor): The labels used to calculate the loss.
+
+        Returns:
+            dict: A dictionary of loss components.
+        """
+        losses = dict()
         if cls_scores.size() != labels.size():
             top_k_acc = top_k_accuracy(cls_scores.detach().cpu().numpy(),
                                        labels.detach().cpu().numpy(),
@@ -149,52 +185,92 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
             losses['loss_cls'] = loss_cls
         return losses
 
-    def predict(self, feats: Union[Tensor, Tuple[Tensor]],
+    def predict(self, feats: Union[torch.Tensor, Tuple[torch.Tensor]],
                 data_samples: SampleList, **kwargs) -> LabelList:
         """Perform forward propagation of head and predict recognition results
         on the features of the upstream network.
 
         Args:
-            feats (Tensor or Tuple[Tensor]): Features from upstream network.
-            data_samples (List[:obj:`ActionDataSample`]): The batch
+            feats (torch.Tensor or tuple[torch.Tensor]): Features from upstream network.
+            data_samples (list[:obj:`ActionDataSample`]): The batch
                 data samples.
 
         Returns:
-             List[:obj:`ActionDataSample`]: Recognition results wrapped
+             list[:obj:`ActionDataSample`]: Recognition results wrapped
                 by :obj:`ActionDataSample`.
         """
         cls_scores = self(feats, **kwargs)
         return self.predict_by_feat(cls_scores, data_samples)
 
-    def predict_by_feat(self, cls_scores: Tensor,
-                        data_samples: SampleList) -> LabelList:
+    def predict_by_feat(self,
+                        cls_scores: Union[torch.Tensor, Tuple[torch.Tensor]],
+                        data_samples: SampleList) -> SampleList:
         """Transform a batch of output features extracted from the head into
         prediction results.
 
         Args:
-            cls_scores (Tensor): Classification scores, has a shape
-                    (num_classes, )
+            cls_scores (torch.Tensor | dict[str, torch.Tensor]):
+                Classification scores, has a shape (num_classes, )
             data_samples (List[:obj:`ActionDataSample`]): The
                 annotation data of every samples. It usually includes
                 information such as `gt_labels`.
 
         Returns:
-            List[:obj:`ActionDataSample`]: Recognition results wrapped
+            list[:obj:`ActionDataSample`]: Recognition results wrapped
                 by :obj:`ActionDataSample`.
         """
+        pred_scores = [LabelData() for _ in range(len(data_samples))]
+        pred_labels = [LabelData() for _ in range(len(data_samples))]
+
+        if self.loss_components is not None:
+            for name in self.loss_components:
+                cls_score = cls_scores[name]
+                cls_score, pred_label = \
+                    self.predict_by_scores(cls_score, data_samples)
+                for pred_score, pred_label, score, label in zip(pred_scores,
+                                                                pred_labels,
+                                                                cls_score,
+                                                                pred_label):
+                    pred_score.set_data({f'{name}': score})
+                    pred_label.set_data({f'{name}': label})
+        else:
+            cls_score, pred_label = self.predict_by_scores(cls_scores, data_samples)
+            for pred_score, pred_label, score, label in zip(pred_scores,
+                                                            pred_labels,
+                                                            cls_score,
+                                                            pred_label):
+                pred_score.set_data({'item': score})
+                pred_label.set_data({'item': label})
+
+        for data_sample, pred_score, pred_label in zip(data_samples,
+                                                       pred_scores,
+                                                       pred_labels):
+            data_sample.pred_scores = pred_score
+            data_sample.pred_labels = pred_label
+
+        return data_samples
+
+    def predict_by_scores(self, cls_scores: torch.Tensor,
+                          data_samples: SampleList) -> Tuple:
+        """Transform a batch of output features extracted from the head into
+        prediction results.
+
+        Args:
+            cls_scores (torch.Tensor): Classification scores.
+            data_samples (List[:obj:`ActionDataSample`]): The annotation
+                data of every samples.
+
+        Returns:
+            tuple: A tuple of the averaged classification scores and
+                prediction labels.
+        """
+
         num_segs = cls_scores.shape[0] // len(data_samples)
         cls_scores = self.average_clip(cls_scores, num_segs=num_segs)
         pred_labels = cls_scores.argmax(dim=-1, keepdim=True).detach()
+        return cls_scores, pred_labels
 
-        for data_sample, score, pred_lable in zip(data_samples, cls_scores,
-                                                  pred_labels):
-            prediction = LabelData(item=score)
-            pred_label = LabelData(item=pred_lable)
-            data_sample.pred_scores = prediction
-            data_sample.pred_labels = pred_label
-        return data_samples
-
-    def average_clip(self, cls_scores: Tensor, num_segs: int = 1) -> Tensor:
+    def average_clip(self, cls_scores: torch.Tensor, num_segs: int = 1) -> torch.Tensor:
         """Averaging class scores over multiple clips.
 
         Using different averaging types ('score' or 'prob' or None,
@@ -202,11 +278,11 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         class score. Only called in test mode.
 
         Args:
-            cls_scores (Tensor): Class scores to be averaged.
+            cls_scores (torch.Tensor): Class scores to be averaged.
             num_segs (int): Number of clips for each input sample.
 
         Returns:
-            Tensor: Averaged class scores.
+            torch.Tensor: Averaged class scores.
         """
 
         if self.average_clips not in ['score', 'prob', None]:
