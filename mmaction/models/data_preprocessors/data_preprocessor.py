@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Optional, Sequence, Tuple, Union, List
+from typing import List, Optional, Sequence, Tuple, Union
 
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
@@ -83,8 +83,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
         elif isinstance(data, tuple):
             outputs = []
             for data_sample in data:
-                output = self.forward_onesample(data_sample,
-                                                training=training)
+                output = self.forward_onesample(data_sample, training=training)
                 outputs.append(output)
             return tuple(outputs)
         else:
@@ -108,7 +107,8 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
         data['data_samples'] = data_samples
         return data
 
-    def preprocess(self, inputs: List[torch.Tensor],
+    def preprocess(self,
+                   inputs: List[torch.Tensor],
                    data_samples: SampleList,
                    training: bool = False) -> Tuple:
         # --- Pad and stack --

@@ -1,23 +1,25 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 
-import torch
 import pytest
+import torch
+from numpy.testing import assert_array_equal
+
 from mmaction.models import MultiModalDataPreprocessor
 from mmaction.structures import ActionDataSample
 from mmaction.utils import register_all_modules
 
-from numpy.testing import assert_array_equal
-
 
 def generate_dummy_data(batch_size, input_keys, input_shapes):
     data = dict()
-    data['data_samples'] = [ActionDataSample().set_gt_labels(2)
-                            for _ in range(batch_size)]
+    data['data_samples'] = [
+        ActionDataSample().set_gt_labels(2) for _ in range(batch_size)
+    ]
     data['inputs'] = dict()
     for key, shape in zip(input_keys, input_shapes):
-        data['inputs'][key] = [torch.randint(0, 255, shape)
-                               for _ in range(batch_size)]
+        data['inputs'][key] = [
+            torch.randint(0, 255, shape) for _ in range(batch_size)
+        ]
 
     return data
 
@@ -46,9 +48,11 @@ def test_multimodal_data_preprocessor():
     assert data['inputs']['heatmap_imgs'].shape == (2, 1, 17, 32, 64, 64)
     psr_imgs = psr.preprocessors['imgs']
     assert_array_equal(data['inputs']['imgs'][0],
-                       (raw_data['inputs']['imgs'][0] - psr_imgs.mean) / psr_imgs.std)
+                       (raw_data['inputs']['imgs'][0] - psr_imgs.mean) /
+                       psr_imgs.std)
     assert_array_equal(data['inputs']['imgs'][1],
-                       (raw_data['inputs']['imgs'][1] - psr_imgs.mean) / psr_imgs.std)
+                       (raw_data['inputs']['imgs'][1] - psr_imgs.mean) /
+                       psr_imgs.std)
     assert_array_equal(data['inputs']['heatmap_imgs'][0],
                        raw_data['inputs']['heatmap_imgs'][0])
     assert_array_equal(data['inputs']['heatmap_imgs'][1],
@@ -77,10 +81,14 @@ def test_multimodal_data_preprocessor():
     psr_imgs2d = psr.preprocessors['imgs_2D']
     psr_imgs3d = psr.preprocessors['imgs_3D']
     assert_array_equal(data['inputs']['imgs_2D'][0],
-                       (raw_data['inputs']['imgs_2D'][0] - psr_imgs2d.mean) / psr_imgs2d.std)
+                       (raw_data['inputs']['imgs_2D'][0] - psr_imgs2d.mean) /
+                       psr_imgs2d.std)
     assert_array_equal(data['inputs']['imgs_2D'][1],
-                       (raw_data['inputs']['imgs_2D'][1] - psr_imgs2d.mean) / psr_imgs2d.std)
+                       (raw_data['inputs']['imgs_2D'][1] - psr_imgs2d.mean) /
+                       psr_imgs2d.std)
     assert_array_equal(data['inputs']['imgs_3D'][0],
-                       (raw_data['inputs']['imgs_3D'][0] - psr_imgs3d.mean) / psr_imgs3d.std)
+                       (raw_data['inputs']['imgs_3D'][0] - psr_imgs3d.mean) /
+                       psr_imgs3d.std)
     assert_array_equal(data['inputs']['imgs_3D'][1],
-                       (raw_data['inputs']['imgs_3D'][1] - psr_imgs3d.mean) / psr_imgs3d.std)
+                       (raw_data['inputs']['imgs_3D'][1] - psr_imgs3d.mean) /
+                       psr_imgs3d.std)

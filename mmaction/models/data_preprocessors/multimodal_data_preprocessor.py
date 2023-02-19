@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Optional, Dict
+from typing import Dict
 
 from mmengine.model import BaseDataPreprocessor, ModuleDict
 

@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Dict
+
 import torch
 
 from mmaction.registry import MODELS
@@ -36,4 +37,4 @@ class MMRecognizer3D(BaseRecognizer):
         loss_predict_kwargs = dict()
 
         x = self.backbone(**inputs)
-        return x
+        return x, loss_predict_kwargs

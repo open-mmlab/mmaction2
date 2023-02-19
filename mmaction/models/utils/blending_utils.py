@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
-from typing import Union, List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 import torch
@@ -24,7 +24,8 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         self.num_classes = num_classes
 
     @abstractmethod
-    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor, **kwargs) -> Tuple:
+    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor,
+                    **kwargs) -> Tuple:
         """Blending images process."""
         raise NotImplementedError
 
@@ -89,7 +90,8 @@ class MixupBlending(BaseMiniBatchBlending):
         super().__init__(num_classes=num_classes)
         self.beta = Beta(alpha, alpha)
 
-    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor, **kwargs) -> Tuple:
+    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor,
+                    **kwargs) -> Tuple:
         """Blending images with mixup.
 
         Args:
@@ -150,7 +152,8 @@ class CutmixBlending(BaseMiniBatchBlending):
 
         return bbx1, bby1, bbx2, bby2
 
-    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor, **kwargs) -> Tuple:
+    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor,
+                    **kwargs) -> Tuple:
         """Blending images with cutmix.
 
         Args:
@@ -208,7 +211,8 @@ class RandomBatchAugment(BaseMiniBatchBlending):
         and to do nothing is 0.2.
     """
 
-    def __init__(self, augments: Union[dict, list],
+    def __init__(self,
+                 augments: Union[dict, list],
                  probs: Optional[Union[float, List[float]]] = None) -> None:
         if not isinstance(augments, (tuple, list)):
             augments = [augments]
@@ -235,7 +239,8 @@ class RandomBatchAugment(BaseMiniBatchBlending):
 
         self.probs = probs
 
-    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor, **kwargs) -> Tuple:
+    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor,
+                    **kwargs) -> Tuple:
         """Randomly apply batch augmentations to the batch inputs and batch
         data samples."""
         aug_index = np.random.choice(len(self.augments), p=self.probs)
