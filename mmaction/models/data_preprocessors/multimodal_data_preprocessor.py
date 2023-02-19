@@ -10,12 +10,14 @@ from mmaction.registry import MODELS
 class MultiModalDataPreprocessor(BaseDataPreprocessor):
     """Multi-Modal data pre-processor for action recognition tasks."""
 
-    def __init__(self, preprocessors: Optional[Dict] = None) -> None:
+    def __init__(self, preprocessors: Dict) -> None:
         super().__init__()
         self.preprocessors = ModuleDict()
-        if preprocessors is not None:
-            for name, pre_cfg in preprocessors.items():
-                self.preprocessors[name] = MODELS.build(pre_cfg)
+        for name, pre_cfg in preprocessors.items():
+            assert 'type' in pre_cfg, (
+                'Each data preprocessor should contain the key type, '
+                f'but got {pre_cfg}')
+            self.preprocessors[name] = MODELS.build(pre_cfg)
 
     def forward(self, data: Dict, training: bool = False) -> Dict:
         """Preprocesses the data into the model input format.
