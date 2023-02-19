@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
-from typing import Tuple, Union, List, Optional, Dict
+from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
@@ -10,7 +10,7 @@ from mmengine.structures import LabelData
 
 from mmaction.evaluation import top_k_accuracy
 from mmaction.registry import MODELS
-from mmaction.utils import LabelList, SampleList, ForwardResults
+from mmaction.utils import ForwardResults, SampleList
 
 
 class AvgConsensus(nn.Module):
@@ -78,7 +78,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         self.average_clips = average_clips
         assert isinstance(topk, (int, tuple))
         if isinstance(topk, int):
-            topk = (topk,)
+            topk = (topk, )
         for _topk in topk:
             assert _topk > 0, 'Top-k should be larger than 0'
         self.topk = topk
@@ -102,7 +102,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         features of the upstream network.
 
         Args:
-            feats (torch.Tensor | tuple[torch.Tensor]): Features from upstream network.
+            feats (torch.Tensor | tuple[torch.Tensor]): Features from
+                upstream network.
             data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples.
 
@@ -112,8 +113,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         cls_scores = self(feats, **kwargs)
         return self.loss_by_feat(cls_scores, data_samples)
 
-    def loss_by_feat(self,
-                     cls_scores: Union[torch.Tensor, Dict[str, torch.Tensor]],
+    def loss_by_feat(self, cls_scores: Union[torch.Tensor, Dict[str,
+                                                                torch.Tensor]],
                      data_samples: SampleList) -> Dict:
         """Calculate the loss based on the features extracted by the head.
 
@@ -145,14 +146,18 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                                          self.loss_weights):
                 cls_score = cls_scores[loss_name]
                 loss_cls = self.loss_by_scores(cls_score, labels)
-                loss_cls = {loss_name + '_' + k: v for k, v in loss_cls.items()}
+                loss_cls = {
+                    loss_name + '_' + k: v
+                    for k, v in loss_cls.items()
+                }
                 loss_cls[f'{loss_name}_loss_cls'] *= weight
                 losses.update(loss_cls)
             return losses
         else:
             return self.loss_by_scores(cls_scores, labels)
 
-    def loss_by_scores(self, cls_scores: torch.Tensor, labels: torch.Tensor) -> Dict:
+    def loss_by_scores(self, cls_scores: torch.Tensor,
+                       labels: torch.Tensor) -> Dict:
         """Calculate the loss based on the features extracted by the head.
 
         Args:
@@ -186,12 +191,13 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         return losses
 
     def predict(self, feats: Union[torch.Tensor, Tuple[torch.Tensor]],
-                data_samples: SampleList, **kwargs) -> LabelList:
+                data_samples: SampleList, **kwargs) -> SampleList:
         """Perform forward propagation of head and predict recognition results
         on the features of the upstream network.
 
         Args:
-            feats (torch.Tensor or tuple[torch.Tensor]): Features from upstream network.
+            feats (torch.Tensor or tuple[torch.Tensor]): Features from
+                upstream network.
             data_samples (list[:obj:`ActionDataSample`]): The batch
                 data samples.
 
@@ -202,8 +208,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         cls_scores = self(feats, **kwargs)
         return self.predict_by_feat(cls_scores, data_samples)
 
-    def predict_by_feat(self,
-                        cls_scores: Union[torch.Tensor, Tuple[torch.Tensor]],
+    def predict_by_feat(self, cls_scores: Union[torch.Tensor,
+                                                Tuple[torch.Tensor]],
                         data_samples: SampleList) -> SampleList:
         """Transform a batch of output features extracted from the head into
         prediction results.
@@ -227,18 +233,15 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                 cls_score = cls_scores[name]
                 cls_score, pred_label = \
                     self.predict_by_scores(cls_score, data_samples)
-                for pred_score, pred_label, score, label in zip(pred_scores,
-                                                                pred_labels,
-                                                                cls_score,
-                                                                pred_label):
+                for pred_score, pred_label, score, label in zip(
+                        pred_scores, pred_labels, cls_score, pred_label):
                     pred_score.set_data({f'{name}': score})
                     pred_label.set_data({f'{name}': label})
         else:
-            cls_score, pred_label = self.predict_by_scores(cls_scores, data_samples)
-            for pred_score, pred_label, score, label in zip(pred_scores,
-                                                            pred_labels,
-                                                            cls_score,
-                                                            pred_label):
+            cls_score, pred_label = self.predict_by_scores(
+                cls_scores, data_samples)
+            for pred_score, pred_label, score, label in zip(
+                    pred_scores, pred_labels, cls_score, pred_label):
                 pred_score.set_data({'item': score})
                 pred_label.set_data({'item': label})
 
@@ -270,7 +273,9 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         pred_labels = cls_scores.argmax(dim=-1, keepdim=True).detach()
         return cls_scores, pred_labels
 
-    def average_clip(self, cls_scores: torch.Tensor, num_segs: int = 1) -> torch.Tensor:
+    def average_clip(self,
+                     cls_scores: torch.Tensor,
+                     num_segs: int = 1) -> torch.Tensor:
         """Averaging class scores over multiple clips.
 
         Using different averaging types ('score' or 'prob' or None,

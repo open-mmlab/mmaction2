@@ -1,14 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 from collections import OrderedDict
-from typing import Any, Optional, Sequence, Tuple, Union, Dict, List
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from mmengine.evaluator import BaseMetric
 
-from mmaction.evaluation import (mean_average_precision, mean_class_accuracy,
-                                 mmit_mean_average_precision, top_k_accuracy,
-                                 get_weighted_score)
+from mmaction.evaluation import (get_weighted_score, mean_average_precision,
+                                 mean_class_accuracy,
+                                 mmit_mean_average_precision, top_k_accuracy)
 from mmaction.registry import METRICS
 
 
@@ -99,8 +99,9 @@ class AccMetric(BaseMetric):
         for item_name in results[0]['pred'].keys():
             preds = [x['pred'][item_name] for x in results]
             eval_result = self.calculate(preds, labels)
-            eval_results.update({f'{item_name}_{k}': v
-                                 for k, v in eval_result.items()})
+            eval_results.update(
+                {f'{item_name}_{k}': v
+                 for k, v in eval_result.items()})
 
         # Ad-hoc for RGBPoseConv3D
         if len(results[0]['pred']) == 2 and \
@@ -117,7 +118,10 @@ class AccMetric(BaseMetric):
             }
             for k in preds:
                 eval_result = self.calculate(preds[k], labels)
-                eval_results.update({f'RGBPose_{k}_{key}': v for key, v in eval_result.items()})
+                eval_results.update({
+                    f'RGBPose_{k}_{key}': v
+                    for key, v in eval_result.items()
+                })
 
         return eval_results
 

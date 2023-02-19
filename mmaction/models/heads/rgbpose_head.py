@@ -35,9 +35,13 @@ class RGBPoseHead(BaseHead):
                  dropout: float = 0.5,
                  init_std: float = 0.01,
                  **kwargs) -> None:
-        super().__init__(num_classes, in_channels, loss_cls,
-                         loss_components=loss_components,
-                         loss_weights=loss_weights, **kwargs)
+        super().__init__(
+            num_classes,
+            in_channels,
+            loss_cls,
+            loss_components=loss_components,
+            loss_weights=loss_weights,
+            **kwargs)
         if isinstance(dropout, float):
             dropout = {'rgb': dropout, 'pose': dropout}
         assert isinstance(dropout, dict)
