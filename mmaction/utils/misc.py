@@ -42,7 +42,7 @@ def frame_extract(video_path: str,
     Args:
         video_path (str): The video path.
         short_side (int): Target short-side of the output image.
-            Defaults to None, means keep original shape.
+            Defaults to None, means keeping original shape.
         out_dir (str): The output directory. Defaults to ``'./tmp'``.
     """
     # Load the video, extract frames into OUT_DIR/video_name
