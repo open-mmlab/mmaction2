@@ -4,7 +4,7 @@ import io
 import os
 import os.path as osp
 import shutil
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import mmcv
 import numpy as np
