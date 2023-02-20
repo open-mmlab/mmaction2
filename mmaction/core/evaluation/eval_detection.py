@@ -221,8 +221,8 @@ def compute_average_precision_detection(ground_truth,
             if fp[t_idx, idx] == 0 and tp[t_idx, idx] == 0:
                 fp[t_idx, idx] = 1
 
-    tp_cumsum = np.cumsum(tp, axis=1).astype(np.float)
-    fp_cumsum = np.cumsum(fp, axis=1).astype(np.float)
+    tp_cumsum = np.cumsum(tp, axis=1).astype(np.float64)
+    fp_cumsum = np.cumsum(fp, axis=1).astype(np.float64)
     recall_cumsum = tp_cumsum / num_positive
 
     precision_cumsum = tp_cumsum / (tp_cumsum + fp_cumsum)

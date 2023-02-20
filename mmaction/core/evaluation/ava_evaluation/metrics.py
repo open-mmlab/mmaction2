@@ -35,7 +35,7 @@ def compute_precision_recall(scores, labels, num_gt):
             instances. This value is None if no ground truth labels are
             present.
     """
-    if (not isinstance(labels, np.ndarray) or labels.dtype != np.bool
+    if (not isinstance(labels, np.ndarray) or labels.dtype != bool
             or len(labels.shape) != 1):
         raise ValueError('labels must be single dimension bool numpy array')
 
@@ -90,7 +90,7 @@ def compute_average_precision(precision, recall):
     if not isinstance(precision, np.ndarray) or not isinstance(
             recall, np.ndarray):
         raise ValueError('precision and recall must be numpy array')
-    if precision.dtype != np.float or recall.dtype != np.float:
+    if precision.dtype != np.float64 or recall.dtype != np.float64:
         raise ValueError('input must be float numpy array.')
     if len(precision) != len(recall):
         raise ValueError('precision and recall must be of the same size.')
