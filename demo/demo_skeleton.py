@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import os.path as osp
-import shutil
+import tempfile
 
 import cv2
 import mmcv
@@ -128,7 +127,10 @@ def visualize(args, frames, data_samples, action_label):
 
 def main():
     args = parse_args()
-    frame_paths, frames = frame_extract(args.video, args.short_side)
+
+    tmp_dir = tempfile.TemporaryDirectory()
+    frame_paths, frames = frame_extract(args.video, args.short_side,
+                                        tmp_dir.name)
 
     num_frame = len(frame_paths)
     h, w, _ = frames[0].shape
@@ -180,8 +182,7 @@ def main():
 
     visualize(args, frames, pose_data_samples, action_label)
 
-    tmp_frame_dir = osp.dirname(frame_paths[0])
-    shutil.rmtree(tmp_frame_dir)
+    tmp_dir.cleanup()
 
 
 if __name__ == '__main__':
