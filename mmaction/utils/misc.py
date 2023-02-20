@@ -41,10 +41,11 @@ def frame_extract(video_path: str,
 
     Args:
         video_path (str): The video path.
-        short_side (int): The short-side of the image. Defaults to None.
+        short_side (int): Target short-side of the output image.
+            Defaults to None, means keep original shape.
         out_dir (str): The output directory. Defaults to ``'./tmp'``.
     """
-    # Load the video, extract frames into ./tmp/video_name
+    # Load the video, extract frames into OUT_DIR/video_name
     target_dir = osp.join(out_dir, osp.basename(osp.splitext(video_path)[0]))
     os.makedirs(target_dir, exist_ok=True)
     # Should be able to handle videos up to several hours
@@ -61,7 +62,6 @@ def frame_extract(video_path: str,
             if new_h is None:
                 h, w, _ = frame.shape
                 new_w, new_h = mmcv.rescale_size((w, h), (short_side, np.Inf))
-
             frame = mmcv.imresize(frame, (new_w, new_h))
 
         frames.append(frame)
