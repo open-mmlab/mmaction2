@@ -166,7 +166,7 @@ def mmit_mean_average_precision(scores, labels):
             sample.
 
     Returns:
-        np.float: The MMIT style mean average precision.
+        np.float64: The MMIT style mean average precision.
     """
     results = []
     for score, label in zip(scores, labels):
@@ -186,7 +186,7 @@ def mean_average_precision(scores, labels):
             sample.
 
     Returns:
-        np.float: The mean average precision.
+        np.float64: The mean average precision.
     """
     results = []
     scores = np.stack(scores).T

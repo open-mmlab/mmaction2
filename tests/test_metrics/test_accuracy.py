@@ -29,7 +29,7 @@ def gt_confusion_matrix(gt_labels, pred_labels, normalize=None):
     confusion_mat = np.delete(confusion_mat, del_index, axis=1)
 
     if normalize is not None:
-        confusion_mat = np.array(confusion_mat, dtype=np.float)
+        confusion_mat = np.array(confusion_mat, dtype=np.float64)
     m, n = confusion_mat.shape
     if normalize == 'true':
         for i in range(m):
