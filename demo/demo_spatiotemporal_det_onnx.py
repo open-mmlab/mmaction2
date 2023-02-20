@@ -361,7 +361,7 @@ def main():
         start = timestamps[0] - old_frame_interval / n * (n - 1) / 2
         new_frame_inds = np.arange(
             len(timestamps) * n) * old_frame_interval / n + start
-        return new_frame_inds.astype(np.int)
+        return new_frame_inds.astype(np.int64)
 
     dense_n = int(args.predict_stepsize / args.output_stepsize)
     frames = [
