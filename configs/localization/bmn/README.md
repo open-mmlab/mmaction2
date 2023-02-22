@@ -46,7 +46,7 @@ For more details, you can refer to the **Training** part in the [Training and Te
 
 ## Test
 
-Test BMN on ActivityNet feature dataset. Please note the validation performance shown in the training log is lower than the test performance.
+Test BMN on ActivityNet feature dataset.
 
 ```shell
 python3 tools/test.py  configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py CHECKPOINT.PTH
