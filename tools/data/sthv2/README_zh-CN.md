@@ -22,6 +22,12 @@
 
 首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v2) 完成注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/sthv2/annotations` 文件夹下。
 
+```shell
+cd $MMACTION2/data/sthv2/annotations
+unzip 20bn-something-something-download-package-labels.zip
+find ./labels -name "*.json" -exec sh -c 'cp "$1" "something-something-v2-$(basename $1)"' _ {} \;
+```
+
 ## 步骤 2. 准备视频
 
 之后，用户可将下载好的压缩文件放在 `$MMACTION2/data/sthv2/` 文件夹下，并且使用以下指令进行解压。

@@ -22,6 +22,12 @@ Before we start, please make sure that the directory is located at `$MMACTION2/t
 
 First of all, you have to sign in and download annotations to `$MMACTION2/data/sthv2/annotations` on the official [website](https://developer.qualcomm.com/software/ai-datasets/something-something).
 
+```shell
+cd $MMACTION2/data/sthv2/annotations
+unzip 20bn-something-something-download-package-labels.zip
+find ./labels -name "*.json" -exec sh -c 'cp "$1" "something-something-v2-$(basename $1)"' _ {} \;
+```
+
 ## Step 2. Prepare Videos
 
 Then, you can download all data parts to `$MMACTION2/data/sthv2/` and use the following command to uncompress.
