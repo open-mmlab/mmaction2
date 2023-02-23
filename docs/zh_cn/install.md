@@ -19,7 +19,7 @@
 ## 安装依赖包
 
 - Linux (Windows 系统暂未有官方支持)
-- Python 3.6+
+- Python 3.7+
 - PyTorch 1.3+
 - CUDA 9.2+ (如果要从源码对 PyTorch 进行编译, CUDA 9.0 版本同样可以兼容)
 - GCC 5+
