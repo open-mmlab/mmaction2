@@ -19,7 +19,7 @@ We provide some tips for MMAction2 installation in this file.
 ## Requirements
 
 - Linux, Windows (We can successfully install mmaction2 on Windows and run inference, but we haven't tried training yet)
-- Python 3.6+
+- Python 3.7+
 - PyTorch 1.3+
 - CUDA 9.2+ (If you build PyTorch from source, CUDA 9.0 is also compatible)
 - GCC 5+

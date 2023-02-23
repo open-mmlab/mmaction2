@@ -66,7 +66,7 @@ jobs:
             python -m pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - when:
           condition:
-            equal: [ "1.9.0", << parameters.torch >> ]
+            equal: [ "1.13.0", << parameters.torch >> ]
           steps:
             - run: python -m pip install timm
       - when:
@@ -83,7 +83,7 @@ jobs:
             python -m pip install -r requirements.txt
       - when:
           condition:
-            equal: [ "0.10.0", << parameters.torchvision >> ]
+            equal: [ "0.14.0", << parameters.torchvision >> ]
           steps:
             - run: python -m pip install pytorchvideo
       - run:
@@ -183,13 +183,13 @@ workflows:
           name: minimum_version_cpu
           torch: 1.6.0
           torchvision: 0.7.0
-          python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
+          python: 3.7.4
           requires:
             - lint
       - build_cpu:
           name: maximum_version_cpu
-          torch: 1.9.0
-          torchvision: 0.10.0
+          torch: 1.13.0
+          torchvision: 0.14.0
           python: 3.9.0
           requires:
             - minimum_version_cpu
