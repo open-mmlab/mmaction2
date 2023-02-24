@@ -172,7 +172,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
 
         Args:
             cls_scores (torch.Tensor): Classification scores, has a shape
-                    (B, num_classes)
+                (B*num_segs, num_classes)
             data_samples (list[:obj:`ActionDataSample`]): The
                 annotation data of every samples. It usually includes
                 information such as `gt_labels`.
