@@ -51,7 +51,8 @@ Models:
       Architecture: SlowOnly-R50
       Batch Size: 16
       Epochs: 240
-      Parameters: 2024860
+      FLOPs: 20.6G
+      Parameters: 2.0M
       Training Data: NTU60-XSub
       Training Resources: 8 GPUs
       pseudo heatmap: keypoint
@@ -70,7 +71,8 @@ Models:
       Architecture: SlowOnly-R50
       Batch Size: 16
       Epochs: 240
-      Parameters: 2024860
+      FLOPs: 20.6G
+      Parameters: 2.0M
       Training Data: NTU60-XSub
       Training Resources: 8 GPUs
       pseudo heatmap: limb
