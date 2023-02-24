@@ -82,8 +82,6 @@ test_pipeline = [
         with_limb=True,
         skeletons=skeletons,
         double=True,
-        left_kp=left_kp,
-        right_kp=right_kp,
         left_limb=left_limb,
         right_limb=right_limb),
     dict(type='FormatShape', input_format='NCTHW_Heatmap'),
@@ -91,7 +89,7 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=32,
+    batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -104,7 +102,7 @@ train_dataloader = dict(
             split='xsub_train',
             pipeline=train_pipeline)))
 val_dataloader = dict(
-    batch_size=32,
+    batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -144,5 +142,5 @@ param_scheduler = [
 ]
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.4, momentum=0.9, weight_decay=0.0003),
+    optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.0003),
     clip_grad=dict(max_norm=40, norm_type=2))
