@@ -2,7 +2,7 @@
 import os.path as osp
 from typing import Callable, Dict, List, Optional, Union
 
-from mmengine.fileio import exists, load
+import mmengine
 
 from mmaction.registry import DATASETS
 from .base import BaseActionDataset
@@ -43,8 +43,8 @@ class PoseDataset(BaseActionDataset):
     def load_data_list(self) -> List[Dict]:
         """Load annotation file to get skeleton information."""
         assert self.ann_file.endswith('.pkl')
-        exists(self.ann_file)
-        data_list = load(self.ann_file)
+        mmengine.exists(self.ann_file)
+        data_list = mmengine.load(self.ann_file)
 
         if self.split is not None:
             split, annos = data_list['split'], data_list['annotations']
@@ -52,12 +52,13 @@ class PoseDataset(BaseActionDataset):
             split = set(split[self.split])
             data_list = [x for x in annos if x[identifier] in split]
 
-        for item in data_list:
-            # Sometimes we may need to load anno from the file
-            if 'filename' in item:
-                item['filename'] = osp.join(self.data_prefix['video'],
-                                            item['filename'])
-            if 'frame_dir' in item:
-                item['frame_dir'] = osp.join(self.data_prefix['video'],
-                                             item['frame_dir'])
+        # Sometimes we may need to load video from the file
+        if 'video' in self.data_prefix:
+            for item in data_list:
+                if 'filename' in item:
+                    item['filename'] = osp.join(self.data_prefix['video'],
+                                                item['filename'])
+                if 'frame_dir' in item:
+                    item['frame_dir'] = osp.join(self.data_prefix['video'],
+                                                 item['frame_dir'])
         return data_list
