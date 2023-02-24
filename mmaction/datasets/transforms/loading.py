@@ -356,7 +356,7 @@ class SampleFrames(BaseTransform):
         total_frames = results['total_frames']
         # if can't get fps, same value of `fps` and `target_fps`
         # will perform nothing
-        fps = results.get('fps')
+        fps = results.get('avg_fps')
         if self.target_fps is None or not fps:
             fps_scale_ratio = 1.0
         else:
@@ -1111,7 +1111,7 @@ class DecordInit(BaseTransform):
 
         file_obj = io.BytesIO(self.file_client.get(results['filename']))
         container = decord.VideoReader(file_obj, num_threads=self.num_threads)
-        results['fps'] = container.get_avg_fps()
+        results['avg_fps'] = container.get_avg_fps()
         results['video_reader'] = container
         results['total_frames'] = len(container)
         return results
