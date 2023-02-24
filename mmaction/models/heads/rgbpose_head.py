@@ -5,13 +5,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.model.weight_init import normal_init
-
 from mmengine.structures import LabelData
 
-from mmaction.registry import MODELS
-from .base import BaseHead
-from mmaction.utils import SampleList
 from mmaction.evaluation import top_k_accuracy
+from mmaction.registry import MODELS
+from mmaction.utils import SampleList
+from .base import BaseHead
 
 
 @MODELS.register_module()
@@ -82,8 +81,8 @@ class RGBPoseHead(BaseHead):
 
         return cls_scores
 
-    def loss(self, feats: Tuple[torch.Tensor],
-             data_samples: SampleList, **kwargs) -> Dict:
+    def loss(self, feats: Tuple[torch.Tensor], data_samples: SampleList,
+             **kwargs) -> Dict:
         """Perform forward propagation of head and loss calculation on the
         features of the upstream network.
 
@@ -124,14 +123,10 @@ class RGBPoseHead(BaseHead):
             labels = labels.unsqueeze(0)
 
         losses = dict()
-        for loss_name, weight in zip(self.loss_components,
-                                     self.loss_weights):
+        for loss_name, weight in zip(self.loss_components, self.loss_weights):
             cls_score = cls_scores[loss_name]
             loss_cls = self.loss_by_scores(cls_score, labels)
-            loss_cls = {
-                loss_name + '_' + k: v
-                for k, v in loss_cls.items()
-            }
+            loss_cls = {loss_name + '_' + k: v for k, v in loss_cls.items()}
             loss_cls[f'{loss_name}_loss_cls'] *= weight
             losses.update(loss_cls)
         return losses
@@ -170,8 +165,8 @@ class RGBPoseHead(BaseHead):
             losses['loss_cls'] = loss_cls
         return losses
 
-    def predict(self, feats: Tuple[torch.Tensor],
-                data_samples: SampleList, **kwargs) -> SampleList:
+    def predict(self, feats: Tuple[torch.Tensor], data_samples: SampleList,
+                **kwargs) -> SampleList:
         """Perform forward propagation of head and predict recognition results
         on the features of the upstream network.
 
