@@ -22,7 +22,7 @@ Models:
     - Dataset: FineGYM
       Task: Skeleton-based Action Recognition
       Metrics:
-        mean Top 1 Accuracy: 93.4
+        mean Top 1 Accuracy: 93.5
     Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint/slowonly_r50_8xb16-u48-240e_gym-keypoint.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint/slowonly_r50_8xb16-u48-240e_gym-keypoint_20220815-da338c58.pth
 
@@ -42,7 +42,7 @@ Models:
     - Dataset: FineGYM
       Task: Skeleton-based Action Recognition
       Metrics:
-        mean Top 1 Accuracy: 93.7
+        mean Top 1 Accuracy: 93.6
     Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb/slowonly_r50_8xb16-u48-240e_gym-limb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb/slowonly_r50_8xb16-u48-240e_gym-limb_20220815-2e6e3c5c.pth
 

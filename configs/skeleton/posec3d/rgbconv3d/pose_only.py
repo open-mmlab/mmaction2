@@ -52,7 +52,12 @@ test_pipeline = [
     dict(type='PoseDecode'),
     dict(type='PoseCompact', hw_ratio=1., allow_imgpad=True),
     dict(type='Resize', scale=(64, 64), keep_ratio=False),
-    dict(type='GeneratePoseTarget', with_kp=True, with_limb=False, left_kp=left_kp, right_kp=right_kp),
+    dict(
+        type='GeneratePoseTarget',
+        with_kp=True,
+        with_limb=False,
+        left_kp=left_kp,
+        right_kp=right_kp),
     dict(type='FormatShape', input_format='NCTHW_Heatmap'),
     dict(type='PackActionInputs')
 ]

@@ -93,7 +93,7 @@ train_dataloader = dict(
             type=dataset_type,
             ann_file=ann_file,
             split='train',
-            pipeline=train_pipeline))),
+            pipeline=train_pipeline)))
 val_dataloader = dict(
     batch_size=16,
     num_workers=8,
@@ -129,7 +129,7 @@ param_scheduler = [
     dict(
         type='CosineAnnealingLR',
         eta_min=0,
-        T_max=240,
+        T_max=24,
         by_epoch=True,
         convert_to_iter_based=True)
 ]
