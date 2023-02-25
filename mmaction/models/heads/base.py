@@ -185,10 +185,10 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         cls_scores = self.average_clip(cls_scores, num_segs=num_segs)
         pred_labels = cls_scores.argmax(dim=-1, keepdim=True).detach()
 
-        for data_sample, score, pred_lable in zip(data_samples, cls_scores,
+        for data_sample, score, pred_label in zip(data_samples, cls_scores,
                                                   pred_labels):
             prediction = LabelData(item=score)
-            pred_label = LabelData(item=pred_lable)
+            pred_label = LabelData(item=pred_label)
             data_sample.pred_scores = prediction
             data_sample.pred_labels = pred_label
         return data_samples

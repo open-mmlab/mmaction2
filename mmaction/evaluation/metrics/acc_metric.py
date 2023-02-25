@@ -64,11 +64,10 @@ class AccMetric(BaseMetric):
         compute the metrics when all batches have been processed.
 
         Args:
-            data_batch (Sequence[Tuple[Any, dict]]): A batch of data
-                from the dataloader.
-            data_samples (Sequence[dict]): A batch of outputs from
-                the model.
+            data_batch (Sequence[dict]): A batch of data from the dataloader.
+            data_samples (Sequence[dict]): A batch of outputs from the model.
         """
+        data_samples = copy.deepcopy(data_samples)
         for data_sample in data_samples:
             result = dict()
             pred = data_sample['pred_scores']
