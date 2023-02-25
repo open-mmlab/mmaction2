@@ -181,4 +181,4 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-load_from = 'rgbpose_conv3d_init.pth'
+load_from = 'https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/rgbpose_conv3d/rgbpose_conv3d_init.pth'  # noqa: E501
