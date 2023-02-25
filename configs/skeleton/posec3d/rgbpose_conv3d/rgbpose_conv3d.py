@@ -64,32 +64,61 @@ ann_file = 'data/skeleton/ntu60_2d.pkl'
 left_kp = [1, 3, 5, 7, 9, 11, 13, 15]
 right_kp = [2, 4, 6, 8, 10, 12, 14, 16]
 train_pipeline = [
-    dict(type='MMUniformSampleFrames', clip_len=dict(RGB=8, Pose=32), num_clips=1),
+    dict(
+        type='MMUniformSampleFrames',
+        clip_len=dict(RGB=8, Pose=32),
+        num_clips=1),
     dict(type='MMDecode'),
     dict(type='MMCompact', hw_ratio=1., allow_imgpad=True),
     dict(type='Resize', scale=(256, 256), keep_ratio=False),
     dict(type='RandomResizedCrop', area_range=(0.56, 1.0)),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5, left_kp=left_kp, right_kp=right_kp),
-    dict(type='GeneratePoseTarget', sigma=0.7, use_score=True, with_kp=True, with_limb=False, scaling=0.25),
+    dict(
+        type='GeneratePoseTarget',
+        sigma=0.7,
+        use_score=True,
+        with_kp=True,
+        with_limb=False,
+        scaling=0.25),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs', collect_keys=('imgs', 'heatmap_imgs'))
 ]
 val_pipeline = [
-    dict(type='MMUniformSampleFrames', clip_len=dict(RGB=8, Pose=32), num_clips=1, test_mode=True),
+    dict(
+        type='MMUniformSampleFrames',
+        clip_len=dict(RGB=8, Pose=32),
+        num_clips=1,
+        test_mode=True),
     dict(type='MMDecode'),
     dict(type='MMCompact', hw_ratio=1., allow_imgpad=True),
     dict(type='Resize', scale=(256, 256), keep_ratio=False),
-    dict(type='GeneratePoseTarget', sigma=0.7, use_score=True, with_kp=True, with_limb=False, scaling=0.25),
+    dict(
+        type='GeneratePoseTarget',
+        sigma=0.7,
+        use_score=True,
+        with_kp=True,
+        with_limb=False,
+        scaling=0.25),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs', collect_keys=('imgs', 'heatmap_imgs'))
 ]
 test_pipeline = [
-    dict(type='MMUniformSampleFrames', clip_len=dict(RGB=8, Pose=32), num_clips=10, test_mode=True),
+    dict(
+        type='MMUniformSampleFrames',
+        clip_len=dict(RGB=8, Pose=32),
+        num_clips=10,
+        test_mode=True),
     dict(type='MMDecode'),
     dict(type='MMCompact', hw_ratio=1., allow_imgpad=True),
     dict(type='Resize', scale=(256, 256), keep_ratio=False),
-    dict(type='GeneratePoseTarget', sigma=0.7, use_score=True, with_kp=True, with_limb=False, scaling=0.25),
+    dict(
+        type='GeneratePoseTarget',
+        sigma=0.7,
+        use_score=True,
+        with_kp=True,
+        with_limb=False,
+        scaling=0.25),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs', collect_keys=('imgs', 'heatmap_imgs'))
 ]
@@ -99,11 +128,12 @@ train_dataloader = dict(
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(type=dataset_type,
-                 ann_file=ann_file,
-                 data_prefix=dict(video=data_root),
-                 split='xsub_train',
-                 pipeline=train_pipeline))
+    dataset=dict(
+        type=dataset_type,
+        ann_file=ann_file,
+        data_prefix=dict(video=data_root),
+        split='xsub_train',
+        pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=1,
     num_workers=8,
