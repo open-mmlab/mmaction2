@@ -13,7 +13,8 @@ Models:
       Architecture: SlowOnly-R50
       Batch Size: 16
       Epochs: 240
-      Parameters: 2044867
+      FLOPs: 20.6G
+      Parameters: 2.0M
       Training Data: FineGYM
       Training Resources: 8 GPUs
       pseudo heatmap: keypoint
@@ -32,7 +33,8 @@ Models:
       Architecture: SlowOnly-R50
       Batch Size: 16
       Epochs: 240
-      Parameters: 2044867
+      FLOPs: 20.6G
+      Parameters: 2.0M
       Training Data: FineGYM
       Training Resources: 8 GPUs
       pseudo heatmap: limb
@@ -91,7 +93,8 @@ Models:
       Architecture: SlowOnly-R50
       Batch Size: 16
       Epochs: 120
-      Parameters: 3029984
+      FLOPs: 14.6G
+      Parameters: 3.0M
       Training Data: HMDB51
       Training Resources: 8 GPUs
       pseudo heatmap: keypoint
@@ -99,7 +102,7 @@ Models:
     - Dataset: HMDB51
       Task: Skeleton-based Action Recognition
       Metrics:
-        Top 1 Accuracy: 69.2
+        Top 1 Accuracy: 69.6
     Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint_20220815-17eaa484.pth
 
@@ -110,7 +113,8 @@ Models:
       Architecture: SlowOnly-R50
       Batch Size: 16
       Epochs: 120
-      Parameters: 3055584
+      FLOPs: 14.6G
+      Parameters: 3.1M
       Training Data: UCF101
       Training Resources: 8 GPUs
       pseudo heatmap: keypoint
@@ -118,6 +122,6 @@ Models:
     - Dataset: UCF101
       Task: Skeleton-based Action Recognition
       Metrics:
-        Top 1 Accuracy: 86.9
+        Top 1 Accuracy: 86.8
     Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint_20220815-9972260d.pth
