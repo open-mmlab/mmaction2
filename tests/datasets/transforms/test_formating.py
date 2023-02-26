@@ -101,8 +101,7 @@ class TestPackActionInputs(unittest.TestCase):
             type='PackActionInputs', meta_keys=['flip_direction', 'img_shape'])
         transform = TRANSFORMS.build(cfg)
         self.assertEqual(
-            repr(transform),
-            "PackActionInputs(collect_keys=None, "
+            repr(transform), 'PackActionInputs(collect_keys=None, '
             "meta_keys=['flip_direction', 'img_shape'])")
 
 

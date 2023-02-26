@@ -35,7 +35,11 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='MMUniformSampleFrames', clip_len=dict(RGB=8), num_clips=1, test_mode=True),
+    dict(
+        type='MMUniformSampleFrames',
+        clip_len=dict(RGB=8),
+        num_clips=1,
+        test_mode=True),
     dict(type='MMDecode'),
     dict(type='MMCompact', hw_ratio=1., allow_imgpad=True),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
@@ -43,7 +47,11 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='MMUniformSampleFrames', clip_len=dict(RGB=8), num_clips=10, test_mode=True),
+    dict(
+        type='MMUniformSampleFrames',
+        clip_len=dict(RGB=8),
+        num_clips=10,
+        test_mode=True),
     dict(type='MMDecode'),
     dict(type='MMCompact', hw_ratio=1., allow_imgpad=True),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
