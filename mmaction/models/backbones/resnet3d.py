@@ -711,7 +711,7 @@ class ResNet3d(nn.Module):
                 debugging information.
         """
 
-        state_dict_r2d = _load_checkpoint(self.pretrained)
+        state_dict_r2d = _load_checkpoint(self.pretrained, map_location='cpu')
         if 'state_dict' in state_dict_r2d:
             state_dict_r2d = state_dict_r2d['state_dict']
 
