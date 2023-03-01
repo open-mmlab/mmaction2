@@ -28,7 +28,7 @@ RGBPoseConv3D is a framework that jointly use 2D human skeletons and RGB appeara
 
 #### Step 0. Data Preparation
 
-Besides the skeleton annotations, you also need RGB videos to train RGBPoseConv3D. You need to download them from the official website of NTURGB+D (https://rose1.ntu.edu.sg/dataset/actionRecognition/) and put these videos in `$MMACTION2/data/nturgbd_raw`. After that, you need to use the provided script to compress the raw videos (from `1920x1080` to `960x540`) and switch the suffix to `.mp4`:
+Besides the skeleton annotations, you also need RGB videos to train RGBPoseConv3D. You need to download them from the official website of [NTURGB+D](https://rose1.ntu.edu.sg/dataset/actionRecognition/) and put these videos in `$MMACTION2/data/nturgbd_raw`. After that, you need to use the provided script to compress the raw videos (from `1920x1080` to `960x540`) and switch the suffix to `.mp4`:
 
 ```bash
 # That step is mandatory, unless you know how to modify the code & config to make it work for raw videos!
