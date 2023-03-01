@@ -182,3 +182,9 @@ param_scheduler = [
 ]
 
 load_from = 'https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/rgbpose_conv3d/rgbpose_conv3d_init_20230228-09b7684b.pth'  # noqa: E501
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (6 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=48)
