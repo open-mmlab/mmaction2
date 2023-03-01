@@ -11,18 +11,13 @@ def test_slowfast_backbone():
     """Test SlowFast backbone."""
     with pytest.raises(TypeError):
         # cfg should be a dict
-        ResNet3dSlowFast(None, slow_pathway=list(['foo', 'bar']))
-    with pytest.raises(TypeError):
-        # pretrained should be a str
-        sf_50 = ResNet3dSlowFast(dict(foo='bar'))
-        sf_50.init_weights()
+        ResNet3dSlowFast(slow_pathway=list(['foo', 'bar']))
     with pytest.raises(KeyError):
         # pathway type should be implemented
-        ResNet3dSlowFast(None, slow_pathway=dict(type='resnext'))
+        ResNet3dSlowFast(slow_pathway=dict(type='resnext'))
 
     # test slowfast with slow inflated
     sf_50_inflate = ResNet3dSlowFast(
-        None,
         slow_pathway=dict(
             type='resnet3d',
             depth=50,
@@ -56,14 +51,7 @@ def test_slowfast_backbone():
     # slowfast w/o lateral connection inference test
     input_shape = (1, 3, 8, 64, 64)
     imgs = generate_backbone_demo_inputs(input_shape)
-    # parrots 3dconv is only implemented on gpu
-    if torch.__version__ == 'parrots':
-        if torch.cuda.is_available():
-            sf_50_wo_lateral = sf_50_wo_lateral.cuda()
-            imgs_gpu = imgs.cuda()
-            feat = sf_50_wo_lateral(imgs_gpu)
-    else:
-        feat = sf_50_wo_lateral(imgs)
+    feat = sf_50_wo_lateral(imgs)
 
     assert isinstance(feat, tuple)
     assert feat[0].shape == torch.Size([1, 2048, 1, 2, 2])
@@ -104,21 +92,14 @@ def test_slowfast_backbone():
                 assert param.requires_grad is True
 
     # test slowfast with normal config
-    sf_50 = ResNet3dSlowFast(None)
+    sf_50 = ResNet3dSlowFast()
     sf_50.init_weights()
     sf_50.train()
 
     # slowfast inference test
     input_shape = (1, 3, 8, 64, 64)
     imgs = generate_backbone_demo_inputs(input_shape)
-    # parrots 3dconv is only implemented on gpu
-    if torch.__version__ == 'parrots':
-        if torch.cuda.is_available():
-            sf_50 = sf_50.cuda()
-            imgs_gpu = imgs.cuda()
-            feat = sf_50(imgs_gpu)
-    else:
-        feat = sf_50(imgs)
+    feat = sf_50(imgs)
 
     assert isinstance(feat, tuple)
     assert feat[0].shape == torch.Size([1, 2048, 1, 2, 2])

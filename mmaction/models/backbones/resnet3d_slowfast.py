@@ -1,19 +1,78 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 from collections import OrderedDict
-from typing import List, Optional, Sequence, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmengine.logging import MMLogger, print_log
+from mmengine.model import BaseModule
 from mmengine.model.weight_init import kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
-from torch import Tensor
 
 from mmaction.registry import MODELS
-from mmaction.utils import ConfigType, OptConfigType
 from .resnet3d import ResNet3d
+
+
+class DeConvModule(BaseModule):
+    """A deconv module that bundles deconv/norm/activation layers.
+
+    Args:
+        in_channels (int): Number of channels in the input feature map.
+        out_channels (int): Number of channels produced by the convolution.
+        kernel_size (int | tuple[int]): Size of the convolving kernel.
+        stride (int | tuple[int]): Stride of the convolution.
+        padding (int | tuple[int]): Zero-padding added to both sides of
+            the input.
+        bias (bool): Whether to add a learnable bias to the output.
+            Defaults to False.
+        with_bn (bool): Whether to add a BN layer. Defaults to True.
+        with_relu (bool): Whether to add a ReLU layer. Defaults to True.
+    """
+
+    def __init__(self,
+                 in_channels: int,
+                 out_channels: int,
+                 kernel_size: int,
+                 stride: Union[int, Tuple[int]] = (1, 1, 1),
+                 padding: Union[int, Tuple[int]] = 0,
+                 bias: bool = False,
+                 with_bn: bool = True,
+                 with_relu: bool = True) -> None:
+        super().__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = kernel_size
+        self.stride = stride
+        self.padding = padding
+        self.bias = bias
+        self.with_bn = with_bn
+        self.with_relu = with_relu
+
+        self.conv = nn.ConvTranspose3d(
+            in_channels,
+            out_channels,
+            kernel_size,
+            stride=stride,
+            padding=padding,
+            bias=bias)
+        self.bn = nn.BatchNorm3d(out_channels)
+        self.relu = nn.ReLU()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Defines the computation performed at every call."""
+        # x should be a 5-d tensor
+        assert len(x.shape) == 5
+        N, C, T, H, W = x.shape
+        out_shape = (N, self.out_channels, self.stride[0] * T,
+                     self.stride[1] * H, self.stride[2] * W)
+        x = self.conv(x, output_size=out_shape)
+        if self.with_bn:
+            x = self.bn(x)
+        if self.with_relu:
+            x = self.relu(x)
+        return x
 
 
 class ResNet3dPathway(ResNet3d):
@@ -22,6 +81,8 @@ class ResNet3dPathway(ResNet3d):
     Args:
         lateral (bool): Determines whether to enable the lateral connection
             from another pathway. Defaults to False.
+        lateral_inv (bool): Whether to use deconv to upscale the time
+            dimension of features from another pathway. Defaults to False.
         lateral_norm (bool): Determines whether to enable the lateral norm
             in lateral layers. Defaults to False.
         speed_ratio (int): Speed ratio indicating the ratio between time
@@ -32,181 +93,112 @@ class ResNet3dPathway(ResNet3d):
             Defaults to 8.
         fusion_kernel (int): The kernel size of lateral fusion.
             Defaults to 5.
+        lateral_infl (int): The ratio of the inflated channels.
+            Defaults to 2.
+        lateral_activate (list[int]): Flags for activating the lateral
+            connection. Defaults to ``[1, 1, 1, 1]``.
     """
 
     def __init__(self,
-                 *args,
                  lateral: bool = False,
+                 lateral_inv: bool = False,
                  lateral_norm: bool = False,
                  speed_ratio: int = 8,
                  channel_ratio: int = 8,
                  fusion_kernel: int = 5,
+                 lateral_infl: int = 2,
+                 lateral_activate: List[int] = [1, 1, 1, 1],
                  **kwargs) -> None:
         self.lateral = lateral
+        self.lateral_inv = lateral_inv
         self.lateral_norm = lateral_norm
         self.speed_ratio = speed_ratio
         self.channel_ratio = channel_ratio
         self.fusion_kernel = fusion_kernel
-        super().__init__(*args, **kwargs)
+        self.lateral_infl = lateral_infl
+        self.lateral_activate = lateral_activate
+        self._calculate_lateral_inplanes(kwargs)
+
+        super().__init__(**kwargs)
         self.inplanes = self.base_channels
-        if self.lateral:
-            self.conv1_lateral = ConvModule(
-                self.inplanes // self.channel_ratio,
-                # https://arxiv.org/abs/1812.03982, the
-                # third type of lateral connection has out_channel:
-                # 2 * \beta * C
-                self.inplanes * 2 // self.channel_ratio,
-                kernel_size=(fusion_kernel, 1, 1),
-                stride=(self.speed_ratio, 1, 1),
-                padding=((fusion_kernel - 1) // 2, 0, 0),
-                bias=False,
-                conv_cfg=self.conv_cfg,
-                norm_cfg=self.norm_cfg if self.lateral_norm else None,
-                act_cfg=self.act_cfg if self.lateral_norm else None)
+        if self.lateral and self.lateral_activate[0] == 1:
+            if self.lateral_inv:
+                self.conv1_lateral = DeConvModule(
+                    self.inplanes * self.channel_ratio,
+                    self.inplanes * self.channel_ratio // lateral_infl,
+                    kernel_size=(fusion_kernel, 1, 1),
+                    stride=(self.speed_ratio, 1, 1),
+                    padding=((fusion_kernel - 1) // 2, 0, 0),
+                    with_bn=True,
+                    with_relu=True)
+            else:
+                self.conv1_lateral = ConvModule(
+                    self.inplanes // self.channel_ratio,
+                    self.inplanes * lateral_infl // self.channel_ratio,
+                    kernel_size=(fusion_kernel, 1, 1),
+                    stride=(self.speed_ratio, 1, 1),
+                    padding=((fusion_kernel - 1) // 2, 0, 0),
+                    bias=False,
+                    conv_cfg=self.conv_cfg,
+                    norm_cfg=self.norm_cfg if self.lateral_norm else None,
+                    act_cfg=self.act_cfg if self.lateral_norm else None)
 
         self.lateral_connections = []
         for i in range(len(self.stage_blocks)):
             planes = self.base_channels * 2**i
             self.inplanes = planes * self.block.expansion
 
-            if lateral and i != self.num_stages - 1:
+            if lateral and i != self.num_stages - 1 \
+                    and self.lateral_activate[i + 1]:
                 # no lateral connection needed in final stage
                 lateral_name = f'layer{(i + 1)}_lateral'
-                setattr(
-                    self, lateral_name,
-                    ConvModule(
+                if self.lateral_inv:
+                    conv_module = DeConvModule(
+                        self.inplanes * self.channel_ratio,
+                        self.inplanes * self.channel_ratio // lateral_infl,
+                        kernel_size=(fusion_kernel, 1, 1),
+                        stride=(self.speed_ratio, 1, 1),
+                        padding=((fusion_kernel - 1) // 2, 0, 0),
+                        bias=False,
+                        with_bn=True,
+                        with_relu=True)
+                else:
+                    conv_module = ConvModule(
                         self.inplanes // self.channel_ratio,
-                        self.inplanes * 2 // self.channel_ratio,
+                        self.inplanes * lateral_infl // self.channel_ratio,
                         kernel_size=(fusion_kernel, 1, 1),
                         stride=(self.speed_ratio, 1, 1),
                         padding=((fusion_kernel - 1) // 2, 0, 0),
                         bias=False,
                         conv_cfg=self.conv_cfg,
                         norm_cfg=self.norm_cfg if self.lateral_norm else None,
-                        act_cfg=self.act_cfg if self.lateral_norm else None))
+                        act_cfg=self.act_cfg if self.lateral_norm else None)
+                setattr(self, lateral_name, conv_module)
                 self.lateral_connections.append(lateral_name)
 
-    def make_res_layer(self,
-                       block: nn.Module,
-                       inplanes: int,
-                       planes: int,
-                       blocks: int,
-                       spatial_stride: Union[int, Sequence[int]] = 1,
-                       temporal_stride: Union[int, Sequence[int]] = 1,
-                       dilation: int = 1,
-                       style: str = 'pytorch',
-                       inflate: Union[int, Sequence[int]] = 1,
-                       inflate_style: str = '3x1x1',
-                       non_local: Union[int, Sequence[int]] = 0,
-                       non_local_cfg: ConfigType = dict(),
-                       norm_cfg: OptConfigType = None,
-                       act_cfg: OptConfigType = None,
-                       conv_cfg: OptConfigType = None,
-                       with_cp: Optional[bool] = False,
-                       **kwargs) -> nn.Module:
-        """Build residual layer for SlowFast.
-
-        Args:
-            block (nn.Module): Residual module to be built.
-            inplanes (int): Number of channels for the input feature
-                in each block.
-            planes (int): Number of channels for the output feature
-                in each block.
-            blocks (int): Number of residual blocks.
-            spatial_stride (int | Sequence[int]): Spatial strides in
-                residual and conv layers. Defaults to 1.
-            temporal_stride (int | Sequence[int]): Temporal strides in
-                residual and conv layers. Defaults to 1.
-            dilation (int): Spacing between kernel elements. Defaults to 1.
-            style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``,
-                the stride-two layer is the 3x3 conv layer, otherwise
-                the stride-two layer is the first 1x1 conv layer.
-                Default: ``pytorch``.
-            inflate (int | Sequence[int]): Determine whether to inflate
-                for each block. Defaults to 1.
-            inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines
-                the kernel sizes and padding strides for conv1 and conv2
-                in each block. Default: ``3x1x1``.
-            non_local (int | Sequence[int]): Determine whether to apply
-                non-local module in the corresponding block of each stages.
-                Defaults to 0.
-            non_local_cfg (dict): Config for non-local module.
-                Defaults to ``dict()``.
-            conv_cfg (dict or ConfigDict, optional): Config for conv layers.
-                Defaults to None.
-            norm_cfg (dict or ConfigDict, optional): Config for norm layers.
-                Defaults to None.
-            act_cfg (dict or ConfigDict, optional): Config for activate layers.
-                Defaults to None.
-            with_cp (bool, optional): Use checkpoint or not. Using checkpoint
-                will save some memory while slowing down the training speed.
-                Defaults to False.
-
-        Returns:
-            nn.Module: A residual layer for the given config.
-        """
-        inflate = inflate if not isinstance(inflate,
-                                            int) else (inflate, ) * blocks
-        non_local = non_local if not isinstance(
-            non_local, int) else (non_local, ) * blocks
-        assert len(inflate) == blocks and len(non_local) == blocks
-        if self.lateral:
-            lateral_inplanes = inplanes * 2 // self.channel_ratio
-        else:
-            lateral_inplanes = 0
-        if (spatial_stride != 1
-                or (inplanes + lateral_inplanes) != planes * block.expansion):
-            downsample = ConvModule(
-                inplanes + lateral_inplanes,
-                planes * block.expansion,
-                kernel_size=1,
-                stride=(temporal_stride, spatial_stride, spatial_stride),
-                bias=False,
-                conv_cfg=conv_cfg,
-                norm_cfg=norm_cfg,
-                act_cfg=None)
-        else:
-            downsample = None
-
-        layers = []
-        layers.append(
-            block(
-                inplanes + lateral_inplanes,
-                planes,
-                spatial_stride,
-                temporal_stride,
-                dilation,
-                downsample,
-                style=style,
-                inflate=(inflate[0] == 1),
-                inflate_style=inflate_style,
-                non_local=(non_local[0] == 1),
-                non_local_cfg=non_local_cfg,
-                conv_cfg=conv_cfg,
-                norm_cfg=norm_cfg,
-                act_cfg=act_cfg,
-                with_cp=with_cp))
-        inplanes = planes * block.expansion
-
-        for i in range(1, blocks):
-            layers.append(
-                block(
-                    inplanes,
-                    planes,
-                    1,
-                    1,
-                    dilation,
-                    style=style,
-                    inflate=(inflate[i] == 1),
-                    inflate_style=inflate_style,
-                    non_local=(non_local[i] == 1),
-                    non_local_cfg=non_local_cfg,
-                    conv_cfg=conv_cfg,
-                    norm_cfg=norm_cfg,
-                    act_cfg=act_cfg,
-                    with_cp=with_cp))
-
-        return nn.Sequential(*layers)
+    def _calculate_lateral_inplanes(self, kwargs):
+        """Calculate inplanes for lateral connection."""
+        depth = kwargs.get('depth', 50)
+        expansion = 1 if depth < 50 else 4
+        base_channels = kwargs.get('base_channels', 64)
+        lateral_inplanes = []
+        for i in range(kwargs.get('num_stages', 4)):
+            if expansion % 2 == 0:
+                planes = base_channels * (2 ** i) * \
+                         ((expansion // 2) ** (i > 0))
+            else:
+                planes = base_channels * (2**i) // (2**(i > 0))
+            if self.lateral and self.lateral_activate[i]:
+                if self.lateral_inv:
+                    lateral_inplane = planes * \
+                                      self.channel_ratio // self.lateral_infl
+                else:
+                    lateral_inplane = planes * \
+                                      self.lateral_infl // self.channel_ratio
+            else:
+                lateral_inplane = 0
+            lateral_inplanes.append(lateral_inplane)
+        self.lateral_inplanes = lateral_inplanes
 
     def inflate_weights(self, logger: MMLogger) -> None:
         """Inflate the resnet2d parameters to resnet3d pathway.
@@ -280,7 +272,7 @@ class ResNet3dPathway(ResNet3d):
             state_dict_2d (OrderedDict): The state dict of pretrained 2d model.
             module_name_2d (str): The name of corresponding conv module in the
                 2d model.
-            inflated_param_names (List[str]): List of parameters that have been
+            inflated_param_names (list[str]): List of parameters that have been
                 inflated.
         """
         weight_2d_name = module_name_2d + '.weight'
@@ -358,11 +350,11 @@ pathway_cfg = {
 }
 
 
-def build_pathway(cfg: ConfigType, *args, **kwargs) -> nn.Module:
+def build_pathway(cfg: Dict, *args, **kwargs) -> nn.Module:
     """Build pathway.
 
     Args:
-        cfg (dict or ConfigDict): cfg should contain:
+        cfg (dict): cfg should contain:
             - type (str): identify backbone type.
 
     Returns:
@@ -383,7 +375,7 @@ def build_pathway(cfg: ConfigType, *args, **kwargs) -> nn.Module:
 
 
 @MODELS.register_module()
-class ResNet3dSlowFast(nn.Module):
+class ResNet3dSlowFast(BaseModule):
     """Slowfast backbone.
 
     This module is proposed in `SlowFast Networks for Video Recognition
@@ -403,57 +395,43 @@ class ResNet3dSlowFast(nn.Module):
         channel_ratio (int): Reduce the channel number of fast pathway
             by ``channel_ratio``, corresponding to :math:`\\beta` in the paper.
             Defaults to 8.
-        slow_pathway (dict or ConfigDict): Configuration of slow branch, should
-            contain necessary arguments for building the specific type of
-            pathway and:
-                type (str): type of backbone the pathway bases on.
-                lateral (bool): determine whether to build lateral connection
-            for the pathway. Defaults to
-
-            .. code-block:: Python
-
-                dict(type='ResNetPathway',
-                lateral=True, depth=50, pretrained=None,
-                conv1_kernel=(1, 7, 7), dilations=(1, 1, 1, 1),
-                conv1_stride_t=1, pool1_stride_t=1, inflate=(0, 0, 1, 1))
-
-        fast_pathway (dict or ConfigDict): Configuration of fast branch,
-            similar to ``slow_pathway``. Defaults to
-
-            .. code-block:: Python
-
-                dict(type='ResNetPathway',
-                lateral=False, depth=50, pretrained=None, base_channels=8,
-                conv1_kernel=(5, 7, 7), conv1_stride_t=1, pool1_stride_t=1)
+        slow_pathway (dict): Configuration of slow branch. Defaults to
+            ``dict(type='resnet3d', depth=50, pretrained=None, lateral=True,
+            conv1_kernel=(1, 7, 7), conv1_stride_t=1, pool1_stride_t=1,
+            inflate=(0, 0, 1, 1))``.
+        fast_pathway (dict): Configuration of fast branch. Defaults to
+            ``dict(type='resnet3d', depth=50, pretrained=None, lateral=False,
+            base_channels=8, conv1_kernel=(5, 7, 7), conv1_stride_t=1,
+            pool1_stride_t=1)``.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Defaults to None.
     """
 
-    def __init__(
-        self,
-        pretrained,
-        resample_rate: int = 8,
-        speed_ratio: int = 8,
-        channel_ratio: int = 8,
-        slow_pathway: ConfigType = dict(
-            type='resnet3d',
-            depth=50,
-            pretrained=None,
-            lateral=True,
-            conv1_kernel=(1, 7, 7),
-            dilations=(1, 1, 1, 1),
-            conv1_stride_t=1,
-            pool1_stride_t=1,
-            inflate=(0, 0, 1, 1)),
-        fast_pathway: ConfigType = dict(
-            type='resnet3d',
-            depth=50,
-            pretrained=None,
-            lateral=False,
-            base_channels=8,
-            conv1_kernel=(5, 7, 7),
-            conv1_stride_t=1,
-            pool1_stride_t=1)
-    ) -> None:
-        super().__init__()
+    def __init__(self,
+                 pretrained: Optional[str] = None,
+                 resample_rate: int = 8,
+                 speed_ratio: int = 8,
+                 channel_ratio: int = 8,
+                 slow_pathway: Dict = dict(
+                     type='resnet3d',
+                     depth=50,
+                     pretrained=None,
+                     lateral=True,
+                     conv1_kernel=(1, 7, 7),
+                     conv1_stride_t=1,
+                     pool1_stride_t=1,
+                     inflate=(0, 0, 1, 1)),
+                 fast_pathway: Dict = dict(
+                     type='resnet3d',
+                     depth=50,
+                     pretrained=None,
+                     lateral=False,
+                     base_channels=8,
+                     conv1_kernel=(5, 7, 7),
+                     conv1_stride_t=1,
+                     pool1_stride_t=1),
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
+        super().__init__(init_cfg=init_cfg)
         self.pretrained = pretrained
         self.resample_rate = resample_rate
         self.speed_ratio = speed_ratio
@@ -485,15 +463,15 @@ class ResNet3dSlowFast(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    def forward(self, x: Tensor) -> tuple:
+    def forward(self, x: torch.Tensor) -> tuple:
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): The input data.
+            x (torch.Tensor): The input data.
 
         Returns:
-            Tuple[Tensor]: The feature of the input samples extracted
-                by the backbone.
+            tuple[torch.Tensor]: The feature of the input samples
+                extracted by the backbone.
         """
         x_slow = nn.functional.interpolate(
             x,

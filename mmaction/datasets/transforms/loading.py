@@ -4,7 +4,7 @@ import io
 import os
 import os.path as osp
 import shutil
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
 
 import mmcv
 import numpy as np
@@ -1077,29 +1077,35 @@ class DecordInit(BaseTransform):
 
     Decord: https://github.com/dmlc/decord
 
-    Required keys are "filename",
-    added or modified keys are "video_reader" and "total_frames".
+    Required Keys:
+
+        - filename
+
+    Added Keys:
+
+        - video_reader
+        - total_frames
+        - fps
 
     Args:
         io_backend (str): io backend where frames are store.
-            Default: 'disk'.
-        num_threads (int): Number of thread to decode the video. Default: 1.
+            Defaults to ``'disk'``.
+        num_threads (int): Number of thread to decode the video. Defaults to 1.
         kwargs (dict): Args for file client.
     """
 
-    def __init__(self, io_backend='disk', num_threads=1, **kwargs):
+    def __init__(self,
+                 io_backend: str = 'disk',
+                 num_threads: int = 1,
+                 **kwargs) -> None:
         self.io_backend = io_backend
         self.num_threads = num_threads
         self.kwargs = kwargs
         self.file_client = None
 
-    def transform(self, results):
-        """Perform the Decord initialization.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
+    def _get_video_reader(self, filename: str) -> object:
+        if osp.splitext(filename)[0] == filename:
+            filename = filename + '.mp4'
         try:
             import decord
         except ImportError:
@@ -1108,15 +1114,27 @@ class DecordInit(BaseTransform):
 
         if self.file_client is None:
             self.file_client = FileClient(self.io_backend, **self.kwargs)
-
-        file_obj = io.BytesIO(self.file_client.get(results['filename']))
+        file_obj = io.BytesIO(self.file_client.get(filename))
         container = decord.VideoReader(file_obj, num_threads=self.num_threads)
-        results['avg_fps'] = container.get_avg_fps()
-        results['video_reader'] = container
+        return container
+
+    def transform(self, results: Dict) -> Dict:
+        """Perform the Decord initialization.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        container = self._get_video_reader(results['filename'])
         results['total_frames'] = len(container)
+
+        results['video_reader'] = container
+        results['avg_fps'] = container.get_avg_fps()
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'io_backend={self.io_backend}, '
                     f'num_threads={self.num_threads})')
@@ -1129,35 +1147,32 @@ class DecordDecode(BaseTransform):
 
     Decord: https://github.com/dmlc/decord
 
-    Required keys are "video_reader", "filename" and "frame_inds",
-    added or modified keys are "imgs" and "original_shape".
+    Required Keys:
+
+        - video_reader
+        - frame_inds
+
+    Added Keys:
+
+        - imgs
+        - original_shape
+        - img_shape
 
     Args:
         mode (str): Decoding mode. Options are 'accurate' and 'efficient'.
             If set to 'accurate', it will decode videos into accurate frames.
             If set to 'efficient', it will adopt fast seeking but only return
             key frames, which may be duplicated and inaccurate, and more
-            suitable for large scene-based video datasets. Default: 'accurate'.
+            suitable for large scene-based video datasets.
+            Defaults to ``'accurate'``.
     """
 
-    def __init__(self, mode='accurate'):
+    def __init__(self, mode: str = 'accurate') -> None:
         self.mode = mode
         assert mode in ['accurate', 'efficient']
 
-    def transform(self, results):
-        """Perform the Decord decoding.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        container = results['video_reader']
-
-        if results['frame_inds'].ndim != 1:
-            results['frame_inds'] = np.squeeze(results['frame_inds'])
-
-        frame_inds = results['frame_inds']
-
+    def _decord_load_frames(self, container: object,
+                            frame_inds: np.ndarray) -> List[np.ndarray]:
         if self.mode == 'accurate':
             imgs = container.get_batch(frame_inds).asnumpy()
             imgs = list(imgs)
@@ -1169,6 +1184,24 @@ class DecordDecode(BaseTransform):
                 container.seek(idx)
                 frame = container.next()
                 imgs.append(frame.asnumpy())
+        return imgs
+
+    def transform(self, results: Dict) -> Dict:
+        """Perform the Decord decoding.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        container = results['video_reader']
+
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        frame_inds = results['frame_inds']
+        imgs = self._decord_load_frames(container, frame_inds)
 
         results['video_reader'] = None
         del container
@@ -1179,7 +1212,7 @@ class DecordDecode(BaseTransform):
 
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = f'{self.__class__.__name__}(mode={self.mode})'
         return repr_str
 

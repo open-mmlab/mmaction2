@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy as cp
 import pickle
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from mmcv.transforms import BaseTransform, KeyMapper
@@ -11,7 +11,8 @@ from scipy.stats import mode
 from torch.nn.modules.utils import _pair
 
 from mmaction.registry import TRANSFORMS
-from .processing import Flip, _combine_quadruple
+from .loading import DecordDecode, DecordInit
+from .processing import _combine_quadruple
 
 
 @TRANSFORMS.register_module()
@@ -172,42 +173,65 @@ class LoadKineticsPose(BaseTransform):
 class GeneratePoseTarget(BaseTransform):
     """Generate pseudo heatmaps based on joint coordinates and confidence.
 
-    Required keys are "keypoint", "img_shape", "keypoint_score" (optional),
-    added or modified keys are "imgs".
+    Required Keys:
+
+        - keypoint
+        - keypoint_score (optional)
+        - img_shape
+
+    Added Keys:
+
+        - imgs (optional)
+        - heatmap_imgs (optional)
 
     Args:
-        sigma (float): The sigma of the generated gaussian map. Default: 0.6.
+        sigma (float): The sigma of the generated gaussian map.
+            Defaults to 0.6.
         use_score (bool): Use the confidence score of keypoints as the maximum
-            of the gaussian maps. Default: True.
-        with_kp (bool): Generate pseudo heatmaps for keypoints. Default: True.
+            of the gaussian maps. Defaults to True.
+        with_kp (bool): Generate pseudo heatmaps for keypoints.
+            Defaults to True.
         with_limb (bool): Generate pseudo heatmaps for limbs. At least one of
-            'with_kp' and 'with_limb' should be True. Default: False.
+            'with_kp' and 'with_limb' should be True. Defaults to False.
         skeletons (tuple[tuple]): The definition of human skeletons.
-            Default: ((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7), (7, 9),
-                      (0, 6), (6, 8), (8, 10), (5, 11), (11, 13), (13, 15),
-                      (6, 12), (12, 14), (14, 16), (11, 12)),
+            Defaults to ``((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7),
+                         (7, 9), (0, 6), (6, 8), (8, 10), (5, 11), (11, 13),
+                         (13, 15), (6, 12), (12, 14), (14, 16), (11, 12))``,
             which is the definition of COCO-17p skeletons.
         double (bool): Output both original heatmaps and flipped heatmaps.
-            Default: False.
+            Defaults to False.
         left_kp (tuple[int]): Indexes of left keypoints, which is used when
-            flipping heatmaps. Default: (1, 3, 5, 7, 9, 11, 13, 15),
+            flipping heatmaps. Defaults to (1, 3, 5, 7, 9, 11, 13, 15),
             which is left keypoints in COCO-17p.
         right_kp (tuple[int]): Indexes of right keypoints, which is used when
-            flipping heatmaps. Default: (2, 4, 6, 8, 10, 12, 14, 16),
+            flipping heatmaps. Defaults to (2, 4, 6, 8, 10, 12, 14, 16),
             which is right keypoints in COCO-17p.
+        left_limb (tuple[int]): Indexes of left limbs, which is used when
+            flipping heatmaps. Defaults to (0, 2, 4, 5, 6, 10, 11, 12),
+            which is left limbs of skeletons we defined for COCO-17p.
+        right_limb (tuple[int]): Indexes of right limbs, which is used when
+            flipping heatmaps. Defaults to (1, 3, 7, 8, 9, 13, 14, 15),
+            which is right limbs of skeletons we defined for COCO-17p.
+        scaling (float): The ratio to scale the heatmaps. Defaults to 1.
     """
 
     def __init__(self,
-                 sigma=0.6,
-                 use_score=True,
-                 with_kp=True,
-                 with_limb=False,
-                 skeletons=((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7),
-                            (7, 9), (0, 6), (6, 8), (8, 10), (5, 11), (11, 13),
-                            (13, 15), (6, 12), (12, 14), (14, 16), (11, 12)),
-                 double=False,
-                 left_kp=(1, 3, 5, 7, 9, 11, 13, 15),
-                 right_kp=(2, 4, 6, 8, 10, 12, 14, 16)):
+                 sigma: float = 0.6,
+                 use_score: bool = True,
+                 with_kp: bool = True,
+                 with_limb: bool = False,
+                 skeletons: Tuple[Tuple[int]] = ((0, 1), (0, 2), (1, 3),
+                                                 (2, 4), (0, 5), (5, 7),
+                                                 (7, 9), (0, 6), (6, 8),
+                                                 (8, 10), (5, 11), (11, 13),
+                                                 (13, 15), (6, 12), (12, 14),
+                                                 (14, 16), (11, 12)),
+                 double: bool = False,
+                 left_kp: Tuple[int] = (1, 3, 5, 7, 9, 11, 13, 15),
+                 right_kp: Tuple[int] = (2, 4, 6, 8, 10, 12, 14, 16),
+                 left_limb: Tuple[int] = (0, 2, 4, 5, 6, 10, 11, 12),
+                 right_limb: Tuple[int] = (1, 3, 7, 8, 9, 13, 14, 15),
+                 scaling: float = 1.) -> None:
 
         self.sigma = sigma
         self.use_score = use_score
@@ -224,29 +248,30 @@ class GeneratePoseTarget(BaseTransform):
         self.left_kp = left_kp
         self.right_kp = right_kp
         self.skeletons = skeletons
+        self.left_limb = left_limb
+        self.right_limb = right_limb
+        self.scaling = scaling
 
-    def generate_a_heatmap(self, img_h, img_w, centers, sigma, max_values):
+    def generate_a_heatmap(self, arr: np.ndarray, centers: np.ndarray,
+                           max_values: np.ndarray) -> None:
         """Generate pseudo heatmap for one keypoint in one frame.
 
         Args:
-            img_h (int): The height of the heatmap.
-            img_w (int): The width of the heatmap.
+            arr (np.ndarray): The array to store the generated heatmaps.
+                Shape: img_h * img_w.
             centers (np.ndarray): The coordinates of corresponding keypoints
-                (of multiple persons).
-            sigma (float): The sigma of generated gaussian.
-            max_values (np.ndarray): The max values of each keypoint.
-
-        Returns:
-            np.ndarray: The generated pseudo heatmap.
+                (of multiple persons). Shape: M * 2.
+            max_values (np.ndarray): The max values of each keypoint. Shape: M.
         """
 
-        heatmap = np.zeros([img_h, img_w], dtype=np.float32)
+        sigma = self.sigma
+        img_h, img_w = arr.shape
 
         for center, max_value in zip(centers, max_values):
-            mu_x, mu_y = center[0], center[1]
             if max_value < self.eps:
                 continue
 
+            mu_x, mu_y = center[0], center[1]
             st_x = max(int(mu_x - 3 * sigma), 0)
             ed_x = min(int(mu_x + 3 * sigma) + 1, img_w)
             st_y = max(int(mu_y - 3 * sigma), 0)
@@ -261,34 +286,29 @@ class GeneratePoseTarget(BaseTransform):
 
             patch = np.exp(-((x - mu_x)**2 + (y - mu_y)**2) / 2 / sigma**2)
             patch = patch * max_value
-            heatmap[st_y:ed_y,
-                    st_x:ed_x] = np.maximum(heatmap[st_y:ed_y, st_x:ed_x],
-                                            patch)
+            arr[st_y:ed_y, st_x:ed_x] = \
+                np.maximum(arr[st_y:ed_y, st_x:ed_x], patch)
 
-        return heatmap
-
-    def generate_a_limb_heatmap(self, img_h, img_w, starts, ends, sigma,
-                                start_values, end_values):
+    def generate_a_limb_heatmap(self, arr: np.ndarray, starts: np.ndarray,
+                                ends: np.ndarray, start_values: np.ndarray,
+                                end_values: np.ndarray) -> None:
         """Generate pseudo heatmap for one limb in one frame.
 
         Args:
-            img_h (int): The height of the heatmap.
-            img_w (int): The width of the heatmap.
+            arr (np.ndarray): The array to store the generated heatmaps.
+                Shape: img_h * img_w.
             starts (np.ndarray): The coordinates of one keypoint in the
-                corresponding limbs (of multiple persons).
+                corresponding limbs. Shape: M * 2.
             ends (np.ndarray): The coordinates of the other keypoint in the
-                corresponding limbs (of multiple persons).
-            sigma (float): The sigma of generated gaussian.
+                corresponding limbs. Shape: M * 2.
             start_values (np.ndarray): The max values of one keypoint in the
-                corresponding limbs.
-            end_values (np.ndarray): The max values of the other keypoint in
-                the corresponding limbs.
-
-        Returns:
-            np.ndarray: The generated pseudo heatmap.
+                corresponding limbs. Shape: M.
+            end_values (np.ndarray): The max values of the other keypoint
+                in the corresponding limbs. Shape: M.
         """
 
-        heatmap = np.zeros([img_h, img_w], dtype=np.float32)
+        sigma = self.sigma
+        img_h, img_w = arr.shape
 
         for start, end, start_value, end_value in zip(starts, ends,
                                                       start_values,
@@ -325,9 +345,7 @@ class GeneratePoseTarget(BaseTransform):
             d2_ab = ((start[0] - end[0])**2 + (start[1] - end[1])**2)
 
             if d2_ab < 1:
-                full_map = self.generate_a_heatmap(img_h, img_w, [start],
-                                                   sigma, [start_value])
-                heatmap = np.maximum(heatmap, full_map)
+                self.generate_a_heatmap(arr, start[None], start_value[None])
                 continue
 
             coeff = (d2_start - d2_end + d2_ab) / 2. / d2_ab
@@ -348,61 +366,50 @@ class GeneratePoseTarget(BaseTransform):
             patch = np.exp(-d2_seg / 2. / sigma**2)
             patch = patch * value_coeff
 
-            heatmap[min_y:max_y, min_x:max_x] = np.maximum(
-                heatmap[min_y:max_y, min_x:max_x], patch)
+            arr[min_y:max_y, min_x:max_x] = \
+                np.maximum(arr[min_y:max_y, min_x:max_x], patch)
 
-        return heatmap
-
-    def generate_heatmap(self, img_h, img_w, kps, sigma, max_values):
+    def generate_heatmap(self, arr: np.ndarray, kps: np.ndarray,
+                         max_values: np.ndarray) -> None:
         """Generate pseudo heatmap for all keypoints and limbs in one frame (if
         needed).
 
         Args:
-            img_h (int): The height of the heatmap.
-            img_w (int): The width of the heatmap.
+            arr (np.ndarray): The array to store the generated heatmaps.
+                Shape: V * img_h * img_w.
             kps (np.ndarray): The coordinates of keypoints in this frame.
-            sigma (float): The sigma of generated gaussian.
+                Shape: M * V * 2.
             max_values (np.ndarray): The confidence score of each keypoint.
-
-        Returns:
-            np.ndarray: The generated pseudo heatmap.
+                Shape: M * V.
         """
 
-        heatmaps = []
         if self.with_kp:
             num_kp = kps.shape[1]
             for i in range(num_kp):
-                heatmap = self.generate_a_heatmap(img_h, img_w, kps[:, i],
-                                                  sigma, max_values[:, i])
-                heatmaps.append(heatmap)
+                self.generate_a_heatmap(arr[i], kps[:, i], max_values[:, i])
 
         if self.with_limb:
-            for limb in self.skeletons:
+            for i, limb in enumerate(self.skeletons):
                 start_idx, end_idx = limb
                 starts = kps[:, start_idx]
                 ends = kps[:, end_idx]
 
                 start_values = max_values[:, start_idx]
                 end_values = max_values[:, end_idx]
-                heatmap = self.generate_a_limb_heatmap(img_h, img_w, starts,
-                                                       ends, sigma,
-                                                       start_values,
-                                                       end_values)
-                heatmaps.append(heatmap)
+                self.generate_a_limb_heatmap(arr[i], starts, ends,
+                                             start_values, end_values)
 
-        return np.stack(heatmaps, axis=-1)
-
-    def gen_an_aug(self, results):
+    def gen_an_aug(self, results: Dict) -> np.ndarray:
         """Generate pseudo heatmaps for all frames.
 
         Args:
             results (dict): The dictionary that contains all info of a sample.
 
         Returns:
-            list[np.ndarray]: The generated pseudo heatmaps.
+            np.ndarray: The generated pseudo heatmaps.
         """
 
-        all_kps = results['keypoint']
+        all_kps = results['keypoint'].astype(np.float32)
         kp_shape = all_kps.shape
 
         if 'keypoint_score' in results:
@@ -411,43 +418,54 @@ class GeneratePoseTarget(BaseTransform):
             all_kpscores = np.ones(kp_shape[:-1], dtype=np.float32)
 
         img_h, img_w = results['img_shape']
+
+        # scale img_h, img_w and kps
+        img_h = int(img_h * self.scaling + 0.5)
+        img_w = int(img_w * self.scaling + 0.5)
+        all_kps[..., :2] *= self.scaling
+
         num_frame = kp_shape[1]
+        num_c = 0
+        if self.with_kp:
+            num_c += all_kps.shape[2]
+        if self.with_limb:
+            num_c += len(self.skeletons)
 
-        imgs = []
+        ret = np.zeros([num_frame, num_c, img_h, img_w], dtype=np.float32)
+
         for i in range(num_frame):
-            sigma = self.sigma
+            # M, V, C
             kps = all_kps[:, i]
-            kpscores = all_kpscores[:, i]
+            # M, C
+            kpscores = all_kpscores[:, i] if self.use_score else \
+                np.ones_like(all_kpscores[:, i])
 
-            max_values = np.ones(kpscores.shape, dtype=np.float32)
-            if self.use_score:
-                max_values = kpscores
+            self.generate_heatmap(ret[i], kps, kpscores)
+        return ret
 
-            hmap = self.generate_heatmap(img_h, img_w, kps, sigma, max_values)
-            imgs.append(hmap)
-
-        return imgs
-
-    def transform(self, results):
+    def transform(self, results: Dict) -> Dict:
         """Generate pseudo heatmaps based on joint coordinates and confidence.
 
         Args:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-        if not self.double:
-            results['imgs'] = np.stack(self.gen_an_aug(results))
-        else:
-            results_ = cp.deepcopy(results)
-            flip = Flip(
-                flip_ratio=1, left_kp=self.left_kp, right_kp=self.right_kp)
-            results_ = flip(results_)
-            results['imgs'] = np.concatenate(
-                [self.gen_an_aug(results),
-                 self.gen_an_aug(results_)])
+        heatmap = self.gen_an_aug(results)
+        key = 'heatmap_imgs' if 'imgs' in results else 'imgs'
+
+        if self.double:
+            indices = np.arange(heatmap.shape[1], dtype=np.int64)
+            left, right = (self.left_kp, self.right_kp) if self.with_kp else (
+                self.left_limb, self.right_limb)
+            for l, r in zip(left, right):  # noqa: E741
+                indices[l] = r
+                indices[r] = l
+            heatmap_flip = heatmap[..., ::-1][:, indices]
+            heatmap = np.concatenate([heatmap, heatmap_flip])
+        results[key] = heatmap
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'sigma={self.sigma}, '
                     f'use_score={self.use_score}, '
@@ -456,7 +474,10 @@ class GeneratePoseTarget(BaseTransform):
                     f'skeletons={self.skeletons}, '
                     f'double={self.double}, '
                     f'left_kp={self.left_kp}, '
-                    f'right_kp={self.right_kp})')
+                    f'right_kp={self.right_kp}, '
+                    f'left_limb={self.left_limb}, '
+                    f'right_limb={self.right_limb}, '
+                    f'scaling={self.scaling})')
         return repr_str
 
 
@@ -468,30 +489,38 @@ class PoseCompact(BaseTransform):
     example, if 'padding == 0.25', then the expanded box has unchanged center,
     and 1.25x width and height.
 
-    Required keys in results are "img_shape", "keypoint", add or modified keys
-    are "img_shape", "keypoint", "crop_quadruple".
+    Required Keys:
+
+        - keypoint
+        - img_shape
+
+    Modified Keys:
+
+        - img_shape
+        - keypoint
+
+    Added Keys:
+
+        - crop_quadruple
 
     Args:
-        padding (float): The padding size. Default: 0.25.
+        padding (float): The padding size. Defaults to 0.25.
         threshold (int): The threshold for the tight bounding box. If the width
             or height of the tight bounding box is smaller than the threshold,
-            we do not perform the compact operation. Default: 10.
+            we do not perform the compact operation. Defaults to 10.
         hw_ratio (float | tuple[float] | None): The hw_ratio of the expanded
             box. Float indicates the specific ratio and tuple indicates a
             ratio range. If set as None, it means there is no requirement on
-            hw_ratio. Default: None.
+            hw_ratio. Defaults to None.
         allow_imgpad (bool): Whether to allow expanding the box outside the
-            image to meet the hw_ratio requirement. Default: True.
-
-    Returns:
-        type: Description of returned object.
+            image to meet the hw_ratio requirement. Defaults to True.
     """
 
     def __init__(self,
-                 padding=0.25,
-                 threshold=10,
-                 hw_ratio=None,
-                 allow_imgpad=True):
+                 padding: float = 0.25,
+                 threshold: int = 10,
+                 hw_ratio: Optional[Union[float, Tuple[float]]] = None,
+                 allow_imgpad: bool = True) -> None:
 
         self.padding = padding
         self.threshold = threshold
@@ -503,7 +532,7 @@ class PoseCompact(BaseTransform):
         self.allow_imgpad = allow_imgpad
         assert self.padding >= 0
 
-    def transform(self, results):
+    def transform(self, results: Dict) -> Dict:
         """Convert the coordinates of keypoints to make it more compact.
 
         Args:
@@ -561,7 +590,7 @@ class PoseCompact(BaseTransform):
         results['crop_quadruple'] = crop_quadruple
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}(padding={self.padding}, '
                     f'threshold={self.threshold}, '
                     f'hw_ratio={self.hw_ratio}, '
@@ -1167,7 +1196,7 @@ class UniformSampleFrames(BaseTransform):
         results['num_clips'] = self.num_clips
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'clip_len={self.clip_len}, '
                     f'num_clips={self.num_clips}, '
@@ -1253,6 +1282,17 @@ class PoseDecode(BaseTransform):
         - keypoint_score (optional)
     """
 
+    @staticmethod
+    def _load_kp(kp: np.ndarray, frame_inds: np.ndarray) -> np.ndarray:
+        """Load keypoints according to sampled indexes."""
+        return kp[:, frame_inds].astype(np.float32)
+
+    @staticmethod
+    def _load_kpscore(kpscore: np.ndarray,
+                      frame_inds: np.ndarray) -> np.ndarray:
+        """Load keypoint scores according to sampled indexes."""
+        return kpscore[:, frame_inds].astype(np.float32)
+
     def transform(self, results: Dict) -> Dict:
         """The transform function of :class:`PoseDecode`.
 
@@ -1274,16 +1314,256 @@ class PoseDecode(BaseTransform):
         offset = results.get('offset', 0)
         frame_inds = results['frame_inds'] + offset
 
-        results['keypoint'] = results['keypoint'][:, frame_inds].astype(
-            np.float32)
-
         if 'keypoint_score' in results:
-            kpscore = results['keypoint_score']
-            results['keypoint_score'] = kpscore[:,
-                                                frame_inds].astype(np.float32)
+            results['keypoint_score'] = self._load_kpscore(
+                results['keypoint_score'], frame_inds)
+
+        results['keypoint'] = self._load_kp(results['keypoint'], frame_inds)
 
         return results
 
     def __repr__(self) -> str:
         repr_str = f'{self.__class__.__name__}()'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class MMUniformSampleFrames(UniformSampleFrames):
+    """Uniformly sample frames from the multi-modal data."""
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`MMUniformSampleFrames`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        num_frames = results['total_frames']
+        modalities = []
+        for modality, clip_len in self.clip_len.items():
+            if self.test_mode:
+                inds = self._get_test_clips(num_frames, clip_len)
+            else:
+                inds = self._get_train_clips(num_frames, clip_len)
+            inds = np.mod(inds, num_frames)
+            results[f'{modality}_inds'] = inds.astype(np.int)
+            modalities.append(modality)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = None
+        results['num_clips'] = self.num_clips
+        if not isinstance(results['modality'], list):
+            # should override
+            results['modality'] = modalities
+        return results
+
+
+@TRANSFORMS.register_module()
+class MMDecode(DecordInit, DecordDecode, PoseDecode):
+    """Decode RGB videos and skeletons."""
+
+    def __init__(self, io_backend: str = 'disk', **kwargs) -> None:
+        DecordInit.__init__(self, io_backend=io_backend, **kwargs)
+        DecordDecode.__init__(self)
+        self.io_backend = io_backend
+        self.kwargs = kwargs
+        self.file_client = None
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`MMDecode`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        for mod in results['modality']:
+            if results[f'{mod}_inds'].ndim != 1:
+                results[f'{mod}_inds'] = np.squeeze(results[f'{mod}_inds'])
+            frame_inds = results[f'{mod}_inds']
+            if mod == 'RGB':
+                if 'filename' not in results:
+                    results['filename'] = results['frame_dir'] + '.mp4'
+                video_reader = self._get_video_reader(results['filename'])
+                imgs = self._decord_load_frames(video_reader, frame_inds)
+                del video_reader
+                results['imgs'] = imgs
+            elif mod == 'Pose':
+                assert 'keypoint' in results
+                if 'keypoint_score' not in results:
+                    keypoint_score = [
+                        np.ones(keypoint.shape[:-1], dtype=np.float32)
+                        for keypoint in results['keypoint']
+                    ]
+                    results['keypoint_score'] = np.stack(keypoint_score)
+                results['keypoint'] = self._load_kp(results['keypoint'],
+                                                    frame_inds)
+                results['keypoint_score'] = self._load_kpscore(
+                    results['keypoint_score'], frame_inds)
+            else:
+                raise NotImplementedError(
+                    f'MMDecode: Modality {mod} not supported')
+
+        # We need to scale human keypoints to the new image size
+        if 'imgs' in results and 'keypoint' in results:
+            real_img_shape = results['imgs'][0].shape[:2]
+            if real_img_shape != results['img_shape']:
+                oh, ow = results['img_shape']
+                nh, nw = real_img_shape
+
+                assert results['keypoint'].shape[-1] in [2, 3]
+                results['keypoint'][..., 0] *= (nw / ow)
+                results['keypoint'][..., 1] *= (nh / oh)
+                results['img_shape'] = real_img_shape
+                results['original_shape'] = real_img_shape
+
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class MMCompact(BaseTransform):
+    """Convert the coordinates of keypoints and crop the images to make them
+    more compact.
+
+    Required Keys:
+
+        - imgs
+        - keypoint
+        - img_shape
+
+    Modified Keys:
+
+        - imgs
+        - keypoint
+        - img_shape
+
+    Args:
+        padding (float): The padding size. Defaults to 0.25.
+        threshold (int): The threshold for the tight bounding box. If the width
+            or height of the tight bounding box is smaller than the threshold,
+            we do not perform the compact operation. Defaults to 10.
+        hw_ratio (float | tuple[float]): The hw_ratio of the expanded
+            box. Float indicates the specific ratio and tuple indicates a
+            ratio range. If set as None, it means there is no requirement on
+            hw_ratio. Defaults to 1.
+        allow_imgpad (bool): Whether to allow expanding the box outside the
+            image to meet the hw_ratio requirement. Defaults to True.
+    """
+
+    def __init__(self,
+                 padding: float = 0.25,
+                 threshold: int = 10,
+                 hw_ratio: Union[float, Tuple[float]] = 1,
+                 allow_imgpad: bool = True) -> None:
+
+        self.padding = padding
+        self.threshold = threshold
+        if hw_ratio is not None:
+            hw_ratio = _pair(hw_ratio)
+        self.hw_ratio = hw_ratio
+        self.allow_imgpad = allow_imgpad
+        assert self.padding >= 0
+
+    def _get_box(self, keypoint: np.ndarray, img_shape: Tuple[int]) -> Tuple:
+        """Calculate the bounding box surrounding all joints in the frames."""
+        h, w = img_shape
+
+        kp_x = keypoint[..., 0]
+        kp_y = keypoint[..., 1]
+
+        min_x = np.min(kp_x[kp_x != 0], initial=np.Inf)
+        min_y = np.min(kp_y[kp_y != 0], initial=np.Inf)
+        max_x = np.max(kp_x[kp_x != 0], initial=-np.Inf)
+        max_y = np.max(kp_y[kp_y != 0], initial=-np.Inf)
+
+        # The compact area is too small
+        if max_x - min_x < self.threshold or max_y - min_y < self.threshold:
+            return 0, 0, w, h
+
+        center = ((max_x + min_x) / 2, (max_y + min_y) / 2)
+        half_width = (max_x - min_x) / 2 * (1 + self.padding)
+        half_height = (max_y - min_y) / 2 * (1 + self.padding)
+
+        if self.hw_ratio is not None:
+            half_height = max(self.hw_ratio[0] * half_width, half_height)
+            half_width = max(1 / self.hw_ratio[1] * half_height, half_width)
+
+        min_x, max_x = center[0] - half_width, center[0] + half_width
+        min_y, max_y = center[1] - half_height, center[1] + half_height
+
+        # hot update
+        if not self.allow_imgpad:
+            min_x, min_y = int(max(0, min_x)), int(max(0, min_y))
+            max_x, max_y = int(min(w, max_x)), int(min(h, max_y))
+        else:
+            min_x, min_y = int(min_x), int(min_y)
+            max_x, max_y = int(max_x), int(max_y)
+        return min_x, min_y, max_x, max_y
+
+    def _compact_images(self, imgs: List[np.ndarray], img_shape: Tuple[int],
+                        box: Tuple[int]) -> List:
+        """Crop the images acoordding the bounding box."""
+        h, w = img_shape
+        min_x, min_y, max_x, max_y = box
+        pad_l, pad_u, pad_r, pad_d = 0, 0, 0, 0
+        if min_x < 0:
+            pad_l = -min_x
+            min_x, max_x = 0, max_x + pad_l
+            w += pad_l
+        if min_y < 0:
+            pad_u = -min_y
+            min_y, max_y = 0, max_y + pad_u
+            h += pad_u
+        if max_x > w:
+            pad_r = max_x - w
+            w = max_x
+        if max_y > h:
+            pad_d = max_y - h
+            h = max_y
+
+        if pad_l > 0 or pad_r > 0 or pad_u > 0 or pad_d > 0:
+            imgs = [
+                np.pad(img, ((pad_u, pad_d), (pad_l, pad_r), (0, 0)))
+                for img in imgs
+            ]
+        imgs = [img[min_y:max_y, min_x:max_x] for img in imgs]
+        return imgs
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`MMCompact`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        img_shape = results['img_shape']
+        kp = results['keypoint']
+        # Make NaN zero
+        kp[np.isnan(kp)] = 0.
+        min_x, min_y, max_x, max_y = self._get_box(kp, img_shape)
+
+        kp_x, kp_y = kp[..., 0], kp[..., 1]
+        kp_x[kp_x != 0] -= min_x
+        kp_y[kp_y != 0] -= min_y
+
+        new_shape = (max_y - min_y, max_x - min_x)
+        results['img_shape'] = new_shape
+        results['imgs'] = self._compact_images(results['imgs'], img_shape,
+                                               (min_x, min_y, max_x, max_y))
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = (f'{self.__class__.__name__}(padding={self.padding}, '
+                    f'threshold={self.threshold}, '
+                    f'hw_ratio={self.hw_ratio}, '
+                    f'allow_imgpad={self.allow_imgpad})')
         return repr_str

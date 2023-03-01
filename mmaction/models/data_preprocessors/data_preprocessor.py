@@ -1,10 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Optional, Sequence, Tuple, Union
+from typing import List, Optional, Sequence, Tuple, Union
 
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
 
 from mmaction.registry import MODELS
+from mmaction.utils.typing import SampleList
 
 
 @MODELS.register_module()
@@ -12,13 +13,10 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
     """Data pre-processor for action recognition tasks.
 
     Args:
-        mean (Sequence[float or int, optional): The pixel mean of channels
+        mean (Sequence[float or int], optional): The pixel mean of channels
             of images or stacked optical flow. Defaults to None.
         std (Sequence[float or int], optional): The pixel standard deviation
             of channels of images or stacked optical flow. Defaults to None.
-        pad_size_divisor (int): The size of padded image should be
-            divisible by ``pad_size_divisor``. Defaults to 1.
-        pad_value (float or int): The padded pixel value. Defaults to 0.
         to_rgb (bool): Whether to convert image from BGR to RGB.
             Defaults to False.
         blending (dict, optional): Config for batch blending.
@@ -30,14 +28,10 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
     def __init__(self,
                  mean: Optional[Sequence[Union[float, int]]] = None,
                  std: Optional[Sequence[Union[float, int]]] = None,
-                 pad_size_divisor: int = 1,
-                 pad_value: Union[float, int] = 0,
                  to_rgb: bool = False,
                  blending: Optional[dict] = None,
                  format_shape: str = 'NCHW') -> None:
         super().__init__()
-        self.pad_size_divisor = pad_size_divisor
-        self.pad_value = pad_value
         self.to_rgb = to_rgb
         self.format_shape = format_shape
 
@@ -49,7 +43,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             self._enable_normalize = True
             if self.format_shape == 'NCHW':
                 normalizer_shape = (-1, 1, 1)
-            elif self.format_shape in ['NCTHW', 'NCTVM', 'MIX2d3d']:
+            elif self.format_shape in ['NCTHW', 'MIX2d3d']:
                 normalizer_shape = (-1, 1, 1, 1)
             else:
                 raise ValueError(f'Invalid format shape: {format_shape}')
@@ -81,21 +75,21 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             training (bool): Whether to enable training time augmentation.
 
         Returns:
-            dict or Tuple[dict]: Data in the same format as the model
-                input.
+            dict or Tuple[dict]: Data in the same format as the model input.
         """
+        data = self.cast_data(data)
         if isinstance(data, dict):
-            return self.forward_onesample(data, training)
+            return self.forward_onesample(data, training=training)
         elif isinstance(data, tuple):
             outputs = []
             for data_sample in data:
-                output = self.forward_onesample(data_sample, training)
+                output = self.forward_onesample(data_sample, training=training)
                 outputs.append(output)
             return tuple(outputs)
         else:
-            raise TypeError('Unsupported data type for `data`!')
+            raise TypeError(f'Unsupported data type: {type(data)}!')
 
-    def forward_onesample(self, data: dict, training: bool = False) -> dict:
+    def forward_onesample(self, data, training: bool = False) -> dict:
         """Perform normalization, padding, bgr2rgb conversion and batch
         augmentation on one data sample.
 
@@ -107,12 +101,18 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             dict: Data in the same format as the model
                 input.
         """
-        data = self.cast_data(data)
         inputs, data_samples = data['inputs'], data['data_samples']
+        inputs, data_samples = self.preprocess(inputs, data_samples, training)
+        data['inputs'] = inputs
+        data['data_samples'] = data_samples
+        return data
 
+    def preprocess(self,
+                   inputs: List[torch.Tensor],
+                   data_samples: SampleList,
+                   training: bool = False) -> Tuple:
         # --- Pad and stack --
-        batch_inputs = stack_batch(inputs, self.pad_size_divisor,
-                                   self.pad_value)
+        batch_inputs = stack_batch(inputs)
 
         if self.format_shape == 'MIX2d3d':
             if batch_inputs.ndim == 4:
@@ -147,5 +147,4 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             batch_inputs, data_samples = self.blending(batch_inputs,
                                                        data_samples)
 
-        data['inputs'] = batch_inputs
-        return data
+        return batch_inputs, data_samples
