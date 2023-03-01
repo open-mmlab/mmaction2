@@ -89,7 +89,7 @@ bash tools/dist_test.sh configs/skeleton/posec3d/rgbpose_conv3d/rgbpose_conv3d.p
        dict(type='Resize', scale=(256, 256), keep_ratio=False),
        dict(type='GeneratePoseTarget', sigma=0.7, use_score=True, with_kp=True, with_limb=False, scaling=0.25),
        dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='PackActionInputs', collect_keys=('imgs', 'heatmap_imgs'))
+       dict(type='PackActionInputs', collect_keys=('imgs', 'heatmap_imgs'))
    ]
    ```
 
