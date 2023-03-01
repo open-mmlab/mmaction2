@@ -72,7 +72,7 @@ You can use our provided config files to finetune RGBPoseConv3D, jointly with tw
 # We finetune RGBPoseConv3D for 20 epochs on NTURGB+D XSub (8 GPUs)
 bash tools/dist_train.sh configs/skeleton/posec3d/rgbpose_conv3d/rgbpose_conv3d.py 8
 # After finetuning, you can test the model with the following command (8 GPUs)
-bash tools/dist_test.sh configs/skeleton/posec3d/rgbpose_conv3d/rgbpose_conv3d.py $CKPT 8 --out result.pkl
+bash tools/dist_test.sh configs/skeleton/posec3d/rgbpose_conv3d/rgbpose_conv3d.py $CKPT 8 --dump result.pkl
 ```
 
 **Notes**
