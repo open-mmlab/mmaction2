@@ -55,7 +55,7 @@ or directly download and use the provided pretrain models:
 
 |    Dataset    |                                Config                                |                                 Checkpoint                                 | Top-1 (1 clip testing) | Top-1 (10 clip testing) |
 | :-----------: | :------------------------------------------------------------------: | :------------------------------------------------------------------------: | :--------------------: | :---------------------: |
-| NTURGB+D XSub |   [rgb_config](/configs/skeleton/posec3d/rgbpose_conv3d/rgb_only)    | [rgb_ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/rgbpose_conv3d/rgb_only_20230228-576b9f86.pth) |          94.9          |          95.4           |
+| NTURGB+D XSub |  [rgb_config](/configs/skeleton/posec3d/rgbpose_conv3d/rgb_only.py)  | [rgb_ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/rgbpose_conv3d/rgb_only_20230228-576b9f86.pth) |          94.9          |          95.4           |
 | NTURGB+D XSub | [pose_config](/configs/skeleton/posec3d/rgbpose_conv3d/pose_only.py) | [pose_ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/rgbpose_conv3d/pose_only_20230228-fa40054e.pth) |          93.1          |          93.5           |
 
 #### Step 2. Generate the initializing weight for RGBPoseConv3D
