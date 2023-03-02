@@ -1,0 +1,4 @@
+recognition/swin/swin-tiny-p244-w877_in1k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb.py
+recognition/slowonly/slowonly_r50_8xb16-4x16x1-256e_kinetics400-rgb.py
+skeleton/stgcn/stgcn_8xb16-bone-u100-80e_ntu60-xsub-keypoint-2d.py
+recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb.py
