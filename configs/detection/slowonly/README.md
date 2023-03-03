@@ -41,7 +41,7 @@ Currently, we only use the training set of AVA-Kinetics and evaluate on the AVA2
 
 ### AVA2.2 (Trained on AVA-Kinetics with tricks)
 
-We conduct ablation studies to show the improvements of training tricks using SlowOnly8x8 pretrained on the Kinetics700 dataset. The baseline is the last row in [AVA2.2](https://github.com/hukkai/mmaction2/tree/ava-kinetics-exp/configs/detection/ava_kinetics#ava22).
+We conduct ablation studies to show the improvements of training tricks using SlowOnly8x8 pretrained on the Kinetics700 dataset. The baseline is the last row in **AVA2.2 (Trained on AVA-Kinetics)**.
 
 |         method         | frame sampling strategy | gpus |     backbone      |   pretrain   |  mAP  |                config                 |                ckpt                 |                 log                 |
 | :--------------------: | :---------------------: | :--: | :---------------: | :----------: | :---: | :-----------------------------------: | :---------------------------------: | :---------------------------------: |
