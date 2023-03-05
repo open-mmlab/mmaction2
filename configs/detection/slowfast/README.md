@@ -71,6 +71,7 @@ python tools/test.py configs/detection/slowfast/slowfast_kinetics400-pretrained-
 ```
 
 For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+
 ## Citation
 
 ```BibTeX
