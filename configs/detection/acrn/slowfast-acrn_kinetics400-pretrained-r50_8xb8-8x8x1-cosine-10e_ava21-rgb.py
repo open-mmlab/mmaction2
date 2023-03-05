@@ -1,16 +1,16 @@
-_base_ = [
-    '../../_base_/default_runtime.py', '../_base_/models/slowonly_r50.py'
-]
+_base_ = '../../_base_/default_runtime.py'
+
+url = ('https://download.openmmlab.com/mmaction/recognition/slowfast/'
+       'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
+       'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')
 
 model = dict(
+    type='FastRCNN',
+    _scope_='mmdet',
+    init_cfg=dict(type='Pretrained', checkpoint=url),
     backbone=dict(
-        _delete_=True,
-        type='ResNet3dSlowFast',
-        _scope_='mmaction',
-        pretrained=(
-            'https://download.openmmlab.com/mmaction/recognition/slowfast/'
-            'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
-            'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth'),
+        type='mmaction.ResNet3dSlowFast',
+        pretrained=None,
         resample_rate=4,
         speed_ratio=4,
         channel_ratio=8,

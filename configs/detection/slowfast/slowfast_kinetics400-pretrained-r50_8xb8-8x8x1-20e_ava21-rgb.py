@@ -12,6 +12,7 @@ model = dict(
         type='mmaction.ResNet3dSlowFast',
         resample_rate=4,
         speed_ratio=4,
+        channel_ratio=8,
         pretrained=None,
         slow_pathway=dict(
             type='resnet3d',
