@@ -29,12 +29,9 @@ We present SlowFast networks for video recognition. Our model involves (i) a Slo
 ### AVA2.2
 | frame sampling strategy |  gpus |               backbone               |   pretrain   |  mAP  |               config                |               ckpt                |               log                |
 | :---------------------: |  :--: | :----------------------------------: | :----------: | :---: | :---------------------------------: | :-------------------------------: | :------------------------------: |
-
-|          8x8x1          |   8   |          SlowFast ResNet50           | Kinetics-400 | 25.82 | [config](/configs/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-d934a48f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb.log) |
-|          8x8x1          |     8   |   SlowFast ResNet50 (temporal-max)   | Kinetics-400 | 26.32 |[config](/configs/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-13a9078e.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.log) |
-|          8x8x1          |     8   | SlowFast ResNet50 (temporal-max, focal loss) | Kinetics-400 | 26.58 | [config](/configs/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-dd59e26f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.log) |
-
-
+|          8x8x1          |   8   |          SlowFast ResNet50           | Kinetics-400 | 25.90 | [config](/configs/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-d934a48f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb.log) |
+|          8x8x1          |     8   |   SlowFast ResNet50 (temporal-max)   | Kinetics-400 | 26.41 |[config](/configs/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-13a9078e.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.log) |
+|          8x8x1          |     8   | SlowFast ResNet50 (temporal-max, focal loss) | Kinetics-400 | 26.65 | [config](/configs/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-dd59e26f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.log) |
 
 1. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
 2. **with context** indicates that using both RoI feature and global pooled feature for classification; **temporal-max** indicates that using max pooling in the temporal dimension for the feature.
@@ -49,10 +46,10 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train the SlowFast model on AVA in a deterministic option with periodic validation.
+Example: train the SlowFast model on AVA2.1 in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py \
+python tools/train.py configs/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py \
     --seed 0 --deterministic
 ```
 
@@ -66,10 +63,10 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test the SlowOnly model on AVA and dump the result to a pkl file.
+Example: test the SlowFast model on AVA2.1 and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py \
+python tools/test.py configs/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 

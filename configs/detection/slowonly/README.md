@@ -68,7 +68,7 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train the SlowOnly model on AVA in a deterministic option with periodic validation.
+Example: train the SlowOnly model on AVA2.1 in a deterministic option with periodic validation.
 
 ```shell
 python tools/train.py configs/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py \
@@ -85,7 +85,7 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test the SlowOnly model on AVA and dump the result to a pkl file.
+Example: test the SlowOnly model on AVA2.1 and dump the result to a pkl file.
 
 ```shell
 python tools/test.py configs/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py \
