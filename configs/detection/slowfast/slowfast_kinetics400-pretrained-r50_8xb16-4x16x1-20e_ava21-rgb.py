@@ -11,7 +11,6 @@ model = dict(
     backbone=dict(
         type='mmaction.ResNet3dSlowFast',
         pretrained=None,
-        pretrained2d=False,
         resample_rate=8,
         speed_ratio=8,
         channel_ratio=8,
