@@ -48,3 +48,9 @@ train_dataloader = dict(
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.00001),
     clip_grad=dict(max_norm=40, norm_type=2))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (8 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=64)
