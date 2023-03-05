@@ -9,7 +9,7 @@ model = dict(
     _scope_='mmdet',
     init_cfg=dict(type='Pretrained', checkpoint=url),
     backbone=dict(
-        type='ResNet3dSlowOnly',
+        type='mmaction.ResNet3dSlowOnly',
         depth=101,
         pretrained=None,
         pretrained2d=False,
