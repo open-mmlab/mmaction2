@@ -34,8 +34,7 @@ model = dict(
             multilabel=True,
             dropout_ratio=0.5)),
     data_preprocessor=dict(
-        type='ActionDataPreprocessor',
-        _scope_='mmaction',
+        type='mmaction.ActionDataPreprocessor',
         mean=[123.675, 116.28, 103.53],
         std=[58.395, 57.12, 57.375],
         format_shape='NCTHW'),
@@ -71,14 +70,7 @@ proposal_file_train = (f'{anno_root}/ava_dense_proposals_train.FAIR.'
                        'recall_93.9.pkl')
 proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 
-# file_client_args = dict(
-#     io_backend='petrel',
-#     path_mapping=dict({
-#         'data/ava_kinetics/rawframes/':
-#         's3://openmmlab/datasets/action/ava/rawframes/'
-#     }))
 file_client_args = dict(io_backend='disk')
-
 train_pipeline = [
     dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
     dict(type='RawFrameDecode', **file_client_args),

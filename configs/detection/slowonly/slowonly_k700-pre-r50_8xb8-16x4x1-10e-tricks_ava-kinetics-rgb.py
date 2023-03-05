@@ -1,14 +1,6 @@
-_base_ = [
-    '../../_base_/default_runtime.py', '../_base_/models/slowonly_r50.py'
-]
-
-url = ('https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/'
-       'slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-'
-       'rgb/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_'
-       'kinetics700-rgb_20221013-15b93b10.pth')
+_base_ = ['slowonly_k700-pre-r50_8xb8-8x8x1-10e_ava-kinetics-rgb.py']
 
 model = dict(
-    init_cfg=dict(type='Pretrained', checkpoint=url),
     roi_head=dict(
         bbox_roi_extractor=dict(with_global=True, temporal_pool_mode='max'),
         bbox_head=dict(in_channels=4096, mlp_head=True, focal_gamma=1.0)))
@@ -29,14 +21,7 @@ proposal_file_train = (f'{anno_root}/ava_dense_proposals_train.FAIR.'
                        'recall_93.9.pkl')
 proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 
-# file_client_args = dict(
-#     io_backend='petrel',
-#     path_mapping=dict({
-#         'data/ava_kinetics/rawframes/':
-#         's3://openmmlab/datasets/action/ava/rawframes/'
-#     }))
 file_client_args = dict(io_backend='disk')
-
 train_pipeline = [
     dict(type='SampleAVAFrames', clip_len=16, frame_interval=4),
     dict(type='RawFrameDecode', **file_client_args),
