@@ -50,8 +50,7 @@ model = dict(
             multilabel=True,
             dropout_ratio=0.5)),
     data_preprocessor=dict(
-        type='ActionDataPreprocessor',
-        _scope_='mmaction',
+        type='mmaction.ActionDataPreprocessor',
         mean=[123.675, 116.28, 103.53],
         std=[58.395, 57.12, 57.375],
         format_shape='NCTHW'),
@@ -87,20 +86,16 @@ proposal_file_train = (f'{anno_root}/ava_dense_proposals_train.FAIR.'
                        'recall_93.9.pkl')
 proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 
+file_client_args = dict(io_backend='disk')
 train_pipeline = [
     dict(type='SampleAVAFrames', clip_len=32, frame_interval=2),
-    dict(type='RawFrameDecode'),
+    dict(type='RawFrameDecode', **file_client_args),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
     dict(type='PackActionInputs')
 ]
-
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict({'data/ava': 's254:s3://openmmlab/datasets/action/ava'}))
-
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
     dict(
