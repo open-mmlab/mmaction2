@@ -254,8 +254,10 @@ class ST_MSGCN(BaseModule):
         agg = torch.einsum('kvu,nctv->nkctu', A, x)
         agg = agg.reshape(N, self.num_scales * C, T, V)
         out = self.mlp(agg)
-        out += res
-        return self.act(out)
+        if res == 0:
+            return self.act(out)
+        else:
+            return self.act(out + res)
 
 
 class MSG3DBlock(BaseModule):
