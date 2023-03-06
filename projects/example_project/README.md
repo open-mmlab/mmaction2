@@ -91,7 +91,7 @@ Here is a checklist of this project's progress, and you can ignore this part if 
 
   - [ ] Finish the code
 
-    <!-- The code's design shall follow existing interfaces and convention. For example, each model component should be registered into `mmcls.registry.MODELS` and configurable via a config file. -->
+    <!-- The code's design shall follow existing interfaces and convention. For example, each model component should be registered into `mmaction.registry.MODELS` and configurable via a config file. -->
 
   - [ ] Basic docstrings & proper citation
 
@@ -105,7 +105,7 @@ Here is a checklist of this project's progress, and you can ignore this part if 
 
   - [ ] Training results
 
-    <!-- If you are reproducing the result from a paper, train your model from scratch and verified that the final result can match the original result. Usually, ±0.1% is acceptable for the image classification task on ImageNet-1k. -->
+    <!-- If you are reproducing the result from a paper, train your model from scratch and verified that the final result can match the original result. Usually, ±0.1% is acceptable for the action recognition task on Kinetics400. -->
 
 - [ ] Milestone 3: Good to be a part of our core package!
 
