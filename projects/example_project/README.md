@@ -75,10 +75,10 @@ mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-r
 <!-- Replace to the citation of the paper your project refers to. -->
 
 ```bibtex
-@misc{2020mmclassification,
-    title={OpenMMLab's Image Classification Toolbox and Benchmark},
-    author={MMClassification Contributors},
-    howpublished = {\url{https://github.com/open-mmlab/mmclassification}},
+@misc{2020mmaction2,
+    title={OpenMMLab's Next Generation Video Understanding Toolbox and Benchmark},
+    author={MMAction2 Contributors},
+    howpublished = {\url{https://github.com/open-mmlab/mmaction2}},
     year={2020}
 }
 ```
