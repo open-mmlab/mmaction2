@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from mmengine.model import Sequential
+
 from .msg3d_utils import MSGCN, MSTCN, MW_MSG3DBlock
 from mmengine.model import BaseModule
 
@@ -34,7 +36,7 @@ class MSG3D(BaseModule):
 
         # r=3 STGC blocks
         self.gcn3d1 = MW_MSG3DBlock(3, c1, A, num_g3d_scales, window_stride=1)
-        self.sgcn1 = nn.Sequential(
+        self.sgcn1 = Sequential(
             MSGCN(num_gcn_scales, 3, c1, A),
             MSTCN(c1, c1),
             MSTCN(c1, c1))
@@ -42,7 +44,7 @@ class MSG3D(BaseModule):
         self.tcn1 = MSTCN(c1, c1, tcn_dropout=tcn_dropout)
 
         self.gcn3d2 = MW_MSG3DBlock(c1, c2, A, num_g3d_scales, window_stride=2)
-        self.sgcn2 = nn.Sequential(
+        self.sgcn2 = Sequential(
             MSGCN(num_gcn_scales, c1, c1, A),
             MSTCN(c1, c2, stride=2),
             MSTCN(c2, c2))
@@ -50,7 +52,7 @@ class MSG3D(BaseModule):
         self.tcn2 = MSTCN(c2, c2, tcn_dropout=tcn_dropout)
 
         self.gcn3d3 = MW_MSG3DBlock(c2, c3, A, num_g3d_scales, window_stride=2)
-        self.sgcn3 = nn.Sequential(
+        self.sgcn3 = Sequential(
             MSGCN(num_gcn_scales, c2, c2, A),
             MSTCN(c2, c3, stride=2),
             MSTCN(c3, c3))
