@@ -1,5 +1,6 @@
 # Directly inherit the entire recipe you want to use.
-_base_ = 'mmaction::recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py'
+_base_ = 'mmaction::recognition/tsn/' \
+         'tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py'
 
 # This line is to import your own modules.
 custom_imports = dict(imports='models')
