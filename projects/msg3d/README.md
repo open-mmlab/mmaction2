@@ -1,8 +1,20 @@
-# Example Project
+# MSG3D Project
 
-This is an example README for community `projects/`. You can write your README in your own project. Here are
-some recommended parts of a README for others to understand and use your project, you can copy or modify them
-according to your project.
+[Disentangling and Unifying Graph Convolutions for Skeleton-Based Action Recognition](https://arxiv.org/abs/2003.14111)
+
+<!-- [ALGORITHM] -->
+
+## Abstract
+
+<!-- [ABSTRACT] -->
+
+Spatial-temporal graphs have been widely used by skeleton-based action recognition algorithms to model human action dynamics. To capture robust movement patterns from these graphs, long-range and multi-scale context aggregation and spatial-temporal dependency modeling are critical aspects of a powerful feature extractor. However, existing methods have limitations in achieving (1) unbiased long-range joint relationship modeling under multi-scale operators and (2) unobstructed cross-spacetime information flow for capturing complex spatial-temporal dependencies. In this work, we present (1) a simple method to disentangle multi-scale graph convolutions and (2) a unified spatial-temporal graph convolutional operator named G3D. The proposed multi-scale aggregation scheme disentangles the importance of nodes in different neighborhoods for effective long-range modeling. The proposed G3D module leverages dense cross-spacetime edges as skip connections for direct information propagation across the spatial-temporal graph. By coupling these proposals, we develop a powerful feature extractor named MS-G3D based on which our model outperforms previous state-of-the-art methods on three large-scale datasets: NTU RGB+D 60, NTU RGB+D 120, and Kinetics Skeleton 400.
+
+<!-- [IMAGE] -->
+
+<div align=center>
+<img src="https://user-images.githubusercontent.com/58767402/223127347-135bb92b-2dee-46d9-95fc-cebf65c27fc8.png" width="800"/>
+</div>
 
 ## Usage
 
@@ -20,26 +32,26 @@ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 ### Data Preparation
 
-Prepare the Kinetics400 dataset according to the [instruction](https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/kinetics/README.md).
+Prepare the NTU60 dataset according to the [instruction](https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/skeleton/README.md).
 
 ### Training commands
 
 **To train with single GPU:**
 
 ```bash
-mim train mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py
+mim train mmaction configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py
 ```
 
 **To train with multiple GPUs:**
 
 ```bash
-mim train mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py --launcher pytorch --gpus 8
+mim train mmaction configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py --launcher pytorch --gpus 8
 ```
 
 **To train with multiple GPUs by slurm:**
 
 ```bash
-mim train mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py --launcher slurm \
+mim train mmaction configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py --launcher slurm \
     --gpus 8 --gpus-per-node 8 --partition $PARTITION
 ```
 
@@ -48,38 +60,47 @@ mim train mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-
 **To test with single GPU:**
 
 ```bash
-mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py $CHECKPOINT
+mim test mmaction configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py $CHECKPOINT
 ```
 
 **To test with multiple GPUs:**
 
 ```bash
-mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py $CHECKPOINT --launcher pytorch --gpus 8
+mim test mmaction configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py $CHECKPOINT --launcher pytorch --gpus 8
 ```
 
 **To test with multiple GPUs by slurm:**
 
 ```bash
-mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py $CHECKPOINT --launcher slurm \
+mim test mmaction configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py $CHECKPOINT --launcher slurm \
     --gpus 8 --gpus-per-node 8 --partition $PARTITION
 ```
 
 ## Results
 
-| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc |  testing protocol  |                                     config                                      |              ckpt |             log |
-| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :----------------: | :-----------------------------------------------------------------------------: | ----------------: | --------------: |
-|          1x1x3          |  224x224   |  8   | ResNet50 | ImageNet |  72.83   |  90.65   | 25 clips x 10 crop | [config](./configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py) | [ckpt](CKPT-LINK) | [log](LOG-LINK) |
+### NTU60_XSub_2D
+
+| frame sampling strategy |   modality   | gpus | backbone | top1 acc | testing protocol |                  config                   |                  ckpt                   |                  log                   |
+| :---------------------: | :----------: | :--: | :------: | :------: | :--------------: |:---------------------------------------: | :-------------------------------------: | :------------------------------------: |
+|       uniform 100       |    joint     |  8   | MSG3D  |  x   |     10 clips     |  [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py) | [ckpt]() | [log]() |
+
+### NTU60_XSub_3D
+| frame sampling strategy |   modality   | gpus | backbone | top1 acc | testing protocol |                  config                   |                  ckpt                   |                  log                   |
+| :---------------------: | :----------: | :--: | :------: | :------: | :--------------: |:---------------------------------------: | :-------------------------------------: | :------------------------------------: |
+|       uniform 100       |     joint     |  8   |  MSG3D |  x   |     10 clips     |  [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py) | [ckpt]() | [log]() |
+
 
 ## Citation
 
 <!-- Replace to the citation of the paper your project refers to. -->
 
 ```bibtex
-@misc{2020mmaction2,
-    title={OpenMMLab's Next Generation Video Understanding Toolbox and Benchmark},
-    author={MMAction2 Contributors},
-    howpublished = {\url{https://github.com/open-mmlab/mmaction2}},
-    year={2020}
+@inproceedings{liu2020disentangling,
+  title={Disentangling and unifying graph convolutions for skeleton-based action recognition},
+  author={Liu, Ziyu and Zhang, Hongwen and Chen, Zhenghao and Wang, Zhiyong and Ouyang, Wanli},
+  booktitle={CVPR},
+  pages={143--152},
+  year={2020}
 }
 ```
 
