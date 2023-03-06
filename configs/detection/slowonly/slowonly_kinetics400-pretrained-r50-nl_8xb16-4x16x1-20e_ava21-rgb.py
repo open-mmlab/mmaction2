@@ -61,7 +61,6 @@ model = dict(
             pos_weight=1.0)),
     test_cfg=dict(rcnn=None))
 
-
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
 anno_root = 'data/ava/annotations'

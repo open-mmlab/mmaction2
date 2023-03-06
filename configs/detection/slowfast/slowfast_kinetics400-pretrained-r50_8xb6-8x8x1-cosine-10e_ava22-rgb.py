@@ -1,8 +1,8 @@
 _base_ = '../../_base_/default_runtime.py'
 
 url = ('https://download.openmmlab.com/mmaction/recognition/slowfast/'
-            'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
-            'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')
+       'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
+       'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')
 
 model = dict(
     type='FastRCNN',
