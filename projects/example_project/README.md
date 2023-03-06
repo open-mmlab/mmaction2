@@ -85,8 +85,7 @@ mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-r
 
 ## Checklist
 
-Here is a checklist of this project's progress. And you can ignore this part if you don't plan to contribute
-to MMClassification projects.
+Here is a checklist of this project's progress, and you can ignore this part if you don't plan to contribute to MMAction2 projects.
 
 - [ ] Milestone 1: PR-ready, and acceptable to be one of the `projects/`.
 
