@@ -2,8 +2,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 from mmcv.cnn import build_activation_layer
-
-
 from mmengine.model import BaseModule, ModuleList, Sequential
 
 from mmaction.models.utils import unit_tcn
@@ -11,14 +9,20 @@ from mmaction.models.utils.graph import k_adjacency, normalize_digraph
 
 
 class MLP(BaseModule):
-    def __init__(self, in_channels, out_channels, act_cfg=dict(type='ReLU'), dropout=0):
+
+    def __init__(self,
+                 in_channels,
+                 out_channels,
+                 act_cfg=dict(type='ReLU'),
+                 dropout=0):
         super().__init__()
         channels = [in_channels] + out_channels
         self.layers = ModuleList()
         for i in range(1, len(channels)):
             if dropout > 1e-3:
                 self.layers.append(nn.Dropout(p=dropout))
-            self.layers.append(nn.Conv2d(channels[i-1], channels[i], kernel_size=1))
+            self.layers.append(
+                nn.Conv2d(channels[i - 1], channels[i], kernel_size=1))
             self.layers.append(nn.BatchNorm2d(channels[i]))
             if act_cfg:
                 self.layers.append(build_activation_layer(act_cfg))
@@ -30,6 +34,7 @@ class MLP(BaseModule):
 
 
 class MSGCN(BaseModule):
+
     def __init__(self,
                  num_scales,
                  in_channels,
@@ -40,7 +45,9 @@ class MSGCN(BaseModule):
         super().__init__()
         self.num_scales = num_scales
 
-        A_powers = [k_adjacency(A, k, with_self=True) for k in range(num_scales)]
+        A_powers = [
+            k_adjacency(A, k, with_self=True) for k in range(num_scales)
+        ]
         A_powers = np.stack([normalize_digraph(g) for g in A_powers])
 
         # K, V, V
@@ -48,7 +55,10 @@ class MSGCN(BaseModule):
         self.PA = nn.Parameter(self.A.clone())
         nn.init.uniform_(self.PA, -1e-6, 1e-6)
 
-        self.mlp = MLP(in_channels * num_scales, [out_channels], dropout=dropout, act_cfg=act_cfg)
+        self.mlp = MLP(
+            in_channels * num_scales, [out_channels],
+            dropout=dropout,
+            act_cfg=act_cfg)
 
     def forward(self, x):
         N, C, T, V = x.shape
@@ -61,8 +71,10 @@ class MSGCN(BaseModule):
         return out
 
 
-# ! Notice: The implementation of MSTCN in MS-G3D is not the same as our implementation.
+# ! Notice: The implementation of MSTCN in
+# MS-G3D is not the same as our implementation.
 class MSTCN(BaseModule):
+
     def __init__(self,
                  in_channels,
                  out_channels,
@@ -71,15 +83,18 @@ class MSTCN(BaseModule):
                  dilations=[1, 2, 3, 4],
                  residual=True,
                  act_cfg=dict(type='ReLU'),
-                 init_cfg=[dict(type='Constant', layer='BatchNorm2d', val=1),
-                           dict(type='Kaiming', layer='Conv2d', mode='fan_out')],
+                 init_cfg=[
+                     dict(type='Constant', layer='BatchNorm2d', val=1),
+                     dict(type='Kaiming', layer='Conv2d', mode='fan_out')
+                 ],
                  tcn_dropout=0):
 
         super().__init__(init_cfg=init_cfg)
         # Multiple branches of temporal convolution
         self.num_branches = len(dilations) + 2
         branch_channels = out_channels // self.num_branches
-        branch_channels_rem = out_channels - branch_channels * (self.num_branches - 1)
+        branch_channels_rem = out_channels - branch_channels * (
+            self.num_branches - 1)
 
         if type(kernel_size) == list:
             assert len(kernel_size) == len(dilations)
@@ -89,10 +104,7 @@ class MSTCN(BaseModule):
         self.branches = ModuleList([
             Sequential(
                 nn.Conv2d(
-                    in_channels,
-                    branch_channels,
-                    kernel_size=1,
-                    padding=0),
+                    in_channels, branch_channels, kernel_size=1, padding=0),
                 nn.BatchNorm2d(branch_channels),
                 build_activation_layer(act_cfg),
                 unit_tcn(
@@ -101,23 +113,28 @@ class MSTCN(BaseModule):
                     kernel_size=ks,
                     stride=stride,
                     dilation=dilation),
-            )
-            for ks, dilation in zip(kernel_size, dilations)
+            ) for ks, dilation in zip(kernel_size, dilations)
         ])
 
         # Additional Max & 1x1 branch
-        self.branches.append(Sequential(
-            nn.Conv2d(in_channels, branch_channels, kernel_size=1, padding=0),
-            nn.BatchNorm2d(branch_channels),
-            build_activation_layer(act_cfg),
-            nn.MaxPool2d(kernel_size=(3, 1), stride=(stride, 1), padding=(1, 0)),
-            nn.BatchNorm2d(branch_channels)
-        ))
+        self.branches.append(
+            Sequential(
+                nn.Conv2d(
+                    in_channels, branch_channels, kernel_size=1, padding=0),
+                nn.BatchNorm2d(branch_channels),
+                build_activation_layer(act_cfg),
+                nn.MaxPool2d(
+                    kernel_size=(3, 1), stride=(stride, 1), padding=(1, 0)),
+                nn.BatchNorm2d(branch_channels)))
 
-        self.branches.append(Sequential(
-            nn.Conv2d(in_channels, branch_channels_rem, kernel_size=1, padding=0, stride=(stride, 1)),
-            nn.BatchNorm2d(branch_channels_rem)
-        ))
+        self.branches.append(
+            Sequential(
+                nn.Conv2d(
+                    in_channels,
+                    branch_channels_rem,
+                    kernel_size=1,
+                    padding=0,
+                    stride=(stride, 1)), nn.BatchNorm2d(branch_channels_rem)))
 
         # Residual connection
         if not residual:
@@ -125,7 +142,8 @@ class MSTCN(BaseModule):
         elif (in_channels == out_channels) and (stride == 1):
             self.residual = lambda x: x
         else:
-            self.residual = unit_tcn(in_channels, out_channels, kernel_size=1, stride=stride)
+            self.residual = unit_tcn(
+                in_channels, out_channels, kernel_size=1, stride=stride)
 
         self.act = build_activation_layer(act_cfg)
         self.drop = nn.Dropout(tcn_dropout)
@@ -146,29 +164,35 @@ class MSTCN(BaseModule):
 
 
 class UnfoldTemporalWindows(BaseModule):
+
     def __init__(self, window_size, window_stride, window_dilation=1):
         super().__init__()
         self.window_size = window_size
         self.window_stride = window_stride
         self.window_dilation = window_dilation
 
-        self.padding = (window_size + (window_size-1) * (window_dilation-1) - 1) // 2
-        self.unfold = nn.Unfold(kernel_size=(self.window_size, 1),
-                                dilation=(self.window_dilation, 1),
-                                stride=(self.window_stride, 1),
-                                padding=(self.padding, 0))
+        self.padding = (window_size + (window_size - 1) *
+                        (window_dilation - 1) - 1) // 2
+        self.unfold = nn.Unfold(
+            kernel_size=(self.window_size, 1),
+            dilation=(self.window_dilation, 1),
+            stride=(self.window_stride, 1),
+            padding=(self.padding, 0))
 
     def forward(self, x):
         # Input shape: (N,C,T,V), out: (N,C,T,V*window_size)
         N, C, T, V = x.shape
         x = self.unfold(x)
-        # Permute extra channels from window size to the graph dimension; -1 for number of windows
-        x = x.reshape(N, C, self.window_size, -1, V).permute(0, 1, 3, 2, 4).contiguous()
+        # Permute extra channels from window size to the graph dimension;
+        # -1 for number of windows
+        x = x.reshape(N, C, self.window_size, -1, V).permute(0, 1, 3, 2,
+                                                             4).contiguous()
         x = x.reshape(N, C, -1, self.window_size * V)
         return x
 
 
 class ST_MSGCN(BaseModule):
+
     def __init__(self,
                  in_channels,
                  out_channels,
@@ -184,7 +208,9 @@ class ST_MSGCN(BaseModule):
         self.window_size = window_size
         A = self.build_st_graph(A, window_size)
 
-        A_scales = [k_adjacency(A, k, with_self=True) for k in range(num_scales)]
+        A_scales = [
+            k_adjacency(A, k, with_self=True) for k in range(num_scales)
+        ]
         A_scales = np.stack([normalize_digraph(g) for g in A_scales])
 
         self.register_buffer('A', torch.Tensor(A_scales))
@@ -193,7 +219,10 @@ class ST_MSGCN(BaseModule):
         self.PA = nn.Parameter(self.A.clone())
         nn.init.uniform_(self.PA, -1e-6, 1e-6)
 
-        self.mlp = MLP(in_channels * num_scales, [out_channels], dropout=dropout, act_cfg=act_cfg)
+        self.mlp = MLP(
+            in_channels * num_scales, [out_channels],
+            dropout=dropout,
+            act_cfg=act_cfg)
 
         # Residual connection
         if not residual:
@@ -217,7 +246,7 @@ class ST_MSGCN(BaseModule):
         return A_large
 
     def forward(self, x):
-        N, C, T, V = x.shape    # T = number of windows, V = self.V * window_size
+        N, C, T, V = x.shape  # T = number of windows, V = self.V * window_size
         A = self.A + self.PA
 
         # Perform Graph Convolution
@@ -230,6 +259,7 @@ class ST_MSGCN(BaseModule):
 
 
 class MSG3DBlock(BaseModule):
+
     def __init__(self,
                  in_channels,
                  out_channels,
@@ -244,11 +274,13 @@ class MSG3DBlock(BaseModule):
         super().__init__()
         self.window_size = window_size
         self.out_channels = out_channels
-        self.embed_channels_in = self.embed_channels_out = out_channels // embed_factor
+        self.embed_channels_in = out_channels // embed_factor
+        self.embed_channels_out = out_channels // embed_factor
         if embed_factor == 1:
             self.in1x1 = nn.Identity()
             self.embed_channels_in = self.embed_channels_out = in_channels
-            # The first STGC block changes channels right away; others change at collapse
+            # The first STGC block changes channels right away;
+            # others change at collapse
             if in_channels == 3:
                 self.embed_channels_out = out_channels
         else:
@@ -261,11 +293,12 @@ class MSG3DBlock(BaseModule):
                 out_channels=self.embed_channels_out,
                 A=A,
                 num_scales=num_scales,
-                window_size=window_size
-            )
-        )
+                window_size=window_size))
 
-        self.out_conv = nn.Conv3d(self.embed_channels_out, out_channels, kernel_size=(1, self.window_size, 1))
+        self.out_conv = nn.Conv3d(
+            self.embed_channels_out,
+            out_channels,
+            kernel_size=(1, self.window_size, 1))
         self.out_bn = nn.BatchNorm2d(out_channels)
 
     def forward(self, x):
@@ -283,6 +316,7 @@ class MSG3DBlock(BaseModule):
 
 
 class MW_MSG3DBlock(BaseModule):
+
     def __init__(self,
                  in_channels,
                  out_channels,
@@ -294,16 +328,9 @@ class MW_MSG3DBlock(BaseModule):
 
         super().__init__()
         self.gcn3d = ModuleList([
-            MSG3DBlock(
-                in_channels,
-                out_channels,
-                A,
-                num_scales,
-                window_size,
-                window_stride,
-                window_dilation
-            )
-            for window_size, window_dilation in zip(window_sizes, window_dilations)
+            MSG3DBlock(in_channels, out_channels, A, num_scales, window_size,
+                       window_stride, window_dilation) for window_size,
+            window_dilation in zip(window_sizes, window_dilations)
         ])
 
     def forward(self, x):
