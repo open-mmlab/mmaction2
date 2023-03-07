@@ -19,6 +19,7 @@ class TEM(BaseModel):
     Code reference
     https://github.com/wzmsltw/BSN-boundary-sensitive-network
     Args:
+        temporal_dim (int): Total frames selected for each video.
         tem_feat_dim (int): Feature dimension.
         tem_hidden_dim (int): Hidden layer dimension.
         tem_match_threshold (float): Temporal evaluation match threshold.
