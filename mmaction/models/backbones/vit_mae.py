@@ -7,11 +7,16 @@ from mmcv.cnn import build_norm_layer
 from mmcv.cnn.bricks import DropPath
 from mmcv.cnn.bricks.transformer import FFN, PatchEmbed
 from mmengine.model import BaseModule, ModuleList
-from mmengine.utils import to_2tuple
 from torch import Tensor, nn
 
 from mmaction.registry import MODELS
 from mmaction.utils import ConfigType, OptConfigType
+
+try:
+    from mmdet.registry import MODELS as MMDET_MODELS
+    mmdet_imported = True
+except (ImportError, ModuleNotFoundError):
+    mmdet_imported = False
 
 
 class Attention(BaseModule):
@@ -246,6 +251,8 @@ class VisionTransformer(BaseModule):
         use_mean_pooling (bool): If True, take the mean pooling over all
             positions. Defaults to True.
         pretrained (str, optional): Name of pretrained model. Default: None.
+        return_feat_map (bool): If True, return the feature in the shape of
+            `[B, C, T, H, W]`. Defaults to False.
         init_cfg (dict or list[dict]): Initialization config dict. Defaults to
             ``[
             dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
@@ -273,6 +280,7 @@ class VisionTransformer(BaseModule):
                  tubelet_size: int = 2,
                  use_mean_pooling: int = True,
                  pretrained: Optional[str] = None,
+                 return_feat_map: bool = False,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = [
                      dict(
                          type='TruncNormal', layer='Linear', std=0.02,
@@ -285,21 +293,21 @@ class VisionTransformer(BaseModule):
             self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         super().__init__(init_cfg=init_cfg)
 
-        patch_size = to_2tuple(patch_size)
-        img_size = to_2tuple(img_size)
+        self.embed_dims = embed_dims
+        self.patch_size = patch_size
 
         self.patch_embed = PatchEmbed(
             in_channels=in_channels,
             embed_dims=embed_dims,
             conv_type='Conv3d',
-            kernel_size=(tubelet_size, ) + patch_size,
-            stride=(tubelet_size, ) + patch_size,
+            kernel_size=(tubelet_size, patch_size, patch_size),
+            stride=(tubelet_size, patch_size, patch_size),
             padding=(0, 0, 0),
             dilation=(1, 1, 1))
 
-        num_patches = (img_size[1] // patch_size[1]) * \
-                      (img_size[0] // patch_size[0]) * \
-                      (num_frames // tubelet_size)
+        grid_size = img_size // patch_size
+        num_patches = grid_size**2 * (num_frames // tubelet_size)
+        self.grid_size = (grid_size, grid_size)
 
         if use_learnable_pos_emb:
             self.pos_embed = nn.Parameter(
@@ -336,6 +344,8 @@ class VisionTransformer(BaseModule):
             self.norm = build_norm_layer(norm_cfg, embed_dims)[1]
             self.fc_norm = None
 
+        self.return_feat_map = return_feat_map
+
     def forward(self, x: Tensor) -> Tensor:
         """Defines the computation performed at every call.
 
@@ -345,17 +355,39 @@ class VisionTransformer(BaseModule):
             Tensor: The feature of the input
                 samples extracted by the backbone.
         """
+        b, _, _, h, w = x.shape
+        h //= self.patch_size
+        w //= self.patch_size
         x = self.patch_embed(x)[0]
-        B, _, _ = x.size()
+        if (h, w) != self.grid_size:
+            pos_embed = self.pos_embed.reshape(-1, *self.grid_size,
+                                               self.embed_dims)
+            pos_embed = pos_embed.permute(0, 3, 1, 2)
+            pos_embed = F.interpolate(
+                pos_embed, size=(h, w), mode='bicubic', align_corners=False)
+            pos_embed = pos_embed.permute(0, 2, 3, 1).flatten(1, 2)
+            pos_embed = pos_embed.reshape(1, -1, self.embed_dims)
+        else:
+            pos_embed = self.pos_embed
 
-        x = x + self.pos_embed
+        x = x + pos_embed
         x = self.pos_drop(x)
 
         for blk in self.blocks:
             x = blk(x)
 
         x = self.norm(x)
+
+        if self.return_feat_map:
+            x = x.reshape(b, -1, h, w, self.embed_dims)
+            x = x.permute(0, 4, 1, 2, 3)
+            return x
+
         if self.fc_norm is not None:
             return self.fc_norm(x.mean(1))
-        else:
-            return x[:, 0]
+
+        return x[:, 0]
+
+
+if mmdet_imported:
+    MMDET_MODELS.register_module()(VisionTransformer)
