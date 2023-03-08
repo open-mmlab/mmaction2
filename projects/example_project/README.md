@@ -48,19 +48,19 @@ mim train mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-
 **To test with single GPU:**
 
 ```bash
-mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py $CHECKPOINT
+mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py --checkpoint $CHECKPOINT
 ```
 
 **To test with multiple GPUs:**
 
 ```bash
-mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py $CHECKPOINT --launcher pytorch --gpus 8
+mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py --checkpoint $CHECKPOINT --launcher pytorch --gpus 8
 ```
 
 **To test with multiple GPUs by slurm:**
 
 ```bash
-mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py $CHECKPOINT --launcher slurm \
+mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py --checkpoint $CHECKPOINT --launcher slurm \
     --gpus 8 --gpus-per-node 8 --partition $PARTITION
 ```
 
@@ -76,10 +76,10 @@ mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-r
 
 ```bibtex
 @misc{2020mmaction2,
-    title={OpenMMLab's Next Generation Video Understanding Toolbox and Benchmark},
-    author={MMAction2 Contributors},
-    howpublished = {\url{https://github.com/open-mmlab/mmaction2}},
-    year={2020}
+  title={OpenMMLab's Next Generation Video Understanding Toolbox and Benchmark},
+  author={MMAction2 Contributors},
+  howpublished = {\url{https://github.com/open-mmlab/mmaction2}},
+  year={2020}
 }
 ```
 
