@@ -151,7 +151,7 @@ python tools/analysis/eval_metric.py ${CONFIG_FILE} ${RESULT_FILE} [--eval ${EVA
 `tools/analysis/print_config.py` 脚本会解析所有输入变量，并打印完整配置信息。
 
 ```shell
-python tools/print_config.py ${CONFIG} [-h] [--options ${OPTIONS [OPTIONS...]}]
+python tools/analysis/print_config.py ${CONFIG} [-h] [--options ${OPTIONS [OPTIONS...]}]
 ```
 
 ### 检查视频
