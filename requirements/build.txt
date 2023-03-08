@@ -1,7 +1,7 @@
 decord >= 0.4.1
 einops
 matplotlib
-numpy
+numpy>=1.21.0
 opencv-contrib-python
 Pillow
 scipy
