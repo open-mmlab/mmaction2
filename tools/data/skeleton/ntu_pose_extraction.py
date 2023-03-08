@@ -169,7 +169,7 @@ def tracklets2bbox(tracklet, num_frame):
                     mind = np.abs(k - idx)
                     mink = k
             bbox[idx] = bboxd[mink]
-    return bad, bbox
+    return bad, bbox[:, None, :]
 
 
 def bboxes2bbox(bbox, num_frame):

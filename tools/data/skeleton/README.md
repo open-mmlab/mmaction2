@@ -26,13 +26,21 @@ We provide links to the pre-processed skeleton annotations, you can directly dow
 - NTURGB+D 120 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/ntu120_2d.pkl
 - NTURGB+D 120 \[3D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/ntu120_3d.pkl
 - GYM \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/gym_2d.pkl
-  - GYM 2D skeletons are extracted with ground-truth human bounding boxes, which can be downloaded with link: https://download.openmmlab.com/mmaction/pyskl/data/gym/gym_gt_bboxes.pkl. Please cite [PoseConv3D](https://arxiv.org/abs/2104.13586) if you use it in your project.
+  - GYM 2D skeletons are extracted with ground-truth human bounding boxes, which can be downloaded with [link](https://download.openmmlab.com/mmaction/pyskl/data/gym/gym_gt_bboxes.pkl). Please cite [PoseConv3D](https://arxiv.org/abs/2104.13586) if you use it in your project.
 - UCF101 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/ucf101_2d.pkl
 - HMDB51 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/hmdb51_2d.pkl
 - Diving48 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/diving48_2d.pkl
 - Kinetics400 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/k400_2d.pkl (Table of contents only, no skeleton annotations)
 
-For Kinetics400, since the skeleton annotations are large, we do not provide the direct download links on aliyun. Please use the following link to download the `kpfiles` and extract it under `$MMACTION2/data/k400` for Kinetics-400 training & testing: https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EeyDCVskqLtClMVVwqD53acBF2FEwkctp3vtRbkLfnKSTw?e=B3SZlM
+For Kinetics400, since the skeleton annotations are large, we do not provide the direct download links on aliyun. Please use the following link to download the `kpfiles` and extract it under `$MMACTION2/data/k400` for Kinetics400 training & testing: https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EeyDCVskqLtClMVVwqD53acBF2FEwkctp3vtRbkLfnKSTw?e=B3SZlM
+
+If you want to generate 2D skeleton annotations of specified video, please install mmdetection and mmpose first, then use the following script to extract skeleton annotations of NTURGB+D video:
+
+```python
+python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.pkl
+```
+
+please note that, due to the upgrade of mmpose, the inference results may have slight differences from the provided skeleton annotations.
 
 ## The Format of Annotations
 

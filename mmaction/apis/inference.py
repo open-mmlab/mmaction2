@@ -144,13 +144,16 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
         det_data_sample: DetDataSample = inference_detector(model, frame_path)
         pred_instance = det_data_sample.pred_instances.cpu().numpy()
         bboxes = pred_instance.bboxes
+        scores = pred_instance.scores
         # We only keep human detection bboxs with score larger
         # than `det_score_thr` and category id equal to `det_cat_id`.
-        bboxes = bboxes[np.logical_and(pred_instance.labels == det_cat_id,
-                                       pred_instance.scores > det_score_thr)]
+        valid_idx = np.logical_and(pred_instance.labels == det_cat_id,
+                                   pred_instance.scores > det_score_thr)
+        bboxes = bboxes[valid_idx]
+        scores = scores[valid_idx]
+
         if with_score:
-            bboxes = np.concatenate((bboxes, pred_instance.scores[:, None]),
-                                    axis=-1)
+            bboxes = np.concatenate((bboxes, scores[:, None]), axis=-1)
         results.append(bboxes)
         data_samples.append(det_data_sample)
 
