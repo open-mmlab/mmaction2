@@ -2,5 +2,8 @@
 from .acc_metric import AccMetric
 from .anet_metric import ANetMetric
 from .ava_metric import AVAMetric
+from .multisports_metric import MultiSportsMetric
 
-__all__ = ['AccMetric', 'AVAMetric', 'ANetMetric']
+__all__ = [
+    'AccMetric', 'AVAMetric', 'ANetMetric', 'MAPMetric', 'MultiSportsMetric'
+]

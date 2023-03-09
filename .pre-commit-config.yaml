@@ -34,7 +34,7 @@ repos:
     rev: v2.1.0
     hooks:
       - id: codespell
-        args: ["--skip", "*.ipynb", "-L", "Gool,tread,gool,mot"]
+        args: ["--skip", "*.ipynb", "-L", "ECT,Gool,tread,gool,mot"]
   - repo: https://github.com/executablebooks/mdformat
     rev: 0.7.14
     hooks:
