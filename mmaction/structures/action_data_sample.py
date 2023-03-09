@@ -68,7 +68,7 @@ def format_score(value: Union[torch.Tensor, np.ndarray,
 
 class ActionDataSample(BaseDataElement):
 
-    def set_gt_label(
+    def set_gt_labels(
         self, value: Union[np.ndarray, torch.Tensor, Sequence[Number], Number]
     ) -> 'ActionDataSample':
         """Set label of ``gt_labels``."""

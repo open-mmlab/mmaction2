@@ -54,7 +54,7 @@ class TestConfusionMatrix(TestCase):
         """Test using the metric in the same way as Evalutor."""
         pred = [
             ActionDataSample().set_pred_score(i).set_pred_label(
-                j).set_gt_label(k).to_dict() for i, j, k in zip([
+                j).set_gt_labels(k).to_dict() for i, j, k in zip([
                     torch.tensor([0.7, 0.0, 0.3]),
                     torch.tensor([0.5, 0.2, 0.3]),
                     torch.tensor([0.4, 0.5, 0.1]),
