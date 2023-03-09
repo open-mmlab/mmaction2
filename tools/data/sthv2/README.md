@@ -116,4 +116,3 @@ mmaction2
 ```
 
 For training and evaluating on Something-Something V2, please refer to [getting_started.md](/docs/getting_started.md).
-s/getting_started.md).

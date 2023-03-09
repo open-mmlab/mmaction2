@@ -11,9 +11,9 @@ from mmengine import dump, list_dir_or_file, load
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument(
-        'anno_root', help='the directory to multisports annotations')
-    parser.add_argument(
-        'test_video_root', help='the directory to multisports test videos')
+        '--data_root',
+        default='data/multisports',
+        help='the directory to multisports annotations')
     parser.add_argument(
         '--out_root',
         default='data/multisports',
@@ -32,7 +32,7 @@ def parse_anno(args):
     if not osp.exists(args.out_root):
         os.makedirs(osp.join(args.out_root, 'annotations'))
 
-    anno_path = osp.join(args.anno_root, 'multisports_GT.pkl')
+    anno_path = osp.join(args.data_root, 'trainval', 'multisports_GT.pkl')
     annos = load(anno_path)
 
     # convert key in proposal file to filename
@@ -41,13 +41,14 @@ def parse_anno(args):
         for video in annos['nframes'].keys()
     }
     test_videos = [
-        file for file in list_dir_or_file(args.test_data_root, recursive=True)
+        file for file in list_dir_or_file(
+            osp.join(args.data_root, 'test'), recursive=True)
         if file.endswith('.mp4')
     ]
     key2filename.update(
         {video.split('/')[1][:-4]: video
          for video in test_videos})
-    proposals_path = osp.join(args.anno_root, 'MultiSports_box')
+    proposals_path = osp.join(args.data_root, 'MultiSports_box')
     for proposals in os.listdir(proposals_path):
         proposal_info = load(osp.join(proposals_path, proposals))
         proposal_out = dict()
