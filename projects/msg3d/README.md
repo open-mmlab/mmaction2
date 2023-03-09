@@ -82,13 +82,13 @@ mim test mmaction configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py $
 
 | frame sampling strategy | modality | gpus | backbone | top1 acc | testing protocol |                                  config                                  |    ckpt    |    log    |
 | :---------------------: | :------: | :--: | :------: | :------: | :--------------: | :----------------------------------------------------------------------: | :--------: | :-------: |
-|       uniform 100       |  joint   |  8   |  MSG3D   |    x     |     10 clips     | [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py) | [ckpt](<>) | [log](<>) |
+|       uniform 100       |  joint   |  8   |  MSG3D   |    92.3     |     10 clips     | [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py) | [ckpt](<>) | [log](<>) |
 
 ### NTU60_XSub_3D
 
 | frame sampling strategy | modality | gpus | backbone | top1 acc | testing protocol |                                  config                                  |    ckpt    |    log    |
 | :---------------------: | :------: | :--: | :------: | :------: | :--------------: | :----------------------------------------------------------------------: | :--------: | :-------: |
-|       uniform 100       |  joint   |  8   |  MSG3D   |    x     |     10 clips     | [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](<>) | [log](<>) |
+|       uniform 100       |  joint   |  8   |  MSG3D   |   89.6     |     10 clips     | [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](<>) | [log](<>) |
 
 ## Citation
 
