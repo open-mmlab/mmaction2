@@ -34,10 +34,19 @@ We present SlowFast networks for video recognition. Our model involves (i) a Slo
 |          8x8x1          |  8   |     SlowFast ResNet50 (temporal-max)      | Kinetics-400 | 26.41 | [config](/configs/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-13a9078e.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.log) |
 |          8x8x1          |  8   | SlowFast ResNet50 (temporal-max, focal loss) | Kinetics-400 | 26.65 | [config](/configs/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-dd59e26f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.log) |
 
+### MultiSports
+
+| frame sampling strategy | gpus |     backbone      |   pretrain   | f-mAP | v-map@0.2 | v-map@0.5 | v-map@0.1:0.9 | gpu_mem(M) |               config               |               ckpt               |               log                |
+| :---------------------: | :--: | :---------------: | :----------: | :---: | :-------: | :-------: | :-----------: | :--------: | :--------------------------------: | :------------------------------: | :------------------------------: |
+|         4x16x1          |  8   | SlowFast ResNet50 | Kinetics-400 | 36.88 |   22.83   |   16.9    |     14.74     |   18618    | [config](/configs/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb_20230320-af666368.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb.log) |
+
 1. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
 2. **with context** indicates that using both RoI feature and global pooled feature for classification; **temporal-max** indicates that using max pooling in the temporal dimension for the feature.
 
-For more details on data preparation, you can refer to [AVA](/tools/data/ava/README.md).
+For more details on data preparation, you can refer to
+
+- [AVA](/tools/data/ava/README.md)
+- [MultiSports](/tools/data/multisports/README.md)
 
 ## Train
 

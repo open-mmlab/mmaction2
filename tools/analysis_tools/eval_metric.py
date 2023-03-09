@@ -5,6 +5,7 @@ import mmengine
 from mmengine import Config, DictAction
 from mmengine.evaluator import Evaluator
 from mmengine.registry import init_default_scope
+from rich import print
 
 
 def parse_args():

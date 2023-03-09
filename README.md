@@ -271,6 +271,12 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/ava_kinetics/README.md">AVA-Kinetics</a> (<a href="https://research.google.com/ava/index.html">Homepage</a>) (Arxiv'2020)</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/multisports/README.md">MultiSports</a> (<a href="https://deeperaction.github.io/datasets/multisports.html">Homepage</a>) (ICCV'2021)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
     <td colspan="4" style="font-weight:bold;">Skeleton-based Action Recognition</td>
   </tr>
   <tr>
