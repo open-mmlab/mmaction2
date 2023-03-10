@@ -57,7 +57,7 @@ jobs:
       - run:
           name: Configure Python & pip
           command: |
-            python -m pip install --upgrade pip numpy
+            python -m pip install --upgrade pip
             python -m pip install wheel
       - run:
           name: Install PyTorch
@@ -78,6 +78,7 @@ jobs:
           name: Install mmaction dependencies
           command: |
             python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
+            python -m pip install --upgrade pip numpy
             python -m pip install mmdet
             python -m pip install mmcls
             python -m pip install -r requirements.txt
@@ -134,6 +135,7 @@ jobs:
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmdetection/
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification/
             docker exec mmaction pip install -r requirements.txt
+            docker exec mmaction pip install --upgrade pip numpy
       - when:
           condition:
             equal: [ "1.8.1", << parameters.torch >> ]
