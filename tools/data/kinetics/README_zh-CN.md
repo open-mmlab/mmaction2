@@ -22,7 +22,9 @@
 
 |   数据集    | 训练视频 | 验证集视频 |
 | :---------: | :------: | :--------: |
-| kinetics400 |  240436  |   19796    |
+| Kinetics400 |  240436  |   19796    |
+| Kinetics600 |  383393  |   27910    |
+| Kinetics700 |  542357  |   34824    |
 
 ## 1. 准备标注文件
 
@@ -41,6 +43,8 @@ bash download_backup_annotations.sh ${DATASET}
 ```
 
 ## 2. 准备视频
+
+**推荐**：我们通过 [OpenDataLab](https://opendatalab.com/) 共享了我们使用的 Kinetics 数据集 ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700))，MMAction2 代码仓库中提供的 Kinetics 实验性能，都是基于这个版本的数据得到的。为了更公平的对比算法性能，我们建议用户使用这个版本的 Kinetics 数据集进行实验。如果你下载了我们提供的数据集，那么可以直接跳到第 3 小节。
 
 用户可以使用以下脚本准备视频，视频准备代码修改自 [官方爬虫](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics)。注意这一步骤将花费较长时间。
 

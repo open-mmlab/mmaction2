@@ -24,6 +24,8 @@ Because of the expirations of some YouTube links, the sizes of kinetics dataset 
 |   Dataset   | training videos | validation videos |
 | :---------: | :-------------: | :---------------: |
 | kinetics400 |     240436      |       19796       |
+| Kinetics600 |     383393      |       27910       |
+| Kinetics700 |     542357      |       34824       |
 
 :::
 
@@ -45,6 +47,8 @@ bash download_backup_annotations.sh ${DATASET}
 ```
 
 ## Step 2. Prepare Videos
+
+**Recommend** [OpenDataLab](https://opendatalab.com/) help us release the Kinetics dataset ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)) held by us, all experiments on Kinetics in MMAction2 are based on this version, we suggest users experiments with this version for a fair comparison. You can skip the remaining parts in this step if you download the dataset we provided.
 
 Then, you can run the following script to prepare videos.
 The codes are adapted from the [official crawler](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics). Note that this might take a long time.
