@@ -135,6 +135,7 @@ jobs:
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmdetection/
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification/
             docker exec mmaction pip install -r requirements.txt
+            docker exec mmaction pip install --upgrade pip numpy
       - when:
           condition:
             equal: [ "1.8.1", << parameters.torch >> ]
