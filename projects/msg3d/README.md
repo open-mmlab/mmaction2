@@ -82,13 +82,13 @@ mim test mmaction configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py $
 
 | frame sampling strategy | modality | gpus | backbone | top1 acc | testing protocol |                                  config                                  |    ckpt    |    log    |
 | :---------------------: | :------: | :--: | :------: | :------: | :--------------: | :----------------------------------------------------------------------: | :--------: | :-------: |
-|       uniform 100       |  joint   |  8   |  MSG3D   |    92.3     |     10 clips     | [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py) | [ckpt](<>) | [log](<>) |
+|       uniform 100       |  joint   |  8   |  MSG3D   |    92.3     |     10 clips     | [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20230309-73b97296.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.log) |
 
 ### NTU60_XSub_3D
 
 | frame sampling strategy | modality | gpus | backbone | top1 acc | testing protocol |                                  config                                  |    ckpt    |    log    |
 | :---------------------: | :------: | :--: | :------: | :------: | :--------------: | :----------------------------------------------------------------------: | :--------: | :-------: |
-|       uniform 100       |  joint   |  8   |  MSG3D   |   89.6     |     10 clips     | [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](<>) | [log](<>) |
+|       uniform 100       |  joint   |  8   |  MSG3D   |   89.6     |     10 clips     | [config](./configs/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d_20230308-c325d222.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-3d.log) |
 
 ## Citation
 
