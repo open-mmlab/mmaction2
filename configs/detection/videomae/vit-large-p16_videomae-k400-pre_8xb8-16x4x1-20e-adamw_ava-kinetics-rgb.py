@@ -2,7 +2,8 @@ _base_ = ['../../_base_/default_runtime.py']
 
 url = (
     'https://download.openmmlab.com/mmaction/v1.0/recognition/videomae/'
-    'vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-229dbb03.pth')
+    'vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-229dbb03.pth'
+)
 
 model = dict(
     type='FastRCNN',

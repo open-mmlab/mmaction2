@@ -12,6 +12,7 @@ from mmaction.registry import OPTIM_WRAPPER_CONSTRUCTORS
 
 def get_layer_id_for_vit(var_name: str, max_layer_id: int) -> int:
     """Get the layer id to set the different learning rates for ViT.
+
     Args:
         var_name (str): The key of the model.
         num_max_layer (int): Maximum number of backbone layers.
