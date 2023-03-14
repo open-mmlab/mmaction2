@@ -8,6 +8,7 @@
     - [Step 1. Prepare Annotations](#step-1-prepare-annotations)
     - [Step 2. Train](#step-2-train)
     - [Step 3. Test](#step-3-test)
+    - [Step 4. Submit Results](#step-4-submit-results)
   - [5. Visualize Ground Truth and Prediction](#5-visualize-ground-truth-and-prediction)
   - [6. Baseline Algorithms](#6-baseline-algorithms)
     - [6.1 SlowFast-Det Baseline](#61-slowfast-det-baseline)
@@ -78,7 +79,7 @@ python convert_anno.py
 You can use the following command to train a model.
 
 ```shell
-python project/multisports/tools/train.py project/multisports/ms_lib/configs/slowfast-det_multisports.py
+python tools/train.py configs/slowfast-det_multisports.py
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
@@ -88,13 +89,15 @@ For more details, you can refer to the **Training** part in the [Training and Te
 You can use the following command to test a model and dump the result.
 
 ```shell
-python project/multisports/tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} --dump ${OUT_PATH}
+python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} --dump ${OUT_PATH}
 ```
 
-We further provide a script to convert the result to the requested format of MultiSports track.
+### Step 4. Submit Results
+
+We further provide a script to convert the result to the required format of MultiSports track.
 
 ```shell
-python project/multisports/tools/generate_upload_result.py ${ORI_RESULT_PATH} ${UPLOAD_RESULT_PATH}
+python tools/generate_upload_result.py ${ORI_RESULT_PATH} ${UPLOAD_RESULT_PATH}
 ```
 
 ## 5. Visualize Ground Truth and Prediction
