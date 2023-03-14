@@ -1,6 +1,6 @@
-# Baseline Code for DeeperAction Challenge - [MultiSports Track on Human Action Detection](https://codalab.lisn.upsaclay.fr/competitions/3736)
+# DeeperAction Challenge Track 2 - [MultiSports Challenge on Human Action Detection](https://codalab.lisn.upsaclay.fr/competitions/3736)
 
-- [Baseline Code for DeeperAction Challenge - MultiSports Track on Human Action Detection](#baseline-code-for-deeperaction-challenge---multisports-track-on-human-action-detection)
+- [DeeperAction Challenge Track 2 - MultiSports Challenge on Human Action Detection](#deeperaction-challenge-track-2---multisports-challenge-on-human-action-detection)
   - [1. Competition Introduction](#1-competition-introduction)
   - [2. Download the Dataset](#2-download-the-dataset)
   - [3. Install MMAction2](#3-install-mmaction2)
@@ -14,6 +14,7 @@
     - [6.1 SlowFast-Det Baseline](#61-slowfast-det-baseline)
     - [6.2 Spatio-Temporal Action Detection Under Large Motion (1st place in ECCV'2022)](#62-spatio-temporal-action-detection-under-large-motion-1st-place-in-eccv2022)
     - [6.3 Person-Context Cross Attention for Spatio-Temporal Action Detection (1st place in ICCV'2021)](#63-person-context-cross-attention-for-spatio-temporal-action-detection-1st-place-in-iccv2021)
+  - [7. Quick Tutorial to Add a New Module](#7-quick-tutorial-to-add-a-new-module)
 
 ## 1. Competition Introduction
 
@@ -163,3 +164,56 @@ We further provide some stronger algorithms on MultiSports, you can take them as
 | :--------------------: | :--------------------------------------------------------------------------------------: | :-----------------------------------------------------------: | :--------: |
 |  Cross Attention Head  | cross attention transformer head for person-context modeling and human action prediction | [code](./lib/models/roi_heads/roi_extractors/single_toi3d.py) | [link](<>) |
 | class balanced sampler |                decoupling strategy deals with the class imbalance problem                | [code](./lib/models/roi_heads/roi_extractors/single_toi3d.py) | [link](<>) |
+
+## 7. Quick Tutorial to Add a New Module
+
+In the last section, we provide several examples about add new modules into MMAction2.
+
+Here we further show key steps to develop a new module with the example of TSNHead as the following.
+
+1. Create a new file `mmaction/models/heads/tsn_head.py`.
+
+   You can write a new classification head inheriting from [BaseHead](/mmaction/models/heads/base.py),
+   and overwrite `init_weights(self)` and `forward(self, x)` method.
+
+   We use Registry to manage modules, please note to register the new module by `@MODELS.register_module()`.
+   You can refer to [MMEngine](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html) to learn more details about Registry.
+
+   ```python
+   from mmaction.registry import MODELS
+   from mmaction.models import BaseHead
+
+
+   @MODELS.register_module()
+   class TSNHead(BaseHead):
+
+       def __init__(self, arg1, arg2):
+           pass
+
+       def forward(self, x):
+           pass
+
+       def init_weights(self):
+           pass
+   ```
+
+2. Import the module in `mmaction/models/heads/__init__.py`
+
+   ```python
+   from .tsn_head import TSNHead
+   ```
+
+3. Use it in your config file
+
+   ```python
+   model = dict(
+       ...
+       cls_head=dict(
+           type='TSNHead',
+           num_classes=400,
+           in_channels=2048,
+           arg1=xxx,
+           arg2=xxx),
+   ```
+
+more details about config file can refer to this [doc](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/docs/en/user_guides/1_config.md#config-system-for-spatio-temporal-action-detection)
