@@ -292,7 +292,9 @@ def ava_eval(result_file,
     results['person_movement'] = person_movement
     results['object_manipulation'] = object_manipulation
     results['person_interaction'] = person_interaction
-    for k, class_name, ap in cls_AP:
-        results[class_name] = ap
+
+    if verbose:
+        for k, class_name, ap in cls_AP:
+            print(f'Class {class_name} AP: {ap:.4f}', flush=True)
 
     return results
