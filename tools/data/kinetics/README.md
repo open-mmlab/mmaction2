@@ -48,7 +48,7 @@ bash download_backup_annotations.sh ${DATASET}
 
 ## Step 2. Prepare Videos
 
-**Recommend** [OpenDataLab](https://opendatalab.com/) help us release the Kinetics dataset ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)) held by us, all experiments on Kinetics in MMAction2 are based on this version, we suggest users experiments with this version for a fair comparison. You can skip the remaining parts in this step if you download the dataset we provided.
+**Recommend** [OpenDataLab](https://opendatalab.com/) helps us release the Kinetics dataset ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)) held by us, all experiments on Kinetics in MMAction2 are based on this version, so we recommend users experiment with this version for a fair comparison. You can skip the remaining parts in this step if you download the dataset we provided.
 
 Then, you can run the following script to prepare videos.
 The codes are adapted from the [official crawler](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics). Note that this might take a long time.
