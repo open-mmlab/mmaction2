@@ -1,0 +1,47 @@
+Collections:
+- Name: VideoMAE
+  README: configs/detection/videomae/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2203.12602
+    Title: "VideoMAE: Masked Autoencoders are Data-Efficient Learners for Self-Supervised Video Pre-Training"
+
+Models:
+  - Name: vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb
+    Config: configs/detection/videomae/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.py
+    In Collection: VideoMAE
+    Metadata:
+      Architecture: Vision Transformer
+      Batch Size: 64
+      Epochs: 20
+      Pretrained: Kinetics-400
+      Resolution: short-side 320
+      Training Data: AVA v2.2
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.2
+        Task: Action Detection
+        Metrics:
+              mAP: 33.6
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/videomae/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/videomae/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb_20230314-3dafab75.pth
+
+  - Name: vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb
+    Config: configs/detection/videomae/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.py
+    In Collection: VideoMAE
+    Metadata:
+      Architecture: Vision Transformer
+      Batch Size: 128
+      Epochs: 20
+      Pretrained: Kinetics-400
+      Resolution: short-side 320
+      Training Data: AVA v2.2
+      Training Resources: 32 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.2
+        Task: Action Detection
+        Metrics:
+              mAP: 38.7
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/videomae/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/videomae/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb_20230314-bf93c9ea.pth

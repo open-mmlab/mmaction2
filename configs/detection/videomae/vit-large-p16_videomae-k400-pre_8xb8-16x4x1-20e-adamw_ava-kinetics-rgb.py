@@ -2,14 +2,14 @@ _base_ = ['../../_base_/default_runtime.py']
 
 url = (
     'https://download.openmmlab.com/mmaction/v1.0/recognition/videomae/'
-    'vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-860a3cd3.pth')
+    'vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-229dbb03.pth')
 
 model = dict(
     type='FastRCNN',
     _scope_='mmdet',
     init_cfg=dict(type='Pretrained', checkpoint=url),
     backbone=dict(
-        type='VisionTransformer',
+        type='mmaction.VisionTransformer',
         img_size=224,
         patch_size=16,
         embed_dims=1024,
@@ -152,8 +152,13 @@ param_scheduler = [
 ]
 
 optim_wrapper = dict(
-    optimizer=dict(type='AdamW', lr=1e-4, weight_decay=0.05),
-    paramwise_cfg=dict(norm_decay_mult=0.0, bias_decay_mult=0.0),
+    optimizer=dict(type='AdamW', lr=2.5e-4, weight_decay=0.05),
+    constructor='LearningRateDecayOptimizerConstructor',
+    paramwise_cfg={
+        'decay_rate': 0.8,
+        'decay_type': 'layer_wise',
+        'num_layers': 24
+    },
     clip_grad=dict(max_norm=40, norm_type=2))
 
 default_hooks = dict(checkpoint=dict(max_keep_ckpts=2))
@@ -163,4 +168,3 @@ default_hooks = dict(checkpoint=dict(max_keep_ckpts=2))
 #       or not by default.
 #   - `base_batch_size` = (8 GPUs) x (8 samples per GPU).
 auto_scale_lr = dict(enable=False, base_batch_size=64)
-find_unused_parameters = True

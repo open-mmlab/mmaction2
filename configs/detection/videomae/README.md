@@ -26,7 +26,8 @@ Currently, we use the training set of AVA-Kinetics and evaluate on the AVA2.2 va
 
 | frame sampling strategy | resolution | gpus | backbone |   pretrain   | mAP  |                      config                      |                      ckpt                      |                      log                      |
 | :---------------------: | :--------: | :--: | :------: | :----------: | :--: | :----------------------------------------------: | :--------------------------------------------: | :-------------------------------------------: |
-|         16x4x1          |    raw     |  8   | ViT Base | Kinetics-400 | 30.9 | [config](/configs/detection/ava_kinetics/slowonly_k400-pre-r50_8xb8-4x16x1-10e_ava-kinetics-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/ava_kinetics/slowonly_k400-pre-r50_8xb8-4x16x1-10e_ava-kinetics-rgb/slowonly_k400-pre-r50_8xb8-4x16x1-10e_ava-kinetics-rgb_20221205-33e3ca7c.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/ava_kinetics/slowonly_k400-pre-r50_8xb8-4x16x1-10e_ava-kinetics-rgb/slowonly_k400-pre-r50_8xb8-4x16x1-10e_ava-kinetics-rgb.log) |
+|         16x4x1          |    raw     |  8   | ViT Base | Kinetics-400 | 33.6 | [config](/configs/detection/videomae/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/videomae/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb_20230314-3dafab75.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/videomae/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.log) |
+|         16x4x1          |    raw     |  8   | ViT Large | Kinetics-400 | 38.7 | [config](/configs/detection/videomae/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/videomae/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb_20230314-bf93c9ea.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/videomae/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb/vit-large-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.log) |
 
 ## Train
 
@@ -36,10 +37,10 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train the SlowOnly model on AVA-Kinetics in a deterministic option.
+Example: train the ViT base model on AVA-Kinetics in a deterministic option.
 
 ```shell
-python tools/train.py configs/detection/ava_kinetics/slowonly_k400-pre-r50_8xb8-4x16x1-10e_ava-kinetics-rgb.py \
+python tools/train.py configs/detection/ava_kinetics/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
@@ -53,10 +54,10 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test the SlowOnly model on AVA-Kinetics and dump the result to a pkl file.
+Example: test the ViT base model on AVA-Kinetics and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/detection/ava_kinetics/slowonly_k400-pre-r50_8xb8-4x16x1-10e_ava-kinetics-rgb.py \
+python tools/test.py configs/detection/ava_kinetics/vit-base-p16_videomae-k400-pre_8xb8-16x4x1-20e-adamw_ava-kinetics-rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
