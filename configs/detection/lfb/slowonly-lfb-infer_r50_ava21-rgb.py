@@ -1,6 +1,7 @@
 # This config is used to generate long-term feature bank.
-_base_ = ['../../_base_/default_runtime.py',
-          '../_base_/models/slowonly_r50.py']
+_base_ = [
+    '../../_base_/default_runtime.py', '../_base_/models/slowonly_r50.py'
+]
 
 # model settings
 lfb_prefix_path = 'data/ava/lfb_half'
@@ -29,7 +30,6 @@ label_file = f'{anno_root}/ava_action_list_v2.1_for_activitynet_2018.pbtxt'
 proposal_file_infer = (
     f'{anno_root}/ava_dense_proposals_{dataset_mode}.FAIR.recall_93.9.pkl')
 
-
 infer_pipeline = [
     dict(
         type='SampleAVAFrames', clip_len=4, frame_interval=16, test_mode=True),
@@ -38,7 +38,6 @@ infer_pipeline = [
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
     dict(type='PackActionInputs')
 ]
-
 
 test_dataloader = dict(
     batch_size=1,
