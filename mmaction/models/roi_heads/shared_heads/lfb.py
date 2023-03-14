@@ -133,7 +133,8 @@ class LFB:
         for video_id in self.lfb:
             video_features = self.lfb[video_id]
             for sec in video_features:
-                video_features[sec] = torch.stack(video_features[sec])
+                if isinstance(video_features[sec], (list, tuple)):
+                    video_features[sec] = torch.stack(video_features[sec])
             self.lfb[video_id] = video_features
         print(f'LFB has been loaded on {map_location}.')
 
