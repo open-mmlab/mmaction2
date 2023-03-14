@@ -104,7 +104,8 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
                         frame_paths: List[str],
                         det_score_thr: float = 0.9,
                         det_cat_id: int = 0,
-                        device: Union[str, torch.device] = 'cuda:0') -> tuple:
+                        device: Union[str, torch.device] = 'cuda:0',
+                        with_score: bool = False) -> tuple:
     """Detect human boxes given frame paths.
 
     Args:
@@ -117,6 +118,8 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
         det_cat_id (int): The category id for human detection. Defaults to 0.
         device (Union[str, torch.device]): The desired device of returned
             tensor. Defaults to ``'cuda:0'``.
+        with_score (bool): Whether to append detection score after box.
+            Defaults to None.
 
     Returns:
         List[np.ndarray]: List of detected human boxes.
@@ -141,10 +144,16 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
         det_data_sample: DetDataSample = inference_detector(model, frame_path)
         pred_instance = det_data_sample.pred_instances.cpu().numpy()
         bboxes = pred_instance.bboxes
+        scores = pred_instance.scores
         # We only keep human detection bboxs with score larger
         # than `det_score_thr` and category id equal to `det_cat_id`.
-        bboxes = bboxes[np.logical_and(pred_instance.labels == det_cat_id,
-                                       pred_instance.scores > det_score_thr)]
+        valid_idx = np.logical_and(pred_instance.labels == det_cat_id,
+                                   pred_instance.scores > det_score_thr)
+        bboxes = bboxes[valid_idx]
+        scores = scores[valid_idx]
+
+        if with_score:
+            bboxes = np.concatenate((bboxes, scores[:, None]), axis=-1)
         results.append(bboxes)
         data_samples.append(det_data_sample)
 
@@ -187,7 +196,7 @@ def pose_inference(pose_config: Union[str, Path, mmengine.Config],
     print('Performing Human Pose Estimation for each frame')
     for f, d in track_iter_progress(list(zip(frame_paths, det_results))):
         pose_data_samples: List[PoseDataSample] \
-            = inference_topdown(model, f, d, bbox_format='xyxy')
+            = inference_topdown(model, f, d[..., :4], bbox_format='xyxy')
         pose_data_sample = merge_data_samples(pose_data_samples)
         pose_data_sample.dataset_meta = model.dataset_meta
         poses = pose_data_sample.pred_instances.to_dict()

@@ -1,80 +1,22 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import abc
 import argparse
-import os
 import os.path as osp
-import random as rd
-import shutil
-import string
 from collections import defaultdict
+from tempfile import TemporaryDirectory
 
-import cv2
-import mmcv
+import mmengine
 import numpy as np
 
-try:
-    from mmdet.apis import inference_detector, init_detector
-except (ImportError, ModuleNotFoundError):
-    raise ImportError('Failed to import `inference_detector` and '
-                      '`init_detector` form `mmdet.apis`. These apis are '
-                      'required in this script! ')
-
-try:
-    from mmpose.apis import inference_top_down_pose_model, init_pose_model
-except (ImportError, ModuleNotFoundError):
-    raise ImportError('Failed to import `inference_top_down_pose_model` and '
-                      '`init_pose_model` form `mmpose.apis`. These apis are '
-                      'required in this script! ')
-
-mmdet_root = ''
-mmpose_root = ''
+from mmaction.apis import detection_inference, pose_inference
+from mmaction.utils import frame_extract
 
 args = abc.abstractproperty()
-args.det_config = f'{mmdet_root}/configs/faster_rcnn/faster_rcnn_r50_caffe_fpn_mstrain_1x_coco-person.py'  # noqa: E501
+args.det_config = 'demo/demo_configs/faster-rcnn_r50-caffe_fpn_ms-1x_coco-person.py'  # noqa: E501
 args.det_checkpoint = 'https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_1x_coco-person/faster_rcnn_r50_fpn_1x_coco-person_20201216_175929-d022e227.pth'  # noqa: E501
 args.det_score_thr = 0.5
-args.pose_config = f'{mmpose_root}/configs/body/2d_kpt_sview_rgb_img/topdown_heatmap/coco/hrnet_w32_coco_256x192.py'  # noqa: E501
+args.pose_config = 'demo/demo_configs/td-hm_hrnet-w32_8xb64-210e_coco-256x192_infer.py'  # noqa: E501
 args.pose_checkpoint = 'https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth'  # noqa: E501
-
-
-def gen_id(size=8):
-    chars = string.ascii_uppercase + string.digits
-    return ''.join(rd.choice(chars) for _ in range(size))
-
-
-def extract_frame(video_path):
-    dname = gen_id()
-    os.makedirs(dname, exist_ok=True)
-    frame_tmpl = osp.join(dname, 'img_{:05d}.jpg')
-    vid = cv2.VideoCapture(video_path)
-    frame_paths = []
-    flag, frame = vid.read()
-    cnt = 0
-    while flag:
-        frame_path = frame_tmpl.format(cnt + 1)
-        frame_paths.append(frame_path)
-
-        cv2.imwrite(frame_path, frame)
-        cnt += 1
-        flag, frame = vid.read()
-
-    return frame_paths
-
-
-def detection_inference(args, frame_paths):
-    model = init_detector(args.det_config, args.det_checkpoint, args.device)
-    assert model.CLASSES[0] == 'person', ('We require you to use a detector '
-                                          'trained on COCO')
-    results = []
-    print('Performing Human Detection for each frame')
-    prog_bar = mmcv.ProgressBar(len(frame_paths))
-    for frame_path in frame_paths:
-        result = inference_detector(model, frame_path)
-        # We only keep human detections with score larger than det_score_thr
-        result = result[0][result[0][:, 4] >= args.det_score_thr]
-        results.append(result)
-        prog_bar.update()
-    return results
 
 
 def intersection(b0, b1):
@@ -227,7 +169,7 @@ def tracklets2bbox(tracklet, num_frame):
                     mind = np.abs(k - idx)
                     mink = k
             bbox[idx] = bboxd[mink]
-    return bad, bbox
+    return bad, bbox[:, None, :]
 
 
 def bboxes2bbox(bbox, num_frame):
@@ -287,41 +229,34 @@ def ntu_det_postproc(vid, det_results):
         return bboxes2bbox(det_results, len(det_results))
 
 
-def pose_inference(args, frame_paths, det_results):
-    model = init_pose_model(args.pose_config, args.pose_checkpoint,
-                            args.device)
-    print('Performing Human Pose Estimation for each frame')
-    prog_bar = mmcv.ProgressBar(len(frame_paths))
-
-    num_frame = len(det_results)
-    num_person = max([len(x) for x in det_results])
-    kp = np.zeros((num_person, num_frame, 17, 3), dtype=np.float32)
-
-    for i, (f, d) in enumerate(zip(frame_paths, det_results)):
-        # Align input format
-        d = [dict(bbox=x) for x in list(d) if x[-1] > 0.5]
-        pose = inference_top_down_pose_model(model, f, d, format='xyxy')[0]
-        for j, item in enumerate(pose):
-            kp[j, i] = item['keypoints']
-        prog_bar.update()
-    return kp
-
-
 def ntu_pose_extraction(vid, skip_postproc=False):
-    frame_paths = extract_frame(vid)
-    det_results = detection_inference(args, frame_paths)
+    tmp_dir = TemporaryDirectory()
+    frame_paths, _ = frame_extract(vid, out_dir=tmp_dir.name)
+    det_results, _ = detection_inference(
+        args.det_config,
+        args.det_checkpoint,
+        frame_paths,
+        args.det_score_thr,
+        device=args.device,
+        with_score=True)
+
     if not skip_postproc:
         det_results = ntu_det_postproc(vid, det_results)
-    pose_results = pose_inference(args, frame_paths, det_results)
+    pose_results, _ = pose_inference(args.pose_config, args.pose_checkpoint,
+                                     frame_paths, det_results, args.device)
+
     anno = dict()
-    anno['keypoint'] = pose_results[..., :2]
-    anno['keypoint_score'] = pose_results[..., 2]
+    anno['keypoint'] = np.stack(
+        [pose['keypoints'].astype(np.float32) for pose in pose_results],
+        axis=1)
+    anno['keypoint_score'] = np.stack(
+        [pose['keypoint_scores'] for pose in pose_results], axis=1)
     anno['frame_dir'] = osp.splitext(osp.basename(vid))[0]
     anno['img_shape'] = (1080, 1920)
     anno['original_shape'] = (1080, 1920)
-    anno['total_frames'] = pose_results.shape[1]
+    anno['total_frames'] = len(pose_results)
     anno['label'] = int(osp.basename(vid).split('A')[1][:3]) - 1
-    shutil.rmtree(osp.dirname(frame_paths[0]))
+    tmp_dir.cleanup()
 
     return anno
 
@@ -344,4 +279,4 @@ if __name__ == '__main__':
     args.output = global_args.output
     args.skip_postproc = global_args.skip_postproc
     anno = ntu_pose_extraction(args.video, args.skip_postproc)
-    mmcv.dump(anno, args.output)
+    mmengine.dump(anno, args.output)
