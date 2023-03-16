@@ -54,7 +54,7 @@ test_pipeline = [
         twice_sample=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='TenCrop', crop_size=224),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
