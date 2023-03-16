@@ -34,10 +34,11 @@ def main():
     elif len(args.shape) == 2:
         input_shape = (1, 3) + tuple(args.shape)
     elif len(args.shape) == 4:
-        # n, c, h, w = args.shape
+        # n, c, h, w = args.shape for 2D recognizer
         input_shape = tuple(args.shape)
     elif len(args.shape) == 5:
-        # n, c, t, h, w = args.shape
+        # n, c, t, h, w = args.shape for 3D recognizer or
+        # n, m, t, v, c = args.shape for GCN-based recognizer
         input_shape = tuple(args.shape)
     else:
         raise ValueError('invalid input shape')
@@ -57,6 +58,8 @@ def main():
     analysis_results = get_model_complexity_info(model, input_shape)
     flops = analysis_results['flops_str']
     params = analysis_results['params_str']
+    table = analysis_results['out_table']
+    print(table)
     split_line = '=' * 30
     print(f'\n{split_line}\nInput shape: {input_shape}\n'
           f'Flops: {flops}\nParams: {params}\n{split_line}')
