@@ -190,7 +190,7 @@ def test_tpn():
 
     recognizer = MODELS.build(config.model)
 
-    input_shape = (1, 8, 3, 224, 224)
+    input_shape = (1, 8, 3, 32, 32)
     demo_inputs = generate_recognizer_demo_inputs(input_shape)
 
     imgs = demo_inputs['imgs']
