@@ -768,10 +768,18 @@ class PreNormalize2D(BaseTransform):
     Args:
         img_shape (tuple[int, int]): The resolution of the original video.
             Defaults to ``(1080, 1920)``.
+        threshold (float): The score threshold for masking keypoint.
+            The keypoints with scores less than the threshold will
+            be masked with 0. Defaults to 0.
+        mode (str): The mode for normalization. Defaults to ``'fix'``.
     """
 
-    def __init__(self, img_shape: Tuple[int, int] = (1080, 1920)) -> None:
+    def __init__(self, img_shape: Tuple[int, int] = (1080, 1920),
+                 threshold: float = 0., mode: str = 'fix') -> None:
         self.img_shape = img_shape
+        self.threshold = threshold
+        self.mode = mode
+        assert mode in ['fix', 'auto']
 
     def transform(self, results: Dict) -> Dict:
         """The transform function of :class:`PreNormalize2D`.
@@ -782,16 +790,46 @@ class PreNormalize2D(BaseTransform):
         Returns:
             dict: The result dict.
         """
-        h, w = results.get('img_shape', self.img_shape)
-        results['keypoint'][..., 0] = \
-            (results['keypoint'][..., 0] - (w / 2)) / (w / 2)
-        results['keypoint'][..., 1] = \
-            (results['keypoint'][..., 1] - (h / 2)) / (h / 2)
+        mask, maskout, keypoint = None, None, results['keypoint'].astype(np.float32)
+        if 'keypoint_score' in results:
+            keypoint_score = results.pop('keypoint_score').astype(np.float32)
+            keypoint = np.concatenate([keypoint, keypoint_score[..., None]], axis=-1)
+
+        if keypoint.shape[-1] == 3:
+            mask = keypoint[..., 2] > self.threshold
+            maskout = keypoint[..., 2] <= self.threshold
+
+        if self.mode == 'auto':
+            if mask is not None:
+                if np.sum(mask):
+                    x_max, x_min = np.max(keypoint[mask, 0]), np.min(keypoint[mask, 0])
+                    y_max, y_min = np.max(keypoint[mask, 1]), np.min(keypoint[mask, 1])
+                else:
+                    x_max, x_min, y_max, y_min = 0, 0, 0, 0
+            else:
+                x_max, x_min = np.max(keypoint[..., 0]), np.min(keypoint[..., 0])
+                y_max, y_min = np.max(keypoint[..., 1]), np.min(keypoint[..., 1])
+            if (x_max - x_min) > 10 and (y_max - y_min) > 10:
+                keypoint[..., 0] = (keypoint[..., 0] - (x_max + x_min) / 2) / (x_max - x_min) * 2
+                keypoint[..., 1] = (keypoint[..., 1] - (y_max + y_min) / 2) / (y_max - y_min) * 2
+
+        else:
+            h, w = results.get('img_shape', self.img_shape)
+            keypoint[..., 0] = (keypoint[..., 0] - (w / 2)) / (w / 2)
+            keypoint[..., 1] = (keypoint[..., 1] - (h / 2)) / (h / 2)
+
+        if maskout is not None:
+            keypoint[..., 0][maskout] = 0
+            keypoint[..., 1][maskout] = 0
+
+        results['keypoint'] = keypoint
         return results
 
     def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
-                    f'img_shape={self.img_shape})')
+                    f'img_shape={self.img_shape},'
+                    f'threshold={self.threshold},'
+                    f'mode={self.mode})')
         return repr_str
 
 
@@ -819,7 +857,7 @@ class JointToBone(BaseTransform):
                  target: str = 'keypoint') -> None:
         self.dataset = dataset
         self.target = target
-        if self.dataset not in ['nturgb+d', 'openpose', 'coco']:
+        if self.dataset not in ['nturgb+d', 'openpose', 'coco', 'coco-hand']:
             raise ValueError(
                 f'The dataset type {self.dataset} is not supported')
         if self.dataset == 'nturgb+d':
@@ -837,6 +875,10 @@ class JointToBone(BaseTransform):
             self.pairs = ((0, 0), (1, 0), (2, 0), (3, 1), (4, 2), (5, 0),
                           (6, 0), (7, 5), (8, 6), (9, 7), (10, 8), (11, 0),
                           (12, 0), (13, 11), (14, 12), (15, 13), (16, 14))
+        elif self.dataset == 'coco-hand':
+            self.pairs = ((0, 0), (1, 0), (2, 1), (3, 2), (4, 3), (5, 0), (6, 5), (7, 6), (8, 7), (9, 0), (10, 9),
+                          (11, 10), (12, 11), (13, 0), (14, 13), (15, 14), (16, 15), (17, 0), (18, 17), (19, 18),
+                          (20, 19))
 
     def transform(self, results: Dict) -> Dict:
         """The transform function of :class:`JointToBone`.
@@ -854,7 +896,7 @@ class JointToBone(BaseTransform):
         assert C in [2, 3]
         for v1, v2 in self.pairs:
             bone[..., v1, :] = keypoint[..., v1, :] - keypoint[..., v2, :]
-            if C == 3 and self.dataset in ['openpose', 'coco']:
+            if C == 3 and self.dataset in ['openpose', 'coco', 'coco-hand']:
                 score = (keypoint[..., v1, 2] + keypoint[..., v2, 2]) / 2
                 bone[..., v1, 2] = score
 

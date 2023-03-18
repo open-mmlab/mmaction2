@@ -112,7 +112,8 @@ class Graph:
 
     Args:
         layout (str): must be one of the following candidates:
-            'openpose', 'nturgb+d', 'coco'. Defaults to ``'coco'``.
+            'openpose', 'nturgb+d', 'coco', 'coco-hand'.
+            Defaults to ``'coco'``.
         mode (str): must be one of the following candidates:
             'stgcn_spatial', 'spatial'. Defaults to ``'spatial'``.
         max_hop (int): the maximal distance between two connected
@@ -128,7 +129,7 @@ class Graph:
         self.layout = layout
         self.mode = mode
 
-        assert layout in ['openpose', 'nturgb+d', 'coco']
+        assert layout in ['openpose', 'nturgb+d', 'coco', 'coco-hand']
 
         self.set_layout(layout)
         self.hop_dis = get_hop_distance(self.num_node, self.inward, max_hop)
@@ -162,6 +163,14 @@ class Graph:
             self.inward = [(15, 13), (13, 11), (16, 14), (14, 12), (11, 5),
                            (12, 6), (9, 7), (7, 5), (10, 8), (8, 6), (5, 0),
                            (6, 0), (1, 0), (3, 1), (2, 0), (4, 2)]
+            self.center = 0
+        elif layout == 'coco-hand':
+            self.num_node = 21
+            self.inward = [
+                (1, 0), (2, 1), (3, 2), (4, 3), (5, 0), (6, 5), (7, 6), (8, 7),
+                (9, 0), (10, 9), (11, 10), (12, 11), (13, 0), (14, 13),
+                (15, 14), (16, 15), (17, 0), (18, 17), (19, 18), (20, 19)
+            ]
             self.center = 0
         else:
             raise ValueError(f'Do Not Exist This Layout: {layout}')
