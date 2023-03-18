@@ -1,28 +1,56 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import cv2
 import time
+
+import cv2
 import numpy as np
 import torch
-
 from mmengine.dataset import Compose
-from mmaction.apis import init_recognizer, inference_recognizer
-
 from mmpose.apis import inference_topdown, init_model
 from mmpose.structures import merge_data_samples
 
+from mmaction.apis import inference_recognizer, init_recognizer
 
 label_names = [
-    'Doing other things', 'Drumming Fingers', 'No gesture',  # 0
-    'Pulling Hand In', 'Pulling Two Fingers In', 'Pushing Hand Away', 'Pushing Two Fingers Away',  # 3
-    'Rolling Hand Backward', 'Rolling Hand Forward', 'Shaking Hand',  # 7
-    'Sliding Two Fingers Down', 'Sliding Two Fingers Left',  # 10
-    'Sliding Two Fingers Right', 'Sliding Two Fingers Up',  # 12
-    'Stop Sign', 'Swiping Down', 'Swiping Left', 'Swiping Right', 'Swiping Up',  # 14
-    'Dislike', 'Like', 'Turning Hand Clockwise', 'Turning Hand Counterclockwise',  # 19
-    'Zooming In With Full Hand', 'Zooming In With Two Fingers',  # 23
-    'Zooming Out With Full Hand', 'Zooming Out With Two Fingers',  # 25
-    'Call', 'Fist', 'Four', 'Mute', 'OK', 'One', 'Palm',  # 27
-    'Peace', 'Rock', 'Three-Middle', 'Three-Left', 'Two Up', 'No Gesture'  # 34
+    'Doing other things',
+    'Drumming Fingers',
+    'No gesture',  # 0
+    'Pulling Hand In',
+    'Pulling Two Fingers In',
+    'Pushing Hand Away',
+    'Pushing Two Fingers Away',  # 3
+    'Rolling Hand Backward',
+    'Rolling Hand Forward',
+    'Shaking Hand',  # 7
+    'Sliding Two Fingers Down',
+    'Sliding Two Fingers Left',  # 10
+    'Sliding Two Fingers Right',
+    'Sliding Two Fingers Up',  # 12
+    'Stop Sign',
+    'Swiping Down',
+    'Swiping Left',
+    'Swiping Right',
+    'Swiping Up',  # 14
+    'Dislike',
+    'Like',
+    'Turning Hand Clockwise',
+    'Turning Hand Counterclockwise',  # 19
+    'Zooming In With Full Hand',
+    'Zooming In With Two Fingers',  # 23
+    'Zooming Out With Full Hand',
+    'Zooming Out With Two Fingers',  # 25
+    'Call',
+    'Fist',
+    'Four',
+    'Mute',
+    'OK',
+    'One',
+    'Palm',  # 27
+    'Peace',
+    'Rock',
+    'Three-Middle',
+    'Three-Left',
+    'Two Up',
+    'No Gesture'  # 34
 ]
 
 
@@ -38,106 +66,53 @@ class HandVisualizer:
     _WHITE = (224, 224, 224)
 
     keypoint_info = {
-        0:
-        dict(name='wrist', id=0, color=_RED),
-        1:
-        dict(name='thumb1', id=1, color=_RED),
-        2:
-        dict(name='thumb2', id=2, color=_PEACH),
-        3:
-        dict(name='thumb3', id=3, color=_PEACH),
-        4:
-        dict(name='thumb4', id=4, color=_PEACH),
-        5:
-        dict(name='forefinger1', id=5, color=_RED),
-        6:
-        dict(name='forefinger2', id=6, color=_PURPLE),
-        7:
-        dict(name='forefinger3', id=7, color=_PURPLE),
-        8:
-        dict(name='forefinger4', id=8, color=_PURPLE),
-        9:
-        dict(name='middle_finger1', id=9, color=_RED),
-        10:
-        dict(name='middle_finger2', id=10, color=_YELLOW),
-        11:
-        dict(name='middle_finger3', id=11, color=_YELLOW),
-        12:
-        dict(name='middle_finger4', id=12, color=_YELLOW),
-        13:
-        dict(name='ring_finger1', id=13, color=_RED),
-        14:
-        dict(name='ring_finger2', id=14, color=_GREEN),
-        15:
-        dict(name='ring_finger3', id=15, color=_GREEN),
-        16:
-        dict(name='ring_finger4', id=16, color=_GREEN),
-        17:
-        dict(name='pinky_finger1', id=17, color=_RED),
-        18:
-        dict(name='pinky_finger2', id=18, color=_BLUE),
-        19:
-        dict(name='pinky_finger3', id=19, color=_BLUE),
-        20:
-        dict(name='pinky_finger4', id=20, color=_BLUE)
+        0: dict(name='wrist', id=0, color=_RED),
+        1: dict(name='thumb1', id=1, color=_RED),
+        2: dict(name='thumb2', id=2, color=_PEACH),
+        3: dict(name='thumb3', id=3, color=_PEACH),
+        4: dict(name='thumb4', id=4, color=_PEACH),
+        5: dict(name='forefinger1', id=5, color=_RED),
+        6: dict(name='forefinger2', id=6, color=_PURPLE),
+        7: dict(name='forefinger3', id=7, color=_PURPLE),
+        8: dict(name='forefinger4', id=8, color=_PURPLE),
+        9: dict(name='middle_finger1', id=9, color=_RED),
+        10: dict(name='middle_finger2', id=10, color=_YELLOW),
+        11: dict(name='middle_finger3', id=11, color=_YELLOW),
+        12: dict(name='middle_finger4', id=12, color=_YELLOW),
+        13: dict(name='ring_finger1', id=13, color=_RED),
+        14: dict(name='ring_finger2', id=14, color=_GREEN),
+        15: dict(name='ring_finger3', id=15, color=_GREEN),
+        16: dict(name='ring_finger4', id=16, color=_GREEN),
+        17: dict(name='pinky_finger1', id=17, color=_RED),
+        18: dict(name='pinky_finger2', id=18, color=_BLUE),
+        19: dict(name='pinky_finger3', id=19, color=_BLUE),
+        20: dict(name='pinky_finger4', id=20, color=_BLUE)
     }
 
     skeleton_info = {
-        0:
-        dict(link=('wrist', 'thumb1'), id=0, color=_GRAY),
-        1:
-        dict(link=('thumb1', 'thumb2'), id=1, color=_PEACH),
-        2:
-        dict(link=('thumb2', 'thumb3'), id=2, color=_PEACH),
-        3:
-        dict(link=('thumb3', 'thumb4'), id=3, color=_PEACH),
-        4:
-        dict(link=('wrist', 'forefinger1'), id=4, color=_GRAY),
-        5:
-        dict(link=('forefinger1', 'forefinger2'), id=5, color=_PURPLE),
-        6:
-        dict(link=('forefinger2', 'forefinger3'), id=6, color=_PURPLE),
-        7:
-        dict(link=('forefinger3', 'forefinger4'), id=7, color=_PURPLE),
-        8:
-        dict(link=('wrist', 'middle_finger1'), id=8, color=_GRAY),
+        0: dict(link=('wrist', 'thumb1'), id=0, color=_GRAY),
+        1: dict(link=('thumb1', 'thumb2'), id=1, color=_PEACH),
+        2: dict(link=('thumb2', 'thumb3'), id=2, color=_PEACH),
+        3: dict(link=('thumb3', 'thumb4'), id=3, color=_PEACH),
+        4: dict(link=('wrist', 'forefinger1'), id=4, color=_GRAY),
+        5: dict(link=('forefinger1', 'forefinger2'), id=5, color=_PURPLE),
+        6: dict(link=('forefinger2', 'forefinger3'), id=6, color=_PURPLE),
+        7: dict(link=('forefinger3', 'forefinger4'), id=7, color=_PURPLE),
+        8: dict(link=('wrist', 'middle_finger1'), id=8, color=_GRAY),
         9:
-        dict(
-            link=('middle_finger1', 'middle_finger2'),
-            id=9,
-            color=_YELLOW),
+        dict(link=('middle_finger1', 'middle_finger2'), id=9, color=_YELLOW),
         10:
-        dict(
-            link=('middle_finger2', 'middle_finger3'),
-            id=10,
-            color=_YELLOW),
+        dict(link=('middle_finger2', 'middle_finger3'), id=10, color=_YELLOW),
         11:
-        dict(
-            link=('middle_finger3', 'middle_finger4'),
-            id=11,
-            color=_YELLOW),
-        12:
-        dict(link=('wrist', 'ring_finger1'), id=12, color=_GRAY),
-        13:
-        dict(
-            link=('ring_finger1', 'ring_finger2'), id=13, color=_GREEN),
-        14:
-        dict(
-            link=('ring_finger2', 'ring_finger3'), id=14, color=_GREEN),
-        15:
-        dict(
-            link=('ring_finger3', 'ring_finger4'), id=15, color=_GREEN),
-        16:
-        dict(link=('wrist', 'pinky_finger1'), id=16, color=_GRAY),
-        17:
-        dict(
-            link=('pinky_finger1', 'pinky_finger2'), id=17, color=_BLUE),
-        18:
-        dict(
-            link=('pinky_finger2', 'pinky_finger3'), id=18, color=_BLUE),
-        19:
-        dict(
-            link=('pinky_finger3', 'pinky_finger4'), id=19, color=_BLUE)
+        dict(link=('middle_finger3', 'middle_finger4'), id=11, color=_YELLOW),
+        12: dict(link=('wrist', 'ring_finger1'), id=12, color=_GRAY),
+        13: dict(link=('ring_finger1', 'ring_finger2'), id=13, color=_GREEN),
+        14: dict(link=('ring_finger2', 'ring_finger3'), id=14, color=_GREEN),
+        15: dict(link=('ring_finger3', 'ring_finger4'), id=15, color=_GREEN),
+        16: dict(link=('wrist', 'pinky_finger1'), id=16, color=_GRAY),
+        17: dict(link=('pinky_finger1', 'pinky_finger2'), id=17, color=_BLUE),
+        18: dict(link=('pinky_finger2', 'pinky_finger3'), id=18, color=_BLUE),
+        19: dict(link=('pinky_finger3', 'pinky_finger4'), id=19, color=_BLUE)
     }
 
     def __init__(self, radius=5, line_width=3):
@@ -158,8 +133,8 @@ class HandVisualizer:
             self.keypoint_colors.append(kpt['color'])
 
         for sk in self.skeleton_info.values():
-            self.skeleton_links.append(tuple(self.keypoint_name2id[n]
-                                             for n in sk['link']))
+            self.skeleton_links.append(
+                tuple(self.keypoint_name2id[n] for n in sk['link']))
             self.skeleton_link_colors.append(sk['color'])
 
     def draw_keypoints(self, img, keypoints):
@@ -175,8 +150,8 @@ class HandVisualizer:
                 x_coord, y_coord = int(kpt[0]), int(kpt[1])
                 cv2.circle(img, (int(x_coord), int(y_coord)),
                            self.radius_border, self._WHITE, -1)
-                cv2.circle(img, (int(x_coord), int(y_coord)),
-                           self.radius, color, -1)
+                cv2.circle(img, (int(x_coord), int(y_coord)), self.radius,
+                           color, -1)
 
 
 def kp2box(kpt, margin=0.2):
@@ -217,7 +192,7 @@ def create_fake_anno(history, keypoint, bbox, clip_len=10):
         idx = torch.argmax(ious)
         if ious[idx] >= 0.5:
             results.append(frame[idx][0])
-            bbox = anchors[idx: idx + 1]
+            bbox = anchors[idx:idx + 1]
         else:
             break
         if len(results) >= clip_len:
@@ -235,8 +210,10 @@ def create_fake_anno(history, keypoint, bbox, clip_len=10):
 
 
 def main():
-    pose_model = init_model('configs/rtmpose-m.py', 'checkpoints/rtmpose-m.pth', device='cpu')
-    recognizer = init_recognizer('configs/stgcnpp.py', 'checkpoints/hagrid.pth', device='cpu')
+    pose_model = init_model(
+        'configs/rtmpose-m.py', 'checkpoints/rtmpose-m.pth', device='cpu')
+    recognizer = init_recognizer(
+        'configs/stgcnpp.py', 'checkpoints/hagrid.pth', device='cpu')
     cfg = recognizer.cfg
     test_pipeline = Compose(cfg.test_pipeline)
 
@@ -286,7 +263,10 @@ def main():
         for box in boxes:
             box = flip_box(box)
             x, y, w, h = [int(v * s) for v, s in zip(box, (w, h, w, h))]
-            cv2.rectangle(image, (x, y), (x + w, y + h), color=(0, 0, 255), thickness=w // 120)
+            cv2.rectangle(
+                image, (x, y), (x + w, y + h),
+                color=(0, 0, 255),
+                thickness=w // 120)
 
         if frame_idx % predict_per_nframe == 0:
             if len(keypoints) == 0:
@@ -294,23 +274,29 @@ def main():
             else:
                 for keypoint, bbox in keypoints:
                     with torch.no_grad():
-                        sample = create_fake_anno(keypoints_buffer, keypoint, bbox)
-                        prediction = inference_recognizer(recognizer, sample,
-                                                          test_pipeline=test_pipeline)
+                        sample = create_fake_anno(keypoints_buffer, keypoint,
+                                                  bbox)
+                        prediction = inference_recognizer(
+                            recognizer, sample, test_pipeline=test_pipeline)
                         action = prediction.pred_labels.item
                         scores = prediction.pred_scores.item
                         action_name = label_names[action]
-                        results_buffer.append(f'{action_name}: {scores[action].item():.3f}')
+                        results_buffer.append(
+                            f'{action_name}: {scores[action].item():.3f}')
 
         FONTFACE = cv2.FONT_HERSHEY_DUPLEX
         FONTSCALE = 0.6
         THICKNESS = 1
         LINETYPE = 1
-        for i, (action_label, color) in enumerate(zip(results_buffer[::-1][:7], plate)):
-            cv2.putText(image, action_label, (10, 24 + i * 24), FONTFACE, FONTSCALE, color, THICKNESS, LINETYPE)
+        for i, (action_label,
+                color) in enumerate(zip(results_buffer[::-1][:7], plate)):
+            cv2.putText(image, action_label, (10, 24 + i * 24), FONTFACE,
+                        FONTSCALE, color, THICKNESS, LINETYPE)
 
-        cv2.putText(image, f'FPS: {round(frame_idx / (time.time() - start_time), 4)}',
-                    (10, 8 * 24), FONTFACE, FONTSCALE, (255, 0, 220), THICKNESS, LINETYPE)
+        cv2.putText(
+            image, f'FPS: {round(frame_idx / (time.time() - start_time), 4)}',
+            (10, 8 * 24), FONTFACE, FONTSCALE, (255, 0, 220), THICKNESS,
+            LINETYPE)
 
         keypoints_buffer.append(keypoints)
 

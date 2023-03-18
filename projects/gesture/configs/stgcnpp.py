@@ -15,10 +15,7 @@ model = dict(
 test_pipeline = [
     dict(type='PreNormalize2D', threshold=0, mode='auto'),
     dict(type='GenSkeFeat', dataset='coco-hand', feats=['j']),
-    dict(type='UniformSampleFrames',
-         clip_len=10,
-         num_clips=1,
-         test_mode=True),
+    dict(type='UniformSampleFrames', clip_len=10, num_clips=1, test_mode=True),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', num_person=1),
     dict(type='PackActionInputs')

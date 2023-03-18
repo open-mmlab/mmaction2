@@ -774,8 +774,10 @@ class PreNormalize2D(BaseTransform):
         mode (str): The mode for normalization. Defaults to ``'fix'``.
     """
 
-    def __init__(self, img_shape: Tuple[int, int] = (1080, 1920),
-                 threshold: float = 0., mode: str = 'fix') -> None:
+    def __init__(self,
+                 img_shape: Tuple[int, int] = (1080, 1920),
+                 threshold: float = 0.,
+                 mode: str = 'fix') -> None:
         self.img_shape = img_shape
         self.threshold = threshold
         self.mode = mode
@@ -790,10 +792,12 @@ class PreNormalize2D(BaseTransform):
         Returns:
             dict: The result dict.
         """
-        mask, maskout, keypoint = None, None, results['keypoint'].astype(np.float32)
+        mask, maskout, keypoint = None, None, results['keypoint'].astype(
+            np.float32)
         if 'keypoint_score' in results:
             keypoint_score = results.pop('keypoint_score').astype(np.float32)
-            keypoint = np.concatenate([keypoint, keypoint_score[..., None]], axis=-1)
+            keypoint = np.concatenate([keypoint, keypoint_score[..., None]],
+                                      axis=-1)
 
         if keypoint.shape[-1] == 3:
             mask = keypoint[..., 2] > self.threshold
@@ -802,16 +806,24 @@ class PreNormalize2D(BaseTransform):
         if self.mode == 'auto':
             if mask is not None:
                 if np.sum(mask):
-                    x_max, x_min = np.max(keypoint[mask, 0]), np.min(keypoint[mask, 0])
-                    y_max, y_min = np.max(keypoint[mask, 1]), np.min(keypoint[mask, 1])
+                    x_max, x_min = np.max(keypoint[mask,
+                                                   0]), np.min(keypoint[mask,
+                                                                        0])
+                    y_max, y_min = np.max(keypoint[mask,
+                                                   1]), np.min(keypoint[mask,
+                                                                        1])
                 else:
                     x_max, x_min, y_max, y_min = 0, 0, 0, 0
             else:
-                x_max, x_min = np.max(keypoint[..., 0]), np.min(keypoint[..., 0])
-                y_max, y_min = np.max(keypoint[..., 1]), np.min(keypoint[..., 1])
+                x_max, x_min = np.max(keypoint[..., 0]), np.min(keypoint[...,
+                                                                         0])
+                y_max, y_min = np.max(keypoint[..., 1]), np.min(keypoint[...,
+                                                                         1])
             if (x_max - x_min) > 10 and (y_max - y_min) > 10:
-                keypoint[..., 0] = (keypoint[..., 0] - (x_max + x_min) / 2) / (x_max - x_min) * 2
-                keypoint[..., 1] = (keypoint[..., 1] - (y_max + y_min) / 2) / (y_max - y_min) * 2
+                keypoint[..., 0] = (keypoint[..., 0] -
+                                    (x_max + x_min) / 2) / (x_max - x_min) * 2
+                keypoint[..., 1] = (keypoint[..., 1] -
+                                    (y_max + y_min) / 2) / (y_max - y_min) * 2
 
         else:
             h, w = results.get('img_shape', self.img_shape)
@@ -876,9 +888,10 @@ class JointToBone(BaseTransform):
                           (6, 0), (7, 5), (8, 6), (9, 7), (10, 8), (11, 0),
                           (12, 0), (13, 11), (14, 12), (15, 13), (16, 14))
         elif self.dataset == 'coco-hand':
-            self.pairs = ((0, 0), (1, 0), (2, 1), (3, 2), (4, 3), (5, 0), (6, 5), (7, 6), (8, 7), (9, 0), (10, 9),
-                          (11, 10), (12, 11), (13, 0), (14, 13), (15, 14), (16, 15), (17, 0), (18, 17), (19, 18),
-                          (20, 19))
+            self.pairs = ((0, 0), (1, 0), (2, 1), (3, 2), (4, 3), (5, 0),
+                          (6, 5), (7, 6), (8, 7), (9, 0), (10, 9), (11, 10),
+                          (12, 11), (13, 0), (14, 13), (15, 14), (16, 15),
+                          (17, 0), (18, 17), (19, 18), (20, 19))
 
     def transform(self, results: Dict) -> Dict:
         """The transform function of :class:`JointToBone`.
