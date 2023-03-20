@@ -345,8 +345,28 @@ class TestPoseTransforms:
         check_pose_normalize(
             results['keypoint'], ret2['keypoint'], h=1080, w=1920)
 
+        results = dict(keypoint=np.random.randn(1, 40, 17, 2),
+                       keypoint_score=np.ones((1, 40, 17)) * 0.05)
+        pre_normalize_2d = PreNormalize2D(threshold=0.1)
+        inp = copy.deepcopy(results)
+        ret3 = pre_normalize_2d(inp)
+        assert_array_equal(ret3['keypoint'][..., 0:2], np.zeros((1, 40, 17, 2)))
+
         assert repr(pre_normalize_2d) == \
-               'PreNormalize2D(img_shape=(1080, 1920))'
+               'PreNormalize2D(img_shape=(1080, 1920),threshold=0.1,mode=fix)'
+
+        results = dict(keypoint=np.random.uniform(0, 1, (1, 40, 17, 2)))
+        pre_normalize_2d = PreNormalize2D(mode='auto')
+        inp = copy.deepcopy(results)
+        ret4 = pre_normalize_2d(inp)
+        assert_array_almost_equal(ret4['keypoint'], results['keypoint'])
+
+        results = dict(keypoint=np.random.uniform(0, 1, (1, 40, 17, 2)),
+                       keypoint_score=np.ones((1, 40, 17)) * 0.05)
+        pre_normalize_2d = PreNormalize2D(threshold=0.1, mode='auto')
+        inp = copy.deepcopy(results)
+        ret5 = pre_normalize_2d(inp)
+        assert_array_equal(ret5['keypoint'][..., 0:2], np.zeros((1, 40, 17, 2)))
 
     @staticmethod
     def test_joint_to_bone():
@@ -375,6 +395,16 @@ class TestPoseTransforms:
 
         results = dict(keypoint=np.random.randn(2, 15, 17, 3))
         joint_to_bone = JointToBone(dataset='coco')
+        center_index = 0
+        center_score = results['keypoint'][..., center_index, 2]
+        results = joint_to_bone(results)
+        assert_array_equal(results['keypoint'][..., center_index, :2],
+                           np.zeros((2, 15, 2)))
+        assert_array_almost_equal(results['keypoint'][..., center_index, 2],
+                                  center_score)
+
+        results = dict(keypoint=np.random.randn(2, 15, 21, 3))
+        joint_to_bone = JointToBone(dataset='coco-hand')
         center_index = 0
         center_score = results['keypoint'][..., center_index, 2]
         results = joint_to_bone(results)
