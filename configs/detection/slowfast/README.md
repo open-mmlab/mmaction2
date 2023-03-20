@@ -79,8 +79,18 @@ For more details, you can refer to the **Test** part in the [Training and Test T
 @inproceedings{feichtenhofer2019slowfast,
   title={Slowfast networks for video recognition},
   author={Feichtenhofer, Christoph and Fan, Haoqi and Malik, Jitendra and He, Kaiming},
-  booktitle={Proceedings of the IEEE international conference on computer vision},
+  booktitle={ICCV},
   pages={6202--6211},
   year={2019}
+}
+```
+
+```BibTeX
+@inproceedings{gu2018ava,
+  title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
+  author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
+  booktitle={CVPR},
+  pages={6047--6056},
+  year={2018}
 }
 ```
