@@ -495,7 +495,7 @@ class UniFormer(BaseModule):
         attn_drop_rate (float): Attention dropout rate. Defaults to 0.0.
         drop_path_rate (float): Stochastic depth rates.
             Defaults to 0.0.
-        clip_pretrained (bool): Whether to load pretrained CLIP visual encoder.
+        pretrained2d (bool): Whether to load pretrained from 2D model.
             Defaults to True.
         pretrained (str): Name of pretrained model.
             Defaults to None.
@@ -519,7 +519,7 @@ class UniFormer(BaseModule):
         drop_rate: float = 0.,
         attn_drop_rate: float = 0.,
         drop_path_rate: float = 0.,
-        clip_pretrained: bool = True,
+        pretrained2d: bool = True,
         pretrained: Optional[str] = None,
         init_cfg: Optional[Union[Dict, List[Dict]]] = [
             dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
@@ -529,7 +529,7 @@ class UniFormer(BaseModule):
         super().__init__(init_cfg=init_cfg)
 
         self.pretrained = pretrained
-        self.clip_pretrained = clip_pretrained
+        self.pretrained2d = pretrained2d
         self.patch_embed1 = SpeicalPatchEmbed(
             img_size=img_size,
             patch_size=4,
@@ -641,7 +641,7 @@ class UniFormer(BaseModule):
 
     def init_weights(self):
         """Initialize the weights in backbone."""
-        if self.clip_pretrained:
+        if self.pretrained2d:
             logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
             self._load_pretrained(self.pretrained)
