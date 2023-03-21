@@ -48,7 +48,7 @@ Models:
         Top 1 Accuracy: 85.8
         Top 5 Accuracy: 97.1
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics400-rgb/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics400-rgb.log
-    Weights: (https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics400-rgb/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics400-rgb_20230313-75be0806.pth
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics400-rgb/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics400-rgb_20230313-75be0806.pth
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics400-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics400-rgb.py
