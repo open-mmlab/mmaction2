@@ -48,6 +48,8 @@
     <img src="https://user-images.githubusercontent.com/25839884/218346691-ceb2116a-465a-40af-8424-9f30d2348ca9.png" width="3%" alt="" /></a>
 </div>
 
+English | [简体中文](/README_zh-CN.md)
+
 ## Introduction
 
 MMAction2 is an open-source toolbox for video understanding based on PyTorch.

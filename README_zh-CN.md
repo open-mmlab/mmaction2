@@ -48,6 +48,8 @@
     <img src="https://user-images.githubusercontent.com/25839884/218346691-ceb2116a-465a-40af-8424-9f30d2348ca9.png" width="3%" alt="" /></a>
 </div>
 
+[English](/README.md) | 简体中文
+
 ## 简介
 
 MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLab](https://openmmlab.com/) 项目的成员之一
