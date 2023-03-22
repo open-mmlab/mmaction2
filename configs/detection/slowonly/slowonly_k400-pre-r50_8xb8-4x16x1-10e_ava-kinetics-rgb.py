@@ -1,13 +1,58 @@
-_base_ = [
-    '../../_base_/default_runtime.py', '../_base_/models/slowonly_r50.py'
-]
+_base_ = '../../_base_/default_runtime.py'
 
 url = ('https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/'
-       'slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-'
-       'rgb/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_'
-       'kinetics400-rgb_20220901-df42dc84.pth')
+       'slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics400-'
+       'rgb/slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_'
+       'kinetics400-rgb_20220901-e7b65fad.pth')
 
-model = dict(init_cfg=dict(type='Pretrained', checkpoint=url))
+model = dict(
+    type='FastRCNN',
+    _scope_='mmdet',
+    init_cfg=dict(type='Pretrained', checkpoint=url),
+    backbone=dict(
+        type='mmaction.ResNet3dSlowOnly',
+        depth=50,
+        pretrained=None,
+        pretrained2d=False,
+        lateral=False,
+        num_stages=4,
+        conv1_kernel=(1, 7, 7),
+        conv1_stride_t=1,
+        pool1_stride_t=1,
+        spatial_strides=(1, 2, 2, 1)),
+    roi_head=dict(
+        type='AVARoIHead',
+        bbox_roi_extractor=dict(
+            type='SingleRoIExtractor3D',
+            roi_layer_type='RoIAlign',
+            output_size=8,
+            with_temporal_pool=True),
+        bbox_head=dict(
+            type='BBoxHeadAVA',
+            in_channels=2048,
+            num_classes=81,
+            multilabel=True,
+            dropout_ratio=0.5)),
+    data_preprocessor=dict(
+        type='mmaction.ActionDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        format_shape='NCTHW'),
+    train_cfg=dict(
+        rcnn=dict(
+            assigner=dict(
+                type='MaxIoUAssignerAVA',
+                pos_iou_thr=0.9,
+                neg_iou_thr=0.9,
+                min_pos_iou=0.9),
+            sampler=dict(
+                type='RandomSampler',
+                num=32,
+                pos_fraction=1,
+                neg_pos_ub=-1,
+                add_gt_as_proposals=True),
+            pos_weight=1.0)),
+    test_cfg=dict(rcnn=None))
 
 dataset_type = 'AVAKineticsDataset'
 data_root = 'data/ava_kinetics/rawframes'
@@ -25,16 +70,9 @@ proposal_file_train = (f'{anno_root}/ava_dense_proposals_train.FAIR.'
                        'recall_93.9.pkl')
 proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 
-# file_client_args = dict(
-#     io_backend='petrel',
-#     path_mapping=dict({
-#         'data/ava_kinetics/rawframes/':
-#         's3://openmmlab/datasets/action/ava/rawframes/'
-#     }))
 file_client_args = dict(io_backend='disk')
-
 train_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=8, frame_interval=8),
+    dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
     dict(type='RawFrameDecode', **file_client_args),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
@@ -44,7 +82,8 @@ train_pipeline = [
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=8, frame_interval=8, test_mode=True),
+    dict(
+        type='SampleAVAFrames', clip_len=4, frame_interval=16, test_mode=True),
     dict(type='RawFrameDecode', **file_client_args),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),

@@ -20,23 +20,19 @@ Current state-of-the-art approaches for spatio-temporal action localization rely
 
 ### AVA2.1
 
-| frame sampling strategy | resolution | gpus |     backbone      |   pretrain   |  mAP  | gpu_mem(M) |                  config                   |                  ckpt                   |                   log                   |
-| :---------------------: | :--------: | :--: | :---------------: | :----------: | :---: | :--------: | :---------------------------------------: | :-------------------------------------: | :-------------------------------------: |
-|          8x8x1          |    raw     |  8   | SlowFast ResNet50 | Kinetics-400 | 27.58 |   15263    | [config](/configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb_20220906-0dae1a90.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.log) |
+| frame sampling strategy | gpus |     backbone      |   pretrain   |  mAP  |                      config                      |                      ckpt                      |                      log                      |
+| :---------------------: | :--: | :---------------: | :----------: | :---: | :----------------------------------------------: | :--------------------------------------------: | :-------------------------------------------: |
+|          8x8x1          |  8   | SlowFast ResNet50 | Kinetics-400 | 27.65 | [config](/configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb_20220906-0dae1a90.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.log) |
 
 ### AVA2.2
 
-| frame sampling strategy | resolution | gpus |     backbone      |   pretrain   |  mAP  | gpu_mem(M) |                  config                   |                  ckpt                   |                   log                   |
-| :---------------------: | :--------: | :--: | :---------------: | :----------: | :---: | :--------: | :---------------------------------------: | :-------------------------------------: | :-------------------------------------: |
-|          8x8x1          |    raw     |  8   | SlowFast ResNet50 | Kinetics-400 | 27.63 |   15263    | [config](/configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb_20220906-66ec24a2.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb.log) |
+| frame sampling strategy | gpus |     backbone      |   pretrain   |  mAP  |                      config                      |                      ckpt                      |                      log                      |
+| :---------------------: | :--: | :---------------: | :----------: | :---: | :----------------------------------------------: | :--------------------------------------------: | :-------------------------------------------: |
+|          8x8x1          |  8   | SlowFast ResNet50 | Kinetics-400 | 27.71 | [config](/configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb_20220906-66ec24a2.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb.log) |
 
-Note:
+1. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
 
-1. The **gpus** indicates the number of gpu we used to get the checkpoint.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-
-For more details on data preparation, you can refer to to [AVA Data Preparation](/tools/data/ava/README.md).
+For more details on data preparation, you can refer to [AVA](/tools/data/ava/README.md).
 
 ## Train
 
@@ -46,14 +42,14 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train ACRN with SlowFast backbone on AVA in a deterministic option.
+Example: train ACRN with SlowFast backbone on AVA2.1 in a deterministic option with periodic validation.
 
 ```shell
 python tools/train.py configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.py \
-    --cfg-options randomness.seed=0 randomness.deterministic=True
+    --seed 0 --deterministic
 ```
 
-For more details and optional arguments infos, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -63,28 +59,16 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test ACRN with SlowFast backbone on AVA and dump the result to a pkl file.
+Example: test ACRN with SlowFast backbone on AVA2.1 and dump the result to a pkl file.
 
 ```shell
 python tools/test.py configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details and optional arguments infos, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
-
-<!-- [DATASET] -->
-
-```BibTeX
-@inproceedings{gu2018ava,
-  title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
-  author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
-  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
-  pages={6047--6056},
-  year={2018}
-}
-```
 
 ```BibTeX
 @inproceedings{sun2018actor,

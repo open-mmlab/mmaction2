@@ -1,0 +1,121 @@
+Collections:
+  - Name: SlowFast
+    README: configs/detection/slowfast/README.md
+    Paper:
+      URL: https://arxiv.org/abs/1812.03982
+      Title: 'SlowFast Networks for Video Recognition'
+
+Models:
+  - Name: slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb
+    Config: configs/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py
+    In Collection: SlowFast
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 20
+      Pretrained: Kinetics-400
+      Training Data: AVA v2.1
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.1
+        Task: Action Detection
+        Metrics:
+              mAP: 24.32
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb_20220906-5180ea3c.pth
+
+  - Name: slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb
+    Config: configs/detection/slowfast/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb.py
+    In Collection: SlowFast
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 20
+      Pretrained: Kinetics-400
+      Training Data: AVA v2.1
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.1
+        Task: Action Detection
+        Metrics:
+              mAP: 25.34
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb_20220906-5bb4f6f2.pth
+
+  - Name: slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb
+    Config: configs/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb.py
+    In Collection: SlowFast
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 8
+      Epochs: 20
+      Pretrained: Kinetics-400
+      Training Data: AVA v2.1
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.1
+        Task: Action Detection
+        Metrics:
+              mAP: 25.80
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb_20220906-39133ec7.pth
+
+  - Name: slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb
+    Config: configs/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb.py
+    In Collection: SlowFast
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 6
+      Epochs: 10
+      Pretrained: Kinetics-400
+      Training Data: AVA v2.2
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.2
+        Task: Action Detection
+        Metrics:
+              mAP: 25.90
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-d934a48f.pth
+
+  - Name: slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb
+    Config: configs/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.py
+    In Collection: SlowFast
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 6
+      Epochs: 10
+      Pretrained: Kinetics-400
+      Training Data: AVA v2.2
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.2
+        Task: Action Detection
+        Metrics:
+              mAP: 26.41
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-13a9078e.pth
+
+  - Name: slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb
+    Config: configs/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.py
+    In Collection: SlowFast
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 6
+      Epochs: 10
+      Pretrained: Kinetics-400
+      Training Data: AVA v2.2
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.2
+        Task: Action Detection
+        Metrics:
+              mAP: 26.65
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-dd59e26f.pth

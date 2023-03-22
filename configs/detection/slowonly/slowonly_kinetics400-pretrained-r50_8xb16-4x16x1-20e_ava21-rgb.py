@@ -1,41 +1,25 @@
 _base_ = '../../_base_/default_runtime.py'
 
-url = ('https://download.openmmlab.com/mmaction/recognition/slowfast/'
-       'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
-       'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')
+url = ('https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/'
+       'slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics400-'
+       'rgb/slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_'
+       'kinetics400-rgb_20220901-e7b65fad.pth')
 
 model = dict(
     type='FastRCNN',
     _scope_='mmdet',
     init_cfg=dict(type='Pretrained', checkpoint=url),
     backbone=dict(
-        type='mmaction.ResNet3dSlowFast',
+        type='mmaction.ResNet3dSlowOnly',
+        depth=50,
         pretrained=None,
-        resample_rate=4,
-        speed_ratio=4,
-        channel_ratio=8,
-        slow_pathway=dict(
-            type='resnet3d',
-            depth=50,
-            pretrained=None,
-            lateral=True,
-            fusion_kernel=7,
-            conv1_kernel=(1, 7, 7),
-            dilations=(1, 1, 1, 1),
-            conv1_stride_t=1,
-            pool1_stride_t=1,
-            inflate=(0, 0, 1, 1),
-            spatial_strides=(1, 2, 2, 1)),
-        fast_pathway=dict(
-            type='resnet3d',
-            depth=50,
-            pretrained=None,
-            lateral=False,
-            base_channels=8,
-            conv1_kernel=(5, 7, 7),
-            conv1_stride_t=1,
-            pool1_stride_t=1,
-            spatial_strides=(1, 2, 2, 1))),
+        pretrained2d=False,
+        lateral=False,
+        num_stages=4,
+        conv1_kernel=(1, 7, 7),
+        conv1_stride_t=1,
+        pool1_stride_t=1,
+        spatial_strides=(1, 2, 2, 1)),
     roi_head=dict(
         type='AVARoIHead',
         bbox_roi_extractor=dict(
@@ -43,10 +27,9 @@ model = dict(
             roi_layer_type='RoIAlign',
             output_size=8,
             with_temporal_pool=True),
-        shared_head=dict(type='ACRNHead', in_channels=4608, out_channels=2304),
         bbox_head=dict(
             type='BBoxHeadAVA',
-            in_channels=2304,
+            in_channels=2048,
             num_classes=81,
             multilabel=True,
             dropout_ratio=0.5)),
@@ -88,11 +71,8 @@ proposal_file_train = (f'{anno_root}/ava_dense_proposals_train.FAIR.'
 proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 
 file_client_args = dict(io_backend='disk')
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict({'data/ava': 's254:s3://openmmlab/datasets/action/ava'}))
 train_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=32, frame_interval=2),
+    dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
     dict(type='RawFrameDecode', **file_client_args),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
@@ -103,7 +83,7 @@ train_pipeline = [
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
     dict(
-        type='SampleAVAFrames', clip_len=32, frame_interval=2, test_mode=True),
+        type='SampleAVAFrames', clip_len=4, frame_interval=16, test_mode=True),
     dict(type='RawFrameDecode', **file_client_args),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
@@ -111,7 +91,7 @@ val_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=8,
+    batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -147,28 +127,27 @@ val_evaluator = dict(
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=10, val_begin=1, val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=20, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 param_scheduler = [
+    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=5),
     dict(
-        type='LinearLR',
-        start_factor=0.1,
-        by_epoch=True,
+        type='MultiStepLR',
         begin=0,
-        end=2,
-        convert_to_iter_based=True),
-    dict(
-        type='CosineAnnealingLR',
-        T_max=8,
-        eta_min=0,
+        end=20,
         by_epoch=True,
-        begin=2,
-        end=10,
-        convert_to_iter_based=True)
+        milestones=[10, 15],
+        gamma=0.1)
 ]
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.00001),
+    optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.00001),
     clip_grad=dict(max_norm=40, norm_type=2))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (16 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=128)
