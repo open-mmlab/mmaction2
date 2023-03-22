@@ -2,14 +2,14 @@
   <img src="https://github.com/open-mmlab/mmaction2/raw/1.x/resources/mmaction2_logo.png" width="600"/>
   <div>&nbsp;</div>
   <div align="center">
-    <b><font size="5">OpenMMLab website</font></b>
+    <b><font size="5">OpenMMLab 官网</font></b>
     <sup>
       <a href="https://openmmlab.com">
         <i><font size="4">HOT</font></i>
       </a>
     </sup>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <b><font size="5">OpenMMLab platform</font></b>
+    <b><font size="5">OpenMMLab 开放平台</font></b>
     <sup>
       <a href="https://platform.openmmlab.com">
         <i><font size="4">TRY IT OUT</font></i>
@@ -25,12 +25,12 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-[📘Documentation](https://mmaction2.readthedocs.io/en/1.x/) |
-[🛠️Installation](https://mmaction2.readthedocs.io/en/1.x/get_started.html) |
-[👀Model Zoo](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html) |
-[🆕Update News](https://mmaction2.readthedocs.io/en/1.x/notes/changelog.html) |
-[🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
-[🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
+[📘文档](https://mmaction2.readthedocs.io/zh_CN//1.x/) |
+[🛠️安装指南](https://mmaction2.readthedocs.io/zh_CN//1.x/get_started.html) |
+[👀模型库](https://mmaction2.readthedocs.io/zh_CN//1.x/modelzoo.html) |
+[🆕更新](https://mmaction2.readthedocs.io/zh_CN/1.x/notes/changelog.html) |
+[🚀进行中项目](https://github.com/open-mmlab/mmaction2/projects) |
+[🤔问题反馈](https://github.com/open-mmlab/mmaction2/issues/new/choose)
 
 </div>
 
@@ -48,73 +48,73 @@
     <img src="https://user-images.githubusercontent.com/25839884/218346691-ceb2116a-465a-40af-8424-9f30d2348ca9.png" width="3%" alt="" /></a>
 </div>
 
-English | [简体中文](/README_zh-CN.md)
+[English](/README.md) | 简体中文
 
-## Introduction
+## 简介
 
-MMAction2 is an open-source toolbox for video understanding based on PyTorch.
-It is a part of the [OpenMMLab](http://openmmlab.com/) project.
+MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLab](https://openmmlab.com/) 项目的成员之一
 
-The 1.x branch works with **PyTorch 1.6+**.
+1.x 分支代码目前支持 **PyTorch 1.6以上** 的版本
 
 <div align="center">
   <div style="float:left;margin-right:10px;">
   <img src="https://github.com/open-mmlab/mmaction2/raw/1.x/resources/mmaction2_overview.gif" width="380px"><br>
-    <p style="font-size:1.5vw;">Action Recognition Results on Kinetics-400</p>
+    <p style="font-size:1.5vw;">Kinetics-400 上的动作识别</p>
   </div>
   <div style="float:right;margin-right:0px;">
   <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
-    <p style="font-size:1.5vw;">Skeleton-based Action Recognition Results on NTU-RGB+D-120</p>
+    <p style="font-size:1.5vw;">NTURGB+D-120 上的基于人体姿态的动作识别</p>
   </div>
 </div>
 <div align="center">
   <img src="https://user-images.githubusercontent.com/30782254/155710881-bb26863e-fcb4-458e-b0c4-33cd79f96901.gif" width="580px"/><br>
-    <p style="font-size:1.5vw;">Skeleton-based Spatio-Temporal Action Detection and Action Recognition Results on Kinetics-400</p>
+    <p style="font-size:1.5vw;">Kinetics-400 上的基于 skeleton 的时空动作检测和动作识别</p>
 </div>
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/1.x/resources/spatio-temporal-det.gif" width="800px"/><br>
-    <p style="font-size:1.5vw;">Spatio-Temporal Action Detection Results on AVA-2.1</p>
+    <p style="font-size:1.5vw;">AVA-2.1 上的时空动作检测</p>
 </div>
 
-## Major Features
+## 主要特性
 
-- **Modular design**: We decompose a video understanding framework into different components. One can easily construct a customized video understanding framework by combining different modules.
+- **模块设计**：MMAction2 将统一的视频理解框架解耦成不同的模块组件，通过组合不同的模块组件，用户可以便捷地构建自定义的视频理解模型
 
-- **Support four major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, and skeleton-based action detection.
+- **支持多种任务和数据集**：MMAction2 支持多种视频理解任务，包括动作识别，时序动作检测，时空动作检测以及基于人体姿态的动作识别
 
-- **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
+- **详尽的单元测试和文档**：MMAction2 提供了详尽的说明文档，API 接口说明，全面的单元测试，以供社区参考
 
-## What's New
+## 更新记录
 
-**Release (2023.02.10)**: v1.0.0rc3 with the following new features:
+**v1.0.0rc3 版本 (2023.02.10)**:
 
-- Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
-- Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
-- Add a new handy interface for inference MMAction2 models ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
+- 支持动作识别模型 UniFormer V1（ICLR'2022），UniFormer V2（Arxiv'2022）
+- 支持训练 MViT V2（CVPR'2022）和 MaskFeat（CVPR'2022）微调
+- 为 MMAction2 模型提供统一的推理接口实现视频分析任务的快速预测 ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
 
-## Installation
+## 安装
 
-Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for more detailed instructions.
+MMAction2 依赖 [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (可选), [MMPose](https://github.com/open-mmlab/mmpose) (可选)，以下是安装的简要步骤。
+更详细的安装指南请参考 [install.md](https://mmaction2.readthedocs.io/zh_CN/1.x/get_started.html) 。
 
 ```shell
 conda create --name openmmlab python=3.8 -y
 conda activate open-mmlab
-conda install pytorch torchvision -c pytorch  # This command will automatically install the latest version PyTorch and cudatoolkit, please check whether they match your environment.
+conda install pytorch torchvision -c pytorch  # 以上命令将自动安装最新版本的 PyTorch 和 cudatoolkit,请检查它们是否和你的环境匹配
 pip install -U openmim
 mim install mmengine 'mmcv>=2.0.0rc1'
-mim install "mmdet>=3.0.0rc5"  # optional
-mim install "mmpose>=1.0.0rc0"  # optional
+mim install "mmdet>=3.0.0rc5"  # 可选
+mim install "mmpose>=1.0.0rc0"  # 可选
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
 git checkout 1.x
 pip3 install -e .
 ```
 
-## Supported Methods
+## 模型库
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
-    <td colspan="5" style="font-weight:bold;">Action Recognition</td>
+    <td colspan="5" style="font-weight:bold;">行为识别方法</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/c3d/README.md">C3D</a> (CVPR'2014)</td>
@@ -152,7 +152,7 @@ pip3 install -e .
     <td></td>
   </tr>
   <tr>
-    <td colspan="5" style="font-weight:bold;">Action Localization</td>
+    <td colspan="5" style="font-weight:bold;">时序动作检测方法</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/ssn/README.md">SSN</a> (ICCV'2017)</td>
@@ -162,7 +162,7 @@ pip3 install -e .
     <td></td>
   </tr>
   <tr>
-    <td colspan="5" style="font-weight:bold;">Spatio-Temporal Action Detection</td>
+    <td colspan="5" style="font-weight:bold;">时空动作检测方法</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/detection/acrn/README.md">ACRN</a> (ECCV'2018)</td>
@@ -172,7 +172,7 @@ pip3 install -e .
     <td></td>
   </tr>
   <tr>
-    <td colspan="5" style="font-weight:bold;">Skeleton-based Action Recognition</td>
+    <td colspan="5" style="font-weight:bold;">基于骨骼点的动作识别方法</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
@@ -183,17 +183,15 @@ pip3 install -e .
   </tr>
 </table>
 
-Results and models are available in the *README.md* of each method's config directory.
-A summary can be found on the [**model zoo**](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html) page.
+各个模型的结果和设置都可以在对应的 config 目录下的 *README_zh-CN.md* 中查看。整体的概况也可也在 [**模型库**](https://mmaction2.readthedocs.io/zh_CN/1.x/modelzoo.html) 页面中查看。
 
-We will keep up with the latest progress of the community and support more popular algorithms and frameworks.
-If you have any feature requests, please feel free to leave a comment in [Issues](https://github.com/open-mmlab/mmaction2/issues/19).
+MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如果您对 MMAction2 有任何功能需求，请随时在 [问题](https://github.com/open-mmlab/mmaction2/issues/19) 中留言。
 
-## Supported Datasets
+## 数据集
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
-    <td colspan="4" style="font-weight:bold;">Action Recognition</td>
+    <td colspan="4" style="font-weight:bold;">动作识别数据集</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/hmdb51/README.md">HMDB51</a> (<a href="https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/">Homepage</a>) (ICCV'2011)</td>
@@ -220,7 +218,7 @@ If you have any feature requests, please feel free to leave a comment in [Issues
     <td></td>
   </tr>
   <tr>
-    <td colspan="4" style="font-weight:bold;">Action Localization</td>
+    <td colspan="4" style="font-weight:bold;">时序动作检测数据集</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/thumos14/README.md">THUMOS14</a> (<a href="https://www.crcv.ucf.edu/THUMOS14/download.html">Homepage</a>) (THUMOS Challenge 2014)</td>
@@ -229,7 +227,7 @@ If you have any feature requests, please feel free to leave a comment in [Issues
     <td></td>
   </tr>
   <tr>
-    <td colspan="4" style="font-weight:bold;">Spatio-Temporal Action Detection</td>
+    <td colspan="4" style="font-weight:bold;">时空动作检测数据集</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/ucf101_24/README.md">UCF101-24*</a> (<a href="http://www.thumos.info/download.html">Homepage</a>) (CRCV-IR-12-01)</td>
@@ -238,7 +236,7 @@ If you have any feature requests, please feel free to leave a comment in [Issues
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/ava_kinetics/README.md">AVA-Kinetics</a> (<a href="https://research.google.com/ava/index.html">Homepage</a>) (Arxiv'2020)</td>
   </tr>
   <tr>
-    <td colspan="4" style="font-weight:bold;">Skeleton-based Action Recognition</td>
+    <td colspan="4" style="font-weight:bold;">基于骨骼点的动作识别数据集</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/skeleton/README.md">PoseC3D-FineGYM</a> (<a href="https://kennymckormick.github.io/posec3d/">Homepage</a>) (ArXiv'2021)</td>
@@ -248,33 +246,33 @@ If you have any feature requests, please feel free to leave a comment in [Issues
   </tr>
 </table>
 
-Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided. A summary can be found on the [**Supported Datasets**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) page.
+标记 * 代表对应数据集并未被完全支持，但提供相应的数据准备步骤。整体的概况也可也在 [**数据集**](https://mmaction2.readthedocs.io/zh_CN/latest/supported_datasets.html) 页面中查看。
 
-## Data Preparation
+## 数据集准备
 
-Please refer to [data_preparation.md](docs/en/user_guides/2_data_prepare.md) for a general knowledge of data preparation.
+请参考 [数据准备](https://mmaction2.readthedocs.io/en/1.x/user_guides/2_data_prepare.html) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](https://mmaction2.readthedocs.io/zh_CN/latest/supported_datasets.html) 中。
 
 ## FAQ
 
-Please refer to [FAQ](docs/en/notes/faq.md) for frequently asked questions.
+请参考 [FAQ](docs/zh_cn/notes/faq.md) 了解其他用户的常见问题。
 
-## Projects built on MMAction2
+## 相关工作
 
-Currently, there are many research works and projects built on MMAction2 by users from community, such as:
+目前有许多研究工作或工程项目基于 MMAction2 搭建，例如：
 
-- Video Swin Transformer. [\[paper\]](https://arxiv.org/abs/2106.13230)[\[github\]](https://github.com/SwinTransformer/Video-Swin-Transformer)
-- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2107.10161)[\[github\]](https://github.com/Cogito2012/DEAR)
-- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2103.17263)[\[github\]](https://github.com/xvjiarui/VFS)
+- Video Swin Transformer. [\[论文\]](https://arxiv.org/abs/2106.13230)[\[代码\]](https://github.com/SwinTransformer/Video-Swin-Transformer)
+- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [\[论文\]](https://arxiv.org/abs/2107.10161)[\[代码\]](https://github.com/Cogito2012/DEAR)
+- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [\[论文\]](https://arxiv.org/abs/2103.17263)[\[代码\]](https://github.com/xvjiarui/VFS)
 
-etc., check [projects.md](docs/en/notes/projects.md) to see all related projects.
+更多详情可见 [相关工作](docs/en/notes/projects.md) 。
 
-## License
+## 许可
 
-This project is released under the [Apache 2.0 license](LICENSE).
+该项目开源自 [Apache 2.0 license](LICENSE).
 
-## Citation
+## 引用
 
-If you find this project useful in your research, please consider cite:
+如果你觉得 MMAction2 对你的研究有所帮助，可以考虑引用它：
 
 ```BibTeX
 @misc{2020mmaction2,
@@ -285,17 +283,16 @@ If you find this project useful in your research, please consider cite:
 }
 ```
 
-## Contributing
+## 参与贡献
 
-We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/2.x/CONTRIBUTING.md) in MMCV for more details about the contributing guideline.
+我们非常欢迎用户对于 MMAction2 做出的任何贡献，可以参考 [贡献指南](https://github.com/open-mmlab/mmcv/blob/2.x/CONTRIBUTING_zh-CN.md) 文件了解更多细节。
 
-## Acknowledgement
+## 致谢
 
-MMAction2 is an open-source project that is contributed by researchers and engineers from various colleges and companies.
-We appreciate all the contributors who implement their methods or add new features and users who give valuable feedback.
-We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their new models.
+MMAction2 是一款由不同学校和公司共同贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。
+我们希望该工具箱和基准测试可以为社区提供灵活的代码工具，供用户复现现有算法并开发自己的新模型，从而不断为开源社区提供贡献。
 
-## Projects in OpenMMLab
+## OpenMMLab 的其他项目
 
 - [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab foundational library for training deep learning models.
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
@@ -303,7 +300,7 @@ We wish that the toolbox and benchmark could serve the growing research communit
 - [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab image classification toolbox and benchmark.
 - [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab detection toolbox and benchmark.
 - [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab's next-generation platform for general 3D object detection.
-- [MMYOLO](https://github.com/open-mmlab/mmyolo): OpenMMLab YOLO series toolbox and benchmark.
+- [MMYOLO](https://github.com/open-mmlab/mmyolo): OpenMMLab YOLO 系列工具箱和基准测试
 - [MMRotate](https://github.com/open-mmlab/mmrotate): OpenMMLab rotated object detection toolbox and benchmark.
 - [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab semantic segmentation toolbox and benchmark.
 - [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab text detection, recognition, and understanding toolbox.
