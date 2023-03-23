@@ -9,6 +9,7 @@ https://mmengine.readthedocs.io/en/latest/tutorials/registry.html.
 from mmengine.registry import DATA_SAMPLERS as MMENGINE_DATA_SAMPLERS
 from mmengine.registry import DATASETS as MMENGINE_DATASETS
 from mmengine.registry import EVALUATOR as MMENGINE_EVALUATOR
+from mmengine.registry import FUNCTIONS as MMENGINE_FUNCTION
 from mmengine.registry import HOOKS as MMENGINE_HOOKS
 from mmengine.registry import INFERENCERS as MMENGINE_INFERENCERS
 from mmengine.registry import LOG_PROCESSORS as MMENGINE_LOG_PROCESSORS
@@ -127,3 +128,7 @@ INFERENCERS = Registry(
     'inferencer',
     parent=MMENGINE_INFERENCERS,
     locations=['mmaction.apis.inferencers'])
+
+# manage function
+FUNCTION = Registry(
+    'function', parent=MMENGINE_FUNCTION, locations=['mmaction.mmengine'])
