@@ -16,58 +16,7 @@ from mmengine.registry import init_default_scope
 from mmengine.runner import Runner
 from mmengine.visualization import Visualizer
 from rich.progress import BarColumn, MofNCompleteColumn, Progress, TextColumn
-
-
-class SimpleModel(BaseModel):
-    """simple model that do nothing in train_step."""
-
-    def __init__(self):
-        super(SimpleModel, self).__init__()
-        self.data_preprocessor = nn.Identity()
-        self.conv = nn.Conv2d(1, 1, 1)
-
-    def forward(self, inputs, data_samples, mode='tensor'):
-        pass
-
-    def train_step(self, data, optim_wrapper):
-        pass
-
-
-class ParamRecordHook(Hook):
-
-    def __init__(self, by_epoch):
-        super().__init__()
-        self.by_epoch = by_epoch
-        self.lr_list = []
-        self.momentum_list = []
-        self.task_id = 0
-        self.progress = Progress(BarColumn(), MofNCompleteColumn(),
-                                 TextColumn('{task.description}'))
-
-    def before_train(self, runner):
-        if self.by_epoch:
-            total = runner.train_loop.max_epochs
-            self.task_id = self.progress.add_task(
-                'epochs', start=True, total=total)
-        else:
-            total = runner.train_loop.max_iters
-            self.task_id = self.progress.add_task(
-                'iters', start=True, total=total)
-        self.progress.start()
-
-    def after_train_epoch(self, runner):
-        if self.by_epoch:
-            self.progress.update(self.task_id, advance=1)
-
-    def after_train_iter(self, runner, batch_idx, data_batch, outputs):
-        if not self.by_epoch:
-            self.progress.update(self.task_id, advance=1)
-        self.lr_list.append(runner.optim_wrapper.get_lr()['lr'][0])
-        self.momentum_list.append(
-            runner.optim_wrapper.get_momentum()['momentum'][0])
-
-    def after_train(self, runner):
-        self.progress.stop()
+from torch.utils.data import DataLoader
 
 
 def parse_args():
@@ -130,6 +79,58 @@ def parse_args():
     return args
 
 
+class SimpleModel(BaseModel):
+    """simple model that do nothing in train_step."""
+
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.data_preprocessor = nn.Identity()
+        self.conv = nn.Conv2d(1, 1, 1)
+
+    def forward(self, inputs, data_samples, mode='tensor'):
+        pass
+
+    def train_step(self, data, optim_wrapper):
+        pass
+
+
+class ParamRecordHook(Hook):
+
+    def __init__(self, by_epoch):
+        super().__init__()
+        self.by_epoch = by_epoch
+        self.lr_list = []
+        self.momentum_list = []
+        self.task_id = 0
+        self.progress = Progress(BarColumn(), MofNCompleteColumn(),
+                                 TextColumn('{task.description}'))
+
+    def before_train(self, runner):
+        if self.by_epoch:
+            total = runner.train_loop.max_epochs
+            self.task_id = self.progress.add_task(
+                'epochs', start=True, total=total)
+        else:
+            total = runner.train_loop.max_iters
+            self.task_id = self.progress.add_task(
+                'iters', start=True, total=total)
+        self.progress.start()
+
+    def after_train_epoch(self, runner):
+        if self.by_epoch:
+            self.progress.update(self.task_id, advance=1)
+
+    def after_train_iter(self, runner, batch_idx, data_batch, outputs):
+        if not self.by_epoch:
+            self.progress.update(self.task_id, advance=1)
+        self.lr_list.append(runner.optim_wrapper.get_lr()['lr'][0])
+        self.momentum_list.append(
+            runner.optim_wrapper.get_momentum()['momentum'][0])
+
+    def after_train(self, runner):
+        self.progress.stop()
+
+
 def plot_curve(lr_list, args, param_name, iters_per_epoch, by_epoch=True):
     """Plot learning rate vs iter graph."""
     try:
@@ -186,6 +187,7 @@ def simulate_train(data_loader, cfg, by_epoch):
         param_scheduler=cfg.param_scheduler,
         default_scope=cfg.default_scope,
         default_hooks=default_hooks,
+        auto_scale_lr=cfg.get('auto_scale_lr'),
         visualizer=MagicMock(spec=Visualizer),
         custom_hooks=cfg.get('custom_hooks', None))
 
@@ -231,14 +233,13 @@ def main():
         from mmaction.registry import DATASETS
         dataset_size = len(DATASETS.build(cfg.train_dataloader.dataset))
         print(f'dataset is {dataset_size}')
-        # dataset_size = len(build_dataset(cfg.train_dataloader.dataset))
     else:
         dataset_size = args.dataset_size or batch_size
 
-    class FakeDataloader(list):
-        dataset = MagicMock(metainfo=None)
-
-    data_loader = FakeDataloader(range(dataset_size // batch_size))
+    data_loader = DataLoader(range(dataset_size), batch_size)
+    assert len(data_loader) > 0, \
+        'Please decrease batchsize to make sure that ' \
+        'a epoch at least have one iteration!'
     dataset_info = (
         f'\nDataset infos:'
         f'\n - Dataset size: {dataset_size}'
