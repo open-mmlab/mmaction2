@@ -104,7 +104,7 @@ with open('model_zoo/modelzoo.md', 'w') as f:
 
 # Count datasets
 
-files = ['supported_datasets.md']
+files = ['datasetzoo.md']
 # files = sorted(glob.glob('docs/tasks/*.md'))
 
 datastats = []
@@ -170,5 +170,5 @@ For supported action algorithms, see [modelzoo overview](modelzoo.md).
 {datamsglist}
 """
 
-with open('datasetzoo.md', 'w') as f:
+with open('datasetzoo_overview.md', 'w') as f:
     f.write(datasetzoo)

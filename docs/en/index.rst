@@ -57,8 +57,8 @@ You can switch between Chinese and English documents in the lower-left corner of
    :maxdepth: 1
    :caption: Dataset Zoo
 
+   datasetzoo_overview.md
    datasetzoo.md
-   supported_datasets.md
 
 .. toctree::
    :maxdepth: 1
