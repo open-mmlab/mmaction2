@@ -19,16 +19,22 @@ You can switch between Chinese and English documents in the lower-left corner of
    :caption: User Guides
 
    user_guides/Inference.md
-   user_guides/configs.md
+   user_guides/config.md
    user_guides/train_test.md
    user_guides/prepare_dataset.md
 
 .. toctree::
    :maxdepth: 1
-   :caption: Useful Tools
+   :caption: Advanced Guides
 
-   user_guides/useful_tools.md
-   user_guides/visualization.md
+   advanced_guides/dataflow.md
+   advanced_guides/customize_models.md
+   advanced_guides/customize_dataset.md
+   advanced_guides/customize_pipeline.md
+   advanced_guides/customize_optimizer.md
+   advanced_guides/customize_logging.md
+   advanced_guides/deploy.md
+   advanced_guides/useful_tools.md
 
 .. toctree::
    :maxdepth: 1
@@ -40,20 +46,32 @@ You can switch between Chinese and English documents in the lower-left corner of
    :maxdepth: 1
    :caption: Model Zoo
 
-   modelzoo.md
+   model_zoo/modelzoo.md
    model_zoo/recognition_models.md
    model_zoo/detection_models.md
    model_zoo/skeleton_models.md
    model_zoo/localization_models.md
 
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Dataset Zoo
+
+   datasetzoo.md
+   supported_datasets.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Projects
+
+   projectzoo.md
+
 .. toctree::
    :maxdepth: 1
    :caption: Notes
 
-   notes/contribution_guide.md
-   notes/projects.md
+   notes/ecosystem.md
    notes/changelog.md
-   notes/faq.md
 
 .. toctree::
    :caption: Switch Language

@@ -1,4 +1,4 @@
-# Projects based on MMAction2
+# Ecosystem Projects based on MMAction2
 
 There are many research works and projects built on MMAction2.
 We list some of them as examples of how to extend MMAction2 for your own projects.

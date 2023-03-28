@@ -1,10 +1,10 @@
-# Tutorial 3: Adding New Dataset
+# Customize Datasets
 
 In this tutorial, we will introduce some methods about how to customize your own dataset by reorganizing data and mixing dataset for the project.
 
 <!-- TOC -->
 
-- [Tutorial 3: Adding New Dataset](#tutorial-3-adding-new-dataset)
+- [Customize Datasets](#customize-datasets)
   - [Customize Datasets by Reorganizing Data](#customize-datasets-by-reorganizing-data)
     - [Reorganize datasets to existing format](#reorganize-datasets-to-existing-format)
     - [An example of a custom dataset](#an-example-of-a-custom-dataset)
