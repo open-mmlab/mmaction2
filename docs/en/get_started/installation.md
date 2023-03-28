@@ -193,3 +193,7 @@ Run it with
 ```shell
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 ```
+
+## Troubleshooting
+
+coming soon...
