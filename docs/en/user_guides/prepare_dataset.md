@@ -1,10 +1,10 @@
-# Tutorial 2: Prepare Datasets
+# Prepare Datasets
 
 We provide some tips for MMAction2 data preparation in this file.
 
 <!-- TOC -->
 
-- [Tutorial 2: Prepare Datasets](#tutorial-2-prepare-datasets)
+- [Prepare Datasets](#prepare-datasets)
   - [Notes on Video Data Format](#notes-on-video-data-format)
   - [Getting Data](#getting-data)
     - [Prepare videos](#prepare-videos)

@@ -7,17 +7,21 @@ You can switch between Chinese and English documents in the lower-left corner of
    :maxdepth: 1
    :caption: Get Started
 
-   get_started.md
-   guide_to_framework.md
+   get_started/overview.md
+   get_started/installation.md
+   get_started/quick_run.md
+   get_started/20-minute_tour.md
+   get_started/contribution_guide.md
+   get_started/faq.md
 
 .. toctree::
    :maxdepth: 1
    :caption: User Guides
 
-   user_guides/1_config.md
-   user_guides/2_data_prepare.md
-   user_guides/3_inference.md
-   user_guides/4_train_test.md
+   user_guides/Inference.md
+   user_guides/configs.md
+   user_guides/train_test.md
+   user_guides/prepare_dataset.md
 
 .. toctree::
    :maxdepth: 1
@@ -37,10 +41,10 @@ You can switch between Chinese and English documents in the lower-left corner of
    :caption: Model Zoo
 
    modelzoo.md
-   recognition_models.md
-   detection_models.md
-   skeleton_models.md
-   localization_models.md
+   model_zoo/recognition_models.md
+   model_zoo/detection_models.md
+   model_zoo/skeleton_models.md
+   model_zoo/localization_models.md
 
 .. toctree::
    :maxdepth: 1

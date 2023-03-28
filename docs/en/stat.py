@@ -8,6 +8,8 @@ from os.path import basename, splitext
 import numpy as np
 import titlecase
 
+print(f'{"!"*20} run stat.py  {"!"*20}')
+
 
 def anchor(name):
     return re.sub(r'-+', '-', re.sub(r'[^a-zA-Z0-9]', '-',
@@ -16,7 +18,7 @@ def anchor(name):
 
 # Count algorithms
 
-files = sorted(glob.glob('*_models.md'))
+files = sorted(glob.glob('model_zoo/*_models.md'))
 # files = sorted(glob.glob('docs/*_models.md'))
 
 stats = []
@@ -99,7 +101,7 @@ For supported datasets, see [datasets overview](datasets.md).
 {msglist}
 """
 
-with open('modelzoo.md', 'w') as f:
+with open('model_zoo/modelzoo.md', 'w') as f:
     f.write(modelzoo)
 
 # # Count datasets
