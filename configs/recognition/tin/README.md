@@ -67,7 +67,7 @@ python tools/train.py configs/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1
     --work-dir work_dirs/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -84,7 +84,7 @@ python tools/test.py configs/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x
     checkpoints/SOME_CHECKPOINT.pth --dump result.json
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 

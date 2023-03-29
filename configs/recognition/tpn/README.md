@@ -58,7 +58,7 @@ python tools/train.py configs/recognition/tpn/tpn-slowonly_r50_8xb8-8x8x1-150e_k
     --work-dir work_dirs/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb [--validate --seed 0 --deterministic]
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -75,7 +75,7 @@ python tools/test.py configs/recognition/tpn/tpn-slowonly_r50_8xb8-8x8x1-150e_ki
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 
