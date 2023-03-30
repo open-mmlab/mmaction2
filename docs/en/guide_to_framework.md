@@ -11,7 +11,7 @@ The structure of this tutorial is as follows:
 
 ## Step0: Prepare Data
 
-Please download our self-made [Kinetics400_tiny](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) dataset and extract it to the `$MMACTION2/data` directory.
+Please download our self-made [kinetics400_tiny](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) dataset and extract it to the `$MMACTION2/data` directory.
 The directory structure after extraction should be as follows:
 
 ```
