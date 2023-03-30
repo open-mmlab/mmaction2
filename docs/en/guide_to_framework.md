@@ -1,6 +1,15 @@
-# A 20 minutes Guide to MMAction2 FrameWork
+# A 20-Minute Guide to MMAction2 FrameWork
 
-Next, we will demonstrate the overall architecture of our `MMACTION2` 1.0 through a step-by-step example of video action recognition.
+Next, we will demonstrate the overall architecture of our `MMACTION2 1.0` through a step-by-step example of video action recognition.
+
+The structure of this tutorial is as follows:
+
+- [A 20-Minute Guide to MMAction2 FrameWork](#a-20-minute-guide-to-mmaction2-framework)
+  - [Step0: Prepare Data](#step0-pepare-data)
+  - [Step1: Build a Pipeline](#step1-build-a-pipeline)
+
+
+## Step0: Prepare Data
 
 Please download our self-made [Kinetics400_tiny](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) dataset and extract it to the `$MMACTION2/data` directory.
 The directory structure after extraction should be as follows:
