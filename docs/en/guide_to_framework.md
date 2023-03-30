@@ -5,7 +5,7 @@ Next, we will demonstrate the overall architecture of our `MMACTION2 1.0` throug
 The structure of this tutorial is as follows:
 
 - [A 20-Minute Guide to MMAction2 FrameWork](#a-20-minute-guide-to-mmaction2-framework)
-  - [Step0: Prepare Data](#step0-pepare-data)
+  - [Step0: Prepare Data](#step0-prepare-data)
   - [Step1: Build a Pipeline](#step1-build-a-pipeline)
 
 
@@ -43,7 +43,7 @@ h2YqqUhnR34.mp4 0
 
 Each line in the file represents the annotation of a video, where the first item denotes the video filename (e.g., `D32_1gwq35E.mp4`), and the second item represents the corresponding label (e.g., label `0` for `D32_1gwq35E.mp4`). In this dataset, there are only two categories.
 
-## Build a Pipeline
+## Step1: Build a Pipeline
 
 In `MMACTION2`, in order to `decode`, `sample`, `resize`, `crop`, `format`, and `pack` the input video and corresponding annotation, we need to design a pipeline to handle these processes. Specifically, we design 7 `Transform` classes to build this video processing pipeline. Please note that all `Transform` classes in OpenMMLab must inherit from the `BaseTransform` class in `mmcv`, implement the abstract method `transform`, and be registered to the `TRANSFORMS` registry. For more detailed information about registry, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html).
 
