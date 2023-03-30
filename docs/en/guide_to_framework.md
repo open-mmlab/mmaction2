@@ -197,7 +197,7 @@ packed_results = pipeline(results)
 inputs = packed_results['inputs']
 data_sample = packed_results['data_samples']
 
-print('shape of inputs: ', inputs.shape)
+print('shape of the inputs: ', inputs.shape)
 
 # Get metainfo of the inputs
 print('image_shape: ', data_sample.img_shape)
@@ -211,13 +211,12 @@ print('label: ', data_sample.gt_labels.item)
 The terminal output is as follows:
 
 ```shell
-shape of inputs:  torch.Size([1, 3, 16, 224, 224])
+shape of the inputs:  torch.Size([1, 3, 16, 224, 224])
 image_shape:  (224, 224)
 num_clips:  1
 clip_len:  16
 label:  tensor([0])
 ```
-
 
 ## Build a Dataset and DataLoader
 
@@ -247,12 +246,6 @@ class DatasetZelda(BaseDataset):
 
 
 
-    
-    
-    
-    
-    
-    
     
     
 train_ann_file = 'data/kinetics400_tiny/kinetics_tiny_train_video.txt'
