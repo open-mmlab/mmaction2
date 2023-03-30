@@ -47,7 +47,7 @@ We have prepared a wealth of documents to meet your various needs:
 
 </details>
 
-<details>
+<details open>
 <summary><b>For looking for some common issus</b></summary>
 
 - [FAQs](docs/en/get_started/faq.md)
@@ -55,7 +55,7 @@ We have prepared a wealth of documents to meet your various needs:
 
 </details>
 
-<details>
+<details open>
 <summary><b>For a overview about components of MMAction2</b></summary>
 
 - [20-minute tour to MMAction2](docs/en/get_started/20-minute_tour.md)
@@ -63,7 +63,7 @@ We have prepared a wealth of documents to meet your various needs:
 
 </details>
 
-<details>
+<details open>
 <summary><b>For advanced usage about custom training</b></summary>
 
 - [Customize models](docs/en/advanced_guides/customize_models.md)
@@ -74,7 +74,7 @@ We have prepared a wealth of documents to meet your various needs:
 
 </details>
 
-<details>
+<details open>
 <summary><b>For supported model zoo and dataset zoo</b></summary>
 
 - [Model Zoo](model_zoo/modelzoo.md)
@@ -82,14 +82,14 @@ We have prepared a wealth of documents to meet your various needs:
 
 </details>
 
-<details>
+<details open>
 <summary><b>For migration from MMAction2 0.x</b></summary>
 
 - [Migration](migration.md)
 
 </details>
 
-<details>
+<details open>
 <summary><b>For researchers and developers who are willing to contribute to MMAction2</b></summary>
 
 - [Contribution Guide](get_started/contribution_guide.md)
