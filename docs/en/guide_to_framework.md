@@ -7,6 +7,7 @@ The structure of this tutorial is as follows:
 - [A 20-Minute Guide to MMAction2 FrameWork](#a-20-minute-guide-to-mmaction2-framework)
   - [Step0: Prepare Data](#step0-prepare-data)
   - [Step1: Build a Pipeline](#step1-build-a-pipeline)
+  - [Step2: Build a Dataset and DataLoader](#step2-build-a-dataset-and-dataloader)
 
 
 ## Step0: Prepare Data
@@ -290,7 +291,7 @@ print('clip_len: ', data_sample.clip_len)
 print('label: ', data_sample.gt_labels.item)
 ```
 
-The terminal output should be the same as the one shown in the [Step0: Prepare Data](#step0-prepare-data).
+The terminal output should be the same as the one shown in the [Step1: Build a Pipeline](#step1-build-a-pipeline).
 
 ## Build a Recognizer
 
