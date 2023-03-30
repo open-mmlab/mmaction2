@@ -34,7 +34,11 @@ You can switch between Chinese and English documents in the lower-left corner of
    advanced_guides/customize_optimizer.md
    advanced_guides/customize_logging.md
    advanced_guides/deploy.md
-   advanced_guides/useful_tools.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Advanced Guides
+   useful_tools.md
 
 .. toctree::
    :maxdepth: 1
