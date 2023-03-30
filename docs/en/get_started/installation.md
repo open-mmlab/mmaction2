@@ -52,7 +52,7 @@ mim install mmengine 'mmcv>=2.0.0rc1'
 
 According to your needs, we support two install modes:
 
-- [Install from source (Recommended)](#install-from-source): You want to develop your own action recognition task or new features on MMAction2 framework. For example, adding new dataset or new models. Thus, you can use all tools we provided.
+- [Install from source (Recommended)](#build-mmaction2-from-source): You want to develop your own action recognition task or new features on MMAction2 framework. For example, adding new dataset or new models. Thus, you can use all tools we provided.
 - [Install as a Python package](#install-as-a-python-package): You just want to call MMAction2's APIs or import MMAction2's modules in your project.
 
 ### Build MMAction2 from source
