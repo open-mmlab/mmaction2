@@ -45,7 +45,7 @@ Each line in the file represents the annotation of a video, where the first item
 
 ## Step1: Build a Pipeline
 
-In `MMACTION2`, in order to `decode`, `sample`, `resize`, `crop`, `format`, and `pack` the input video and corresponding annotation, we need to design a pipeline to handle these processes. Specifically, we design 7 `Transform` classes to build this video processing pipeline. Please note that all `Transform` classes in OpenMMLab must inherit from the `BaseTransform` class in `mmcv`, implement the abstract method `transform`, and be registered to the `TRANSFORMS` registry. For more detailed information about registry, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html).
+In order to `decode`, `sample`, `resize`, `crop`, `format`, and `pack` the input video and corresponding annotation, we need to design a pipeline to handle these processes. Specifically, we design 7 `Transform` classes to build this video processing pipeline. Please note that all `Transform` classes in OpenMMLab must inherit from the `BaseTransform` class in `mmcv`, implement the abstract method `transform`, and be registered to the `TRANSFORMS` registry. For more detailed information about registry, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html).
 
 ```python
 import mmcv
@@ -174,7 +174,6 @@ class VideoPack(BaseTransform):
 
 Below, we provide a code snippet (using `D32_1gwq35E.mp4 0` from the annotation file) to demonstrate how to use the pipeline.
 
-
 ```python
 import os.path as osp
 from mmengine.dataset import Compose
@@ -218,18 +217,23 @@ clip_len:  16
 label:  tensor([0])
 ```
 
-## Build a Dataset and DataLoader
+## Step2: Build a Dataset and DataLoader
+
+All `Dataset` classes in OpenMMLab must inherit from the `BaseDataset` class in `mmengine`. We can customize annotation loading process by overriding the `load_data_list` method. Additionally, we can add more information to the `results` dict that is passed as input to the `pipeline` by overriding the `get_data_info` method. For more detailed information about `BaseDataset` class, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/basedataset.html).
 
 ```python
 import os.path as osp
 from mmengine.fileio import list_from_file
 from mmengine.dataset import BaseDataset
+from mmaction.registry import DATASETS
 
 
+@DATASETS.register_module()
 class DatasetZelda(BaseDataset):
-    def __init__(self, ann_file, pipeline, data_prefix=dict(video=''),
-                 test_mode=False, **kwargs):
-        super(DatasetZelda, self).__init__(ann_file=ann_file, pipeline=pipeline, 
+    def __init__(self, ann_file, pipeline, data_root, data_prefix=dict(video=''),
+                 test_mode=False, modality='RGB', **kwargs):
+        self.modality = modality
+        super(DatasetZelda, self).__init__(ann_file=ann_file, pipeline=pipeline, data_root=data_root,
                                            data_prefix=data_prefix, test_mode=test_mode,
                                            **kwargs)
 
@@ -244,19 +248,49 @@ class DatasetZelda(BaseDataset):
             data_list.append(dict(filename=filename, label=label))
         return data_list
 
-
-
-    
-    
-train_ann_file = 'data/kinetics400_tiny/kinetics_tiny_train_video.txt'
-val_ann_file = 'data/kinetics400_tiny/kinetics_tiny_val_video.txt'
-
-train_dataset = DatasetZelda(ann_file=train_ann_file, 
-                             )
-
-
+    def get_data_info(self, idx: int) -> dict:
+        data_info = super().get_data_info(idx)
+        data_info['modality'] = self.modality
+        return data_info
 ```
 
+```python
+from mmaction.registry import DATASETS
+
+pipeline = [
+    dict(type='VideoInit'),
+    dict(type='VideoSample', clip_len=16, num_clips=1, test_mode=False),
+    dict(type='VideoDecode'),
+    dict(type='VideoResize', r_size=(256, 256)),
+    dict(type='VideoCrop', c_size=224),
+    dict(type='VideoFormat'),
+    dict(type='VideoPack')
+]
+
+dataset = dict(type='DatasetZelda',
+               ann_file='kinetics_tiny_train_video.txt',
+               pipeline=pipeline,
+               data_root='data/kinetics400_tiny/',
+               data_prefix=dict(video='train'))
+dataset = DATASETS.build(dataset)
+
+packed_results = dataset[0]
+
+inputs = packed_results['inputs']
+data_sample = packed_results['data_samples']
+
+print('shape of the inputs: ', inputs.shape)
+
+# Get metainfo of the inputs
+print('image_shape: ', data_sample.img_shape)
+print('num_clips: ', data_sample.num_clips)
+print('clip_len: ', data_sample.clip_len)
+
+# Get label of the inputs
+print('label: ', data_sample.gt_labels.item)
+```
+
+The terminal output should be the same as the one shown in the [Step0: Prepare Data](#step0-prepare-data).
 
 ## Build a Recognizer
 
