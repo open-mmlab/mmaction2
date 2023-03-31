@@ -18,11 +18,14 @@
 请参照 [官方网站](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) 以获取数据集基本信息。此脚本用于准备数据集 kinetics400，kinetics600，kinetics700。为准备 kinetics 数据集的不同版本，用户需将脚本中的 `${DATASET}` 赋值为数据集对应版本名称，可选项为 `kinetics400`，`kinetics600`， `kinetics700`。
 在开始之前，用户需确保当前目录为 `$MMACTION2/tools/data/${DATASET}/`。
 
-**注**：由于部分 YouTube 链接失效，爬取的 Kinetics 数据集大小可能与原版不同。以下是我们所使用 Kinetics 数据集的大小：
+:::{note}
+由于部分 YouTube 链接失效，爬取的 Kinetics 数据集大小可能与原版不同。以下是我们所使用 Kinetics 数据集的大小：
 
 |   数据集    | 训练视频 | 验证集视频 |
 | :---------: | :------: | :--------: |
-| kinetics400 |  240436  |   19796    |
+| Kinetics400 |  240436  |   19796    |
+| Kinetics600 |  383393  |   27910    |
+| Kinetics700 |  542357  |   34824    |
 
 ## 1. 准备标注文件
 
@@ -41,6 +44,15 @@ bash download_backup_annotations.sh ${DATASET}
 ```
 
 ## 2. 准备视频
+
+### 选项 1: 从 OpenDataLab 下载
+
+**推荐**：[OpenDataLab](https://opendatalab.com/) 提供了 Kinetics 数据集 ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)), 用户可以从这里下载短边长度为 320 的 Kinetics 数据集。
+
+:::{note}
+MMAction2 代码仓库中提供的 Kinetics 实验性能，都是基于这个版本的数据得到的。我们建议用户使用这个版本的 Kinetics 数据集进行实验。
+
+### 选项 2：从其他数据源下载
 
 用户可以使用以下脚本准备视频，视频准备代码修改自 [官方爬虫](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics)。注意这一步骤将花费较长时间。
 
