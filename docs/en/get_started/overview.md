@@ -56,7 +56,7 @@ We have prepared a wealth of documents to meet your various needs:
 </details>
 
 <details open>
-<summary><b>For a overview about components of MMAction2</b></summary>
+<summary><b>For a general understanding about MMAction2</b></summary>
 
 - [20-minute tour to MMAction2](docs/en/get_started/20-minute_tour.md)
 - [Data flow in MMAction2](docs/en/advanced_guides/dataflow.md)

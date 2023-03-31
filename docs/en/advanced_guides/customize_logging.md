@@ -1,6 +1,6 @@
 # Customize Logging
 
-MMAction2 produces a lot of logs during the running process, such as loss, iteration time, learning rate, etc. In this section, we will introduce you how to output custom log.
+MMAction2 produces a lot of logs during the running process, such as loss, iteration time, learning rate, etc. In this section, we will introduce you how to output custom log. More details about the logging system, please refer to [MMEngine](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/logging.html)
 
 ## Flexible Logging System
 

@@ -2,13 +2,58 @@
 
 In this tutorial, we will introduce some methods about how to customize your own dataset by online conversion
 
-## Custom new dataset
+## General understanding of the Dataset in MMAction2
 
-You can write a new Dataset class inherited from [BaseDataset](/mmaction/datasets/base.py), and overwrite three methods
-`load_annotations(self)`, `evaluate(self, results, metrics, logger)` and `dump_results(self, results, out)`,
-like [RawframeDataset](/mmaction/datasets/rawframe_dataset.py), [VideoDataset](/mmaction/datasets/video_dataset.py) or [ActivityNetDataset](/mmaction/datasets/activitynet_dataset.py).
+MMAction2 provides specific Dataset class according to the task, e.g. `VideoDataset`/`RawframeDataset` for action recognition, `AVADataset` for spatio-temporal action detection, `PoseDataset` for skeleton-based action recognition. All these specific Dataset only need to implement `get_data_info(self)` to build a data list from annotation file, while other functions are handled by the superclass. The following table shows the inherent relationship and the main function of the modules.
 
-## Custom keypoint format for PoseDataset
+| Class Name                   | Functions                                                                                                                                                                    |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MMAction2::VideoDataset      | `load_data_list(self)` <br> Build data list from the annotation file.                                                                                                        |
+| MMAction2::BaseActionDataset | `get_data_info(self, idx)` <br> Given the `idx`, return the corresponding data sample from data list                                                                         |
+| MMEngine::BaseDataset        | `__getitem__(self, idx)` <br> Given the `idx`, call `get_data_info` to get data sample, then call the `pipeline` to perform transforms and augmentation in `train_pipeline` or `val_pipeline` |
+
+## Customize new datasets
+
+For most scenarios, we don't need to customize a new dataset class, offline conversion is recommended way to use your data. But customizing a new dataset class is also easy in MMAction2. As above mentioned, dataset for a specific task usually only needs to implement `load_data_list(self)` to generate the data list from the annotation file. It is worth noting that elements in the `data_list` are `dict` with fields required in the following pipeline.
+
+Take `VideoDataset` as an example, `train_pipeline`/`val_pipeline` requires `'filename'` in `DecordInit` and `'label'` in `PackActionInput`, so data samples in the data list have 2 fields: `'filename'` and `'label'`.
+you can refer to [customize pipeline](customize_pipeline.md) for more details about pipeline.
+
+```
+data_list.append(dict(filename=filename, label=label))
+```
+
+While `AVADataset` is more complex, elements in the data list consist of several fields about video data, and it further overwrites `get_data_info(self, idx)` to convert keys, which are required in spatio-temporal action detection pipeline.
+
+```
+
+class AVADataset(BaseActionDataset):
+  ...
+
+  def load_data_list(self) -> List[dict]:
+      ...
+        video_info = dict(
+            frame_dir=frame_dir,
+            video_id=video_id,
+            timestamp=int(timestamp),
+            img_key=img_key,
+            shot_info=shot_info,
+            fps=self._FPS,
+            ann=ann)
+            data_list.append(video_info)
+        data_list.append(video_info)
+      return data_list
+
+  def get_data_info(self, idx: int) -> dict:
+      ...
+      ann = data_info.pop('ann')
+      data_info['gt_bboxes'] = ann['gt_bboxes']
+      data_info['gt_labels'] = ann['gt_labels']
+      data_info['entity_ids'] = ann['entity_ids']
+      return data_info
+```
+
+## Customize keypoint format for PoseDataset
 
 MMAction2 currently supports three kinds of keypoint formats: `coco`, `nturgb+d` and `openpose`. If your use one of them, just specify the corresponding format in the following modules:
 
