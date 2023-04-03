@@ -255,7 +255,7 @@ class DatasetZelda(BaseDataset):
         return data_info
 ```
 
-Next, we will demonstrate how to use dataset and dataloader to index data.
+Next, we will demonstrate how to use dataset and dataloader to index data. We will use the `Runner.build_dataloader` method to construct the dataloader. For more detailed information about dataloader, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/tutorials/dataset.html#details-on-dataloader).
 
 ```python
 from mmaction.registry import DATASETS
