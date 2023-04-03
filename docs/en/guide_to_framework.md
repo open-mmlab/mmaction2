@@ -1,6 +1,6 @@
 # A 20-Minute Guide to MMAction2 FrameWork
 
-Next, we will demonstrate the overall architecture of our `MMACTION2 1.0` through a step-by-step example of video action recognition.
+In this tutorial, we will demonstrate the overall architecture of our `MMACTION2 1.0` through a step-by-step example of video action recognition.
 
 The structure of this tutorial is as follows:
 
@@ -9,6 +9,17 @@ The structure of this tutorial is as follows:
   - [Step1: Build a Pipeline](#step1-build-a-pipeline)
   - [Step2: Build a Dataset and DataLoader](#step2-build-a-dataset-and-dataloader)
   - [Step3: Build a Recognizer](#step3-build-a-recognizer)
+  - [Step4: Build a Evaluation Metric](#step4-build-a-evaluation-metric)
+  - [Step5: Train and Test with Native PyTorch](#step5-train-and-test-with-native-pytorch)
+  - [Step6: Train and Test with MMEngine (Recommended)](#step5-train-and-test-with-mmengine-recommended)
+  
+First, we need to initialize the `scope` for registry, to ensure that each module is registered under the scope of `mmaction`. For more detailed information about registry, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html).
+
+```python
+from mmaction.utils import register_all_modules
+
+register_all_modules(init_default_scope=True)
+```
 
 ## Step0: Prepare Data
 
@@ -42,11 +53,11 @@ oXy-e_P_cAI.mp4 0
 h2YqqUhnR34.mp4 0
 ```
 
-Each line in the file represents the annotation of a video, where the first item denotes the video filename (e.g., `D32_1gwq35E.mp4`), and the second item represents the corresponding label (e.g., label `0` for `D32_1gwq35E.mp4`). In this dataset, there are only two categories.
+Each line in the file represents the annotation of a video, where the first item denotes the video filename (e.g., `D32_1gwq35E.mp4`), and the second item represents the corresponding label (e.g., label `0` for `D32_1gwq35E.mp4`). In this dataset, there are only `two` categories.
 
 ## Step1: Build a Pipeline
 
-In order to `decode`, `sample`, `resize`, `crop`, `format`, and `pack` the input video and corresponding annotation, we need to design a pipeline to handle these processes. Specifically, we design 7 `Transform` classes to build this video processing pipeline. Please note that all `Transform` classes in OpenMMLab must inherit from the `BaseTransform` class in `mmcv`, implement the abstract method `transform`, and be registered to the `TRANSFORMS` registry. For more detailed information about registry, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html).
+In order to `decode`, `sample`, `resize`, `crop`, `format`, and `pack` the input video and corresponding annotation, we need to design a pipeline to handle these processes. Specifically, we design seven `Transform` classes to build this video processing pipeline. Note that all `Transform` classes in OpenMMLab must inherit from the `BaseTransform` class in `mmcv`, implement the abstract method `transform`, and be registered to the `TRANSFORMS` registry.
 
 ```python
 import mmcv
@@ -179,7 +190,7 @@ Below, we provide a code snippet (using `D32_1gwq35E.mp4 0` from the annotation 
 import os.path as osp
 from mmengine.dataset import Compose
 
-pipeline = [
+pipeline_cfg = [
     dict(type='VideoInit'),
     dict(type='VideoSample', clip_len=16, num_clips=1, test_mode=False),
     dict(type='VideoDecode'),
@@ -189,7 +200,7 @@ pipeline = [
     dict(type='VideoPack')
 ]
 
-pipeline = Compose(transforms=pipeline)
+pipeline = Compose(pipeline_cfg)
 data_prefix = 'data/kinetics400_tiny/train'
 results = dict(filename=osp.join(data_prefix, 'D32_1gwq35E.mp4'), label=0)
 packed_results = pipeline(results)
@@ -207,9 +218,6 @@ print('clip_len: ', data_sample.clip_len)
 # Get label of the inputs
 print('label: ', data_sample.gt_labels.item)
 ```
-
-The terminal output is as follows:
-
 ```shell
 shape of the inputs:  torch.Size([1, 3, 16, 224, 224])
 image_shape:  (224, 224)
@@ -260,7 +268,7 @@ Next, we will demonstrate how to use dataset and dataloader to index data. We wi
 ```python
 from mmaction.registry import DATASETS
 
-pipeline = [
+pipeline_cfg = [
     dict(type='VideoInit'),
     dict(type='VideoSample', clip_len=16, num_clips=1, test_mode=False),
     dict(type='VideoDecode'),
@@ -270,12 +278,12 @@ pipeline = [
     dict(type='VideoPack')
 ]
 
-dataset = dict(type='DatasetZelda',
+dataset_cfg = dict(type='DatasetZelda',
                ann_file='kinetics_tiny_train_video.txt',
-               pipeline=pipeline,
+               pipeline=pipeline_cfg,
                data_root='data/kinetics400_tiny/',
                data_prefix=dict(video='train'))
-dataset = DATASETS.build(dataset)
+dataset = DATASETS.build(dataset_cfg)
 
 packed_results = dataset[0]
 
@@ -296,14 +304,14 @@ from mmengine.runner import Runner
 
 BATCH_SIZE = 4
 
-data_loader = dict(
+data_loader_cfg = dict(
     batch_size=BATCH_SIZE,
     num_workers=0,
     persistent_workers=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dataset)
+    dataset=dataset_cfg)
 
-data_loader = Runner.build_dataloader(dataloader=data_loader)
+data_loader = Runner.build_dataloader(dataloader=data_loader_cfg)
 
 batched_packed_results = next(iter(data_loader))
 
@@ -318,7 +326,7 @@ The terminal output should be the same as the one shown in the [Step1: Build a P
 
 ## Step3: Build a Recognizer
 
-Next, we will construct the recognizer, which mainly consists of three parts: `data preprocessor` for normalizing the data, `backbone` for feature extraction, and `cls_head` for classification.
+Next, we will construct the `recognizer`, which mainly consists of three parts: `data preprocessor` for normalizing the data, `backbone` for feature extraction, and `cls_head` for classification.
 
 
 The implementation of `data_preprocessor` is as follows:
@@ -326,9 +334,6 @@ The implementation of `data_preprocessor` is as follows:
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
 from mmaction.registry import MODELS
-from mmaction.utils import register_all_modules
-
-register_all_modules(init_default_scope=True)
 
 
 @MODELS.register_module()
@@ -354,24 +359,26 @@ class DataPreprocessorZelda(BaseDataPreprocessor):
         return data
 ```
 
-Here is how to use data_preprocessor: feed the `batched_packed_results` obtained from the [Step2: Build a Dataset and DataLoader](#step2-build-a-dataset-and-dataloader) into the `data_preprocessor` for batching and normalization.
+Here is the usage of data_preprocessor: feed the `batched_packed_results` obtained from the [Step2: Build a Dataset and DataLoader](#step2-build-a-dataset-and-dataloader) into the `data_preprocessor` for batching and normalization.
 
 ```python
 from mmaction.registry import MODELS
 
-data_preprocessor = dict(
+data_preprocessor_cfg = dict(
     type='DataPreprocessorZelda',
     mean=[123.675, 116.28, 103.53],
     std=[58.395, 57.12, 57.375])
 
-data_preprocessor = MODELS.build(data_preprocessor)
+data_preprocessor = MODELS.build(data_preprocessor_cfg)
 
 preprocessed_inputs = data_preprocessor(batched_packed_results)
-assert preprocessed_inputs['inputs'].shape == (BATCH_SIZE, 1, 3, 16, 224, 224)
+print(preprocessed_inputs['inputs'].shape)
+```
+```shell
+torch.Size([4, 1, 3, 16, 224, 224])
 ```
 
-
-The implementation of `backbone`, `cls_head` and `recognizer` is as follows:
+The implementations of `backbone`, `cls_head` and `recognizer` are as follows:
 
 ```python
 import torch
@@ -481,7 +488,8 @@ class RecognizerZelda(BaseModel):
         self.cls_head = MODELS.build(cls_head)
     
     def extract_feat(self, inputs):
-      return self.backbone(inputs)
+        inputs = inputs.view((-1, ) + inputs.shape[2:])
+        return self.backbone(inputs)
     
     def loss(self, inputs, data_samples):
         feats = self.extract_feat(inputs)
@@ -504,13 +512,14 @@ class RecognizerZelda(BaseModel):
             raise RuntimeError(f'Invalid mode: {mode}')
 ```
 
-The usage of the above modules is as follows:
+The `init_cfg` is used for model weight initialization. For more information on model weight initialization, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/initialize.html). The usage of the above modules is as follows:
 
 ```python
+import torch
 import copy
 from mmaction.registry import MODELS
 
-recognizer = dict(
+model_cfg = dict(
     type='RecognizerZelda',
     backbone=dict(type='BackBoneZelda'),
     cls_head=dict(
@@ -523,67 +532,132 @@ recognizer = dict(
         mean=[123.675, 116.28, 103.53],
         std=[58.395, 57.12, 57.375]))
 
-recognizer = MODELS.build(recognizer)
+model = MODELS.build(model_cfg)
 
 # Train
-recognizer.init_weights()
-data_train = copy.deepcopy(batched_packed_results)
-data = recognizer.data_preprocessor(data_train, training=True)
-loss = recognizer(**data, mode='loss')
+model.init_weights()
+data_batch_train = copy.deepcopy(batched_packed_results)
+data = model.data_preprocessor(data_batch_train, training=True)
+loss = model(**data, mode='loss')
 print('loss dict: ', loss)
 
 # Test
-data_test = copy.deepcopy(batched_packed_results)
-data = recognizer.data_preprocessor(data_train, training=False)
-predictions = recognizer(**data, mode='predict')
+with torch.no_grad():
+    data_batch_test = copy.deepcopy(batched_packed_results)
+    data = model.data_preprocessor(data_batch_test, training=False)
+    predictions = model(**data, mode='predict')
 print('Label of Sample[0]', predictions[0].gt_labels.item)
 print('Scores of Sample[0]', predictions[0].pred_scores.item)
 ```
-
-The terminal output is as follows:
-
 ```shell
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 backbone.conv1.0.weight - torch.Size([64, 3, 3, 7, 7]): 
 KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
  
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 backbone.conv1.0.bias - torch.Size([64]): 
 KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
  
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 backbone.conv1.1.weight - torch.Size([64]): 
 The value is the same before and after calling `init_weights` of RecognizerZelda  
  
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 backbone.conv1.1.bias - torch.Size([64]): 
 The value is the same before and after calling `init_weights` of RecognizerZelda  
  
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 backbone.conv.0.weight - torch.Size([128, 64, 3, 3, 3]): 
 KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
  
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 backbone.conv.0.bias - torch.Size([128]): 
 KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
  
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 backbone.conv.1.weight - torch.Size([128]): 
 The value is the same before and after calling `init_weights` of RecognizerZelda  
  
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 backbone.conv.1.bias - torch.Size([128]): 
 The value is the same before and after calling `init_weights` of RecognizerZelda  
  
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 cls_head.fc.weight - torch.Size([2, 128]): 
 NormalInit: mean=0, std=0.01, bias=0 
  
-04/03 21:52:59 - mmengine - INFO - 
+04/03 23:28:01 - mmengine - INFO - 
 cls_head.fc.bias - torch.Size([2]): 
 NormalInit: mean=0, std=0.01, bias=0 
  
-loss dict:  {'loss_cls': tensor(0.6607, grad_fn=<NllLossBackward0>)}
+loss dict:  {'loss_cls': tensor(0.6853, grad_fn=<NllLossBackward0>)}
 Label of Sample[0] tensor([0])
-Scores of Sample[0] tensor([0.5086, 0.4914], grad_fn=<UnbindBackward0>)
+Scores of Sample[0] tensor([0.5240, 0.4760])
 ```
+
+## Step4: Build a Evaluation Metric
+
+Note that all `Metric` classes in `OpenMMLab` must inherit from the `BaseMetric` class in `mmengine` and  implement the abstract methods, `process` and `compute_metrics`. For more information on evaluation, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/tutorials/evaluation.html).
+
+```python
+import copy
+from collections import OrderedDict
+from mmengine.evaluator import BaseMetric
+from mmaction.evaluation import top_k_accuracy
+from mmaction.registry import METRICS
+
+
+@METRICS.register_module()
+class AccuracyMetric(BaseMetric):
+    def __init__(self, topk=(1, 5), collect_device='cpu', prefix='acc'):
+        super().__init__(collect_device=collect_device, prefix=prefix)      
+        self.topk = topk
+    
+    def process(self, data_batch, data_samples):
+        data_samples = copy.deepcopy(data_samples)
+        for data_sample in data_samples:
+            result = dict()
+            scores = data_sample['pred_scores']['item'].cpu().numpy()
+            label = data_sample['gt_labels']['item'].item()
+            result['scores'] = scores
+            result['label'] = label
+            self.results.append(result)
+    
+    def compute_metrics(self, results: list) -> dict:
+        eval_results = OrderedDict()
+        labels = [res['label'] for res in results]
+        scores = [res['scores'] for res in results]
+        topk_acc = top_k_accuracy(scores, labels, self.topk)
+        for k, acc in zip(self.topk, topk_acc):
+            eval_results[f'topk{k}'] = acc
+        return eval_results
+```
+
+```python
+from mmaction.registry import METRICS
+
+metric_cfg = dict(type='AccuracyMetric', topk=(1, 5))
+
+metric = METRICS.build(metric_cfg)
+
+data_samples = [d.to_dict() for d in predictions]
+
+metric.process(batched_packed_results, data_samples)
+acc = metric.compute_metrics(metric.results)
+print(acc)
+```
+```shell
+OrderedDict([('topk1', 0.5), ('topk5', 1.0)])
+```
+
+## Step5: Train and Test with Native PyTorch
+
+```python
+
+
+
+
+
+```
+
+## Step6: Train and Test with MMEngine (Recommended)
