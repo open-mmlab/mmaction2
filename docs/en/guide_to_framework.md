@@ -279,14 +279,23 @@ pipeline_cfg = [
     dict(type='VideoPack')
 ]
 
-dataset_cfg = dict(type='DatasetZelda',
-               ann_file='kinetics_tiny_train_video.txt',
-               pipeline=pipeline_cfg,
-               data_root='data/kinetics400_tiny/',
-               data_prefix=dict(video='train'))
-dataset = DATASETS.build(dataset_cfg)
+train_dataset_cfg = dict(
+    type='DatasetZelda',
+    ann_file='kinetics_tiny_train_video.txt',
+    pipeline=pipeline_cfg,
+    data_root='data/kinetics400_tiny/',
+    data_prefix=dict(video='train'))
 
-packed_results = dataset[0]
+val_dataset_cfg = dict(
+    type='DatasetZelda',
+    ann_file='kinetics_tiny_val_video.txt',
+    pipeline=pipeline_cfg,
+    data_root='data/kinetics400_tiny/',
+    data_prefix=dict(video='val'))
+
+train_dataset = DATASETS.build(train_dataset_cfg)
+
+packed_results = train_dataset[0]
 
 inputs = packed_results['inputs']
 data_sample = packed_results['data_samples']
@@ -305,16 +314,23 @@ from mmengine.runner import Runner
 
 BATCH_SIZE = 4
 
-data_loader_cfg = dict(
+train_dataloader_cfg = dict(
+    batch_size=BATCH_SIZE,
+    num_workers=0,
+    persistent_workers=False,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=train_dataset_cfg)
+
+val_dataloader_cfg = dict(
     batch_size=BATCH_SIZE,
     num_workers=0,
     persistent_workers=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dataset_cfg)
+    dataset=val_dataset_cfg)
 
-data_loader = Runner.build_dataloader(dataloader=data_loader_cfg)
+train_data_loader = Runner.build_dataloader(dataloader=train_dataloader_cfg)
 
-batched_packed_results = next(iter(data_loader))
+batched_packed_results = next(iter(train_data_loader))
 
 batched_inputs = batched_packed_results['inputs']
 batched_data_sample = batched_packed_results['data_samples']
