@@ -255,6 +255,8 @@ class DatasetZelda(BaseDataset):
         return data_info
 ```
 
+Next, we will demonstrate how to use dataset and dataloader to index data.
+
 ```python
 from mmaction.registry import DATASETS
 
@@ -289,6 +291,27 @@ print('clip_len: ', data_sample.clip_len)
 
 # Get label of the inputs
 print('label: ', data_sample.gt_labels.item)
+
+from mmengine.runner import Runner
+
+BATCH_SIZE = 4
+
+data_loader = dict(
+    batch_size=BATCH_SIZE,
+    num_workers=0,
+    persistent_workers=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dataset)
+
+data_loader = Runner.build_dataloader(dataloader=data_loader)
+
+batched_packed_results = next(iter(data_loader))
+
+batched_inputs = batched_packed_results['inputs']
+batched_data_sample = batched_packed_results['data_samples']
+
+assert len(batched_inputs) == BATCH_SIZE
+assert len(batched_data_sample) == BATCH_SIZE
 ```
 
 The terminal output should be the same as the one shown in the [Step1: Build a Pipeline](#step1-build-a-pipeline).
