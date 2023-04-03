@@ -12,7 +12,7 @@ The structure of this tutorial is as follows:
   - [Step4: Build a Evaluation Metric](#step4-build-a-evaluation-metric)
   - [Step5: Train and Test with Native PyTorch](#step5-train-and-test-with-native-pytorch)
   - [Step6: Train and Test with MMEngine (Recommended)](#step5-train-and-test-with-mmengine-recommended)
-  
+
 First, we need to initialize the `scope` for registry, to ensure that each module is registered under the scope of `mmaction`. For more detailed information about registry, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html).
 
 ```python
@@ -36,7 +36,7 @@ mmaction2
 │   │    │   ├── 27_CSXByd3s.mp4
 │   │    │   ├── 34XczvTaRiI.mp4
 │   │    │   ├── A-wiliK50Zw.mp4
-│   │    │   ├── ... 
+│   │    │   ├── ...
 │   │    └── val
 │   │       ├── 0pVGiAU6XEA.mp4
 │   │       ├── AQrbRSnRt8M.mp4
@@ -218,6 +218,7 @@ print('clip_len: ', data_sample.clip_len)
 # Get label of the inputs
 print('label: ', data_sample.gt_labels.item)
 ```
+
 ```shell
 shape of the inputs:  torch.Size([1, 3, 16, 224, 224])
 image_shape:  (224, 224)
@@ -328,8 +329,8 @@ The terminal output should be the same as the one shown in the [Step1: Build a P
 
 Next, we will construct the `recognizer`, which mainly consists of three parts: `data preprocessor` for normalizing the data, `backbone` for feature extraction, and `cls_head` for classification.
 
-
 The implementation of `data_preprocessor` is as follows:
+
 ```python
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
@@ -340,7 +341,7 @@ from mmaction.registry import MODELS
 class DataPreprocessorZelda(BaseDataPreprocessor):
     def __init__(self, mean, std):
         super().__init__()
-      
+
         self.register_buffer(
             'mean',
             torch.tensor(mean, dtype=torch.float32).view(-1, 1, 1, 1),
@@ -374,6 +375,7 @@ data_preprocessor = MODELS.build(data_preprocessor_cfg)
 preprocessed_inputs = data_preprocessor(batched_packed_results)
 print(preprocessed_inputs['inputs'].shape)
 ```
+
 ```shell
 torch.Size([4, 1, 3, 16, 224, 224])
 ```
@@ -395,7 +397,7 @@ class BackBoneZelda(BaseModule):
         if init_cfg is None:
             init_cfg = [dict(type='Kaiming', layer='Conv3d', mode='fan_out', nonlinearity="relu"),
                         dict(type='Constant', layer='BatchNorm3d', val=1, bias=0)]
-        
+
         super(BackBoneZelda, self).__init__(init_cfg=init_cfg)
 
         self.conv1 = Sequential(nn.Conv3d(3, 64, kernel_size=(3, 7, 7),
@@ -403,14 +405,14 @@ class BackBoneZelda(BaseModule):
                                 nn.BatchNorm3d(64), nn.ReLU())
         self.maxpool = nn.MaxPool3d(kernel_size=(1, 3, 3), stride=(1, 2, 2),
                                     padding=(0, 1, 1))
-        
+
         self.conv = Sequential(nn.Conv3d(64, 128, kernel_size=3, stride=2, padding=1),
                                nn.BatchNorm3d(128), nn.ReLU())
-    
+
     def forward(self, imgs):
         # imgs: [batch_size*num_views, 3, T, H, W]
         # features: [batch_size*num_views, 128, T/2, H//8, W//8]
-        features = self.conv(self.maxpool(self.conv1(imgs))) 
+        features = self.conv(self.maxpool(self.conv1(imgs)))
         return features
 
 
@@ -419,13 +421,13 @@ class ClsHeadZelda(BaseModule):
     def __init__(self, num_classes, in_channels, average_clips='prob', init_cfg=None):
         if init_cfg is None:
             init_cfg = dict(type='Normal', layer='Linear', std=0.01)
-        
+
         super(ClsHeadZelda, self).__init__(init_cfg=init_cfg)
-        
+
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.average_clips = average_clips
-        
+
         self.fc = nn.Linear(self.in_channels, self.num_classes)
         self.pool = nn.AdaptiveAvgPool3d(1)
         self.loss_fn = nn.CrossEntropyLoss()
@@ -442,10 +444,10 @@ class ClsHeadZelda(BaseModule):
         cls_scores = self(feats)
         labels = torch.stack([x.gt_labels.item for x in data_samples])
         labels = labels.squeeze()
-        
+
         if labels.shape == torch.Size([]):
             labels = labels.unsqueeze(0)
-        
+
         loss_cls = self.loss_fn(cls_scores, labels)
         return dict(loss_cls=loss_cls)
 
@@ -454,7 +456,7 @@ class ClsHeadZelda(BaseModule):
         num_views = cls_scores.shape[0] // len(data_samples)
         # assert num_views == data_samples[0].num_clips
         cls_scores = self.average_clip(cls_scores, num_views)
-        
+
         for ds, sc in zip(data_samples, cls_scores):
             pred = LabelData(item=sc)
             ds.pred_scores = pred
@@ -468,14 +470,14 @@ class ClsHeadZelda(BaseModule):
 
           total_views = cls_scores.shape[0]
           cls_scores = cls_scores.view(total_views // num_views, num_views, -1)
-  
+
           if self.average_clips is None:
               return cls_scores
           elif self.average_clips == 'prob':
               cls_scores = F.softmax(cls_scores, dim=2).mean(dim=1)
           elif self.average_clips == 'score':
               cls_scores = cls_scores.mean(dim=1)
-  
+
           return cls_scores
 
 
@@ -486,23 +488,23 @@ class RecognizerZelda(BaseModel):
 
         self.backbone = MODELS.build(backbone)
         self.cls_head = MODELS.build(cls_head)
-    
+
     def extract_feat(self, inputs):
         inputs = inputs.view((-1, ) + inputs.shape[2:])
         return self.backbone(inputs)
-    
+
     def loss(self, inputs, data_samples):
         feats = self.extract_feat(inputs)
         loss = self.cls_head.loss(feats, data_samples)
         return loss
-    
+
     def predict(self, inputs, data_samples):
         feats = self.extract_feat(inputs)
         predictions = self.cls_head.predict(feats, data_samples)
         return predictions
 
     def forward(self, inputs, data_samples=None, mode='tensor'):
-        if mode == 'tensor': 
+        if mode == 'tensor':
             return self.extract_feat(inputs)
         elif mode == 'loss':
             return self.loss(inputs, data_samples)
@@ -549,47 +551,48 @@ with torch.no_grad():
 print('Label of Sample[0]', predictions[0].gt_labels.item)
 print('Scores of Sample[0]', predictions[0].pred_scores.item)
 ```
+
 ```shell
-04/03 23:28:01 - mmengine - INFO - 
-backbone.conv1.0.weight - torch.Size([64, 3, 3, 7, 7]): 
-KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
- 
-04/03 23:28:01 - mmengine - INFO - 
-backbone.conv1.0.bias - torch.Size([64]): 
-KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
- 
-04/03 23:28:01 - mmengine - INFO - 
-backbone.conv1.1.weight - torch.Size([64]): 
-The value is the same before and after calling `init_weights` of RecognizerZelda  
- 
-04/03 23:28:01 - mmengine - INFO - 
-backbone.conv1.1.bias - torch.Size([64]): 
-The value is the same before and after calling `init_weights` of RecognizerZelda  
- 
-04/03 23:28:01 - mmengine - INFO - 
-backbone.conv.0.weight - torch.Size([128, 64, 3, 3, 3]): 
-KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
- 
-04/03 23:28:01 - mmengine - INFO - 
-backbone.conv.0.bias - torch.Size([128]): 
-KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
- 
-04/03 23:28:01 - mmengine - INFO - 
-backbone.conv.1.weight - torch.Size([128]): 
-The value is the same before and after calling `init_weights` of RecognizerZelda  
- 
-04/03 23:28:01 - mmengine - INFO - 
-backbone.conv.1.bias - torch.Size([128]): 
-The value is the same before and after calling `init_weights` of RecognizerZelda  
- 
-04/03 23:28:01 - mmengine - INFO - 
-cls_head.fc.weight - torch.Size([2, 128]): 
-NormalInit: mean=0, std=0.01, bias=0 
- 
-04/03 23:28:01 - mmengine - INFO - 
-cls_head.fc.bias - torch.Size([2]): 
-NormalInit: mean=0, std=0.01, bias=0 
- 
+04/03 23:28:01 - mmengine - INFO -
+backbone.conv1.0.weight - torch.Size([64, 3, 3, 7, 7]):
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0
+
+04/03 23:28:01 - mmengine - INFO -
+backbone.conv1.0.bias - torch.Size([64]):
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0
+
+04/03 23:28:01 - mmengine - INFO -
+backbone.conv1.1.weight - torch.Size([64]):
+The value is the same before and after calling `init_weights` of RecognizerZelda
+
+04/03 23:28:01 - mmengine - INFO -
+backbone.conv1.1.bias - torch.Size([64]):
+The value is the same before and after calling `init_weights` of RecognizerZelda
+
+04/03 23:28:01 - mmengine - INFO -
+backbone.conv.0.weight - torch.Size([128, 64, 3, 3, 3]):
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0
+
+04/03 23:28:01 - mmengine - INFO -
+backbone.conv.0.bias - torch.Size([128]):
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0
+
+04/03 23:28:01 - mmengine - INFO -
+backbone.conv.1.weight - torch.Size([128]):
+The value is the same before and after calling `init_weights` of RecognizerZelda
+
+04/03 23:28:01 - mmengine - INFO -
+backbone.conv.1.bias - torch.Size([128]):
+The value is the same before and after calling `init_weights` of RecognizerZelda
+
+04/03 23:28:01 - mmengine - INFO -
+cls_head.fc.weight - torch.Size([2, 128]):
+NormalInit: mean=0, std=0.01, bias=0
+
+04/03 23:28:01 - mmengine - INFO -
+cls_head.fc.bias - torch.Size([2]):
+NormalInit: mean=0, std=0.01, bias=0
+
 loss dict:  {'loss_cls': tensor(0.6853, grad_fn=<NllLossBackward0>)}
 Label of Sample[0] tensor([0])
 Scores of Sample[0] tensor([0.5240, 0.4760])
@@ -610,9 +613,9 @@ from mmaction.registry import METRICS
 @METRICS.register_module()
 class AccuracyMetric(BaseMetric):
     def __init__(self, topk=(1, 5), collect_device='cpu', prefix='acc'):
-        super().__init__(collect_device=collect_device, prefix=prefix)      
+        super().__init__(collect_device=collect_device, prefix=prefix)
         self.topk = topk
-    
+
     def process(self, data_batch, data_samples):
         data_samples = copy.deepcopy(data_samples)
         for data_sample in data_samples:
@@ -622,7 +625,7 @@ class AccuracyMetric(BaseMetric):
             result['scores'] = scores
             result['label'] = label
             self.results.append(result)
-    
+
     def compute_metrics(self, results: list) -> dict:
         eval_results = OrderedDict()
         labels = [res['label'] for res in results]
@@ -646,6 +649,7 @@ metric.process(batched_packed_results, data_samples)
 acc = metric.compute_metrics(metric.results)
 print(acc)
 ```
+
 ```shell
 OrderedDict([('topk1', 0.5), ('topk5', 1.0)])
 ```
