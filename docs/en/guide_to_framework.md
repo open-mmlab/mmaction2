@@ -665,3 +665,18 @@ OrderedDict([('topk1', 0.5), ('topk5', 1.0)])
 ```
 
 ## Step6: Train and Test with MMEngine (Recommended)
+
+```python
+from mmengine.runner import Runner
+
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=10, val_begin=1)
+val_cfg = dict(type='ValLoop')
+
+optim_wrapper = dict(optimizer=dict(type='Adam', lr=0.01))
+
+runner = Runner(model=model_cfg, work_dir='./work_dirs/guide',
+                train_dataloader=train_dataloader_cfg,
+                val_dataloader=val_dataloader_cfg,
+                optim_wrapper=optim_wrapper,
+                val_evaluator=[metric_cfg])
+```
