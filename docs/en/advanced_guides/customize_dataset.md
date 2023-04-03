@@ -4,7 +4,7 @@ In this tutorial, we will introduce some methods about how to customize your own
 
 ## General understanding of the Dataset in MMAction2
 
-MMAction2 provides specific Dataset class according to the task, e.g. `VideoDataset`/`RawframeDataset` for action recognition, `AVADataset` for spatio-temporal action detection, `PoseDataset` for skeleton-based action recognition. All these specific Dataset only need to implement `get_data_info(self)` to build a data list from annotation file, while other functions are handled by the superclass. The following table shows the inherent relationship and the main function of the modules.
+MMAction2 provides specific Dataset class according to the task, e.g. `VideoDataset`/`RawframeDataset` for action recognition, `AVADataset` for spatio-temporal action detection, `PoseDataset` for skeleton-based action recognition. All these specific datasets only need to implement `get_data_info(self)` to build a data list from the annotation file, while other functions are handled by the superclass. The following table shows the inherent relationship and the main function of the modules.
 
 | Class Name                   | Functions                                                                                                                                                                    |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -14,10 +14,10 @@ MMAction2 provides specific Dataset class according to the task, e.g. `VideoData
 
 ## Customize new datasets
 
-For most scenarios, we don't need to customize a new dataset class, offline conversion is recommended way to use your data. But customizing a new dataset class is also easy in MMAction2. As above mentioned, dataset for a specific task usually only needs to implement `load_data_list(self)` to generate the data list from the annotation file. It is worth noting that elements in the `data_list` are `dict` with fields required in the following pipeline.
+For most scenarios, we don't need to customize a new dataset class, offline conversion is recommended way to use your data. But customizing a new dataset class is also easy in MMAction2. As above mentioned, a dataset for a specific task usually only needs to implement `load_data_list(self)` to generate the data list from the annotation file. It is worth noting that elements in the `data_list` are `dict` with fields required in the following pipeline.
 
 Take `VideoDataset` as an example, `train_pipeline`/`val_pipeline` requires `'filename'` in `DecordInit` and `'label'` in `PackActionInput`, so data samples in the data list have 2 fields: `'filename'` and `'label'`.
-you can refer to [customize pipeline](customize_pipeline.md) for more details about pipeline.
+you can refer to [customize pipeline](customize_pipeline.md) for more details about the pipeline.
 
 ```
 data_list.append(dict(filename=filename, label=label))

@@ -4,13 +4,13 @@ MMAction2 produces a lot of logs during the running process, such as loss, itera
 
 ## Flexible Logging System
 
-MMAction2 configure the logging system by LogProcessor in [default_runtime](/configs/_base_/default_runtime.py) in default, which is equivalent to:
+MMAction2 configures the logging system by LogProcessor in [default_runtime](/configs/_base_/default_runtime.py) in default, which is equivalent to:
 
 ```
 log_processor = dict(type='LogProcessor', window_size=20, by_epoch=True)
 ```
 
-Defaultly, LogProcessor catch all filed start with `loss` return by `model.forward`. For example in the following model, `loss1` and `loss2` will be logged automatically without additional configuration.
+Defaultly, LogProcessor catches all filed start with `loss` return by `model.forward`. For example in the following model, `loss1` and `loss2` will be logged automatically without additional configuration.
 
 ```
 from mmengine.model import BaseModel
@@ -94,7 +94,7 @@ log_processor = dict(
         ])
 ```
 
-The `loss_tmp` will be added into the output log:
+The `loss_tmp` will be added to the output log:
 
 ```
 08/21 03:40:31 - mmengine - INFO - Epoch(train) [1][10/25]  lr: 1.0000e-02  eta: 0:00:00  time: 0.0026  data_time: 0.0008  loss_tmp: 0.0097  loss: 0.0000
@@ -134,7 +134,7 @@ Besides, logs of different ranks will be saved in `debug` mode if you are traini
 └── tmp_rank63.log
 ```
 
-The log of Multiple machine with independent storage:
+The log of Multiple machines with independent storage:
 
 ```text
 # device: 0:

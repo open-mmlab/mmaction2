@@ -8,7 +8,7 @@ One-stop, Multi-model: MMAction2 supports various video understanding tasks and 
 
 Modular Design: MMAction2’s modular design allows users to define and reuse modules in the model on demand.
 
-Various Useful Tools: MMAction2 provides a number of analysis tools, including visualizers, validation scripts, evaluators, etc., to help users troubleshoot, finetune or compare models.
+Various Useful Tools: MMAction2 provides many analysis tools, including visualizers, validation scripts, evaluators, etc., to help users troubleshoot, finetune or compare models.
 
 Powered by OpenMMLab: Like other algorithm libraries in OpenMMLab family, MMAction2 follows OpenMMLab’s rigorous development guidelines and interface conventions, significantly reducing the learning cost of users familiar with other projects in OpenMMLab family. In addition, benefiting from the unified interfaces among OpenMMLab, you can easily call the models implemented in other OpenMMLab projects (e.g. MMClassification) in MMAction2, facilitating cross-domain research and real-world applications.
 
