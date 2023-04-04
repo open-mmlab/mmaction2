@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   build_cpu:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: [3.7]
@@ -47,9 +47,9 @@ jobs:
             torchvision: 0.10.0
             python-version: 3.9
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
@@ -65,7 +65,7 @@ jobs:
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install PyTorch
-        run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/torch_stable.html
+        run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
       - name: Install timm
         run: python -m pip install timm==0.6.7
         if: ${{matrix.torch == '1.5.0'}}
@@ -91,7 +91,7 @@ jobs:
           coverage xml
           coverage report -m
   build_cu101:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     container:
       image: pytorch/pytorch:1.6.0-cuda10.1-cudnn7-devel
 
@@ -110,9 +110,9 @@ jobs:
             torch_version: torch1.7
             torchvision: 0.8.1+cu101
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
@@ -127,19 +127,17 @@ jobs:
           apt-get clean
           rm -rf /var/lib/apt/lists/*
       - name: Install librosa and soundfile
-        run: python -m pip install librosa soundfile
+        run: pip install librosa soundfile
       - name: Install lmdb
-        run: python -m pip install lmdb
+        run: pip install lmdb
       - name: Install PyTorch
-        run: python -m pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
+        run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmaction dependencies
         run: |
-          python -V
-          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/${{matrix.torch_version}}/index.html
-          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  python -m pip install -q git+https://github.com/open-mmlab/mmdetection/
-          python -m pip install -q git+https://github.com/open-mmlab/mmclassification/
-          python -m pip install -r requirements.txt
-          python -c 'import mmcv; print(mmcv.__version__)'
+          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/${{matrix.torch_version}}/index.html
+          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection/
+          pip install -q git+https://github.com/open-mmlab/mmclassification/
+          pip install -r requirements.txt
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
@@ -159,7 +157,7 @@ jobs:
           fail_ci_if_error: false
 
   build_cu102:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     container:
       image: pytorch/pytorch:1.9.0-cuda10.2-cudnn7-devel
 
@@ -172,9 +170,9 @@ jobs:
             torch_version: torch1.9
             torchvision: 0.10.0+cu102
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
@@ -189,23 +187,21 @@ jobs:
           apt-get clean
           rm -rf /var/lib/apt/lists/*
       - name: Install librosa and soundfile
-        run: python -m pip install librosa soundfile
+        run: pip install librosa soundfile
       - name: Install lmdb
-        run: python -m pip install lmdb
+        run: pip install lmdb
       - name: Install PyTorch
-        run: python -m pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
+        run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install timm
-        run: python -m pip install timm
+        run: pip install timm
       - name: Install mmaction dependencies
         run: |
-          python -V
-          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/${{matrix.torch_version}}/index.html
-          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  python -m pip install -q git+https://github.com/open-mmlab/mmdetection/
-          python -m pip install -q git+https://github.com/open-mmlab/mmclassification/
-          python -m pip install -r requirements.txt
-          python -c 'import mmcv; print(mmcv.__version__)'
+          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/${{matrix.torch_version}}/index.html
+          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection/
+          pip install -q git+https://github.com/open-mmlab/mmclassification/
+          pip install -r requirements.txt
       - name: Install PytorchVideo
-        run: python -m pip install pytorchvideo
+        run: pip install pytorchvideo
         if: ${{matrix.torchvision == '0.10.0+cu102'}}
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
@@ -223,9 +219,9 @@ jobs:
         python: [3.8]
         platform: [cpu]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
       - name: Upgrade pip
