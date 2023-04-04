@@ -1,10 +1,15 @@
 # Customize Datasets
 
-In this tutorial, we will introduce some methods about how to customize your own dataset by online conversion
+In this tutorial, we will introduce some methods about how to customize your own dataset by online conversion.
+
+- [Customize Datasets](#customize-datasets)
+  - [General understanding of the Dataset in MMAction2](#general-understanding-of-the-dataset-in-mmaction2)
+  - [Customize new datasets](#customize-new-datasets)
+  - [Customize keypoint format for PoseDataset](#customize-keypoint-format-for-posedataset)
 
 ## General understanding of the Dataset in MMAction2
 
-MMAction2 provides specific Dataset class according to the task, e.g. `VideoDataset`/`RawframeDataset` for action recognition, `AVADataset` for spatio-temporal action detection, `PoseDataset` for skeleton-based action recognition. All these specific datasets only need to implement `get_data_info(self)` to build a data list from the annotation file, while other functions are handled by the superclass. The following table shows the inherent relationship and the main function of the modules.
+MMAction2 provides specific Dataset class according to the task, e.g. `VideoDataset`/`RawframeDataset` for action recognition, `AVADataset` for spatio-temporal action detection, `PoseDataset` for skeleton-based action recognition. All these specific datasets only need to implement `get_data_info(self, idx)` to build a data list from the annotation file, while other functions are handled by the superclass. The following table shows the inherent relationship and the main function of the modules.
 
 | Class Name                   | Functions                                                                                                                                                                    |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -25,7 +30,7 @@ data_list.append(dict(filename=filename, label=label))
 
 While `AVADataset` is more complex, elements in the data list consist of several fields about video data, and it further overwrites `get_data_info(self, idx)` to convert keys, which are required in spatio-temporal action detection pipeline.
 
-```
+```python
 
 class AVADataset(BaseActionDataset):
   ...
@@ -71,30 +76,28 @@ For a custom format, you need to add a new graph layout into models and transfor
 
 Take the coco dataset as an example, we define a layout named `coco` in `Graph`, and set its `inward` as followed, which includes all connections between nodes, each connection is a pair of nodes from far to near. The order of connections does not matter. Other settings about coco are to set the number of nodes to 17, and set node 0 as the center node.
 
-````
-```
+```python
+
 self.num_node = 17
 self.inward = [(15, 13), (13, 11), (16, 14), (14, 12), (11, 5),
                 (12, 6), (9, 7), (7, 5), (10, 8), (8, 6), (5, 0),
                 (6, 0), (1, 0), (3, 1), (2, 0), (4, 2)]
 self.center = 0
 ```
-````
 
 Similarly, we define the `pairs` in `JointToBone`, adding a bone of `(0, 0)` to align the number of bones to the nodes. The `pairs` of coco dataset is as followed, same as above mentioned, the order of pairs does not matter.
 
-````
-```
+```python
+
 self.pairs = ((0, 0), (1, 0), (2, 0), (3, 1), (4, 2), (5, 0),
               (6, 0), (7, 5), (8, 6), (9, 7), (10, 8), (11, 0),
               (12, 0), (13, 11), (14, 12), (15, 13), (16, 14))
 ```
-````
 
 For your custom format, just define the above setting as your graph structure, and specify in your config file as followed, we take `STGCN` as an example, assuming you already define a `custom_dataset` in `Graph` and `JointToBone`, and num_classes is n.
 
-````
-```
+```python
+
 model = dict(
   type='RecognizerGCN',
   backbone=dict(
@@ -117,4 +120,3 @@ test_pipeline = [
   ...]
 
 ```
-````

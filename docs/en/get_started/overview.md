@@ -48,7 +48,7 @@ We have prepared a wealth of documents to meet your various needs:
 </details>
 
 <details open>
-<summary><b>For looking for some common issus</b></summary>
+<summary><b>For looking for some common issues</b></summary>
 
 - [FAQs](docs/en/get_started/faq.md)
 - [Useful tools](docs/en/useful_tools.md)

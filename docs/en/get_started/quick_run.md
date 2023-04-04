@@ -2,6 +2,17 @@
 
 This chapter will take you through the basic functions of MMAction2. And we assume you [installed MMAction2 from source](../installation#best-practices).
 
+- [Quick Run](#quick-run)
+  - [Inference](#inference)
+  - [Prepare a Dataset](#prepare-a-dataset)
+  - [Modify the Config](#modify-the-config)
+    - [Modify Dataset](#modify-dataset)
+    - [Modify Runtime Config](#modify-runtime-config)
+    - [Modify Model Config](#modify-model-config)
+  - [Browse the Dataset](#browse-the-dataset)
+  - [Training](#training)
+  - [Testing](#testing)
+
 ## Inference
 
 Run the following in MMAction2's root directory:
