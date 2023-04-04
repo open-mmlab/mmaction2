@@ -11,7 +11,7 @@ The structure of this tutorial is as follows:
   - [Step3: Build a Recognizer](#step3-build-a-recognizer)
   - [Step4: Build a Evaluation Metric](#step4-build-a-evaluation-metric)
   - [Step5: Train and Test with Native PyTorch](#step5-train-and-test-with-native-pytorch)
-  - [Step6: Train and Test with MMEngine (Recommended)](#step5-train-and-test-with-mmengine-recommended)
+  - [Step6: Train and Test with MMEngine (Recommended)](#step6-train-and-test-with-mmengine-recommended)
 
 First, we need to initialize the `scope` for registry, to ensure that each module is registered under the scope of `mmaction`. For more detailed information about registry, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html).
 
@@ -57,7 +57,7 @@ Each line in the file represents the annotation of a video, where the first item
 
 ## Step1: Build a Pipeline
 
-In order to `decode`, `sample`, `resize`, `crop`, `format`, and `pack` the input video and corresponding annotation, we need to design a pipeline to handle these processes. Specifically, we design seven `Transform` classes to build this video processing pipeline. Note that all `Transform` classes in OpenMMLab must inherit from the `BaseTransform` class in `mmcv`, implement the abstract method `transform`, and be registered to the `TRANSFORMS` registry.
+In order to `decode`, `sample`, `resize`, `crop`, `format`, and `pack` the input video and corresponding annotation, we need to design a pipeline to handle these processes. Specifically, we design seven `Transform` classes to build this video processing pipeline. Note that all `Transform` classes in OpenMMLab must inherit from the `BaseTransform` class in `mmcv`, implement the abstract method `transform`, and be registered to the `TRANSFORMS` registry. For more detailed information about data transform, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/data_transform.html).
 
 ```python
 import mmcv
@@ -124,10 +124,13 @@ class VideoDecode(BaseTransform):
 @TRANSFORMS.register_module()
 class VideoResize(BaseTransform):
     def __init__(self, r_size):
-        self.r_size = r_size
+        self.r_size = (np.inf, r_size)
 
     def transform(self, results):
-        imgs = [mmcv.imresize(img, (self.r_size[0], self.r_size[1]))
+        img_h, img_w = results['img_shape']
+        new_w, new_h = mmcv.rescale_size((img_w, img_h), self.r_size)
+      
+        imgs = [mmcv.imresize(img, (new_w, new_h))
                 for img in results['imgs']]
         results['imgs'] = imgs
         results['img_shape'] = imgs[0].shape[:2]
@@ -194,7 +197,7 @@ pipeline_cfg = [
     dict(type='VideoInit'),
     dict(type='VideoSample', clip_len=16, num_clips=1, test_mode=False),
     dict(type='VideoDecode'),
-    dict(type='VideoResize', r_size=(256, 256)),
+    dict(type='VideoResize', r_size=256),
     dict(type='VideoCrop', c_size=224),
     dict(type='VideoFormat'),
     dict(type='VideoPack')
@@ -218,8 +221,7 @@ print('clip_len: ', data_sample.clip_len)
 # Get label of the inputs
 print('label: ', data_sample.gt_labels.item)
 ```
-
-```shell
+```
 shape of the inputs:  torch.Size([1, 3, 16, 224, 224])
 image_shape:  (224, 224)
 num_clips:  1
@@ -269,11 +271,21 @@ Next, we will demonstrate how to use dataset and dataloader to index data. We wi
 ```python
 from mmaction.registry import DATASETS
 
-pipeline_cfg = [
+train_pipeline_cfg = [
     dict(type='VideoInit'),
     dict(type='VideoSample', clip_len=16, num_clips=1, test_mode=False),
     dict(type='VideoDecode'),
-    dict(type='VideoResize', r_size=(256, 256)),
+    dict(type='VideoResize', r_size=256),
+    dict(type='VideoCrop', c_size=224),
+    dict(type='VideoFormat'),
+    dict(type='VideoPack')
+]
+
+val_pipeline_cfg = [
+    dict(type='VideoInit'),
+    dict(type='VideoSample', clip_len=16, num_clips=5, test_mode=True),
+    dict(type='VideoDecode'),
+    dict(type='VideoResize', r_size=256),
     dict(type='VideoCrop', c_size=224),
     dict(type='VideoFormat'),
     dict(type='VideoPack')
@@ -282,14 +294,14 @@ pipeline_cfg = [
 train_dataset_cfg = dict(
     type='DatasetZelda',
     ann_file='kinetics_tiny_train_video.txt',
-    pipeline=pipeline_cfg,
+    pipeline=train_pipeline_cfg,
     data_root='data/kinetics400_tiny/',
     data_prefix=dict(video='train'))
 
 val_dataset_cfg = dict(
     type='DatasetZelda',
     ann_file='kinetics_tiny_val_video.txt',
-    pipeline=pipeline_cfg,
+    pipeline=val_pipeline_cfg,
     data_root='data/kinetics400_tiny/',
     data_prefix=dict(video='val'))
 
@@ -312,7 +324,7 @@ print('label: ', data_sample.gt_labels.item)
 
 from mmengine.runner import Runner
 
-BATCH_SIZE = 4
+BATCH_SIZE = 2
 
 train_dataloader_cfg = dict(
     batch_size=BATCH_SIZE,
@@ -329,6 +341,7 @@ val_dataloader_cfg = dict(
     dataset=val_dataset_cfg)
 
 train_data_loader = Runner.build_dataloader(dataloader=train_dataloader_cfg)
+val_data_loader = Runner.build_dataloader(dataloader=val_dataloader_cfg)
 
 batched_packed_results = next(iter(train_data_loader))
 
@@ -343,7 +356,7 @@ The terminal output should be the same as the one shown in the [Step1: Build a P
 
 ## Step3: Build a Recognizer
 
-Next, we will construct the `recognizer`, which mainly consists of three parts: `data preprocessor` for normalizing the data, `backbone` for feature extraction, and `cls_head` for classification.
+Next, we will construct the `recognizer`, which mainly consists of three parts: `data preprocessor` for batching and normalizing the data, `backbone` for feature extraction, and `cls_head` for classification.
 
 The implementation of `data_preprocessor` is as follows:
 
@@ -392,8 +405,8 @@ preprocessed_inputs = data_preprocessor(batched_packed_results)
 print(preprocessed_inputs['inputs'].shape)
 ```
 
-```shell
-torch.Size([4, 1, 3, 16, 224, 224])
+```
+torch.Size([2, 1, 3, 16, 224, 224])
 ```
 
 The implementations of `backbone`, `cls_head` and `recognizer` are as follows:
@@ -434,7 +447,7 @@ class BackBoneZelda(BaseModule):
 
 @MODELS.register_module()
 class ClsHeadZelda(BaseModule):
-    def __init__(self, num_classes, in_channels, average_clips='prob', init_cfg=None):
+    def __init__(self, num_classes, in_channels, dropout=0.5, average_clips='prob', init_cfg=None):
         if init_cfg is None:
             init_cfg = dict(type='Normal', layer='Linear', std=0.01)
 
@@ -443,7 +456,12 @@ class ClsHeadZelda(BaseModule):
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.average_clips = average_clips
-
+        
+        if dropout != 0:
+            self.dropout = nn.Dropout(dropout)
+        else:
+            self.dropout = None
+            
         self.fc = nn.Linear(self.in_channels, self.num_classes)
         self.pool = nn.AdaptiveAvgPool3d(1)
         self.loss_fn = nn.CrossEntropyLoss()
@@ -453,6 +471,10 @@ class ClsHeadZelda(BaseModule):
         x = self.pool(x)
         x = x.view(N, C)
         assert x.shape[1] == self.in_channels
+        
+        if self.dropout is not None:
+            x = self.dropout(x)
+
         cls_scores = self.fc(x)
         return cls_scores
 
@@ -553,6 +575,7 @@ model_cfg = dict(
 model = MODELS.build(model_cfg)
 
 # Train
+model.train()
 model.init_weights()
 data_batch_train = copy.deepcopy(batched_packed_results)
 data = model.data_preprocessor(data_batch_train, training=True)
@@ -561,6 +584,7 @@ print('loss dict: ', loss)
 
 # Test
 with torch.no_grad():
+    model.eval()
     data_batch_test = copy.deepcopy(batched_packed_results)
     data = model.data_preprocessor(data_batch_test, training=False)
     predictions = model(**data, mode='predict')
@@ -673,26 +697,63 @@ OrderedDict([('topk1', 0.5), ('topk5', 1.0)])
 ## Step5: Train and Test with Native PyTorch
 
 ```python
+import torch.optim as optim
+from mmengine import track_iter_progress
 
 
+device = 'cuda' # or 'cpu'
+max_epochs = 10
 
+optimizer = optim.Adam(model.parameters(), lr=0.01)
 
+for epoch in range(max_epochs):
+    model.train()
+    losses = []
+    for data_batch in track_iter_progress(train_data_loader):
+        data = model.data_preprocessor(data_batch, training=True)
+        loss_dict = model(**data, mode='loss')
+        loss = loss_dict['loss_cls']
 
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        losses.append(loss.item())
+
+    print(f'Epoch[{epoch}]: loss ', sum(losses) / len(train_data_loader))
+
+    with torch.no_grad():
+        model.eval()
+        for data_batch in track_iter_progress(val_data_loader):
+            data = model.data_preprocessor(data_batch, training=False)
+            predictions = model(**data, mode='predict')
+            data_samples = [d.to_dict() for d in predictions]
+            metric.process(data_batch, data_samples)
+
+        acc = metric.acc = metric.compute_metrics(metric.results)
+        for name, topk in acc.items():
+            print(f'{name}: ', topk)
 ```
 
 ## Step6: Train and Test with MMEngine (Recommended)
 
+For more details on training and testing, you can refer to [MMAction2 Tutorial](https://mmaction2.readthedocs.io/en/1.x/user_guides/4_train_test.html). For more information on `Runner`, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/tutorials/runner.html).
+
 ```python
 from mmengine.runner import Runner
 
-train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=10, val_begin=1)
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=10, val_interval=1)
 val_cfg = dict(type='ValLoop')
 
 optim_wrapper = dict(optimizer=dict(type='Adam', lr=0.01))
 
 runner = Runner(model=model_cfg, work_dir='./work_dirs/guide',
                 train_dataloader=train_dataloader_cfg,
+                train_cfg=train_cfg,
                 val_dataloader=val_dataloader_cfg,
+                val_cfg=val_cfg,
                 optim_wrapper=optim_wrapper,
-                val_evaluator=[metric_cfg])
+                val_evaluator=[metric_cfg],
+                default_scope='mmaction')
+runner.train()
 ```

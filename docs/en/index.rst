@@ -8,6 +8,7 @@ You can switch between Chinese and English documents in the lower-left corner of
    :caption: Get Started
 
    get_started.md
+   guide_to_framework.md
 
 .. toctree::
    :maxdepth: 1
