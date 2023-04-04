@@ -165,6 +165,7 @@ class ResNetTSM(ResNet):
         self.non_local = non_local
         self.non_local_stages = _ntuple(self.num_stages)(non_local)
         self.non_local_cfg = non_local_cfg
+        # TODO use convert key to load weights
         super().init_weights()
         self.init_structure()
 

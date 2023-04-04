@@ -105,10 +105,19 @@ def test_tsn():
 def test_tsm():
     register_all_modules()
     config = get_recognizer_cfg(
+        'tsm/tsm_imagenet-pretrained-mobilenetv2_8xb16-1x1x8-50e_kinetics400-rgb.py'  # noqa: E501
+    )
+    config.model['backbone']['pretrained'] = None
+
+    recognizer = MODELS.build(config.model)
+    recognizer.init_weights()
+
+    config = get_recognizer_cfg(
         'tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
+    recognizer.init_weights()
 
     input_shape = (1, 8, 3, 32, 32)
     demo_inputs = generate_recognizer_demo_inputs(input_shape)

@@ -21,6 +21,8 @@ class MobileNetV2TSM(MobileNetV2):
         self.num_segments = num_segments
         self.is_shift = is_shift
         self.shift_div = shift_div
+        super().init_weights()
+        self.init_structure()
 
     def make_temporal_shift(self):
         """Make temporal shift for some layers."""
@@ -33,9 +35,11 @@ class MobileNetV2TSM(MobileNetV2):
                     shift_div=self.shift_div,
                 )
 
-    def init_weights(self):
+    def init_structure(self):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
-        super().init_weights()
         if self.is_shift:
             self.make_temporal_shift()
+
+    def init_weights(self):
+        pass
