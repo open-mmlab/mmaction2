@@ -129,7 +129,7 @@ class VideoResize(BaseTransform):
     def transform(self, results):
         img_h, img_w = results['img_shape']
         new_w, new_h = mmcv.rescale_size((img_w, img_h), self.r_size)
-      
+
         imgs = [mmcv.imresize(img, (new_w, new_h))
                 for img in results['imgs']]
         results['imgs'] = imgs
@@ -221,6 +221,7 @@ print('clip_len: ', data_sample.clip_len)
 # Get label of the inputs
 print('label: ', data_sample.gt_labels.item)
 ```
+
 ```
 shape of the inputs:  torch.Size([1, 3, 16, 224, 224])
 image_shape:  (224, 224)
@@ -456,12 +457,12 @@ class ClsHeadZelda(BaseModule):
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.average_clips = average_clips
-        
+
         if dropout != 0:
             self.dropout = nn.Dropout(dropout)
         else:
             self.dropout = None
-            
+
         self.fc = nn.Linear(self.in_channels, self.num_classes)
         self.pool = nn.AdaptiveAvgPool3d(1)
         self.loss_fn = nn.CrossEntropyLoss()
@@ -471,7 +472,7 @@ class ClsHeadZelda(BaseModule):
         x = self.pool(x)
         x = x.view(N, C)
         assert x.shape[1] == self.in_channels
-        
+
         if self.dropout is not None:
             x = self.dropout(x)
 
