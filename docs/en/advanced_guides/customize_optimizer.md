@@ -22,7 +22,7 @@ In the above example, a SGD optimizer with 0.0003 learning rate and 0.0001 weigh
 
 ### Use optimizers supported by PyTorch
 
-We support all the optimizers implemented by PyTorch. To use a different optimizer, just need to change the `optimizer` field of config files. For example, if you want to use [`Adam`](torch.optim.Adam), the modification in config file could be as the following. 
+We support all the optimizers implemented by PyTorch. To use a different optimizer, just need to change the `optimizer` field of config files. For example, if you want to use [`Adam`](torch.optim.Adam), the modification in config file could be as the following.
 
 ```python
 optim_wrapper = dict(
@@ -45,8 +45,7 @@ torch.optim.Adam(lr=0.001,
                  eps=1e-08,
                  weight_decay=0,
                  amsgrad=False)
-``` 
-
+```
 
 ### Parameter-wise finely configuration
 
@@ -201,7 +200,7 @@ names of learning rate schedulers end with `LR`.
     ]
   ```
 
-  Notice that, we use `begin` and `end` arguments here to assign the valid range, which is [`begin`, `end`) for this schedule. And the range unit is defined by `by_epoch` argument. If not specified, the `begin` is 0 and the `end` is the max epochs or iterations.
+  Notice that, we use `begin` and `end` arguments here to assign the valid range, which is \[`begin`, `end`) for this schedule. And the range unit is defined by `by_epoch` argument. If not specified, the `begin` is 0 and the `end` is the max epochs or iterations.
 
   If the ranges for all schedules are not continuous, the learning rate will stay constant in ignored range, otherwise all valid schedulers will be executed in order in a specific stage, which behaves the same as PyTorch [`ChainedScheduler`](torch.optim.lr_scheduler.ChainedScheduler).
 
