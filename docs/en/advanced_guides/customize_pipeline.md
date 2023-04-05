@@ -9,7 +9,7 @@ In this tutorial, we will introduce some methods about how to build the data pip
 
 ## Design of Dataset and Data pipelines
 
-MMAction2 implements many different `dataset` class. For example, for action recognition tasks, you can use `VideoDataset` that takes the raw video as input and decode the frames on the fly or `RawframeDataset` that takes the pre-extracted video frames as input. The dataset requires several argments, for example `ann_file` for the dataset annotation file, `data_prefix` for the root to the dataset and `pipeline` for the data pipeline. Here is an example to build the Kinetics dataset (and the dataloader):
+MMAction2 implements many different `dataset` class. For example, for action recognition tasks, you can use `VideoDataset` that takes the raw video as input and decode the frames on the fly or `RawframeDataset` that takes the pre-extracted video frames as input. The dataset requires several arguments, for example `ann_file` for the dataset annotation file, `data_prefix` for the root to the dataset and `pipeline` for the data pipeline. Here is an example to build the Kinetics dataset (and the dataloader):
 
 ```python
 train_dataloader = dict(
@@ -81,6 +81,7 @@ transform](#add-new-data-transforms) and add it at the beginning of the data pip
 During training and testing, we may have different strategies to sample frames from the video.
 
 For example, during testing of SlowFast, we sample multiple clips uniformly:
+
 ```python
 test_pipeline = [
     ...
@@ -93,9 +94,11 @@ test_pipeline = [
     ...
 ]
 ```
-In the above example, 10 clips of 32-frame video clips will be sampled for each video. We use `test_mode=True` to uniformly sample these clips (as opposed to randomly sample during training). 
+
+In the above example, 10 clips of 32-frame video clips will be sampled for each video. We use `test_mode=True` to uniformly sample these clips (as opposed to randomly sample during training).
 
 Another example is that TSN/TSM models sample multiple segments from the video:
+
 ```python
 train_pipeline = [
     ...
@@ -166,4 +169,3 @@ train_pipeline = [
        ...
    ]
    ```
-
