@@ -92,6 +92,8 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 ## What's New
 
+**The default branch has been switched to `1.x` from `master`, and we encourage users to migrate to the latest version, though it comes with some cost. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/1.x/migration.html) for more details.**
+
 **Release (2023.02.10)**: v1.0.0rc3 with the following new features:
 
 - Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
@@ -100,7 +102,9 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 ## Installation
 
-Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for more detailed instructions.
+MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and [MMPose] (https://github.com/open-mmlab/mmpose) (optinal, for skeleton based tasks).
+
+Here are quick instructions for installing MMAction2. Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for more detailed instructions.
 
 ```shell
 conda create --name openmmlab python=3.8 -y
@@ -161,7 +165,6 @@ pip3 install -e .
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/ssn/README.md">SSN</a> (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/bsn/README.md">BSN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/bmn/README.md">BMN</a> (ICCV'2019)</td>
     <td></td>
@@ -185,6 +188,8 @@ pip3 install -e .
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/posec3d/README.md">PoseC3D</a> (CVPR'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcnpp/README.md">STGCN++</a> (ArXiv'2022)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/projects/ctrgcn/README.md">CTRGCN</a> (CVPR'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/projects/msg3d/README.md">MSG3D</a> (CVPR'2020)</td>
     <td></td>
   </tr>
 </table>
