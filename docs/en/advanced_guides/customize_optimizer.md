@@ -3,13 +3,13 @@
 In this tutorial, we will introduce some methods about how to build the optimizer and learning rate scheduler for your tasks.
 
 - [Customize Optimizer](#customize-optimizer)
-  - [Build Optimizers using optim_wrapper](#build-optimizers-using-optim_wrapper)
+  - [Build optimizers using optim_wrapper](#build-optimizers-using-optim_wrapper)
   - [Customize parameter schedules](#customize-parameter-schedules)
   - [Add new optimizers or constructors](#add-new-optimizers-or-constructors)
 
-## Build Optimizers using optim_wrapper
+## Build optimizers using optim_wrapper
 
-We use the `optim_wrapper` field to configure the strategies of optimization, which includes choices of optimizer, parameter-wise configurations, gradient clipping and accumulation. A simple example can be:
+We use the `optim_wrapper` field to configure the strategies of optimization, which includes choices of the optimizer, parameter-wise configurations, gradient clipping and accumulation. A simple example can be:
 
 ```python
 optim_wrapper = dict(
@@ -18,11 +18,11 @@ optim_wrapper = dict(
 )
 ```
 
-In the above example, a SGD optimizer with 0.0003 learning rate and 0.0001 weight decay is built.
+In the above example, a SGD optimizer with learning rate 0.0003 and weight decay 0.0001 is built.
 
 ### Use optimizers supported by PyTorch
 
-We support all the optimizers implemented by PyTorch. To use a different optimizer, just need to change the `optimizer` field of config files. For example, if you want to use [`Adam`](torch.optim.Adam), the modification in config file could be as the following.
+We support all the optimizers implemented by PyTorch. To use a different optimizer, just need to change the `optimizer` field of config files. For example, if you want to use `torch.optim.Adam`, the modification in the config file could be as the following.
 
 ```python
 optim_wrapper = dict(
@@ -75,9 +75,9 @@ To finely configure them, we can use the `paramwise_cfg` argument in `optim_wrap
 
 - **Set different hyper-parameter multipliers for specific parameters.**
 
-  MMClassification can use `custom_keys` in `paramwise_cfg` to specify different parameters to use different learning rates or weight decay.
+  MMAction2 can use `custom_keys` in `paramwise_cfg` to specify different parameters to use different learning rates or weight decay.
 
-  For example, to set all learning rates and weight decays of `backbone.layer0` to 0, the rest of `backbone` remains the same as optimizer and the learning rate of `head` to 0.001, use the configs below.
+  For example, to set all learning rates and weight decays of `backbone.layer0` to 0, the rest of `backbone` remains the same as the optimizer and the learning rate of `head` to 0.001, use the configs below.
 
   ```python
   optim_wrapper = dict(
@@ -128,7 +128,7 @@ optim_wrapper = dict(
 
 ## Customize parameter schedules
 
-In training, the optimzation parameters such as learing rate, momentum, are usually not fixed but changing through iterations or epochs. PyTorch supports several learning rate schedulers, which are not sufficient for complex strategies. In MMClassification, we provide `param_scheduler` for better controls of different parameter schedules.
+In training, the optimzation parameters such as learing rate, momentum, are usually not fixed but changing through iterations or epochs. PyTorch supports several learning rate schedulers, which are not sufficient for complex strategies. In MMAction2, we provide `param_scheduler` for better controls of different parameter schedules.
 
 ### Customize learning rate schedules
 
@@ -163,7 +163,7 @@ names of learning rate schedulers end with `LR`.
   In some of the training cases, multiple learning rate schedules are applied for higher accuracy. For example ,in the early stage, training is easy to be volatile, and warmup is a technique to reduce volatility.
   The learning rate will increase gradually from a minor value to the expected value by warmup and decay afterwards by other schedules.
 
-  In MMClassification, simply combines desired schedules in `param_scheduler` as a list can achieve the warmup strategy.
+  In MMAction2, simply combines desired schedules in `param_scheduler` as a list can achieve the warmup strategy.
 
   Here are some examples:
 
@@ -204,10 +204,6 @@ names of learning rate schedulers end with `LR`.
 
   If the ranges for all schedules are not continuous, the learning rate will stay constant in ignored range, otherwise all valid schedulers will be executed in order in a specific stage, which behaves the same as PyTorch [`ChainedScheduler`](torch.optim.lr_scheduler.ChainedScheduler).
 
-  ```{tip}
-  To check that the learning rate curve is as expected, after completing your configuration file，you could use [optimizer parameter visualization tool](../useful_tools/scheduler_visualization.md) to draw the corresponding learning rate adjustment curve.
-  ```
-
 ### Customize momentum schedules
 
 We support using momentum schedulers to modify the optimizer's momentum according to learning rate, which could make the loss converge in a faster way. The usage is the same as learning rate schedulers.
@@ -232,13 +228,11 @@ param_scheduler = [
 
 ## Add new optimizers or constructors
 
-```{note}
-This part will modify the MMClassification source code or add code to the MMClassification framework, beginners can skip it.
-```
+This part will modify the MMAction2 source code or add code to the MMAction2 framework, beginners can skip it.
 
 ### Add new optimizers
 
-In academic research and industrial practice, it may be necessary to use optimization methods not implemented by MMClassification, and you can add them through the following methods.
+In academic research and industrial practice, it may be necessary to use optimization methods not implemented by MMAction2, and you can add them through the following methods.
 
 #### 1. Implement a new optimizer
 
@@ -262,31 +256,17 @@ class MyOptimizer(Optimizer):
 
 #### 2. Import the optimizer
 
-To find the above module defined above, this module should be imported during the running. There are two ways to achieve it.
+To find the above module defined above, this module should be imported during the running. First import it in the `mmaction/engine/optimizers/__init__.py` to add it into the `mmaction.engine` package.
 
-- Import it in the `mmaction/engine/optimizers/__init__.py` to add it into the `mmaction.engine` package.
+```python
+# In mmaction/engine/optimizers/__init__.py
+...
+from .my_optimizer import MyOptimizer # MyOptimizer maybe other class name
 
-  ```python
-  # In mmaction/engine/optimizers/__init__.py
-  ...
-  from .my_optimizer import MyOptimizer # MyOptimizer maybe other class name
+__all__ = [..., 'MyOptimizer']
+```
 
-  __all__ = [..., 'MyOptimizer']
-  ```
-
-  During running, we will automatically import the `mmaction.engine` package and register the `MyOptimizer` at the same time.
-
-- Use `custom_imports` in the config file to manually import it.
-
-  ```python
-  custom_imports = dict(
-      imports=['mmaction.engine.optimizers.my_optimizer'],
-      allow_failed_imports=False,
-  )
-  ```
-
-  The module `mmaction.engine.optimizers.my_optimizer` will be imported at the beginning of the program and the class `MyOptimizer` is then automatically registered.
-  Note that only the package containing the class `MyOptimizer` should be imported. `mmaction.engine.optimizers.my_optimizer.MyOptimizer` **cannot** be imported directly.
+During running, we will automatically import the `mmaction.engine` package and register the `MyOptimizer` at the same time.
 
 #### 3. Specify the optimizer in the config file
 
