@@ -1,4 +1,4 @@
-# Tutorial 1: Learn about Configs
+# Learn about Configs
 
 We use python files as configs, incorporate modular and inheritance design into our config system, which is convenient to conduct various experiments.
 You can find all the provided configs under `$MMAction2/configs`. If you wish to inspect the config file,
@@ -6,12 +6,13 @@ you may run `python tools/analysis_tools/print_config.py /PATH/TO/CONFIG` to see
 
 <!-- TOC -->
 
-- [Modify config through script arguments](#modify-config-through-script-arguments)
-- [Config File Structure](#config-file-structure)
-- [Config File Naming Convention](#config-file-naming-convention)
-  - [Config System for Action Recognition](#config-system-for-action-recognition)
-  - [Config System for Spatio-Temporal Action Detection](#config-system-for-spatio-temporal-action-detection)
-  - [Config System for Action localization](#config-system-for-action-localization)
+- [Learn about Configs](#learn-about-configs)
+  - [Modify config through script arguments](#modify-config-through-script-arguments)
+  - [Config File Structure](#config-file-structure)
+  - [Config File Naming Convention](#config-file-naming-convention)
+    - [Config System for Action Recognition](#config-system-for-action-recognition)
+    - [Config System for Spatio-Temporal Action Detection](#config-system-for-spatio-temporal-action-detection)
+    - [Config System for Action localization](#config-system-for-action-localization)
 
 <!-- TOC -->
 

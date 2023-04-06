@@ -21,13 +21,9 @@ from mmaction.visualization.action_visualizer import _get_adaptive_scale
 def parse_args():
     parser = argparse.ArgumentParser(description='Browse a dataset')
     parser.add_argument('config', help='train config file path')
-    parser.add_argument('--label', default=None, type=str, help='label file')
     parser.add_argument(
-        '--output-dir',
-        '-o',
-        default=None,
-        type=str,
-        help='If there is no display interface, you can save it.')
+        'output_dir', default=None, type=str, help='output directory')
+    parser.add_argument('--label', default=None, type=str, help='label file')
     parser.add_argument(
         '--phase',
         '-p',

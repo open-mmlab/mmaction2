@@ -3,8 +3,11 @@
 In this tutorial, we will introduce some methods about how to build the data pipeline (i.e., data transformations)for your tasks.
 
 - [Customize Data Pipeline](#customize-data-pipeline)
-  - [Design of Dataset and Data pipelines](#design-of-dataset-and-data-pipelines)
-  - [Modify the training/test pipeline](#modify-the-training/test-pipeline)
+  - [Design of Data pipelines](#design-of-data-pipelines)
+  - [Modify the training/test pipeline](#modify-the-trainingtest-pipeline)
+    - [Loading](#loading)
+    - [Sampling frames and other processing](#sampling-frames-and-other-processing)
+    - [Formatting](#formatting)
   - [Add new data transforms](#add-new-data-transforms)
 
 ## Design of Data pipelines

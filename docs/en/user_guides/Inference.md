@@ -1,9 +1,9 @@
-# Tutorial 3: Inference with existing models
+# Inference with existing models
 
 MMAction2 provides pre-trained models for video understanding in [Model Zoo](../modelzoo.md).
 This note will show **how to use existing models to inference on given video**.
 
-As for how to test existing models on standard datasets, please see this [guide](./4_train_test.md#test)
+As for how to test existing models on standard datasets, please see this [guide](./train_test.md#test)
 
 ## Inference on a given video
 

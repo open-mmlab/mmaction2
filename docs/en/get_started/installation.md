@@ -1,4 +1,6 @@
-# Prerequisites
+# Installation
+
+## Prerequisites
 
 In this section we demonstrate how to prepare an environment with PyTorch.
 
@@ -35,11 +37,9 @@ On CPU platforms:
 conda install pytorch torchvision cpuonly -c pytorch
 ```
 
-# Installation
+## Best Practices
 
 We recommend that users follow our best practices to install MMAction2. However, the whole process is highly customizable. See [Customize Installation](#customize-installation) section for more information.
-
-## Best Practices
 
 **Step 1.** Install [MMEngine](https://github.com/open-mmlab/mmengine) and [MMCV](https://github.com/open-mmlab/mmcv) using [MIM](https://github.com/open-mmlab/mim).
 
@@ -52,10 +52,10 @@ mim install mmengine 'mmcv>=2.0.0rc1'
 
 According to your needs, we support two install modes:
 
-- [Install from source (Recommended)](#install-from-source): You want to develop your own action recognition task or new features on MMAction2 framework. For example, adding new dataset or new models. Thus, you can use all tools we provided.
+- [Install from source (Recommended)](#build-mmaction2-from-source): You want to develop your own action recognition task or new features on MMAction2 framework. For example, adding new dataset or new models. Thus, you can use all tools we provided.
 - [Install as a Python package](#install-as-a-python-package): You just want to call MMAction2's APIs or import MMAction2's modules in your project.
 
-### Install from source
+### Build MMAction2 from source
 
 In this case, install mmaction2 from source:
 
@@ -193,3 +193,7 @@ Run it with
 ```shell
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 ```
+
+## Troubleshooting
+
+coming soon...

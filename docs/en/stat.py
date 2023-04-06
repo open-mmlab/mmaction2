@@ -16,7 +16,7 @@ def anchor(name):
 
 # Count algorithms
 
-files = sorted(glob.glob('*_models.md'))
+files = sorted(glob.glob('model_zoo/*_models.md'))
 # files = sorted(glob.glob('docs/*_models.md'))
 
 stats = []
@@ -99,76 +99,76 @@ For supported datasets, see [datasets overview](datasets.md).
 {msglist}
 """
 
-with open('modelzoo.md', 'w') as f:
+with open('model_zoo/modelzoo.md', 'w') as f:
     f.write(modelzoo)
 
-# # Count datasets
-#
-# files = ['supported_datasets.md']
-# # files = sorted(glob.glob('docs/tasks/*.md'))
-#
-# datastats = []
-#
-# for f in files:
-#     with open(f, 'r') as content_file:
-#         content = content_file.read()
-#
-#     # title
-#     title = content.split('\n')[0].replace('#', '')
-#
-#     # count papers
-#     papers = set(
-#         (papertype, titlecase.titlecase(paper.lower().strip()))
-#         for (papertype, paper) in re.findall(
-#             r'<!--\s*\[([A-Z]*?)\]\s*-->\s*\n.*?\btitle\s*=\s*{(.*?)}',
-#             content, re.DOTALL))
-#     # paper links
-#     revcontent = '\n'.join(list(reversed(content.splitlines())))
-#     paperlinks = {}
-#     for _, p in papers:
-#         print(p)
-#         q = p.replace('\\', '\\\\').replace('?', '\\?')
-#         paperlinks[p] = ', '.join(
-#             (f'[{p.strip()} ->]({splitext(basename(f))[0]}.html#{anchor(p)})'
-#              for p in re.findall(
-#                  rf'\btitle\s*=\s*{{\s*{q}\s*}}.*?\n## (.*?)\s*[,;]?\s*\n',
-#                  revcontent, re.DOTALL | re.IGNORECASE)))
-#         print('   ', paperlinks[p])
-#     paperlist = '\n'.join(
-#         sorted(f'    - [{t}] {x} ({paperlinks[x]})' for t, x in papers))
-#
-#     statsmsg = f"""
-# ## [{title}]({f})
-#
-# * Number of papers: {len(papers)}
-# {paperlist}
-#
-#     """
-#
-#     datastats.append((papers, configs, ckpts, statsmsg))
-#
-# alldatapapers = func.reduce(lambda a, b: a.union(b),
-#                             [p for p, _, _, _ in datastats])
-#
-# # Summarize
-#
-# msglist = '\n'.join(x for _, _, _, x in stats)
-# datamsglist = '\n'.join(x for _, _, _, x in datastats)
-# papertypes, papercounts = np.unique([t for t, _ in alldatapapers],
-#                                     return_counts=True)
-# countstr = '\n'.join(
-#     [f'   - {t}: {c}' for t, c in zip(papertypes, papercounts)])
-#
-# modelzoo = f"""
-# # Overview
-#
-# * Number of papers: {len(alldatapapers)}
-# {countstr}
-#
-# For supported action algorithms, see [modelzoo overview](modelzoo.md).
-#
-# {datamsglist}
-# """
-#
-# with open('datasets.md', 'w') as f:
-#     f.write(modelzoo)
+# Count datasets
+
+files = ['datasetzoo.md']
+# files = sorted(glob.glob('docs/tasks/*.md'))
+
+datastats = []
+
+for f in files:
+    with open(f, 'r') as content_file:
+        content = content_file.read()
+
+    # title
+    title = content.split('\n')[0].replace('#', '')
+
+    # count papers
+    papers = set(
+        (papertype, titlecase.titlecase(paper.lower().strip()))
+        for (papertype, paper) in re.findall(
+            r'<!--\s*\[([A-Z]*?)\]\s*-->\s*\n.*?\btitle\s*=\s*{(.*?)}',
+            content, re.DOTALL))
+    # paper links
+    revcontent = '\n'.join(list(reversed(content.splitlines())))
+    paperlinks = {}
+    for _, p in papers:
+        print(p)
+        q = p.replace('\\', '\\\\').replace('?', '\\?')
+        paperlinks[p] = ', '.join(
+            (f'[{p.strip()} ->]({splitext(basename(f))[0]}.html#{anchor(p)})'
+             for p in re.findall(
+                 rf'\btitle\s*=\s*{{\s*{q}\s*}}.*?\n## (.*?)\s*[,;]?\s*\n',
+                 revcontent, re.DOTALL | re.IGNORECASE)))
+        print('   ', paperlinks[p])
+    paperlist = '\n'.join(
+        sorted(f'    - [{t}] {x} ({paperlinks[x]})' for t, x in papers))
+
+    statsmsg = f"""
+## [{title}]({f})
+
+* Number of papers: {len(papers)}
+{paperlist}
+
+    """
+
+    datastats.append((papers, configs, ckpts, statsmsg))
+
+alldatapapers = func.reduce(lambda a, b: a.union(b),
+                            [p for p, _, _, _ in datastats])
+
+# Summarize
+
+msglist = '\n'.join(x for _, _, _, x in stats)
+datamsglist = '\n'.join(x for _, _, _, x in datastats)
+papertypes, papercounts = np.unique([t for t, _ in alldatapapers],
+                                    return_counts=True)
+countstr = '\n'.join(
+    [f'   - {t}: {c}' for t, c in zip(papertypes, papercounts)])
+
+datasetzoo = f"""
+# Overview
+
+* Number of papers: {len(alldatapapers)}
+{countstr}
+
+For supported action algorithms, see [modelzoo overview](modelzoo.md).
+
+{datamsglist}
+"""
+
+with open('datasetzoo_overview.md', 'w') as f:
+    f.write(datasetzoo)

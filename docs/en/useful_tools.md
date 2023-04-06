@@ -1,4 +1,4 @@
-# Other Useful Tools
+# Useful Tools
 
 Apart from training/testing scripts, We provide lots of useful tools under the `tools/` directory.
 
@@ -6,7 +6,7 @@ Apart from training/testing scripts, We provide lots of useful tools under the `
 
 <!-- TOC -->
 
-- [Other Useful Tools](#other-useful-tools)
+- [Useful Tools](#useful-tools)
   - [Useful Tools Link](#useful-tools-link)
   - [Model Conversion](#model-conversion)
     - [Prepare a model for publishing](#prepare-a-model-for-publishing)

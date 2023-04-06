@@ -7,24 +7,38 @@ You can switch between Chinese and English documents in the lower-left corner of
    :maxdepth: 1
    :caption: Get Started
 
-   get_started.md
-   guide_to_framework.md
+   get_started/overview.md
+   get_started/installation.md
+   get_started/quick_run.md
+   get_started/guide_to_framework.md
+   get_started/contribution_guide.md
+   get_started/faq.md
 
 .. toctree::
    :maxdepth: 1
    :caption: User Guides
 
-   user_guides/1_config.md
-   user_guides/2_data_prepare.md
-   user_guides/3_inference.md
-   user_guides/4_train_test.md
+   user_guides/Inference.md
+   user_guides/config.md
+   user_guides/train_test.md
+   user_guides/prepare_dataset.md
 
 .. toctree::
    :maxdepth: 1
-   :caption: Useful Tools
+   :caption: Advanced Guides
 
-   user_guides/useful_tools.md
-   user_guides/visualization.md
+   advanced_guides/dataflow.md
+   advanced_guides/customize_models.md
+   advanced_guides/customize_dataset.md
+   advanced_guides/customize_pipeline.md
+   advanced_guides/customize_optimizer.md
+   advanced_guides/customize_logging.md
+   advanced_guides/deploy.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Advanced Guides
+   useful_tools.md
 
 .. toctree::
    :maxdepth: 1
@@ -36,20 +50,32 @@ You can switch between Chinese and English documents in the lower-left corner of
    :maxdepth: 1
    :caption: Model Zoo
 
-   modelzoo.md
-   recognition_models.md
-   detection_models.md
-   skeleton_models.md
-   localization_models.md
+   model_zoo/modelzoo.md
+   model_zoo/recognition_models.md
+   model_zoo/detection_models.md
+   model_zoo/skeleton_models.md
+   model_zoo/localization_models.md
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Dataset Zoo
+
+   datasetzoo_overview.md
+   datasetzoo.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Projects
+
+   projectzoo.md
 
 .. toctree::
    :maxdepth: 1
    :caption: Notes
 
-   notes/contribution_guide.md
-   notes/projects.md
+   notes/ecosystem.md
    notes/changelog.md
-   notes/faq.md
 
 .. toctree::
    :caption: Switch Language

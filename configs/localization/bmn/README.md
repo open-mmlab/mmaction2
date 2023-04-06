@@ -42,7 +42,7 @@ Train BMN model on ActivityNet features dataset.
 bash tools/dist_train.sh configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py 2
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -52,7 +52,7 @@ Test BMN on ActivityNet feature dataset.
 python3 tools/test.py  configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py CHECKPOINT.PTH
 ```
 
-For more details, you can refer to the **Testing** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Testing** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 

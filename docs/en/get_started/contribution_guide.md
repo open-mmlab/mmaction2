@@ -1,10 +1,11 @@
-# Contributing to MMAction2
+# How to contribute to MMAction2
 
 All kinds of contributions are welcome, including but not limited to the following.
 
 - Fixes (typo, bugs)
 - New features and components
 - Add documentation or translate the documentation into other languages
+- Add new project (Recommended) about video understanding algorithm with less restriction, refer to [here](/projects/README.md) for details
 
 ## Workflow
 

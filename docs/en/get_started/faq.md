@@ -88,7 +88,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **How to set `load_from` value in config files to finetune models?**
 
-  In MMAction2, We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](/docs/en/user_guides/1_config.md),
+  In MMAction2, We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](/docs/en/user_guides/config.md),
   users can directly change it by setting `load_from` in their configs.
 
 ## Testing

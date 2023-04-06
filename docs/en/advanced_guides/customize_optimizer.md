@@ -4,8 +4,19 @@ In this tutorial, we will introduce some methods about how to build the optimize
 
 - [Customize Optimizer](#customize-optimizer)
   - [Build optimizers using optim_wrapper](#build-optimizers-using-optim_wrapper)
+    - [Use optimizers supported by PyTorch](#use-optimizers-supported-by-pytorch)
+    - [Parameter-wise finely configuration](#parameter-wise-finely-configuration)
+    - [Gradient clipping](#gradient-clipping)
+    - [Gradient accumulation](#gradient-accumulation)
   - [Customize parameter schedules](#customize-parameter-schedules)
+    - [Customize learning rate schedules](#customize-learning-rate-schedules)
+    - [Customize momentum schedules](#customize-momentum-schedules)
   - [Add new optimizers or constructors](#add-new-optimizers-or-constructors)
+    - [Add new optimizers](#add-new-optimizers)
+      - [1. Implement a new optimizer](#1-implement-a-new-optimizer)
+      - [2. Import the optimizer](#2-import-the-optimizer)
+      - [3. Specify the optimizer in the config file](#3-specify-the-optimizer-in-the-config-file)
+    - [Add new optimizer constructors](#add-new-optimizer-constructors)
 
 ## Build optimizers using optim_wrapper
 

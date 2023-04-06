@@ -76,7 +76,7 @@ python tools/train.py configs/detection/lfb/slowonly-lfb-nl_kinetics400-pretrain
   --validate --seed 0 --deterministic
 ```
 
-For more details and optional arguments infos, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details and optional arguments infos, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -101,7 +101,7 @@ python tools/test.py configs/detection/lfb/slowonly-lfb-nl_kinetics400-pretraine
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 

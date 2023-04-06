@@ -46,7 +46,7 @@ python tools/train.py configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -63,7 +63,7 @@ python tools/test.py configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 

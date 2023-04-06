@@ -1,4 +1,4 @@
-# Tutorial 4: Training and Test
+# Training and Test
 
 ## Training
 

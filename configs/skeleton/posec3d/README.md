@@ -101,7 +101,7 @@ python tools/train.py configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-k
 
 For training with your custom dataset, you can refer to [Custom Dataset Training](/configs/skeleton/posec3d/custom_dataset_training.md).
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -118,7 +118,7 @@ python tools/test.py configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-ke
     checkpoints/SOME_CHECKPOINT.pth
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 
