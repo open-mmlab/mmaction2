@@ -32,66 +32,66 @@ We have prepared a wealth of documents to meet your various needs:
 <details open>
 <summary><b>For the basic usage of MMAction2</b></summary>
 
-- [Installation](docs/en/get_started/installation.md)
-- [Quick Run](docs/en/get_started/quick_run.md)
-- [Inference](docs/en/user_guides/Inference.md)
+- [Installation](installation.md)
+- [Quick Run](quick_run.md)
+- [Inference](../user_guides/Inference.md)
 
 </details>
 
 <details open>
 <summary><b>For training on supported dataset</b></summary>
 
-- [learn about configs](docs/en/user_guides/config.md)
-- [prepare dataset](docs/en/get_started/prepare_dataset.md)
-- [Training and testing](docs/en/user_guides/train_test.md)
+- [learn about configs](../user_guides/config.md)
+- [prepare dataset](../user_guides/prepare_dataset.md)
+- [Training and testing](../user_guides/train_test.md)
 
 </details>
 
 <details open>
 <summary><b>For looking for some common issues</b></summary>
 
-- [FAQs](docs/en/get_started/faq.md)
-- [Useful tools](docs/en/useful_tools.md)
+- [FAQs](faq.md)
+- [Useful tools](../useful_tools.md)
 
 </details>
 
 <details open>
 <summary><b>For a general understanding about MMAction2</b></summary>
 
-- [20-minute tour to MMAction2](docs/en/get_started/20-minute_tour.md)
-- [Data flow in MMAction2](docs/en/advanced_guides/dataflow.md)
+- [20-minute tour to MMAction2](guide_to_framework.md)
+- [Data flow in MMAction2](../advanced_guides/dataflow.md)
 
 </details>
 
 <details open>
 <summary><b>For advanced usage about custom training</b></summary>
 
-- [Customize models](docs/en/advanced_guides/customize_models.md)
-- [Customize datasets](docs/en/advanced_guides/customize_dataset.md)
-- [Customize data transformation and augmentation](docs/en/advanced_guides/customize_pipeline.md)
-- [Customize optimizer and scheduler](docs/en/advanced_guides/customize_optimizer.md)
-- [Customize logging](docs/en/advanced_guides/customize_logging.md)
+- [Customize models](../advanced_guides/customize_models.md)
+- [Customize datasets](../advanced_guides/customize_dataset.md)
+- [Customize data transformation and augmentation](../advanced_guides/customize_pipeline.md)
+- [Customize optimizer and scheduler](../advanced_guides/customize_optimizer.md)
+- [Customize logging](../advanced_guides/customize_logging.md)
 
 </details>
 
 <details open>
 <summary><b>For supported model zoo and dataset zoo</b></summary>
 
-- [Model Zoo](model_zoo/modelzoo.md)
-- [Dataset Zoo](datasetzoo.md)
+- [Model Zoo](../model_zoo/modelzoo.md)
+- [Dataset Zoo](../datasetzoo.md)
 
 </details>
 
 <details open>
 <summary><b>For migration from MMAction2 0.x</b></summary>
 
-- [Migration](migration.md)
+- [Migration](../migration.md)
 
 </details>
 
 <details open>
 <summary><b>For researchers and developers who are willing to contribute to MMAction2</b></summary>
 
-- [Contribution Guide](get_started/contribution_guide.md)
+- [Contribution Guide](contribution_guide.md)
 
 </details>
