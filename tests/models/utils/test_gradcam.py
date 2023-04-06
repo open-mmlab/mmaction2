@@ -167,7 +167,7 @@ def test_csn():
 
     recognizer = MODELS.build(config.model)
     recognizer.cfg = config
-    input_shape = (1, 1, 3, 32, 32, 32)
+    input_shape = (1, 1, 3, 32, 16, 16)
     target_layer_name = 'backbone/layer4/1/relu'
 
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
@@ -230,6 +230,6 @@ def test_x3d():
     config.model['backbone']['pretrained'] = None
     recognizer = MODELS.build(config.model)
     recognizer.cfg = config
-    input_shape = (1, 1, 3, 13, 32, 32)
+    input_shape = (1, 1, 3, 13, 16, 16)
     target_layer_name = 'backbone/layer4/1/relu'
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
