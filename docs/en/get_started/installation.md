@@ -80,7 +80,7 @@ git checkout dev-1.x
 Just install with pip.
 
 ```shell
-pip install "mmaction2>=1.0rc0"
+pip install "mmaction2>=1.0.0"
 ```
 
 ## Verify the installation
