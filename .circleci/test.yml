@@ -119,29 +119,19 @@ jobs:
             docker exec mmaction apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libturbojpeg pkg-config
             docker exec mmaction apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev libsrtp2-dev libsndfile1
       - run:
+          name: Install PytorchVideo and timm
+          command: |
+            docker exec mmaction pip install timm
+            docker exec mmaction python -m pip install pytorchvideo
+      - run:
           name: Install mmaction dependencies
           command: |
             docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmengine.git@main
             docker exec mmaction pip install -U openmim
-            docker exec mmaction mim install 'mmcv == 2.0.0rc4'
+            docker exec mmaction mim install 'mmcv >= 2.0.0'
             docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmdetection.git@dev-3.x
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
             docker exec mmaction pip install -r requirements.txt
-      - when:
-          condition:
-            equal: [ "1.8.1", << parameters.torch >> ]
-          steps:
-            - run: docker exec mmaction pip install timm
-      - when:
-          condition:
-            equal: [ "1.6.0", << parameters.torch >> ]
-          steps:
-            - run: docker exec mmaction pip install timm==0.6.7
-      - when:
-          condition:
-            equal: [ "10.2", << parameters.cuda >> ]
-          steps:
-            - run: docker exec mmaction python -m pip install pytorchvideo
       - run:
           name: Build and install
           command: |
