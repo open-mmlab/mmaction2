@@ -56,7 +56,30 @@
 
 English | [简体中文](/README_zh-CN.md)
 
-## Introduction
+## 📄 Table of Contents
+
+- [🥳 🚀 What's New](#--whats-new-)
+- [📖 Introduction](#-introduction-)
+- [🎁 Major Features](#-major-features-)
+- [🛠️ Installation](#-installation-)
+- [📊 Model Zoo](#-model-zoo-)
+- [👨‍🏫 Get Started](#-get-started-)
+- [🎫 License](#-license-)
+- [🖊️ Citation](#️-citation-)
+- [🙌 Contributing](#-contributing-)
+- [🤝 Acknowledgement](#-acknowledgement-)
+- [🏗️ Projects in OpenMMLab](#-projects-in-openmmlab-)
+
+## 🥳 🚀 What's New [🔝](#-table-of-contents)
+
+**Release (2023.02.10)**: v1.0.0rc3 with the following new features:
+
+- Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
+- Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
+- Add a new handy interface for inference MMAction2 models ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
+
+
+## 📖 Introduction [🔝](#-table-of-contents)
 
 MMAction2 is an open-source toolbox for video understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.com/) project.
@@ -84,7 +107,7 @@ The 1.x branch works with **PyTorch 1.6+**.
     <p style="font-size:1.5vw;">Spatio-Temporal Action Detection Results on AVA-2.1</p>
 </div>
 
-## Major Features
+## 🎁 Major Features [🔝](#-table-of-contents)
 
 - **Modular design**: We decompose a video understanding framework into different components. One can easily construct a customized video understanding framework by combining different modules.
 
@@ -92,15 +115,8 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 - **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
 
-## What's New
 
-**Release (2023.02.10)**: v1.0.0rc3 with the following new features:
-
-- Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
-- Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
-- Add a new handy interface for inference MMAction2 models ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
-
-## Installation
+## 📖 Introduction [🔝](#-table-of-contents)
 
 MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and [MMPose](https://github.com/open-mmlab/mmpose) (optional, for skeleton based tasks).
 
@@ -125,7 +141,7 @@ pip3 install -e .
 
 </details>
 
-## Model Zoo
+## 📊 Model Zoo [🔝](#-table-of-contents)
 
 Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html).
 
@@ -272,7 +288,7 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
 
 </details>
 
-## Get Started
+## 👨‍🏫 Get Started [🔝](#-table-of-contents)
 
 For tutorials, we provide the following user guides for basic usage:
 
@@ -283,7 +299,6 @@ For tutorials, we provide the following user guides for basic usage:
 - [Training and Testing](https://mmaction2.readthedocs.io/en/1.x/user_guides/4_train_test.html)
 
 <details close>
-
 <summary>Research works built on MMAction2 by users from community</summary>
 
 - Video Swin Transformer. [\[paper\]](https://arxiv.org/abs/2106.13230)[\[github\]](https://github.com/SwinTransformer/Video-Swin-Transformer)
@@ -292,11 +307,11 @@ For tutorials, we provide the following user guides for basic usage:
 
 </details>
 
-## License
+## 🎫 License [🔝](#-table-of-contents)
 
 This project is released under the [Apache 2.0 license](LICENSE).
 
-## Citation
+## 🖊️ Citation [🔝](#-table-of-contents)
 
 If you find this project useful in your research, please consider cite:
 
@@ -309,17 +324,17 @@ If you find this project useful in your research, please consider cite:
 }
 ```
 
-## Contributing
+## 🙌 Contributing [🔝](#-table-of-contents)
 
 We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/2.x/CONTRIBUTING.md) in MMCV for more details about the contributing guideline.
 
-## Acknowledgement
+## 🤝 Acknowledgement [🔝](#-table-of-contents)
 
 MMAction2 is an open-source project that is contributed by researchers and engineers from various colleges and companies.
 We appreciate all the contributors who implement their methods or add new features and users who give valuable feedback.
 We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their new models.
 
-## Projects in OpenMMLab
+## 🏗️ Projects in OpenMMLab [🔝](#-table-of-contents)
 
 - [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab foundational library for training deep learning models.
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
