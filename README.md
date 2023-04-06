@@ -61,6 +61,8 @@ English | [简体中文](/README_zh-CN.md)
 MMAction2 is an open-source toolbox for video understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.com/) project.
 
+**The default branch has been switched to `1.x` from `master`, and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/1.x/migration.html) for more details.**
+
 The 1.x branch works with **PyTorch 1.6+**.
 
 <div align="center">
@@ -100,7 +102,12 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 ## Installation
 
-Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for more detailed instructions.
+MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and [MMPose](https://github.com/open-mmlab/mmpose) (optional, for skeleton based tasks).
+
+Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for detailed instructions.
+
+<details close>
+<summary>Quick instructions</summary>
 
 ```shell
 conda create --name openmmlab python=3.8 -y
@@ -116,7 +123,15 @@ git checkout 1.x
 pip3 install -e .
 ```
 
-## Supported Methods
+</details>
+
+## Model Zoo
+
+Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html).
+
+<details close>
+
+<summary>Supported model</summary>
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
@@ -161,7 +176,6 @@ pip3 install -e .
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/ssn/README.md">SSN</a> (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/bsn/README.md">BSN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/bmn/README.md">BMN</a> (ICCV'2019)</td>
     <td></td>
@@ -185,17 +199,19 @@ pip3 install -e .
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/posec3d/README.md">PoseC3D</a> (CVPR'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcnpp/README.md">STGCN++</a> (ArXiv'2022)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/projects/ctrgcn/README.md">CTRGCN</a> (CVPR'2021)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/projects/msg3d/README.md">MSG3D</a> (CVPR'2020)</td>
     <td></td>
   </tr>
 </table>
 
-Results and models are available in the *README.md* of each method's config directory.
-A summary can be found on the [**model zoo**](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html) page.
+</details>
 
-We will keep up with the latest progress of the community and support more popular algorithms and frameworks.
-If you have any feature requests, please feel free to leave a comment in [Issues](https://github.com/open-mmlab/mmaction2/issues/19).
+<details close>
 
-## Supported Datasets
+<summary>Supported dataset</summary>
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
@@ -254,15 +270,17 @@ If you have any feature requests, please feel free to leave a comment in [Issues
   </tr>
 </table>
 
-Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided. A summary can be found on the [**Supported Datasets**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) page.
+</details>
 
-## Data Preparation
+## Get Started
 
-Please refer to [data_preparation.md](docs/en/user_guides/2_data_prepare.md) for a general knowledge of data preparation.
+For tutorials, we provide the following user guides for basic usage:
 
-## FAQ
-
-Please refer to [FAQ](docs/en/notes/faq.md) for frequently asked questions.
+- [Migration from MMAction2 0.X](https://mmaction2.readthedocs.io/en/1.x/migration.html)
+- [Learn about Configs](https://mmaction2.readthedocs.io/en/1.x/user_guides/1_config.html#)
+- [Prepare Datasets](https://mmaction2.readthedocs.io/en/1.x/user_guides/2_data_prepare.html)
+- [Inference with Existing Models](https://mmaction2.readthedocs.io/en/1.x/user_guides/3_inference.html)
+- [Training and Testing](https://mmaction2.readthedocs.io/en/1.x/user_guides/4_train_test.html)
 
 ## Projects built on MMAction2
 
