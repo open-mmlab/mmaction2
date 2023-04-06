@@ -75,11 +75,12 @@ English | [简体中文](/README_zh-CN.md)
 
 **The default branch has been switched to `1.x` from `master`, and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/latest/migration.html) for more details.**
 
-**Release (2023.02.10)**: v1.0.0rc3 with the following new features:
+**Release (2023.04.06)**: v1.0.0 with the following new features:
 
-- Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
-- Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
-- Add a new handy interface for inference MMAction2 models ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
+- Support RGB-PoseC3D(CVPR'2022).
+- Support training UniFormer V2(Arxiv'2022).
+- Support MSG3D(CVPR'2020) and CTRGCN(CVPR'2021) in projects.
+- Refactor and provide more user-friendly documentation.
 
 ## 📖 Introduction [🔝](#-table-of-contents)
 
