@@ -1,5 +1,49 @@
 # Changelog
 
+## 1.0.0 (4/6/2023)
+
+**Highlights**
+
+- Support RGB-PoseC3D(CVPR'2022).
+- Support training UniFormer V2(Arxiv'2022).
+- Support MSG3D(CVPR'2020) and CTRGCN(CVPR'2021) in projects.
+- Refactor and provide more user-friendly documentation.
+
+**New Features**
+
+- Support RGB-PoseC3D ([2182](https://github.com/open-mmlab/mmaction2/pull/2182))
+- Support training UniFormer V2 ([2221](https://github.com/open-mmlab/mmaction2/pull/2221))
+- Support MSG3D and CTRGCN in projects. ([2269](https://github.com/open-mmlab/mmaction2/pull/2269), [2291](https://github.com/open-mmlab/mmaction2/pull/2291))
+
+**Improvements**
+
+- Use MMEngine to calculate FLOPs ([2300](https://github.com/open-mmlab/mmaction2/pull/2300))
+- Speed up LFB training ([2294](https://github.com/open-mmlab/mmaction2/pull/2294))
+- Support multiprocessing on AVA evaluation ([2146](https://github.com/open-mmlab/mmaction2/pull/2146))
+- Add a demo for exporting spatial-temporal detection model to ONNX ([2225](https://github.com/open-mmlab/mmaction2/pull/2225))
+- Update spatial-temporal detection related folders ([2262](https://github.com/open-mmlab/mmaction2/pull/2262))
+
+**Bug Fixes**
+
+- Fix flip config of TSM for sth v1/v2 dataset ([#2247](https://github.com/open-mmlab/mmaction2/pull/2247))
+- Fix circle ci ([2336](https://github.com/open-mmlab/mmaction2/pull/2336), [2334](https://github.com/open-mmlab/mmaction2/pull/2334))
+- Fix accepting an unexpected argument local-rank in PyTorch 2.0 ([2320](https://github.com/open-mmlab/mmaction2/pull/2320))
+- Fix TSM config link ([2315](https://github.com/open-mmlab/mmaction2/pull/2315))
+- Fix numpy version requirement in CI ([2284](https://github.com/open-mmlab/mmaction2/pull/2284))
+- Fix NTU pose extraction script ([2246](https://github.com/open-mmlab/mmaction2/pull/2246))
+- Fix TSM-MobileNet V2 ([2332](https://github.com/open-mmlab/mmaction2/pull/2332))
+- Fix command bugs in localization tasks' README ([2244](https://github.com/open-mmlab/mmaction2/pull/2244))
+- Fix duplicate name in DecordInit and SampleAVAFrame ([2251](https://github.com/open-mmlab/mmaction2/pull/2251))
+- Fix channel order when showing video ([2308](https://github.com/open-mmlab/mmaction2/pull/2308))
+- Specify map_location to cpu when using \_load_checkpoint ([2252](https://github.com/open-mmlab/mmaction2/pull/2254))
+
+**Documentation**
+
+- Refactor and provide more user-friendly documentation ([2341](https://github.com/open-mmlab/mmaction2/pull/2341), [2312](https://github.com/open-mmlab/mmaction2/pull/2312), [2325](https://github.com/open-mmlab/mmaction2/pull/2325))
+- Add README_zh-CN ([2252](https://github.com/open-mmlab/mmaction2/pull/2252))
+- Add social networking links ([2294](https://github.com/open-mmlab/mmaction2/pull/2294))
+- Fix sthv2 dataset annotations preparation document ([2248](https://github.com/open-mmlab/mmaction2/pull/2248))
+
 ## 1.0.0rc3 (2/10/2023)
 
 **Highlights**

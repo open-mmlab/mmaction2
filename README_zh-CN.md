@@ -91,11 +91,12 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
-**v1.0.0rc3 版本 (2023.02.10)**:
+**v1.0.0 版本 (2023.04.06)**:
 
-- 支持动作识别模型 UniFormer V1（ICLR'2022），UniFormer V2（Arxiv'2022）
-- 支持训练 MViT V2（CVPR'2022）和 MaskFeat（CVPR'2022）微调
-- 为 MMAction2 模型提供统一的推理接口实现视频分析任务的快速预测 ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
+- 支持骨骼动作识别模型 RGB-PoseC3D (CVPR'2022) .
+- 在 Projects 中支持 MSG3D(CVPR'2020) 和 CTRGCN(CVPR'2021).
+- 支持训练 UniFormer V2(Arxiv'2022).
+- 重构升级用户文档
 
 ## 安装
 
