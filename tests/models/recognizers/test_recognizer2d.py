@@ -1,4 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import platform
+
+import pytest
 import torch
 
 from mmaction.registry import MODELS
@@ -191,6 +194,7 @@ def test_trn():
         recognizer(one_img, gradcam=True)
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_tpn():
     register_all_modules()
     config = get_recognizer_cfg(
