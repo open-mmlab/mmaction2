@@ -4,8 +4,8 @@
 
 **Highlights**
 
-- Support training UniFormer V2(Arxiv'2022).
 - Support RGB-PoseC3D
+- Support training UniFormer V2(Arxiv'2022).
 - Support MSG3D and CTRGCN in projects.
 - Refactor and provide more user-friendly documentation.
 
