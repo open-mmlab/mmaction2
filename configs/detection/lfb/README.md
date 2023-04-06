@@ -22,7 +22,7 @@ To understand the world, we humans constantly need to relate the present to the 
 
 | frame sampling strategy | resolution | gpus |               backbone               |   pretrain   |  mAP  | gpu_mem(M) |               config                |               ckpt                |               log                |
 | :---------------------: | :--------: | :--: | :----------------------------------: | :----------: | :---: | :--------: | :---------------------------------: | :-------------------------------: | :------------------------------: |
-|         4x16x1          |    raw     |  8   | SlowOnly ResNet50 (with Nonlocal LFB) | Kinetics-400 | 24.05 |    8620    | [config](/configs/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb_20220906-4c5b9f25.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.log) |
+|         4x16x1          |    raw     |  8   | SlowOnly ResNet50 (with Nonlocal LFB) | Kinetics-400 | 24.11 |    8620    | [config](/configs/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb_20220906-4c5b9f25.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.log) |
 |         4x16x1          |    raw     |  8   |   SlowOnly ResNet50 (with Max LFB)   | Kinetics-400 | 22.15 |    8425    | [config](/configs/detection/lfb/slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb_20220906-4963135b.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.log) |
 
 Note:
@@ -33,8 +33,7 @@ Note:
 2. We use `slowonly_r50_4x16x1` instead of `I3D-R50-NL` in the original paper as the backbone of LFB, but we have achieved the similar improvement: (ours: 20.1 -> 24.05 vs. author: 22.1 -> 25.8).
 3. Because the long-term features are randomly sampled in testing, the test accuracy may have some differences.
 4. Before train or test lfb, you need to infer feature bank with the [slowonly-lfb_ava-pretrained-r50_infer-4x16x1_ava21-rgb.py](/configs/detection/lfb/slowonly-lfb_ava-pretrained-r50_infer-4x16x1_ava21-rgb.py). For more details on infer feature bank, you can refer to [Train](#Train) part.
-5. You can also dowonload long-term feature bank from [AVA_train_val_float32_lfb](https://download.openmmlab.com/mmaction/detection/lfb/AVA_train_val_float32_lfb.rar) or [AVA_train_val_float16_lfb](https://download.openmmlab.com/mmaction/detection/lfb/AVA_train_val_float16_lfb.rar), and then put them on `lfb_prefix_path`.
-6. The ROIHead now supports single-label classification (i.e. the network outputs at most
+5. The ROIHead now supports single-label classification (i.e. the network outputs at most
    one-label per actor). This can be done by (a) setting multilabel=False during training and
    the test_cfg.rcnn.action_thr for testing.
 
@@ -42,7 +41,7 @@ Note:
 
 ### a. Infer long-term feature bank for training
 
-Before train or test lfb, you need to infer long-term feature bank first.
+Before train or test lfb, you need to infer long-term feature bank first. You can also dowonload long-term feature bank from [AVA_train_val_float32_lfb](https://download.openmmlab.com/mmaction/detection/lfb/AVA_train_val_float32_lfb.rar) or [AVA_train_val_float16_lfb](https://download.openmmlab.com/mmaction/detection/lfb/AVA_train_val_float16_lfb.rar), and then put them on `lfb_prefix_path`. In this case, you can skip this step.
 
 Specifically, run the test on the training, validation, testing dataset with the config file [slowonly-lfb_ava-pretrained-r50_infer-4x16x1_ava21-rgb.py](/configs/detection/lfb/slowonly-lfb_ava-pretrained-r50_infer-4x16x1_ava21-rgb.py) (The config file will only infer the feature bank of training dataset and you need set `dataset_mode = 'val'` to infer the feature bank of validation dataset in the config file.), and the shared head [LFBInferHead](/mmaction/models/roi_heads/shared_heads/lfb_infer_head.py) will generate the feature bank.
 
@@ -52,12 +51,12 @@ You can use the following command to infer feature bank of AVA training and vali
 
 ```shell
 # set `dataset_mode = 'train'` in lfb_slowonly_r50_ava_infer.py
-python tools/test.py slowonly-lfb_ava-pretrained-r50_infer-4x16x1_ava21-rgb.py \
-    checkpoints/YOUR_BASELINE_CHECKPOINT.pth --eval mAP
+python tools/test.py configs/detection/lfb/slowonly-lfb-infer_r50_ava21-rgb.py \
+    checkpoints/YOUR_BASELINE_CHECKPOINT.pth
 
 # set `dataset_mode = 'val'` in lfb_slowonly_r50_ava_infer.py
-python tools/test.py slowonly-lfb_ava-pretrained-r50_infer-4x16x1_ava21-rgb.py \
-    checkpoints/YOUR_BASELINE_CHECKPOINT.pth --eval mAP
+python tools/test.py configs/detection/lfb/slowonly-lfb-infer_r50_ava21-rgb.py \
+    checkpoints/YOUR_BASELINE_CHECKPOINT.pth
 ```
 
 We use [slowonly_r50_4x16x1 checkpoint](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth) from [slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb](/configs/detection/ava/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py) to infer feature bank.
