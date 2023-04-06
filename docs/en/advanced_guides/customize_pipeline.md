@@ -7,26 +7,7 @@ In this tutorial, we will introduce some methods about how to build the data pip
   - [Modify the training/test pipeline](#modify-the-training/test-pipeline)
   - [Add new data transforms](#add-new-data-transforms)
 
-## Design of Dataset and Data pipelines
-
-MMAction2 implements many different `dataset` class. For example, for action recognition tasks, you can use `VideoDataset` that takes the raw video as input and decode the frames on the fly or `RawframeDataset` that takes the pre-extracted video frames as input. The dataset requires several arguments, for example `ann_file` for the dataset annotation file, `data_prefix` for the root to the dataset and `pipeline` for the data pipeline. Here is an example to build the Kinetics dataset (and the dataloader):
-
-```python
-train_dataloader = dict(
-    batch_size=32,
-    num_workers=8,
-    persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='VideoDataset',
-        ann_file='data/kinetics400/kinetics400_train_list_videos.txt',
-        data_prefix=dict(video='data/kinetics400/videos_train/'),
-        pipeline=your_train_pipeline))
-```
-
-The dataset will yield the information (e.g., the data path and labels, etc)of every sample as a dict. The full data content (raw videos or frames) will be loaded when we use them for training. Moreover, we may want to do some random data augmentation during picking
-samples when training. Almost all data loading, pre-processing, and formatting operations can be configured in
-MMAction2 by the **data pipeline**.
+## Design of Data pipelines
 
 The data pipeline means how to process the sample dict when indexing a sample from the dataset. And it
 consists of a sequence of data transforms. Each data transform takes a dict as input, processes it, and outputs a dict for the next data transform.
