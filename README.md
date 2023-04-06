@@ -62,7 +62,7 @@ English | [简体中文](/README_zh-CN.md)
 - [📖 Introduction](#-introduction-)
 - [🎁 Major Features](#-major-features-)
 - [🛠️ Installation](#-installation-)
-- [📊 Model Zoo](#-model-zoo-)
+- [👀 Model Zoo](#-model-zoo-)
 - [👨‍🏫 Get Started](#-get-started-)
 - [🎫 License](#-license-)
 - [🖊️ Citation](#️-citation-)
@@ -137,7 +137,7 @@ pip3 install -e .
 
 </details>
 
-## 📊 Model Zoo [🔝](#-table-of-contents)
+## 👀 Model Zoo [🔝](#-table-of-contents)
 
 Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html).
 
