@@ -102,7 +102,7 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 ## Installation
 
-MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and [MMPose] (https://github.com/open-mmlab/mmpose) (optinal, for skeleton based tasks).
+MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and \[MMPose\] (https://github.com/open-mmlab/mmpose) (optional, for skeleton based tasks).
 
 Here are quick instructions for installing MMAction2. Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for more detailed instructions.
 
