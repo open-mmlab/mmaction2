@@ -72,21 +72,18 @@ English | [简体中文](/README_zh-CN.md)
 
 ## 🥳 🚀 What's New [🔝](#-table-of-contents)
 
+**The default branch has been switched to `1.x` from `master`, and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/1.x/migration.html) for more details.**
+
 **Release (2023.02.10)**: v1.0.0rc3 with the following new features:
 
 - Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
 - Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
 - Add a new handy interface for inference MMAction2 models ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
 
-
 ## 📖 Introduction [🔝](#-table-of-contents)
 
 MMAction2 is an open-source toolbox for video understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.com/) project.
-
-**The default branch has been switched to `1.x` from `master`, and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/1.x/migration.html) for more details.**
-
-The 1.x branch works with **PyTorch 1.6+**.
 
 <div align="center">
   <div style="float:left;margin-right:10px;">
@@ -115,8 +112,7 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 - **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
 
-
-## 📖 Introduction [🔝](#-table-of-contents)
+## 🛠️ Installation [🔝](#-table-of-contents)
 
 MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and [MMPose](https://github.com/open-mmlab/mmpose) (optional, for skeleton based tasks).
 
