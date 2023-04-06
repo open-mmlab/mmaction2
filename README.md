@@ -56,41 +56,23 @@
 
 English | [简体中文](/README_zh-CN.md)
 
-## Introduction
+## 📄 Table of Contents
 
-MMAction2 is an open-source toolbox for video understanding based on PyTorch.
-It is a part of the [OpenMMLab](http://openmmlab.com/) project.
+- [🥳 🚀 What's New](#--whats-new-)
+- [📖 Introduction](#-introduction-)
+- [🎁 Major Features](#-major-features-)
+- [🛠️ Installation](#-installation-)
+- [👀 Model Zoo](#-model-zoo-)
+- [👨‍🏫 Get Started](#-get-started-)
+- [🎫 License](#-license-)
+- [🖊️ Citation](#️-citation-)
+- [🙌 Contributing](#-contributing-)
+- [🤝 Acknowledgement](#-acknowledgement-)
+- [🏗️ Projects in OpenMMLab](#-projects-in-openmmlab-)
 
-The 1.x branch works with **PyTorch 1.6+**.
+## 🥳 🚀 What's New [🔝](#-table-of-contents)
 
-<div align="center">
-  <div style="float:left;margin-right:10px;">
-  <img src="https://github.com/open-mmlab/mmaction2/raw/1.x/resources/mmaction2_overview.gif" width="380px"><br>
-    <p style="font-size:1.5vw;">Action Recognition Results on Kinetics-400</p>
-  </div>
-  <div style="float:right;margin-right:0px;">
-  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
-    <p style="font-size:1.5vw;">Skeleton-based Action Recognition Results on NTU-RGB+D-120</p>
-  </div>
-</div>
-<div align="center">
-  <img src="https://user-images.githubusercontent.com/30782254/155710881-bb26863e-fcb4-458e-b0c4-33cd79f96901.gif" width="580px"/><br>
-    <p style="font-size:1.5vw;">Skeleton-based Spatio-Temporal Action Detection and Action Recognition Results on Kinetics-400</p>
-</div>
-<div align="center">
-  <img src="https://github.com/open-mmlab/mmaction2/raw/1.x/resources/spatio-temporal-det.gif" width="800px"/><br>
-    <p style="font-size:1.5vw;">Spatio-Temporal Action Detection Results on AVA-2.1</p>
-</div>
-
-## Major Features
-
-- **Modular design**: We decompose a video understanding framework into different components. One can easily construct a customized video understanding framework by combining different modules.
-
-- **Support four major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, and skeleton-based action detection.
-
-- **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
-
-## What's New
+**The default branch has been switched to `1.x` from `master`, and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/1.x/migration.html) for more details.**
 
 **Release (2023.02.10)**: v1.0.0rc3 with the following new features:
 
@@ -98,9 +80,42 @@ The 1.x branch works with **PyTorch 1.6+**.
 - Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
 - Add a new handy interface for inference MMAction2 models ([demo](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/README.md#inferencer))
 
-## Installation
+## 📖 Introduction [🔝](#-table-of-contents)
 
-Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for more detailed instructions.
+MMAction2 is an open-source toolbox for video understanding based on PyTorch.
+It is a part of the [OpenMMLab](http://openmmlab.com/) project.
+
+<div align="center">
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="380px">
+  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px">
+  <p style="font-size:1.5vw;"> Action Recognition on Kinetics-400 (left) and Skeleton-based Action Recognition on NTU-RGB+D-120 (right)</p>
+</div>
+
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/30782254/155710881-bb26863e-fcb4-458e-b0c4-33cd79f96901.gif" width="580px"/><br>
+    <p style="font-size:1.5vw;">Skeleton-based Spatio-Temporal Action Detection and Action Recognition Results on Kinetics-400</p>
+</div>
+<div align="center">
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/><br>
+    <p style="font-size:1.5vw;">Spatio-Temporal Action Detection Results on AVA-2.1</p>
+</div>
+
+## 🎁 Major Features [🔝](#-table-of-contents)
+
+- **Modular design**: We decompose a video understanding framework into different components. One can easily construct a customized video understanding framework by combining different modules.
+
+- **Support four major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, and skeleton-based action detection.
+
+- **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
+
+## 🛠️ Installation [🔝](#-table-of-contents)
+
+MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and [MMPose](https://github.com/open-mmlab/mmpose) (optional, for skeleton based tasks).
+
+Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for detailed instructions.
+
+<details close>
+<summary>Quick instructions</summary>
 
 ```shell
 conda create --name openmmlab python=3.8 -y
@@ -116,7 +131,15 @@ git checkout 1.x
 pip3 install -e .
 ```
 
-## Supported Methods
+</details>
+
+## 👀 Model Zoo [🔝](#-table-of-contents)
+
+Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html).
+
+<details close>
+
+<summary>Supported model</summary>
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
@@ -161,7 +184,6 @@ pip3 install -e .
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/ssn/README.md">SSN</a> (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/bsn/README.md">BSN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/localization/bmn/README.md">BMN</a> (ICCV'2019)</td>
     <td></td>
@@ -185,17 +207,19 @@ pip3 install -e .
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/posec3d/README.md">PoseC3D</a> (CVPR'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcnpp/README.md">STGCN++</a> (ArXiv'2022)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/projects/ctrgcn/README.md">CTRGCN</a> (CVPR'2021)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/projects/msg3d/README.md">MSG3D</a> (CVPR'2020)</td>
     <td></td>
   </tr>
 </table>
 
-Results and models are available in the *README.md* of each method's config directory.
-A summary can be found on the [**model zoo**](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html) page.
+</details>
 
-We will keep up with the latest progress of the community and support more popular algorithms and frameworks.
-If you have any feature requests, please feel free to leave a comment in [Issues](https://github.com/open-mmlab/mmaction2/issues/19).
+<details close>
 
-## Supported Datasets
+<summary>Supported dataset</summary>
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
@@ -254,31 +278,32 @@ If you have any feature requests, please feel free to leave a comment in [Issues
   </tr>
 </table>
 
-Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided. A summary can be found on the [**Supported Datasets**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) page.
+</details>
 
-## Data Preparation
+## 👨‍🏫 Get Started [🔝](#-table-of-contents)
 
-Please refer to [data_preparation.md](docs/en/user_guides/2_data_prepare.md) for a general knowledge of data preparation.
+For tutorials, we provide the following user guides for basic usage:
 
-## FAQ
+- [Migration from MMAction2 0.X](https://mmaction2.readthedocs.io/en/1.x/migration.html)
+- [Learn about Configs](https://mmaction2.readthedocs.io/en/1.x/user_guides/1_config.html#)
+- [Prepare Datasets](https://mmaction2.readthedocs.io/en/1.x/user_guides/2_data_prepare.html)
+- [Inference with Existing Models](https://mmaction2.readthedocs.io/en/1.x/user_guides/3_inference.html)
+- [Training and Testing](https://mmaction2.readthedocs.io/en/1.x/user_guides/4_train_test.html)
 
-Please refer to [FAQ](docs/en/notes/faq.md) for frequently asked questions.
-
-## Projects built on MMAction2
-
-Currently, there are many research works and projects built on MMAction2 by users from community, such as:
+<details close>
+<summary>Research works built on MMAction2 by users from community</summary>
 
 - Video Swin Transformer. [\[paper\]](https://arxiv.org/abs/2106.13230)[\[github\]](https://github.com/SwinTransformer/Video-Swin-Transformer)
 - Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2107.10161)[\[github\]](https://github.com/Cogito2012/DEAR)
 - Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2103.17263)[\[github\]](https://github.com/xvjiarui/VFS)
 
-etc., check [projects.md](docs/en/notes/projects.md) to see all related projects.
+</details>
 
-## License
+## 🎫 License [🔝](#-table-of-contents)
 
 This project is released under the [Apache 2.0 license](LICENSE).
 
-## Citation
+## 🖊️ Citation [🔝](#-table-of-contents)
 
 If you find this project useful in your research, please consider cite:
 
@@ -291,17 +316,17 @@ If you find this project useful in your research, please consider cite:
 }
 ```
 
-## Contributing
+## 🙌 Contributing [🔝](#-table-of-contents)
 
 We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/2.x/CONTRIBUTING.md) in MMCV for more details about the contributing guideline.
 
-## Acknowledgement
+## 🤝 Acknowledgement [🔝](#-table-of-contents)
 
 MMAction2 is an open-source project that is contributed by researchers and engineers from various colleges and companies.
 We appreciate all the contributors who implement their methods or add new features and users who give valuable feedback.
 We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their new models.
 
-## Projects in OpenMMLab
+## 🏗️ Projects in OpenMMLab [🔝](#-table-of-contents)
 
 - [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab foundational library for training deep learning models.
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
