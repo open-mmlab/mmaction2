@@ -3,7 +3,7 @@
 In this tutorial, we will introduce some methods about how to build the optimizer and learning rate scheduler for your tasks.
 
 - [Customize Optimizer](#customize-optimizer)
-  - [Build optimizers using optim\_wrapper](#build-optimizers-using-optim_wrapper)
+  - [Build optimizers using optim_wrapper](#build-optimizers-using-optim_wrapper)
     - [Use optimizers supported by PyTorch](#use-optimizers-supported-by-pytorch)
     - [Parameter-wise finely configuration](#parameter-wise-finely-configuration)
     - [Gradient clipping](#gradient-clipping)
