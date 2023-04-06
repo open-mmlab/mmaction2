@@ -10,7 +10,7 @@ You can switch between Chinese and English documents in the lower-left corner of
    get_started/overview.md
    get_started/installation.md
    get_started/quick_run.md
-   get_started/20-minute_tour.md
+   get_started/guide_to_framework.md
    get_started/contribution_guide.md
    get_started/faq.md
 
