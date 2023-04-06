@@ -85,13 +85,14 @@ English | [简体中文](/README_zh-CN.md)
 MMAction2 is an open-source toolbox for video understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.com/) project.
 
+<table><tr>
+  <td><img src="https://github.com/open-mmlab/mmaction2/raw/1.x/resources/mmaction2_overview.gif" width="380px">
+    <p style="text-align: center;">Action Recognition</p></td>
+  <td><img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
+    <p style="text-align: center;">Skeleton-based Action Recognition</p></td>
+</table></tr>
 <div align="center">
   <div style="float:left;margin-right:10px;">
-  <img src="https://github.com/open-mmlab/mmaction2/raw/1.x/resources/mmaction2_overview.gif" width="380px"><br>
-    <p style="font-size:1.5vw;">Action Recognition Results on Kinetics-400</p>
-  </div>
-  <div style="float:right;margin-right:0px;">
-  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
     <p style="font-size:1.5vw;">Skeleton-based Action Recognition Results on NTU-RGB+D-120</p>
   </div>
 </div>
