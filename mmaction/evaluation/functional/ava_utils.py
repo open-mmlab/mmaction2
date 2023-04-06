@@ -3,14 +3,13 @@
 # https://github.com/activitynet/ActivityNet/blob/master/
 # Evaluation/get_ava_performance.py. Some unused codes are removed.
 import csv
-import logging
+import multiprocessing
 import time
 from collections import defaultdict
 
 import numpy as np
 
-from .ava_evaluation import object_detection_evaluation as det_eval
-from .ava_evaluation import standard_fields
+from .ava_evaluation import metrics, np_box_list, np_box_ops
 
 
 def det2csv(results, custom_classes):
@@ -42,7 +41,7 @@ def results2csv(results, out_file, custom_classes=None):
     # save space for float
     def to_str(item):
         if isinstance(item, float):
-            return f'{item:.3f}'
+            return f'{item:.4f}'
         return str(item)
 
     with open(out_file, 'w') as f:
@@ -80,7 +79,6 @@ def read_csv(csv_file, class_whitelist=None):
         of score values labels, matching the corresponding label in `labels`.
         If scores are not provided in the csv, then they will default to 1.0.
     """
-    start = time.time()
     entries = defaultdict(list)
     boxes = defaultdict(list)
     labels = defaultdict(list)
@@ -107,7 +105,6 @@ def read_csv(csv_file, class_whitelist=None):
         labels[image_key] = [x[1] for x in entry]
         scores[image_key] = [x[0] for x in entry]
 
-    print_time('read file ' + csv_file.name, start)
     return boxes, labels, scores
 
 
@@ -157,6 +154,51 @@ def read_labelmap(labelmap_file):
     return labelmap, class_ids
 
 
+def get_overlaps_and_scores_box_mode(detected_boxes, detected_scores,
+                                     groundtruth_boxes):
+
+    detected_boxlist = np_box_list.BoxList(detected_boxes)
+    detected_boxlist.add_field('scores', detected_scores)
+    gt_non_group_of_boxlist = np_box_list.BoxList(groundtruth_boxes)
+
+    iou = np_box_ops.iou(detected_boxlist.get(), gt_non_group_of_boxlist.get())
+    scores = detected_boxlist.get_field('scores')
+    num_boxes = detected_boxlist.num_boxes()
+    return iou, scores, num_boxes
+
+
+def tpfp_single(tup, threshold=0.5):
+    gt_bboxes, gt_labels, bboxes, labels, scores = tup
+    ret_scores, ret_tp_fp_labels = dict(), dict()
+    all_labels = list(set(labels))
+    for label in all_labels:
+        gt_bbox = np.array(
+            [x for x, y in zip(gt_bboxes, gt_labels) if y == label],
+            dtype=np.float32).reshape(-1, 4)
+        bbox = np.array([x for x, y in zip(bboxes, labels) if y == label],
+                        dtype=np.float32).reshape(-1, 4)
+        score = np.array([x for x, y in zip(scores, labels) if y == label],
+                         dtype=np.float32).reshape(-1)
+        iou, score, num_boxes = get_overlaps_and_scores_box_mode(
+            bbox, score, gt_bbox)
+        if gt_bbox.size == 0:
+            ret_scores[label] = score
+            ret_tp_fp_labels[label] = np.zeros(num_boxes, dtype=bool)
+            continue
+        tp_fp_labels = np.zeros(num_boxes, dtype=bool)
+        if iou.shape[1] > 0:
+            max_overlap_gt_ids = np.argmax(iou, axis=1)
+            is_gt_box_detected = np.zeros(iou.shape[1], dtype=bool)
+            for i in range(num_boxes):
+                gt_id = max_overlap_gt_ids[i]
+                if iou[i, gt_id] >= threshold:
+                    if not is_gt_box_detected[gt_id]:
+                        tp_fp_labels[i] = True
+                        is_gt_box_detected[gt_id] = True
+        ret_scores[label], ret_tp_fp_labels[label] = score, tp_fp_labels
+    return ret_scores, ret_tp_fp_labels
+
+
 # Seems there is at most 100 detections for each image
 def ava_eval(result_file,
              result_type,
@@ -164,10 +206,11 @@ def ava_eval(result_file,
              ann_file,
              exclude_file,
              verbose=True,
+             ignore_empty_frames=True,
              custom_classes=None):
     """Perform ava evaluation."""
-    assert result_type in ['mAP']
 
+    assert result_type in ['mAP']
     start = time.time()
     categories, class_whitelist = read_labelmap(open(label_file))
     if custom_classes is not None:
@@ -177,9 +220,9 @@ def ava_eval(result_file,
         categories = [cat for cat in categories if cat['id'] in custom_classes]
 
     # loading gt, do not need gt score
-    gt_boxes, gt_labels, _ = read_csv(open(ann_file), class_whitelist)
+    gt_bboxes, gt_labels, _ = read_csv(open(ann_file), class_whitelist)
     if verbose:
-        print_time('Reading detection results', start)
+        print_time('Reading GT results', start)
 
     if exclude_file is not None:
         excluded_keys = read_exclusions(open(exclude_file))
@@ -189,54 +232,69 @@ def ava_eval(result_file,
     start = time.time()
     boxes, labels, scores = read_csv(open(result_file), class_whitelist)
     if verbose:
-        print_time('Reading detection results', start)
-
-    # Evaluation for mAP
-    pascal_evaluator = det_eval.PascalDetectionEvaluator(categories)
+        print_time('Reading Detection results', start)
 
     start = time.time()
-    for image_key in gt_boxes:
-        if verbose and image_key in excluded_keys:
-            logging.info(
-                'Found excluded timestamp in detections: %s.'
-                'It will be ignored.', image_key)
-            continue
-        pascal_evaluator.add_single_ground_truth_image_info(
-            image_key, {
-                standard_fields.InputDataFields.groundtruth_boxes:
-                np.array(gt_boxes[image_key], dtype=float),
-                standard_fields.InputDataFields.groundtruth_classes:
-                np.array(gt_labels[image_key], dtype=int)
-            })
+    all_gt_labels = np.concatenate(list(gt_labels.values()))
+    gt_count = {k: np.sum(all_gt_labels == k) for k in class_whitelist}
+
+    pool = multiprocessing.Pool(32)
+    if ignore_empty_frames:
+        tups = [(gt_bboxes[k], gt_labels[k], boxes[k], labels[k], scores[k])
+                for k in gt_bboxes if k not in excluded_keys]
+    else:
+        tups = [(gt_bboxes.get(k, np.zeros((0, 4), dtype=np.float32)),
+                 gt_labels.get(k, []), boxes[k], labels[k], scores[k])
+                for k in boxes if k not in excluded_keys]
+    rets = pool.map(tpfp_single, tups)
+
     if verbose:
-        print_time('Convert groundtruth', start)
+        print_time('Calculating TP/FP', start)
 
     start = time.time()
-    for image_key in boxes:
-        if verbose and image_key in excluded_keys:
-            logging.info(
-                'Found excluded timestamp in detections: %s.'
-                'It will be ignored.', image_key)
-            continue
-        pascal_evaluator.add_single_detected_image_info(
-            image_key, {
-                standard_fields.DetectionResultFields.detection_boxes:
-                np.array(boxes[image_key], dtype=float),
-                standard_fields.DetectionResultFields.detection_classes:
-                np.array(labels[image_key], dtype=int),
-                standard_fields.DetectionResultFields.detection_scores:
-                np.array(scores[image_key], dtype=float)
-            })
-    if verbose:
-        print_time('convert detections', start)
+    scores, tpfps = defaultdict(list), defaultdict(list)
+    for score, tpfp in rets:
+        for k in score:
+            scores[k].append(score[k])
+            tpfps[k].append(tpfp[k])
 
-    start = time.time()
-    metrics = pascal_evaluator.evaluate()
+    cls_AP = []
+    for k in scores:
+        scores[k] = np.concatenate(scores[k])
+        tpfps[k] = np.concatenate(tpfps[k])
+        precision, recall = metrics.compute_precision_recall(
+            scores[k], tpfps[k], gt_count[k])
+        ap = metrics.compute_average_precision(precision, recall)
+        class_name = [x['name'] for x in categories if x['id'] == k]
+        assert len(class_name) == 1
+        class_name = class_name[0]
+        cls_AP.append((k, class_name, ap))
     if verbose:
-        print_time('run_evaluator', start)
-    for display_name in metrics:
-        print(f'{display_name}=\t{metrics[display_name]}')
-    return {
-        display_name: metrics[display_name]
-        for display_name in metrics if 'ByCategory' not in display_name
-    }
+        print_time('Run Evaluator', start)
+
+    print('Per-class results: ', flush=True)
+    for k, class_name, ap in cls_AP:
+        print(f'Index: {k}, Action: {class_name}: AP: {ap:.4f};', flush=True)
+
+    overall = np.nanmean([x[2] for x in cls_AP])
+    person_movement = np.nanmean([x[2] for x in cls_AP if x[0] <= 14])
+    object_manipulation = np.nanmean([x[2] for x in cls_AP if 14 < x[0] < 64])
+    person_interaction = np.nanmean([x[2] for x in cls_AP if 64 <= x[0]])
+
+    print('Overall Results: ', flush=True)
+    print(f'Overall mAP: {overall:.4f}', flush=True)
+    print(f'Person Movement mAP: {person_movement:.4f}', flush=True)
+    print(f'Object Manipulation mAP: {object_manipulation:.4f}', flush=True)
+    print(f'Person Interaction mAP: {person_interaction:.4f}', flush=True)
+
+    results = {}
+    results['overall'] = overall
+    results['person_movement'] = person_movement
+    results['object_manipulation'] = object_manipulation
+    results['person_interaction'] = person_interaction
+
+    if verbose:
+        for k, class_name, ap in cls_AP:
+            print(f'Class {class_name} AP: {ap:.4f}', flush=True)
+
+    return results

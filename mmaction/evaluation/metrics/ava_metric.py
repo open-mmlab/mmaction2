@@ -81,6 +81,7 @@ class AVAMetric(BaseMetric):
             self.label_file,
             self.ann_file,
             self.exclude_file,
+            ignore_empty_frames=True,
             custom_classes=self.custom_classes)
 
         os.remove(temp_file)
