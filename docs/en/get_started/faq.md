@@ -30,7 +30,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **"Why I got the error message 'Please install XXCODEBASE to use XXX' even if I have already installed XXCODEBASE?"**
 
-  You got that error message because our project failed to import a function or a class from XXCODEBASE. You can try to run the corresponding line to see what happens. One possible reason is, for some codebases in OpenMMLAB, you need to install mmcv and mmengine before you install them. You could follow this [tutorial](https://mmaction2.readthedocs.io/en/1.x/get_started.html#installation) to install them.
+  You got that error message because our project failed to import a function or a class from XXCODEBASE. You can try to run the corresponding line to see what happens. One possible reason is, for some codebases in OpenMMLAB, you need to install mmcv and mmengine before you install them. You could follow this [tutorial](https://mmaction2.readthedocs.io/en/latest/get_started.html#installation) to install them.
 
 ## Data
 

@@ -8,7 +8,7 @@ according to your project.
 
 ### Setup Environment
 
-Please refer to [Get Started](https://mmaction2.readthedocs.io/en/1.x/get_started.html) to install MMAction2.
+Please refer to [Get Started](https://mmaction2.readthedocs.io/en/latest/get_started.html) to install MMAction2.
 
 At first, add the current folder to `PYTHONPATH`, so that Python can find your code. Run command in the current directory to add it.
 

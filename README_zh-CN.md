@@ -17,7 +17,7 @@
     </sup>
   </div>
 
-[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/1.x/)
+[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
 [![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
 [![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
 [![PyPI](https://img.shields.io/pypi/v/mmaction2)](https://pypi.org/project/mmaction2/)
@@ -25,9 +25,9 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-[📘文档](https://mmaction2.readthedocs.io/zh_CN//1.x/) |
-[🛠️安装指南](https://mmaction2.readthedocs.io/zh_CN//1.x/get_started.html) |
-[👀模型库](https://mmaction2.readthedocs.io/zh_CN//1.x/modelzoo.html) |
+[📘文档](https://mmaction2.readthedocs.io/zh_CN/1.x/) |
+[🛠️安装指南](https://mmaction2.readthedocs.io/zh_CN/1.x/get_started.html) |
+[👀模型库](https://mmaction2.readthedocs.io/zh_CN/1.x/modelzoo.html) |
 [🆕更新](https://mmaction2.readthedocs.io/zh_CN/1.x/notes/changelog.html) |
 [🚀进行中项目](https://github.com/open-mmlab/mmaction2/projects) |
 [🤔问题反馈](https://github.com/open-mmlab/mmaction2/issues/new/choose)
@@ -256,7 +256,7 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
 
 ## 数据集准备
 
-请参考 [数据准备](https://mmaction2.readthedocs.io/en/1.x/user_guides/2_data_prepare.html) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](https://mmaction2.readthedocs.io/zh_CN/latest/supported_datasets.html) 中。
+请参考 [数据准备](https://mmaction2.readthedocs.io/en/latest/user_guides/2_data_prepare.html) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](https://mmaction2.readthedocs.io/zh_CN/latest/supported_datasets.html) 中。
 
 ## FAQ
 

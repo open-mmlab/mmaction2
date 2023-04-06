@@ -738,7 +738,7 @@ for epoch in range(max_epochs):
 
 ## Step6: Train and Test with MMEngine (Recommended)
 
-For more details on training and testing, you can refer to [MMAction2 Tutorial](https://mmaction2.readthedocs.io/en/1.x/user_guides/4_train_test.html). For more information on `Runner`, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/tutorials/runner.html).
+For more details on training and testing, you can refer to [MMAction2 Tutorial](https://mmaction2.readthedocs.io/en/latest/user_guides/4_train_test.html). For more information on `Runner`, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/tutorials/runner.html).
 
 ```python
 from mmengine.runner import Runner
