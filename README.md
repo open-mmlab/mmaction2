@@ -125,6 +125,7 @@ pip3 install -e .
 Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html).
 
 <details close>
+
 <summary>Supported model</summary>
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
@@ -203,7 +204,8 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
 
 </details>
 
-<details open>
+<details close>
+
 <summary>Supported dataset</summary>
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
