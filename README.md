@@ -106,10 +106,9 @@ MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/
 
 Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for detailed instructions.
 
-
 <details close>
 <summary>Quick instructions</summary>
- 
+
 ```shell
 conda create --name openmmlab python=3.8 -y
 conda activate open-mmlab
@@ -123,6 +122,7 @@ cd mmaction2
 git checkout 1.x
 pip3 install -e .
 ```
+
 </details>
 
 ## Model Zoo
@@ -281,7 +281,6 @@ For tutorials, we provide the following user guides for basic usage:
 - [Prepare Datasets](https://mmaction2.readthedocs.io/en/1.x/user_guides/2_data_prepare.html)
 - [Inference with Existing Models](https://mmaction2.readthedocs.io/en/1.x/user_guides/3_inference.html)
 - [Training and Testing](https://mmaction2.readthedocs.io/en/1.x/user_guides/4_train_test.html)
-
 
 ## Projects built on MMAction2
 
