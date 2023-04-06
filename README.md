@@ -263,9 +263,15 @@ If you have any feature requests, please feel free to leave a comment in [Issues
 
 Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided. A summary can be found on the [**Supported Datasets**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) page.
 
-## Data Preparation
+## Get Started
 
-Please refer to [data_preparation.md](docs/en/user_guides/2_data_prepare.md) for a general knowledge of data preparation.
+For tutorials, we provide the following user guides for basic usage:
+
+- [Migration from MMAction2 0.X](https://mmaction2.readthedocs.io/en/1.x/migration.html)
+- [Config](https://mmaction2.readthedocs.io/en/1.x/user_guides/1_config.html#)
+- [Prepare Datasets](https://mmaction2.readthedocs.io/en/1.x/user_guides/2_data_prepare.html)
+- [Inference with Existing Models](https://mmaction2.readthedocs.io/en/1.x/user_guides/3_inference.html)
+- [Training and Testing](https://mmaction2.readthedocs.io/en/1.x/user_guides/4_train_test.html)
 
 ## FAQ
 
