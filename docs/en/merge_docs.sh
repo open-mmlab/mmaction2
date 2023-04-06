@@ -11,7 +11,9 @@ cat  ../../configs/skeleton/*/README.md  | sed "s/md#t/html#t/g" | sed "s/#/#&/"
 # gather projects
 # TODO: generate table of contents for project zoo
 cat ../../projects/README.md > projectzoo.md
-cat ../../projects/*/README.md >> projectzoo.md
+cat ../../projects/example_project/README.md >> projectzoo.md
+cat ../../projects/ctrgcn/README.md >> projectzoo.md
+cat ../../projects/msg3d/README.md >> projectzoo.md
 
 # gather datasets
 cat supported_datasets.md > datasetzoo.md
