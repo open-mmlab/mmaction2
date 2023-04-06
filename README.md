@@ -87,8 +87,8 @@ It is a part of the [OpenMMLab](http://openmmlab.com/) project.
 
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="380px">
-    <p style="font-size:1.5vw;">Action Recognition Results on Kinetics-400</p>
   <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px">
+    <p style="font-size:1.5vw;">Action Recognition Results on Kinetics-400</p>
     <p style="font-size:1.5vw;">Skeleton-based Action Recognition Results on NTU-RGB+D-120</p>
 </div>
 
