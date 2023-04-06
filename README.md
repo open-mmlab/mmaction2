@@ -104,8 +104,12 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and \[MMPose\] (https://github.com/open-mmlab/mmpose) (optional, for skeleton based tasks).
 
-Here are quick instructions for installing MMAction2. Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for more detailed instructions.
+Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for detailed instructions.
 
+
+<details close>
+<summary>Quick instructions</summary>
+ 
 ```shell
 conda create --name openmmlab python=3.8 -y
 conda activate open-mmlab
@@ -119,6 +123,7 @@ cd mmaction2
 git checkout 1.x
 pip3 install -e .
 ```
+</details>
 
 ## Model Zoo
 
