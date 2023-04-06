@@ -8,12 +8,14 @@ data_root_val = 'data/sthv1/rawframes'
 ann_file_train = 'data/sthv1/sthv1_train_list_rawframes.txt'
 ann_file_val = 'data/sthv1/sthv1_val_list_rawframes.txt'
 ann_file_test = 'data/sthv1/sthv1_val_list_rawframes.txt'
+
+sthv1_flip_label_map = {2: 4, 4: 2, 30: 41, 41: 30, 52: 66, 66: 52}
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
     dict(type='RawFrameDecode'),
     dict(type='RandomResizedCrop'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5),
+    dict(type='Flip', flip_ratio=0.5, flip_label_map=sthv1_flip_label_map),
     dict(type='ColorJitter'),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')

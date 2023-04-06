@@ -66,8 +66,8 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      Top 1 Accuracy: 48.98
-      Top 5 Accuracy: 78.91
+      Top 1 Accuracy: 51.87
+      Top 5 Accuracy: 79.67
     Task: Action Recognition
   Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb_20220913-d2f5c300.pth
+  Weights: (https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb_20230221-940a3615.pth
