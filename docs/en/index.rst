@@ -48,6 +48,12 @@ You can switch between Chinese and English documents in the lower-left corner of
 
 .. toctree::
    :maxdepth: 1
+   :caption: API Reference
+
+   api.rst
+
+.. toctree::
+   :maxdepth: 1
    :caption: Model Zoo
 
    model_zoo/modelzoo.md
