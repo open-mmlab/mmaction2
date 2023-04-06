@@ -272,14 +272,11 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
 For tutorials, we provide the following user guides for basic usage:
 
 - [Migration from MMAction2 0.X](https://mmaction2.readthedocs.io/en/1.x/migration.html)
-- [Learn about Config](https://mmaction2.readthedocs.io/en/1.x/user_guides/1_config.html#)
+- [Learn about Configs](https://mmaction2.readthedocs.io/en/1.x/user_guides/1_config.html#)
 - [Prepare Datasets](https://mmaction2.readthedocs.io/en/1.x/user_guides/2_data_prepare.html)
 - [Inference with Existing Models](https://mmaction2.readthedocs.io/en/1.x/user_guides/3_inference.html)
 - [Training and Testing](https://mmaction2.readthedocs.io/en/1.x/user_guides/4_train_test.html)
 
-## FAQ
-
-Please refer to [FAQ](docs/en/notes/faq.md) for frequently asked questions.
 
 ## Projects built on MMAction2
 
