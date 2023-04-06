@@ -2,16 +2,18 @@
 
 # gather models
 mkdir -p model_zoo
-cat  ../../configs/localization/*/README.md | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed '1i\# Action Localization Models' | sed 's/](\/docs\/en/](../g' |sed "s/getting_started.html##t/getting_started.html#t/g" > model_zoo/localization_models.md
-cat  ../../configs/recognition/*/README.md | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed '1i\# Action Recognition Models' | sed 's/](\/docs\/en/](../g' | sed "s/getting_started.html##t/getting_started.html#t/g" >  model_zoo/recognition_models.md
-cat  ../../configs/recognition_audio/*/README.md | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed 's/](\/docs\/en/](../g' | sed "s/getting_started.html##t/getting_started.html#t/g" >>  model_zoo/recognition_models.md
-cat  ../../configs/detection/*/README.md  | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed '1i\# Spatio Temporal Action Detection Models' | sed 's/](\/docs\/en/](../g' | sed "s/getting_started.html##t/getting_started.html#t/g" >  model_zoo/detection_models.md
-cat  ../../configs/skeleton/*/README.md  | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed '1i\# Skeleton-based Action Recognition Models' | sed 's/](\/docs\/en/](../g' | sed "s/getting_started.html##t/getting_started.html#t/g" >  model_zoo/skeleton_models.md
+cat  ../../configs/localization/*/README.md | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed '1i\# Action Localization Models' | sed 's/](\/docs\/en/](../g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/latest/=g' |sed "s/getting_started.html##t/getting_started.html#t/g" > model_zoo/localization_models.md
+cat  ../../configs/recognition/*/README.md | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed '1i\# Action Recognition Models' | sed 's/](\/docs\/en/](../g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/latest/=g' | sed "s/getting_started.html##t/getting_started.html#t/g" >  model_zoo/recognition_models.md
+cat  ../../configs/recognition_audio/*/README.md | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed 's/](\/docs\/en/](../g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/latest/=g' | sed "s/getting_started.html##t/getting_started.html#t/g" >>  model_zoo/recognition_models.md
+cat  ../../configs/detection/*/README.md  | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed '1i\# Spatio Temporal Action Detection Models' | sed 's/](\/docs\/en/](../g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/latest/=g' | sed "s/getting_started.html##t/getting_started.html#t/g" >  model_zoo/detection_models.md
+cat  ../../configs/skeleton/*/README.md  | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed '1i\# Skeleton-based Action Recognition Models' | sed 's/](\/docs\/en/](../g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/latest/=g' | sed "s/getting_started.html##t/getting_started.html#t/g" >  model_zoo/skeleton_models.md
 
 # gather projects
 # TODO: generate table of contents for project zoo
 cat ../../projects/README.md > projectzoo.md
-cat ../../projects/*/README.md >> projectzoo.md
+cat ../../projects/example_project/README.md >> projectzoo.md
+cat ../../projects/ctrgcn/README.md >> projectzoo.md
+cat ../../projects/msg3d/README.md >> projectzoo.md
 
 # gather datasets
 cat supported_datasets.md > datasetzoo.md
@@ -38,8 +40,9 @@ sed -i 's/(\/tools\/data\/skeleton\/README.md/(#skeleton-dataset/g' datasetzoo.m
 
 cat prepare_data.md >> datasetzoo.md
 
+ sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/latest/=g' *.md
+
 sed -i 's/](\/docs\/en\//](g' datasetzoo.md
 sed -i 's/](\/docs\/en\//](g' changelog.md
-
 sed -i 's/](\/docs\/en\//](..g' ./get_stated/*.md
 sed -i 's/](\/docs\/en\//](..g' ./tutorials/*.md

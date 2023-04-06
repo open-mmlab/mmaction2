@@ -119,7 +119,7 @@ def test_r2plus1d():
     recognizer = MODELS.build(config.model)
     recognizer.cfg = config
 
-    input_shape = (1, 3, 3, 8, 32, 32)
+    input_shape = (1, 3, 3, 8, 16, 16)
     target_layer_name = 'backbone/layer4/1/relu'
 
     _do_test_3D_models(recognizer, target_layer_name, input_shape)

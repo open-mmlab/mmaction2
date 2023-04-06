@@ -17,7 +17,7 @@
     </sup>
   </div>
 
-[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/1.x/)
+[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
 [![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
 [![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
 [![PyPI](https://img.shields.io/pypi/v/mmaction2)](https://pypi.org/project/mmaction2/)
@@ -25,10 +25,10 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-[📘Documentation](https://mmaction2.readthedocs.io/en/1.x/) |
-[🛠️Installation](https://mmaction2.readthedocs.io/en/1.x/get_started.html) |
-[👀Model Zoo](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html) |
-[🆕Update News](https://mmaction2.readthedocs.io/en/1.x/notes/changelog.html) |
+[📘Documentation](https://mmaction2.readthedocs.io/en/latest/) |
+[🛠️Installation](https://mmaction2.readthedocs.io/en/latest/get_started.html) |
+[👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
+[🆕Update News](https://mmaction2.readthedocs.io/en/latest/notes/changelog.html) |
 [🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
 [🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
 
@@ -58,21 +58,22 @@ English | [简体中文](/README_zh-CN.md)
 
 ## 📄 Table of Contents
 
+- [📄 Table of Contents](#-table-of-contents)
 - [🥳 🚀 What's New](#--whats-new-)
 - [📖 Introduction](#-introduction-)
 - [🎁 Major Features](#-major-features-)
-- [🛠️ Installation](#-installation-)
+- [🛠️ Installation](#️-installation-)
 - [👀 Model Zoo](#-model-zoo-)
 - [👨‍🏫 Get Started](#-get-started-)
 - [🎫 License](#-license-)
 - [🖊️ Citation](#️-citation-)
 - [🙌 Contributing](#-contributing-)
 - [🤝 Acknowledgement](#-acknowledgement-)
-- [🏗️ Projects in OpenMMLab](#-projects-in-openmmlab-)
+- [🏗️ Projects in OpenMMLab](#️-projects-in-openmmlab-)
 
 ## 🥳 🚀 What's New [🔝](#-table-of-contents)
 
-**The default branch has been switched to `1.x` from `master`, and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/1.x/migration.html) for more details.**
+**The default branch has been switched to `1.x` from `master`, and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/latest/migration.html) for more details.**
 
 **Release (2023.02.10)**: v1.0.0rc3 with the following new features:
 
@@ -112,7 +113,7 @@ It is a part of the [OpenMMLab](http://openmmlab.com/) project.
 
 MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and [MMPose](https://github.com/open-mmlab/mmpose) (optional, for skeleton based tasks).
 
-Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for detailed instructions.
+Please refer to [install.md](https://mmaction2.readthedocs.io/en/latest/get_started.html) for detailed instructions.
 
 <details close>
 <summary>Quick instructions</summary>
@@ -122,9 +123,9 @@ conda create --name openmmlab python=3.8 -y
 conda activate open-mmlab
 conda install pytorch torchvision -c pytorch  # This command will automatically install the latest version PyTorch and cudatoolkit, please check whether they match your environment.
 pip install -U openmim
-mim install mmengine 'mmcv>=2.0.0rc1'
-mim install "mmdet>=3.0.0rc5"  # optional
-mim install "mmpose>=1.0.0rc0"  # optional
+mim install mmengine 'mmcv>=2.0.0'
+mim install "mmdet>=3.0.0"  # optional
+mim install "mmpose>=1.0.0"  # optional
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
 git checkout 1.x
@@ -135,7 +136,7 @@ pip3 install -e .
 
 ## 👀 Model Zoo [🔝](#-table-of-contents)
 
-Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html).
+Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo.html).
 
 <details close>
 
@@ -284,11 +285,11 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
 
 For tutorials, we provide the following user guides for basic usage:
 
-- [Migration from MMAction2 0.X](https://mmaction2.readthedocs.io/en/1.x/migration.html)
-- [Learn about Configs](https://mmaction2.readthedocs.io/en/1.x/user_guides/1_config.html#)
-- [Prepare Datasets](https://mmaction2.readthedocs.io/en/1.x/user_guides/2_data_prepare.html)
-- [Inference with Existing Models](https://mmaction2.readthedocs.io/en/1.x/user_guides/3_inference.html)
-- [Training and Testing](https://mmaction2.readthedocs.io/en/1.x/user_guides/4_train_test.html)
+- [Migration from MMAction2 0.X](https://mmaction2.readthedocs.io/en/latest/migration.html)
+- [Learn about Configs](https://mmaction2.readthedocs.io/en/latest/user_guides/1_config.html#)
+- [Prepare Datasets](https://mmaction2.readthedocs.io/en/latest/user_guides/2_data_prepare.html)
+- [Inference with Existing Models](https://mmaction2.readthedocs.io/en/latest/user_guides/3_inference.html)
+- [Training and Testing](https://mmaction2.readthedocs.io/en/latest/user_guides/4_train_test.html)
 
 <details close>
 <summary>Research works built on MMAction2 by users from community</summary>
