@@ -24,25 +24,14 @@ model = dict(
         mlp_factor=4.,
         drop_path_rate=0.,
         mlp_dropout=[0.5, 0.5, 0.5, 0.5],
-        clip_pretrained=False,
-        init_cfg=dict(
-            type='Pretrained',
-            checkpoint=  # noqa: E251
-            'https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb_20221219-77d34f81.pth',  # noqa: E501
-            prefix='backbone.')),
+        clip_pretrained=True,
+        pretrained='ViT-B/16'),
     cls_head=dict(
         type='UniFormerHead',
         dropout_ratio=0.5,
         num_classes=400,
         in_channels=768,
-        average_clips='prob',
-        channel_map=  # noqa: E251
-        'configs/recognition/uniformerv2/k710_channel_map/map_k400.json',
-        init_cfg=dict(
-            type='Pretrained',
-            checkpoint=  # noqa: E251
-            'https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb_20221219-77d34f81.pth',  # noqa: E501
-            prefix='cls_head.')),
+        average_clips='prob'),
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[114.75, 114.75, 114.75],
@@ -135,11 +124,11 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = dict(type='AccMetric')
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=5, val_begin=1, val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=55, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
-base_lr = 2e-6
+base_lr = 1e-5
 optim_wrapper = dict(
     optimizer=dict(
         type='AdamW', lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
@@ -149,18 +138,18 @@ optim_wrapper = dict(
 param_scheduler = [
     dict(
         type='LinearLR',
-        start_factor=0.5,
+        start_factor=0.1,
         by_epoch=True,
         begin=0,
-        end=1,
+        end=5,
         convert_to_iter_based=True),
     dict(
         type='CosineAnnealingLR',
-        T_max=4,
-        eta_min_ratio=0.5,
+        T_max=50,
+        eta_min_ratio=0.1,
         by_epoch=True,
-        begin=1,
-        end=5,
+        begin=5,
+        end=55,
         convert_to_iter_based=True)
 ]
 

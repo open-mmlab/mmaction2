@@ -548,23 +548,24 @@ class UniFormerV2(BaseModule):
             pretrained (str): Model name of pretrained CLIP visual encoder.
                 Defaults to None.
         """
-        if pretrained is not None:
-            model_path = _MODELS[pretrained]
-            logger.info(f'Load CLIP pretrained model from {model_path}')
-            state_dict = _load_checkpoint(model_path, map_location='cpu')
-            state_dict_3d = self.state_dict()
-            for k in state_dict.keys():
-                if k in state_dict_3d.keys(
-                ) and state_dict[k].shape != state_dict_3d[k].shape:
-                    if len(state_dict_3d[k].shape) <= 2:
-                        logger.info(f'Ignore: {k}')
-                        continue
-                    logger.info(f'Inflate: {k}, {state_dict[k].shape}' +
-                                f' => {state_dict_3d[k].shape}')
-                    time_dim = state_dict_3d[k].shape[2]
-                    state_dict[k] = self._inflate_weight(
-                        state_dict[k], time_dim)
-            self.load_state_dict(state_dict, strict=False)
+        assert pretrained is not None, \
+            'please specify clip pretraied checkpoint'
+
+        model_path = _MODELS[pretrained]
+        logger.info(f'Load CLIP pretrained model from {model_path}')
+        state_dict = _load_checkpoint(model_path, map_location='cpu')
+        state_dict_3d = self.state_dict()
+        for k in state_dict.keys():
+            if k in state_dict_3d.keys(
+            ) and state_dict[k].shape != state_dict_3d[k].shape:
+                if len(state_dict_3d[k].shape) <= 2:
+                    logger.info(f'Ignore: {k}')
+                    continue
+                logger.info(f'Inflate: {k}, {state_dict[k].shape}' +
+                            f' => {state_dict_3d[k].shape}')
+                time_dim = state_dict_3d[k].shape[2]
+                state_dict[k] = self._inflate_weight(state_dict[k], time_dim)
+        self.load_state_dict(state_dict, strict=False)
 
     def init_weights(self):
         """Initialize the weights in backbone."""
