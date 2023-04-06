@@ -188,6 +188,8 @@ pip3 install -e .
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/posec3d/README.md">PoseC3D</a> (CVPR'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcnpp/README.md">STGCN++</a> (ArXiv'2022)</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/projects/ctrgcn/README.md">CTRGCN</a> (CVPR'2021)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/projects/msg3d/README.md">MSG3D</a> (CVPR'2020)</td>
     <td></td>
