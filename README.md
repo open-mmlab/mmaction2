@@ -89,8 +89,8 @@ It is a part of the [OpenMMLab](http://openmmlab.com/) project.
   <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="380px">
   <img src="https://user-images.githubusercontent.com/35267818/230296333-fb18edd8-3aa4-4815-9a4c-b6e5e5b39bf6.png", width="120px">
   <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px">
-    <p style="font-size:1.5vw;">  &emsp;&emsp; Action Recognition Results on Kinetics-400 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Skeleton-based Action Recognition Results on NTU-RGB+D-120</p>
 </div>
+<p style="font-size:1.5vw;">  &emsp;&emsp; Action Recognition Results on Kinetics-400 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Skeleton-based Action Recognition Results on NTU-RGB+D-120</p>
 
 <div align="center">
   <img src="https://user-images.githubusercontent.com/30782254/155710881-bb26863e-fcb4-458e-b0c4-33cd79f96901.gif" width="580px"/><br>
