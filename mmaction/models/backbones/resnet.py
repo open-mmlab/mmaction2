@@ -497,7 +497,8 @@ class ResNet(nn.Module):
     def _load_torchvision_checkpoint(self,
                                      logger: mmengine.MMLogger = None) -> None:
         """Initiate the parameters from torchvision pretrained checkpoint."""
-        state_dict_torchvision = _load_checkpoint(self.pretrained)
+        state_dict_torchvision = _load_checkpoint(
+            self.pretrained, map_location='cpu')
         if 'state_dict' in state_dict_torchvision:
             state_dict_torchvision = state_dict_torchvision['state_dict']
 

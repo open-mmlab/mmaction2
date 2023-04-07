@@ -1,20 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 
-import torch
-
-try:
-    from fvcore.nn import (ActivationCountAnalysis, FlopCountAnalysis,
-                           flop_count_str, flop_count_table, parameter_count)
-except ImportError:
-    print('You may need to install fvcore for flops computation, '
-          'and you can use `pip install -r requirements/optional.txt` '
-          'to set up the environment')
-from fvcore.nn.print_model_statistics import _format_size
 from mmengine import Config
 from mmengine.registry import init_default_scope
 
 from mmaction.registry import MODELS
+
+try:
+    from mmengine.analysis import get_model_complexity_info
+except ImportError:
+    raise ImportError('Please upgrade mmcv to >0.6.2')
 
 
 def parse_args():
@@ -39,17 +34,17 @@ def main():
     elif len(args.shape) == 2:
         input_shape = (1, 3) + tuple(args.shape)
     elif len(args.shape) == 4:
-        # n, c, h, w = args.shape
+        # n, c, h, w = args.shape for 2D recognizer
         input_shape = tuple(args.shape)
     elif len(args.shape) == 5:
-        # n, c, t, h, w = args.shape
+        # n, c, t, h, w = args.shape for 3D recognizer or
+        # n, m, t, v, c = args.shape for GCN-based recognizer
         input_shape = tuple(args.shape)
     else:
         raise ValueError('invalid input shape')
 
     cfg = Config.fromfile(args.config)
     init_default_scope(cfg.get('default_scope', 'mmaction'))
-
     model = MODELS.build(cfg.model)
     model.eval()
 
@@ -60,28 +55,14 @@ def main():
             'FLOPs counter is currently not currently supported with {}'.
             format(model.__class__.__name__))
 
-    inputs = (torch.randn((1, *input_shape)), )
-    flops_ = FlopCountAnalysis(model, inputs)
-    activations_ = ActivationCountAnalysis(model, inputs)
-
-    flops = _format_size(flops_.total())
-    activations = _format_size(activations_.total())
-    params = _format_size(parameter_count(model)[''])
-
-    flop_table = flop_count_table(
-        flops=flops_,
-        activations=activations_,
-        show_param_shapes=True,
-    )
-    flop_str = flop_count_str(flops=flops_, activations=activations_)
-
-    print('\n' + flop_str)
-    print('\n' + flop_table)
-
+    analysis_results = get_model_complexity_info(model, input_shape)
+    flops = analysis_results['flops_str']
+    params = analysis_results['params_str']
+    table = analysis_results['out_table']
+    print(table)
     split_line = '=' * 30
-    print(f'{split_line}\nInput shape: {input_shape}\n'
-          f'Flops: {flops}\nParams: {params}\n'
-          f'Activation: {activations}\n{split_line}')
+    print(f'\n{split_line}\nInput shape: {input_shape}\n'
+          f'Flops: {flops}\nParams: {params}\n{split_line}')
     print('!!!Please be cautious if you use the results in papers. '
           'You may need to check if all ops are supported and verify that the '
           'flops computation is correct.')

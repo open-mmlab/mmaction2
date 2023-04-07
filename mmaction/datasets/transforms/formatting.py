@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, Sequence
+from typing import Dict, Optional, Sequence, Tuple
 
 import numpy as np
 import torch
@@ -38,9 +38,11 @@ class PackActionInputs(BaseTransform):
 
     def __init__(
         self,
+        collect_keys: Optional[Tuple[str]] = None,
         meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
                                     'timestamp')
     ) -> None:
+        self.collect_keys = collect_keys
         self.meta_keys = meta_keys
 
     def transform(self, results: Dict) -> Dict:
@@ -53,19 +55,27 @@ class PackActionInputs(BaseTransform):
             dict: The result dict.
         """
         packed_results = dict()
-        if 'imgs' in results:
-            imgs = results['imgs']
-            packed_results['inputs'] = to_tensor(imgs)
-        elif 'keypoint' in results:
-            keypoint = results['keypoint']
-            packed_results['inputs'] = to_tensor(keypoint)
-        elif 'audios' in results:
-            audios = results['audios']
-            packed_results['inputs'] = to_tensor(audios)
+        if self.collect_keys is not None:
+            packed_results['inputs'] = dict()
+            for key in self.collect_keys:
+                packed_results['inputs'][key] = to_tensor(results[key])
         else:
-            raise ValueError(
-                'Cannot get `imgs`, `keypoint` or `audios` in the input dict '
-                'of `PackActionInputs`.')
+            if 'imgs' in results:
+                imgs = results['imgs']
+                packed_results['inputs'] = to_tensor(imgs)
+            elif 'heatmap_imgs' in results:
+                heatmap_imgs = results['heatmap_imgs']
+                packed_results['inputs'] = to_tensor(heatmap_imgs)
+            elif 'keypoint' in results:
+                keypoint = results['keypoint']
+                packed_results['inputs'] = to_tensor(keypoint)
+            elif 'audios' in results:
+                audios = results['audios']
+                packed_results['inputs'] = to_tensor(audios)
+            else:
+                raise ValueError(
+                    'Cannot get `imgs`, `keypoint`, `heatmap_imgs` '
+                    'or `audios` in the input dict of `PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
@@ -91,7 +101,8 @@ class PackActionInputs(BaseTransform):
 
     def __repr__(self) -> str:
         repr_str = self.__class__.__name__
-        repr_str += f'(meta_keys={self.meta_keys})'
+        repr_str += f'(collect_keys={self.collect_keys}, '
+        repr_str += f'meta_keys={self.meta_keys})'
         return repr_str
 
 
@@ -178,16 +189,20 @@ class FormatShape(BaseTransform):
     """Format final imgs shape to the given input_format.
 
     Required keys:
-        - imgs
+        - imgs (optional)
+        - heatmap_imgs (optional)
         - num_clips
         - clip_len
 
     Modified Keys:
-        - img
-        - input_shape
+        - imgs (optional)
+        - input_shape (optional)
+
+    Added Keys:
+        - heatmap_input_shape (optional)
 
     Args:
-        input_format (str): Define the final imgs format.
+        input_format (str): Define the final data format.
         collapse (bool): To collapse input_format N... to ... (NCTHW to CTHW,
             etc.) if N is 1. Should be set as True when training and testing
             detectors. Defaults to False.
@@ -196,11 +211,13 @@ class FormatShape(BaseTransform):
     def __init__(self, input_format: str, collapse: bool = False) -> None:
         self.input_format = input_format
         self.collapse = collapse
-        if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
+        if self.input_format not in [
+                'NCTHW', 'NCHW', 'NCHW_Flow', 'NCTHW_Heatmap', 'NPTCHW'
+        ]:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
-    def transform(self, results: dict) -> dict:
+    def transform(self, results: Dict) -> Dict:
         """Performs the FormatShape formatting.
 
         Args:
@@ -209,26 +226,69 @@ class FormatShape(BaseTransform):
         """
         if not isinstance(results['imgs'], np.ndarray):
             results['imgs'] = np.array(results['imgs'])
-        imgs = results['imgs']
+
         # [M x H x W x C]
         # M = 1 * N_crops * N_clips * T
         if self.collapse:
             assert results['num_clips'] == 1
 
         if self.input_format == 'NCTHW':
+            if 'imgs' in results:
+                imgs = results['imgs']
+                num_clips = results['num_clips']
+                clip_len = results['clip_len']
+                if isinstance(clip_len, dict):
+                    clip_len = clip_len['RGB']
+
+                imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
+                # N_crops x N_clips x T x H x W x C
+                imgs = np.transpose(imgs, (0, 1, 5, 2, 3, 4))
+                # N_crops x N_clips x C x T x H x W
+                imgs = imgs.reshape((-1, ) + imgs.shape[2:])
+                # M' x C x T x H x W
+                # M' = N_crops x N_clips
+                results['imgs'] = imgs
+                results['input_shape'] = imgs.shape
+
+            if 'heatmap_imgs' in results:
+                imgs = results['heatmap_imgs']
+                num_clips = results['num_clips']
+                clip_len = results['clip_len']
+                # clip_len must be a dict
+                clip_len = clip_len['Pose']
+
+                imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
+                # N_crops x N_clips x T x C x H x W
+                imgs = np.transpose(imgs, (0, 1, 3, 2, 4, 5))
+                # N_crops x N_clips x C x T x H x W
+                imgs = imgs.reshape((-1, ) + imgs.shape[2:])
+                # M' x C x T x H x W
+                # M' = N_crops x N_clips
+                results['heatmap_imgs'] = imgs
+                results['heatmap_input_shape'] = imgs.shape
+
+        elif self.input_format == 'NCTHW_Heatmap':
             num_clips = results['num_clips']
             clip_len = results['clip_len']
+            imgs = results['imgs']
 
             imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
-            # N_crops x N_clips x T x H x W x C
-            imgs = np.transpose(imgs, (0, 1, 5, 2, 3, 4))
+            # N_crops x N_clips x T x C x H x W
+            imgs = np.transpose(imgs, (0, 1, 3, 2, 4, 5))
             # N_crops x N_clips x C x T x H x W
             imgs = imgs.reshape((-1, ) + imgs.shape[2:])
             # M' x C x T x H x W
             # M' = N_crops x N_clips
+            results['imgs'] = imgs
+            results['input_shape'] = imgs.shape
+
         elif self.input_format == 'NCHW':
+            imgs = results['imgs']
             imgs = np.transpose(imgs, (0, 3, 1, 2))
             # M x C x H x W
+            results['imgs'] = imgs
+            results['input_shape'] = imgs.shape
+
         elif self.input_format == 'NCHW_Flow':
             num_imgs = len(results['imgs'])
             assert num_imgs % 2 == 0
@@ -252,26 +312,31 @@ class FormatShape(BaseTransform):
             # M' x C' x H x W
             # M' = N_crops x N_clips
             # C' = T x C
+            results['imgs'] = imgs
+            results['input_shape'] = imgs.shape
+
         elif self.input_format == 'NPTCHW':
             num_proposals = results['num_proposals']
             num_clips = results['num_clips']
             clip_len = results['clip_len']
+            imgs = results['imgs']
             imgs = imgs.reshape((num_proposals, num_clips * clip_len) +
                                 imgs.shape[1:])
             # P x M x H x W x C
             # M = N_clips x T
             imgs = np.transpose(imgs, (0, 1, 4, 2, 3))
             # P x M x C x H x W
+            results['imgs'] = imgs
+            results['input_shape'] = imgs.shape
 
         if self.collapse:
-            assert imgs.shape[0] == 1
-            imgs = imgs.squeeze(0)
+            assert results['imgs'].shape[0] == 1
+            results['imgs'] = results['imgs'].squeeze(0)
+            results['input_shape'] = results['imgs'].shape
 
-        results['imgs'] = imgs
-        results['input_shape'] = imgs.shape
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = self.__class__.__name__
         repr_str += f"(input_format='{self.input_format}')"
         return repr_str

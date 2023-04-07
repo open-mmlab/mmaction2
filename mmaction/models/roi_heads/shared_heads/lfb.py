@@ -4,7 +4,6 @@ import os
 import os.path as osp
 import warnings
 
-import numpy as np
 import torch
 import torch.distributed as dist
 from mmengine.dist import get_dist_info
@@ -130,6 +129,13 @@ class LFB:
                 osp.join(self.lfb_prefix_path, f'lfb_{dataset_mode}.pkl'))
             print(f'Loading LFB from {lfb_path}...')
             self.lfb.update(torch.load(lfb_path, map_location=map_location))
+
+        for video_id in self.lfb:
+            video_features = self.lfb[video_id]
+            for sec in video_features:
+                if isinstance(video_features[sec], (list, tuple)):
+                    video_features[sec] = torch.stack(video_features[sec])
+            self.lfb[video_id] = video_features
         print(f'LFB has been loaded on {map_location}.')
 
     def load_lfb_on_lmdb(self):
@@ -162,22 +168,20 @@ class LFB:
         # Sample long term features.
         window_size, K = self.window_size, self.max_num_sampled_feat
         start = timestamp - (window_size // 2)
-        lt_feats = torch.zeros(window_size * K, self.lfb_channels)
+        lt_feats = torch.zeros(window_size, K, self.lfb_channels)
 
         for idx, sec in enumerate(range(start, start + window_size)):
             if sec in video_features:
                 # `num_feat` is the number of roi features in this second.
-                num_feat = len(video_features[sec])
-                num_feat_sampled = min(num_feat, K)
-                # Sample some roi features randomly.
-                random_lfb_indices = np.random.choice(
-                    range(num_feat), num_feat_sampled, replace=False)
+                feat = video_features[sec]
+                num_feat = feat.shape[0]
 
-                for k, rand_idx in enumerate(random_lfb_indices):
-                    lt_feats[idx * K + k] = video_features[sec][rand_idx]
+                # Sample some roi features randomly.
+                random_lfb_indices = torch.randperm(num_feat)[:K]
+                lt_feats[idx, :num_feat] = feat[random_lfb_indices]
 
         # [window_size * max_num_sampled_feat, lfb_channels]
-        return lt_feats
+        return lt_feats.reshape(-1, self.lfb_channels)
 
     def __getitem__(self, img_key):
         """Sample long term features like `lfb['0f39OWEqJ24,0902']` where `lfb`

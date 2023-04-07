@@ -16,7 +16,7 @@ You can switch between Chinese and English documents in the lower-left corner of
    user_guides/1_config.md
    user_guides/2_data_prepare.md
    user_guides/3_inference.md
-   user_guides/4_train_test.md
+   user_guides/train_test.md
 
 .. toctree::
    :maxdepth: 1

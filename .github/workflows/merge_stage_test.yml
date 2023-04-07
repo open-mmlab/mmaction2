@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build_cpu_py:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: [3.8, 3.9]
@@ -27,16 +27,15 @@ jobs:
           - torch: 1.8.1
             torchvision: 0.9.1
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
            python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: pip install pip --upgrade
       - name: Install Libraries
         run: |
-          sudo add-apt-repository ppa:savoury1/ffmpeg4
           sudo apt-get update
           sudo apt-get upgrade
           sudo apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libxrender-dev libturbojpeg pkg-config
@@ -50,13 +49,13 @@ jobs:
       - name: Install unittest dependencies
         run: pip install -r requirements.txt
       - name: Install PyTorch
-        run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/torch_stable.html
+        run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
       - name: Install MMEngine
         run: pip install git+https://github.com/open-mmlab/mmengine.git@main
       - name: Install MMCV
         run: |
           pip install -U openmim
-          mim install 'mmcv >= 2.0.0rc1'
+          mim install 'mmcv >= 2.0.0'
       - name: Install MMDet
         run: pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
       - name: Install MMCls
@@ -65,7 +64,7 @@ jobs:
         run: pip install pytorchvideo
         if: ${{matrix.torchvision == '0.10.0'}}
       - name: Install timm
-        run: python -m pip install timm
+        run: pip install timm
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
@@ -75,7 +74,7 @@ jobs:
           coverage report -m
 
   build_cpu_pt:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: [3.7]
@@ -96,9 +95,9 @@ jobs:
           - torch: 1.12.1
             torchvision: 0.13.1
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
            python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
@@ -110,21 +109,21 @@ jobs:
       - name: Install lmdb
         run: pip install lmdb
       - name: Install timm
-        run: python -m pip install timm==0.6.7
+        run: pip install timm==0.6.7
         if: ${{matrix.torch == '1.6.0'}}
       - name: Install timm
-        run: python -m pip install timm
+        run: pip install timm
         if: ${{matrix.torch != '1.6.0'}}
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install PyTorch
-        run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/torch_stable.html
+        run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
       - name: Install MMEngine
         run: pip install git+https://github.com/open-mmlab/mmengine.git@main
       - name: Install MMCV
         run: |
           pip install -U openmim
-          mim install 'mmcv >= 2.0.0rc1'
+          mim install 'mmcv >= 2.0.0'
       - name: Install MMDet
         run: pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
       - name: Install MMCls
@@ -153,7 +152,7 @@ jobs:
           fail_ci_if_error: false
 
   build_cu102:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     container:
       image: pytorch/pytorch:1.8.1-cuda10.2-cudnn7-devel
     strategy:
@@ -163,9 +162,9 @@ jobs:
           - torch: 1.8.1
             cuda: 10.2
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
@@ -181,36 +180,37 @@ jobs:
         run: |
           apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libturbojpeg libsndfile1 libsm6 libxrender-dev libxext6
       - name: Install librosa and soundfile
-        run: python -m pip install librosa soundfile
+        run: pip install librosa soundfile
       - name: Install lmdb
-        run: python -m pip install lmdb
+        run: pip install lmdb
       - name: Install mmaction dependencies
         run: |
           pip install git+https://github.com/open-mmlab/mmengine.git@main
           pip install -U openmim
-          mim install 'mmcv >= 2.0.0rc1'
+          mim install 'mmcv >= 2.0.0'
           pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
           pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
           pip install -r requirements.txt
       - name: Install PytorchVideo
-        run: python -m pip install pytorchvideo
+        run: pip install pytorchvideo
         if: ${{matrix.cuda == '10.2'}}
       - name: Build and install
         run: |
-          python setup.py check -m -s
-          TORCH_CUDA_ARCH_LIST=7.0 pip install -e .
+          pip install -e .
 
   build_windows:
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-2022
     strategy:
       matrix:
         os: [windows-2022]
         python: [3.7]
         platform: [cpu, cu111]
+        torch: [1.8.1]
+        torchvision: [0.9.1]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
       - name: Upgrade pip
@@ -220,12 +220,12 @@ jobs:
       - name: Install lmdb
         run: pip install lmdb
       - name: Install PyTorch
-        run: pip install torch==1.8.1+${{matrix.platform}} torchvision==0.9.1+${{matrix.platform}} -f https://download.pytorch.org/whl/lts/1.8/torch_lts.html
+        run: pip install torch==${{matrix.torch}}+${{matrix.platform}} torchvision==${{matrix.torchvision}}+${{matrix.platform}} -f https://download.pytorch.org/whl/${{matrix.platform}}/torch_stable.html
       - name: Install mmaction dependencies
         run: |
           pip install git+https://github.com/open-mmlab/mmengine.git@main
           pip install -U openmim
-          mim install 'mmcv >= 2.0.0rc1'
+          mim install 'mmcv >= 2.0.0'
           pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
           pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
           pip install -r requirements.txt

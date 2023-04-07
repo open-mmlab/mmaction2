@@ -42,7 +42,7 @@ python3 tools/train.py configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activi
 After training use the TEM module to generate the probabilities sequence (actionness, starting, and ending) for the training and validation dataset:
 
 ```shell
-python tools/test.py configs/localization/bsn/bsn_tem_400x100_1xb16_20e_activitynet_feature.py \
+python tools/test.py configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py \
     work_dirs/bsn_400x100_20e_1xb16_activitynet_feature/tem_epoch_20.pth
 ```
 

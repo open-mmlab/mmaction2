@@ -13,10 +13,11 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.transforms import (GeneratePoseTarget, GenSkeFeat,
                                           JointToBone, LoadKineticsPose,
-                                          MergeSkeFeat, PadTo, PoseCompact,
-                                          PoseDecode, PreNormalize2D,
-                                          PreNormalize3D, ToMotion,
-                                          UniformSampleFrames)
+                                          MergeSkeFeat, MMCompact, MMDecode,
+                                          MMUniformSampleFrames, PadTo,
+                                          PoseCompact, PoseDecode,
+                                          PreNormalize2D, PreNormalize3D,
+                                          ToMotion, UniformSampleFrames)
 
 
 class TestPoseTransforms:
@@ -126,23 +127,29 @@ class TestPoseTransforms:
             modality='Pose')
 
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
+            sigma=1,
+            with_kp=True,
+            left_kp=(1, ),
+            right_kp=(2, ),
+            left_limb=(0, ),
+            right_limb=(1, ),
+            skeletons=())
         assert str(generate_pose_target) == ('GeneratePoseTarget(sigma=1, '
                                              'use_score=True, with_kp=True, '
                                              'with_limb=False, skeletons=(), '
-                                             'double=False, left_kp=(0,), '
-                                             'right_kp=(1,))')
-        return_results = generate_pose_target(results)
-        assert return_results['imgs'].shape == (8, 64, 64, 3)
+                                             'double=False, left_kp=(1,), '
+                                             'right_kp=(2,), left_limb=(0,), '
+                                             'right_limb=(1,), scaling=1.0)')
+        return_results = generate_pose_target(copy.deepcopy(results))
+        assert return_results['imgs'].shape == (8, 3, 64, 64)
         assert_array_almost_equal(return_results['imgs'][0],
                                   return_results['imgs'][1])
 
         results = dict(img_shape=img_shape, keypoint=kp, modality='Pose')
 
-        generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
-        return_results = generate_pose_target(results)
-        assert return_results['imgs'].shape == (8, 64, 64, 3)
+        generate_pose_target = GeneratePoseTarget(sigma=1, with_kp=True)
+        return_results = generate_pose_target(copy.deepcopy(results))
+        assert return_results['imgs'].shape == (8, 3, 64, 64)
         assert_array_almost_equal(return_results['imgs'][0],
                                   return_results['imgs'][1])
 
@@ -150,37 +157,23 @@ class TestPoseTransforms:
             sigma=1,
             with_kp=False,
             with_limb=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
             skeletons=((0, 1), (1, 2), (0, 2)))
-        return_results = generate_pose_target(results)
-        assert return_results['imgs'].shape == (8, 64, 64, 3)
+        return_results = generate_pose_target(copy.deepcopy(results))
+        assert return_results['imgs'].shape == (8, 3, 64, 64)
         assert_array_almost_equal(return_results['imgs'][0],
                                   return_results['imgs'][1])
 
         generate_pose_target = GeneratePoseTarget(
             sigma=1,
-            with_kp=True,
-            with_limb=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
-            skeletons=((0, 1), (1, 2), (0, 2)))
-        return_results = generate_pose_target(results)
-        assert return_results['imgs'].shape == (8, 64, 64, 6)
-        assert_array_almost_equal(return_results['imgs'][0],
-                                  return_results['imgs'][1])
-
-        generate_pose_target = GeneratePoseTarget(
-            sigma=1,
-            with_kp=True,
+            with_kp=False,
             with_limb=True,
             double=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
+            left_limb=(0, ),
+            right_limb=(1, ),
             skeletons=((0, 1), (1, 2), (0, 2)))
-        return_results = generate_pose_target(results)
+        return_results = generate_pose_target(copy.deepcopy(results))
         imgs = return_results['imgs']
-        assert imgs.shape == (16, 64, 64, 6)
+        assert imgs.shape == (16, 3, 64, 64)
         assert_array_almost_equal(imgs[0], imgs[1])
         assert_array_almost_equal(imgs[:8, 2], imgs[8:, 2, :, ::-1])
         assert_array_almost_equal(imgs[:8, 0], imgs[8:, 1, :, ::-1])
@@ -197,8 +190,8 @@ class TestPoseTransforms:
             keypoint_score=kpscore,
             modality='Pose')
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
-        return_results = generate_pose_target(results)
+            sigma=1, with_kp=True, skeletons=())
+        return_results = generate_pose_target(copy.deepcopy(results))
         assert_array_almost_equal(return_results['imgs'], 0)
 
         img_shape = (64, 64)
@@ -215,10 +208,8 @@ class TestPoseTransforms:
             sigma=1,
             with_kp=False,
             with_limb=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
             skeletons=((0, 1), (1, 2), (0, 2)))
-        return_results = generate_pose_target(results)
+        return_results = generate_pose_target(copy.deepcopy(results))
         assert_array_almost_equal(return_results['imgs'], 0)
 
         img_shape = (64, 64)
@@ -231,13 +222,12 @@ class TestPoseTransforms:
             keypoint=kp,
             keypoint_score=kpscore,
             modality='Pose')
-        generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
-        return_results = generate_pose_target(results)
+        generate_pose_target = GeneratePoseTarget(sigma=1, with_kp=True)
+        return_results = generate_pose_target(copy.deepcopy(results))
         assert_array_almost_equal(return_results['imgs'], 0)
 
         img_shape = (64, 64)
-        kp = np.array([[[[124, 124], [140, 140], [124, 140]]]])
+        kp = np.array([[[[124., 124.], [140., 140.], [124., 140.]]]])
         kpscore = np.array([[[0., 0., 0.]]])
         kp = np.concatenate([kp] * 8, axis=1)
         kpscore = np.concatenate([kpscore] * 8, axis=1)
@@ -250,8 +240,6 @@ class TestPoseTransforms:
             sigma=1,
             with_kp=False,
             with_limb=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
@@ -587,3 +575,143 @@ class TestPoseTransforms:
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['keypoint'], kp)
         assert_array_almost_equal(decode_results['keypoint_score'], kpscore)
+
+    @staticmethod
+    def test_mm_uniform_sample_frames():
+        results = dict(total_frames=64, modality='Pose')
+        sampling = MMUniformSampleFrames(
+            clip_len=dict(RGB=8, Pose=32), num_clips=1, test_mode=True, seed=0)
+        assert repr(sampling) == ('MMUniformSampleFrames('
+                                  "clip_len={'RGB': 8, 'Pose': 32}, "
+                                  'num_clips=1, test_mode=True, seed=0)')
+
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == dict(RGB=8, Pose=32)
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert sampling_results['modality'] == ['RGB', 'Pose']
+        assert_array_equal(sampling_results['RGB_inds'],
+                           np.array([4, 15, 21, 24, 35, 43, 51, 63]))
+        assert_array_equal(
+            sampling_results['Pose_inds'],
+            np.array([
+                0, 3, 5, 6, 9, 11, 13, 15, 17, 19, 21, 22, 24, 27, 28, 30, 32,
+                34, 36, 39, 40, 43, 45, 46, 48, 51, 53, 55, 57, 58, 61, 62
+            ]))
+
+        results = dict(total_frames=64, modality='Pose')
+        sampling = MMUniformSampleFrames(
+            clip_len=dict(RGB=8, Pose=32),
+            num_clips=10,
+            test_mode=True,
+            seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == dict(RGB=8, Pose=32)
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 10
+        assert sampling_results['modality'] == ['RGB', 'Pose']
+        assert len(sampling_results['RGB_inds']) == 80
+        assert len(sampling_results['Pose_inds']) == 320
+
+        results = dict(total_frames=64, modality='Pose')
+        sampling = MMUniformSampleFrames(
+            clip_len=dict(RGB=8, Pose=32), num_clips=1, test_mode=False)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == dict(RGB=8, Pose=32)
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert len(sampling_results['RGB_inds']) == 8
+        assert len(sampling_results['Pose_inds']) == 32
+
+    @staticmethod
+    def test_mm_decode():
+        mm_decode = MMDecode()
+
+        # Pose only test
+        pose_raw_results = dict(
+            modality=['Pose'],
+            Pose_inds=np.array([2, 4, 6, 8, 10]),
+            keypoint=np.random.random([1, 16, 17, 2]),
+            img_shape=(1080, 1920))
+        rgb_raw_results = dict(
+            modality=['RGB'],
+            RGB_inds=np.array([2, 4, 6, 8, 10]),
+            frame_dir=osp.join(osp.dirname(__file__), '../../data/test'))
+
+        # test pose w/o `keypoint_score`
+        mm_decode(copy.deepcopy(pose_raw_results))
+
+        # test pose with `keypoint_score`
+        pose_raw_results['keypoint_score'] = np.random.random([1, 16, 17])
+        pose_results = mm_decode(copy.deepcopy(pose_raw_results))
+
+        # test rgb
+        rgb_results = mm_decode(copy.deepcopy(rgb_raw_results))
+
+        # test pose and rgb
+        pose_rgb_raw_results = {
+            **rgb_raw_results,
+            **pose_raw_results, 'modality': ['RGB', 'Pose']
+        }
+        pose_rgb_results = mm_decode(copy.deepcopy(pose_rgb_raw_results))
+
+        assert_array_equal(pose_rgb_results['keypoint_score'],
+                           pose_results['keypoint_score'])
+        scaled_keypoint = copy.deepcopy(pose_results['keypoint'])
+        oh, ow = pose_results['img_shape']
+        nh, nw = pose_rgb_results['img_shape']
+        scaled_keypoint[..., 0] *= (nw / ow)
+        scaled_keypoint[..., 1] *= (nh / oh)
+        assert_array_equal(pose_rgb_results['keypoint'], scaled_keypoint)
+        assert_array_equal(pose_rgb_results['imgs'], rgb_results['imgs'])
+        assert assert_dict_has_keys(
+            pose_rgb_results, ['filename', 'img_shape', 'original_shape'])
+        assert repr(mm_decode) == 'MMDecode(io_backend=disk)'
+
+    @staticmethod
+    def test_mm_compact():
+        results = {}
+        results['img_shape'] = (100, 100)
+        fake_kp = np.zeros([1, 4, 2, 2])
+        fake_kp[:, :, 0] = [10, 10]
+        fake_kp[:, :, 1] = [90, 90]
+        results['keypoint'] = fake_kp
+        results['imgs'] = list(np.zeros([3, 100, 100, 3]))
+
+        pose_compact = MMCompact(
+            padding=0, threshold=0, hw_ratio=1, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 80)
+        assert ret['imgs'][0].shape[:-1] == (80, 80)
+        assert str(pose_compact) == (
+            'MMCompact(padding=0, threshold=0, hw_ratio=(1, 1), '
+            'allow_imgpad=False)')
+
+        pose_compact = MMCompact(
+            padding=0.3, threshold=0, hw_ratio=1, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+        assert ret['imgs'][0].shape[:-1] == (100, 100)
+
+        pose_compact = MMCompact(
+            padding=0.3, threshold=0, hw_ratio=1, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (104, 104)
+        assert ret['imgs'][0].shape[:-1] == (104, 104)
+
+        pose_compact = MMCompact(
+            padding=0, threshold=100, hw_ratio=1, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+        assert ret['imgs'][0].shape[:-1] == (100, 100)
+
+        pose_compact = MMCompact(
+            padding=0, threshold=0, hw_ratio=0.75, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 106)
+        assert ret['imgs'][0].shape[:-1] == (80, 106)

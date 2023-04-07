@@ -28,6 +28,7 @@ def test_uniformerv2_backbone():
         n_head=12,
         mlp_factor=4.,
         drop_path_rate=0.,
+        clip_pretrained=False,
         mlp_dropout=[0.5, 0.5, 0.5, 0.5])
     model.init_weights()
 
@@ -56,6 +57,7 @@ def test_uniformerv2_backbone():
         n_head=12,
         mlp_factor=4.,
         drop_path_rate=0.,
+        clip_pretrained=False,
         mlp_dropout=[0.5, 0.5, 0.5, 0.5])
     model.init_weights()
 

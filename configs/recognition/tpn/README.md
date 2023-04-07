@@ -29,7 +29,7 @@ Visual tempo characterizes the dynamics and the temporal scale of an action. Mod
 
 | frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | reference top1 acc | reference top5 acc | testing protocol | inference time(video/s) | gpu_mem(M) |      config       |      ckpt       |      log       |
 | :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :----------------: | :----------------: | :--------------: | :---------------------: | :--------: | :---------------: | :-------------: | :------------: |
-|          1x1x8          | height 100 | 8x6  | ResNet50 |   TSM    |  48.98   |  78.91   |         x          |         x          | 8 clips x 3 crop |            x            |    8828    | [config](/configs/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb_20220913-d2f5c300.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.log) |
+|          1x1x8          | height 100 | 8x6  | ResNet50 |   TSM    |  51.87   |  79.67   |         x          |         x          | 8 clips x 3 crop |            x            |    8828    | [config](/configs/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb_20230221-940a3615.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.log) |
 
 :::{note}
 
@@ -58,7 +58,7 @@ python tools/train.py configs/recognition/tpn/tpn-slowonly_r50_8xb8-8x8x1-150e_k
     --work-dir work_dirs/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb [--validate --seed 0 --deterministic]
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -75,7 +75,7 @@ python tools/test.py configs/recognition/tpn/tpn-slowonly_r50_8xb8-8x8x1-150e_ki
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 

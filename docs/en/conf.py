@@ -17,7 +17,7 @@ import sys
 
 import pytorch_sphinx_theme
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
@@ -124,6 +124,7 @@ html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
 
 myst_enable_extensions = ['colon_fence']
+myst_heading_anchors = 3
 
 
 def builder_inited_handler(app):

@@ -2,7 +2,7 @@
 
 We provide a step-by-step tutorial on how to train your custom dataset with PoseC3D.
 
-1. First, you should know that action recognition with PoseC3D requires skeleton information only and for that you need to prepare your custom annotation files (for training and validation). To start with, you need to replace the placeholder `mmdet_root` and `mmpose_root` in `ntu_pose_extraction.py` with your installation path. Then you need to take advantage of [ntu_pose_extraction.py](https://github.com/open-mmlab/mmaction2/blob/90fc8440961987b7fe3ee99109e2c633c4e30158/tools/data/skeleton/ntu_pose_extraction.py) as shown in [Prepare Annotations](https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md#prepare-annotations) to extract 2D keypoints for each video in your custom dataset. The command looks like (assuming the name of your video is `some_video_from_my_dataset.mp4`):
+1. First, you should know that action recognition with PoseC3D requires skeleton information only and for that you need to prepare your custom annotation files (for training and validation). To start with, you need to install MMDetection and MMPose. Then you need to take advantage of [ntu_pose_extraction.py](https://github.com/open-mmlab/mmaction2/blob/90fc8440961987b7fe3ee99109e2c633c4e30158/tools/data/skeleton/ntu_pose_extraction.py) as shown in [Prepare Annotations](https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md#prepare-annotations) to extract 2D keypoints for each video in your custom dataset. The command looks like (assuming the name of your video is `some_video_from_my_dataset.mp4`):
 
    ```shell
    # You can use the above command to generate pickle files for all of your training and validation videos.

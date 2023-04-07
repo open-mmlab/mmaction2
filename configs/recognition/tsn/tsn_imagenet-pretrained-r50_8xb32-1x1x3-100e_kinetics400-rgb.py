@@ -58,7 +58,7 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=32,
+    batch_size=4,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -99,4 +99,15 @@ default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 #   - `enable` means enable scaling LR automatically
 #       or not by default.
 #   - `base_batch_size` = (8 GPUs) x (32 samples per GPU).
-auto_scale_lr = dict(enable=False, base_batch_size=256)
+auto_scale_lr = dict(enable=True, base_batch_size=256)
+
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=10, val_interval=3)
+param_scheduler = [
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=10,
+        by_epoch=True,
+        milestones=[4, 8],
+        gamma=0.1)
+]

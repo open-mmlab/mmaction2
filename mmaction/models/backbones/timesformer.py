@@ -235,7 +235,7 @@ class TimeSformer(nn.Module):
             logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
-            state_dict = _load_checkpoint(self.pretrained)
+            state_dict = _load_checkpoint(self.pretrained, map_location='cpu')
             if 'state_dict' in state_dict:
                 state_dict = state_dict['state_dict']
 

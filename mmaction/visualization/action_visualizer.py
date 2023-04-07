@@ -268,7 +268,10 @@ class ActionVisualizer(Visualizer):
                     wait_time = frame_wait_time
                 else:
                     wait_time = wait_time
-                self.show(drawn_img, win_name=frame_name, wait_time=wait_time)
+                self.show(
+                    drawn_img[:, :, ::-1],
+                    win_name=frame_name,
+                    wait_time=wait_time)
 
         resulted_video = np.array(resulted_video)
         if out_path is not None:

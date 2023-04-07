@@ -1,11 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
-from typing import Union
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch import Tensor
 from torch.distributions.beta import Beta
 
 from mmaction.registry import MODELS
@@ -25,38 +24,39 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         self.num_classes = num_classes
 
     @abstractmethod
-    def do_blending(self, imgs: Tensor, label: Tensor, **kwargs) -> tuple:
+    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor,
+                    **kwargs) -> Tuple:
         """Blending images process."""
         raise NotImplementedError
 
-    def __call__(self, imgs: Tensor, batch_data_samples: SampleList,
-                 **kwargs) -> tuple:
+    def __call__(self, imgs: torch.Tensor, batch_data_samples: SampleList,
+                 **kwargs) -> Tuple:
         """Blending data in a mini-batch.
 
         Images are float tensors with the shape of (B, N, C, H, W) for 2D
         recognizers or (B, N, C, T, H, W) for 3D recognizers.
 
         Besides, labels are converted from hard labels to soft labels.
-        Hard labels are integer tensors with the shape of (B, 1) and all of the
+        Hard labels are integer tensors with the shape of (B, ) and all of the
         elements are in the range [0, num_classes - 1].
-        Soft labels (probablity distribution over classes) are float tensors
-        with the shape of (B, 1, num_classes) and all of the elements are in
+        Soft labels (probability distribution over classes) are float tensors
+        with the shape of (B, num_classes) and all of the elements are in
         the range [0, 1].
 
         Args:
-            imgs (Tensor): Model input images, float tensor with the
+            imgs (torch.Tensor): Model input images, float tensor with the
                 shape of (B, N, C, H, W) or (B, N, C, T, H, W).
             batch_data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples. It usually includes information such
                 as `gt_labels`.
 
         Returns:
-            mixed_imgs (Tensor): Blending images, float tensor with the
+            mixed_imgs (torch.Tensor): Blending images, float tensor with the
                 same shape of the input imgs.
             batch_data_samples (List[:obj:`ActionDataSample`]): The modified
                 batch data samples. ``gt_labels`` in each data sample are
                 converted from a hard label to a blended soft label, float
-                tensor with the shape of (1, num_classes) and all elements are
+                tensor with the shape of (num_classes, ) and all elements are
                 in range [0, 1].
         """
         label = [x.gt_labels.item for x in batch_data_samples]
@@ -90,13 +90,14 @@ class MixupBlending(BaseMiniBatchBlending):
         super().__init__(num_classes=num_classes)
         self.beta = Beta(alpha, alpha)
 
-    def do_blending(self, imgs: Tensor, label: Tensor, **kwargs) -> tuple:
+    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor,
+                    **kwargs) -> Tuple:
         """Blending images with mixup.
 
         Args:
-            imgs (Tensor): Model input images, float tensor with the
+            imgs (torch.Tensor): Model input images, float tensor with the
                 shape of (B, N, C, H, W) or (B, N, C, T, H, W).
-            label (Tensor): One hot labels, integer tensor with the shape
+            label (torch.Tensor): One hot labels, integer tensor with the shape
                 of (B, num_classes).
 
         Returns:
@@ -132,7 +133,7 @@ class CutmixBlending(BaseMiniBatchBlending):
         self.beta = Beta(alpha, alpha)
 
     @staticmethod
-    def rand_bbox(img_size: torch.Size, lam: Tensor) -> tuple:
+    def rand_bbox(img_size: torch.Size, lam: torch.Tensor) -> Tuple:
         """Generate a random boudning box."""
         w = img_size[-1]
         h = img_size[-2]
@@ -151,13 +152,14 @@ class CutmixBlending(BaseMiniBatchBlending):
 
         return bbx1, bby1, bbx2, bby2
 
-    def do_blending(self, imgs: Tensor, label: Tensor, **kwargs) -> tuple:
+    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor,
+                    **kwargs) -> Tuple:
         """Blending images with cutmix.
 
         Args:
-            imgs (Tensor): Model input images, float tensor with the
+            imgs (torch.Tensor): Model input images, float tensor with the
                 shape of (B, N, C, H, W) or (B, N, C, T, H, W).
-            label (Tensor): One hot labels, integer tensor with the shape
+            label (torch.Tensor): One hot labels, integer tensor with the shape
                 of (B, num_classes).
 
         Returns:
@@ -209,7 +211,9 @@ class RandomBatchAugment(BaseMiniBatchBlending):
         and to do nothing is 0.2.
     """
 
-    def __init__(self, augments: Union[dict, list], probs=None):
+    def __init__(self,
+                 augments: Union[dict, list],
+                 probs: Optional[Union[float, List[float]]] = None) -> None:
         if not isinstance(augments, (tuple, list)):
             augments = [augments]
 
@@ -235,7 +239,8 @@ class RandomBatchAugment(BaseMiniBatchBlending):
 
         self.probs = probs
 
-    def do_blending(self, imgs: Tensor, label: Tensor, **kwargs) -> tuple:
+    def do_blending(self, imgs: torch.Tensor, label: torch.Tensor,
+                    **kwargs) -> Tuple:
         """Randomly apply batch augmentations to the batch inputs and batch
         data samples."""
         aug_index = np.random.choice(len(self.augments), p=self.probs)

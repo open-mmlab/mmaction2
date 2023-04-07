@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y git ninja-build libglib2.0-0 libsm6 lib
 
 # Install MMCV
 RUN pip install openmim
-RUN mim install mmengine "mmcv>=2.0rc1"
+RUN mim install mmengine "mmcv>=2.0.0"
 
 # Install MMAction2
 RUN conda clean --all

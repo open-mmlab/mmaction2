@@ -23,13 +23,10 @@ model = dict(
         num_classes=99,
         spatial_type='avg',
         dropout_ratio=0.5,
-        average_clips='prob'),
-    train_cfg=None,
-    test_cfg=None)
+        average_clips='prob'))
 
 dataset_type = 'PoseDataset'
-ann_file_train = 'data/posec3d/gym_train.pkl'
-ann_file_val = 'data/posec3d/gym_val.pkl'
+ann_file = 'data/skeleton/gym_2d.pkl'
 left_kp = [1, 3, 5, 7, 9, 11, 13, 15]
 right_kp = [2, 4, 6, 8, 10, 12, 14, 16]
 train_pipeline = [
@@ -46,7 +43,7 @@ train_pipeline = [
         use_score=True,
         with_kp=True,
         with_limb=False),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCTHW_Heatmap'),
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
@@ -61,7 +58,7 @@ val_pipeline = [
         use_score=True,
         with_kp=True,
         with_limb=False),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCTHW_Heatmap'),
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
@@ -80,7 +77,7 @@ test_pipeline = [
         double=True,
         left_kp=left_kp,
         right_kp=right_kp),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCTHW_Heatmap'),
     dict(type='PackActionInputs')
 ]
 
@@ -90,7 +87,13 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_train, pipeline=train_pipeline))
+        type='RepeatDataset',
+        times=10,
+        dataset=dict(
+            type=dataset_type,
+            ann_file=ann_file,
+            split='train',
+            pipeline=train_pipeline)))
 val_dataloader = dict(
     batch_size=16,
     num_workers=8,
@@ -98,7 +101,8 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
-        ann_file=ann_file_val,
+        ann_file=ann_file,
+        split='val',
         pipeline=val_pipeline,
         test_mode=True))
 test_dataloader = dict(
@@ -108,7 +112,8 @@ test_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
-        ann_file=ann_file_val,
+        ann_file=ann_file,
+        split='val',
         pipeline=test_pipeline,
         test_mode=True))
 
@@ -116,7 +121,7 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=240, val_begin=1, val_interval=10)
+    type='EpochBasedTrainLoop', max_epochs=24, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -124,7 +129,7 @@ param_scheduler = [
     dict(
         type='CosineAnnealingLR',
         eta_min=0,
-        T_max=240,
+        T_max=24,
         by_epoch=True,
         convert_to_iter_based=True)
 ]
@@ -132,5 +137,3 @@ param_scheduler = [
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.0003),
     clip_grad=dict(max_norm=40, norm_type=2))
-
-default_hooks = dict(checkpoint=dict(interval=10, max_keep_ckpts=3))

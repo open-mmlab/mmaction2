@@ -28,7 +28,7 @@ model = dict(
     test_cfg=None)
 
 dataset_type = 'PoseDataset'
-ann_file = 'data/posec3d/hmdb51.pkl'
+ann_file = 'data/skeleton/hmdb51_2d.pkl'
 left_kp = [1, 3, 5, 7, 9, 11, 13, 15]
 right_kp = [2, 4, 6, 8, 10, 12, 14, 16]
 train_pipeline = [
@@ -45,7 +45,7 @@ train_pipeline = [
         use_score=True,
         with_kp=True,
         with_limb=False),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCTHW_Heatmap'),
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
@@ -60,7 +60,7 @@ val_pipeline = [
         use_score=True,
         with_kp=True,
         with_limb=False),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCTHW_Heatmap'),
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
@@ -79,7 +79,7 @@ test_pipeline = [
         double=True,
         left_kp=left_kp,
         right_kp=right_kp),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCTHW_Heatmap'),
     dict(type='PackActionInputs')
 ]
 

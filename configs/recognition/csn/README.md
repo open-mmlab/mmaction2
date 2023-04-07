@@ -52,7 +52,7 @@ python tools/train.py configs/recognition/csn/ircsn_ig65m-pretrained-r152_8xb12-
     --seed=0 --deterministic
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -69,7 +69,7 @@ python tools/test.py configs/recognition/csn/ircsn_ig65m-pretrained-r152_8xb12-3
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 

@@ -11,7 +11,8 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       PyAVInit, RawFrameDecode, SampleAVAFrames, SampleFrames,
                       UniformSample, UntrimmedSampleFrames)
 from .pose_transforms import (GeneratePoseTarget, GenSkeFeat, JointToBone,
-                              LoadKineticsPose, MergeSkeFeat, PadTo,
+                              LoadKineticsPose, MergeSkeFeat, MMCompact,
+                              MMDecode, MMUniformSampleFrames, PadTo,
                               PoseCompact, PoseDecode, PreNormalize2D,
                               PreNormalize3D, ToMotion, UniformSampleFrames)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
@@ -36,5 +37,6 @@ __all__ = [
     'RandomCrop', 'RandomRescale', 'RandomResizedCrop', 'RawFrameDecode',
     'Resize', 'SampleAVAFrames', 'SampleFrames', 'TenCrop', 'ThreeCrop',
     'ToMotion', 'TorchVisionWrapper', 'Transpose', 'UniformSample',
-    'UniformSampleFrames', 'UntrimmedSampleFrames'
+    'UniformSampleFrames', 'UntrimmedSampleFrames', 'MMUniformSampleFrames',
+    'MMDecode', 'MMCompact'
 ]

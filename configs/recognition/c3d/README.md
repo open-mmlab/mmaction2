@@ -44,7 +44,7 @@ python tools/train.py configs/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1
     --seed=0 --deterministic
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -61,7 +61,7 @@ python tools/test.py configs/recognition/c3d_sports1m-pretrained_8xb30-16x1x1-45
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 

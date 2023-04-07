@@ -89,3 +89,5 @@ test_evaluator = dict(
     metric_type='TEM',
     dump_config=dict(out=tem_results_dir, output_format='csv'))
 val_evaluator = test_evaluator
+
+default_hooks = dict(checkpoint=dict(filename_tmpl='tem_epoch_{}.pth'))

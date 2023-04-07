@@ -46,7 +46,7 @@ conda install pytorch torchvision cpuonly -c pytorch
 
 ```shell
 pip install -U openmim
-mim install mmengine 'mmcv>=2.0.0rc1'
+mim install mmengine 'mmcv>=2.0.0'
 ```
 
 **第二步** 安装 MMAction2。
@@ -80,7 +80,7 @@ git checkout dev-1.x
 直接使用 pip 安装即可。
 
 ```shell
-pip install "mmaction2>=1.0rc0"
+pip install "mmaction2>=1.0.0"
 ```
 
 ## 验证安装
@@ -158,7 +158,7 @@ MMCV 包含 C++ 和 CUDA 扩展，因此其对 PyTorch 的依赖比较复杂。 
 例如，以下命令安装为 PyTorch 1.10.x 和 CUDA 11.3 构建的 mmcv。
 
 ```shell
-pip install 'mmcv>=2.0.0rc1' -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
+pip install 'mmcv>=2.0.0' -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
 ```
 
 ### 在 CPU 环境中安装

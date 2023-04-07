@@ -155,9 +155,9 @@ def main():
         args.output_file,
         input_names=['input_tensor', 'rois'],
         output_names=['cls_score'],
-        export_params=False,
+        export_params=True,
         do_constant_folding=True,
-        verbose=True,
+        verbose=False,
         opset_version=11,
         dynamic_axes={
             'input_tensor': {

@@ -6,7 +6,7 @@ import os.path as osp
 import sys
 from multiprocessing import Pool
 
-import mmcv
+import mmengine
 import numpy as np
 from scipy.io import wavfile
 
@@ -295,7 +295,7 @@ if __name__ == '__main__':
     parser.add_argument('--part', type=str, default='1/1')
     args = parser.parse_args()
 
-    mmcv.mkdir_or_exist(args.spectrogram_save_path)
+    mmengine.mkdir_or_exist(args.spectrogram_save_path)
 
     files = glob.glob(
         osp.join(args.audio_home_path, '*/' * args.level, '*' + args.ext))

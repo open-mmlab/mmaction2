@@ -10,7 +10,7 @@ def test_slowonly_backbone():
     """Test SlowOnly backbone."""
     with pytest.raises(AssertionError):
         # SlowOnly should contain no lateral connection
-        ResNet3dSlowOnly(50, None, lateral=True)
+        ResNet3dSlowOnly(depth=50, pretrained=None, lateral=True)
 
     # test SlowOnly for PoseC3D
     so_50 = ResNet3dSlowOnly(
@@ -31,7 +31,7 @@ def test_slowonly_backbone():
     so_50.train()
 
     # test SlowOnly with normal config
-    so_50 = ResNet3dSlowOnly(50, None)
+    so_50 = ResNet3dSlowOnly(depth=50, pretrained=None)
     so_50.init_weights()
     so_50.train()
 

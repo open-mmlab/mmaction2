@@ -1,11 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
 import os.path as osp
+import platform
 import time
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import decord
+import pytest
 import torch
 from mmengine.structures import LabelData
 
@@ -16,6 +18,7 @@ from mmaction.visualization import ActionVisualizer
 register_all_modules()
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_local_visbackend():
     video = decord.VideoReader('./demo/demo.mp4')
     video = video.get_batch(range(32)).asnumpy()
@@ -37,6 +40,7 @@ def test_local_visbackend():
     return
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_tensorboard_visbackend():
     video = decord.VideoReader('./demo/demo.mp4')
     video = video.get_batch(range(32)).asnumpy()

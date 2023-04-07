@@ -4,10 +4,10 @@ MMAction2 1.x introduced major refactorings and modifications including some BC-
 
 ## New dependencies
 
-MMAction2 1.x depends on the following packages. You are recommended to prepare a new clean environment and install them according to [install tutorial](./get_started.md)
+MMAction2 1.x depends on the following packages. You are recommended to prepare a new clean environment and install them according to [install tutorial](./get_started/installation.md)
 
 1. [MMEngine](https://github.com/open-mmlab/mmengine): MMEngine is a foundational library for training deep learning model introduced in OpenMMLab 2.0 architecture.
-2. [MMCV](https://github.com/open-mmlab/mmcv): MMCV is a foundational library for computer vision. MMAction2 1.x requires `mmcv>=2.0.0rc0` which is more compact and efficient than `mmcv-full==1.x`.
+2. [MMCV](https://github.com/open-mmlab/mmcv): MMCV is a foundational library for computer vision. MMAction2 1.x requires `mmcv>=2.0.0` which is more compact and efficient than `mmcv-full==2.0.0`.
 
 ## Configuration files
 

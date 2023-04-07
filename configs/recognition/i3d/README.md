@@ -51,7 +51,7 @@ python tools/train.py configs/recognition/i3d/i3d_imagenet-pretrained-r50_8xb8-3
     --seed=0 --deterministic
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -68,7 +68,7 @@ python tools/test.py configs/recognition/i3d/i3d_imagenet-pretrained-r50_8xb8-32
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 
