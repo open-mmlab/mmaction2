@@ -1348,7 +1348,7 @@ class MMUniformSampleFrames(UniformSampleFrames):
             else:
                 inds = self._get_train_clips(num_frames, clip_len)
             inds = np.mod(inds, num_frames)
-            results[f'{modality}_inds'] = inds.astype(np.int)
+            results[f'{modality}_inds'] = inds.astype(np.int32)
             modalities.append(modality)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = None
