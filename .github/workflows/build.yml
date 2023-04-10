@@ -135,7 +135,7 @@ jobs:
       - name: Install mmaction dependencies
         run: |
           pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/${{matrix.torch_version}}/index.html
-          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection@2.x/
+          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection@2.x
           pip install -q git+https://github.com/open-mmlab/mmpretrain@mmcls-0.x
           pip install -r requirements.txt
       - name: Build and install
@@ -197,7 +197,7 @@ jobs:
       - name: Install mmaction dependencies
         run: |
           pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/${{matrix.torch_version}}/index.html
-          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection@2.x/
+          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection@2.x
           pip install -q git+https://github.com/open-mmlab/mmpretrain@mmcls-0.x
           pip install -r requirements.txt
       - name: Install PytorchVideo
@@ -240,7 +240,7 @@ jobs:
       - name: Install mmaction dependencies
         run: |
           python -V
-          python -m pip install -q git+https://github.com/open-mmlab/mmdetection@2.x/
+          python -m pip install -q git+https://github.com/open-mmlab/mmdetection@2.x
           python -m pip install -q git+https://github.com/open-mmlab/mmpretrain@mmcls-0.x
           python -m pip install -r requirements.txt
           python -c 'import mmcv; print(mmcv.__version__)'
