@@ -75,9 +75,9 @@ jobs:
       - name: Install MMCV
         run: pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${{matrix.torch}}/index.html
       - name: Install MMDet
-        run: pip install git+https://github.com/open-mmlab/mmdetection/
+        run: pip install git+https://github.com/open-mmlab/mmdetection@2.x
       - name: Install MMCls
-        run: pip install git+https://github.com/open-mmlab/mmclassification/
+        run: pip install git+https://github.com/open-mmlab/mmpretrain@mmcls-0.x
       - name: Install unittest dependencies
         run: pip install -r requirements/tests.txt -r requirements/optional.txt
       - name: Install PytorchVideo
@@ -135,8 +135,8 @@ jobs:
       - name: Install mmaction dependencies
         run: |
           pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/${{matrix.torch_version}}/index.html
-          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection/
-          pip install -q git+https://github.com/open-mmlab/mmclassification/
+          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection@2.x
+          pip install -q git+https://github.com/open-mmlab/mmpretrain@mmcls-0.x
           pip install -r requirements.txt
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
@@ -197,8 +197,8 @@ jobs:
       - name: Install mmaction dependencies
         run: |
           pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/${{matrix.torch_version}}/index.html
-          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection/
-          pip install -q git+https://github.com/open-mmlab/mmclassification/
+          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  pip install -q git+https://github.com/open-mmlab/mmdetection@2.x
+          pip install -q git+https://github.com/open-mmlab/mmpretrain@mmcls-0.x
           pip install -r requirements.txt
       - name: Install PytorchVideo
         run: pip install pytorchvideo
@@ -240,8 +240,8 @@ jobs:
       - name: Install mmaction dependencies
         run: |
           python -V
-          python -m pip install -q git+https://github.com/open-mmlab/mmdetection/
-          python -m pip install -q git+https://github.com/open-mmlab/mmclassification/
+          python -m pip install -q git+https://github.com/open-mmlab/mmdetection@2.x
+          python -m pip install -q git+https://github.com/open-mmlab/mmpretrain@mmcls-0.x
           python -m pip install -r requirements.txt
           python -c 'import mmcv; print(mmcv.__version__)'
       - name: Install PytorchVideo
