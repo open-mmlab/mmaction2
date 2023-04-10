@@ -79,7 +79,7 @@ git checkout dev-1.x
 Just install with pip.
 
 ```shell
-pip install mmaction2
+pip install "mmaction2>=1.0.0"
 ```
 
 ## Verify the installation
@@ -166,7 +166,7 @@ This requires manually specifying a find-url based on PyTorch version and its CU
 For example, the following command install mmcv built for PyTorch 1.10.x and CUDA 11.3.
 
 ```shell
-pip install mmcv -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
+pip install 'mmcv>=2.0.0' -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
 ```
 
 ### Install on CPU-only platforms
