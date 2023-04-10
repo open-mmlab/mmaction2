@@ -62,7 +62,6 @@ In this case, install mmaction2 from source:
 ```shell
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
-git checkout 1.x
 pip install -v -e .
 # "-v" means verbose, or more output
 # "-e" means installing a project in editable mode,
@@ -80,7 +79,7 @@ git checkout dev-1.x
 Just install with pip.
 
 ```shell
-pip install "mmaction2>=1.0.0"
+pip install mmaction2
 ```
 
 ## Verify the installation
@@ -167,7 +166,7 @@ This requires manually specifying a find-url based on PyTorch version and its CU
 For example, the following command install mmcv built for PyTorch 1.10.x and CUDA 11.3.
 
 ```shell
-pip install 'mmcv>=2.0.0' -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
+pip install mmcv -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
 ```
 
 ### Install on CPU-only platforms
