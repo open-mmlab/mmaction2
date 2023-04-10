@@ -114,7 +114,7 @@ It is a part of the [OpenMMLab](http://openmmlab.com/) project.
 
 MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional, for spatial-temporal detection tasks) and [MMPose](https://github.com/open-mmlab/mmpose) (optional, for skeleton based tasks).
 
-Please refer to [install.md](https://mmaction2.readthedocs.io/en/latest/get_started.html) for detailed instructions.
+Please refer to [install.md](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) for detailed instructions.
 
 <details close>
 <summary>Quick instructions</summary>
@@ -137,7 +137,7 @@ pip3 install -e .
 
 ## 👀 Model Zoo [🔝](#-table-of-contents)
 
-Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo.html).
+Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/latest/model_zoo/modelzoo.html).
 
 <details close>
 
@@ -287,10 +287,10 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
 For tutorials, we provide the following user guides for basic usage:
 
 - [Migration from MMAction2 0.X](https://mmaction2.readthedocs.io/en/latest/migration.html)
-- [Learn about Configs](https://mmaction2.readthedocs.io/en/latest/user_guides/1_config.html#)
-- [Prepare Datasets](https://mmaction2.readthedocs.io/en/latest/user_guides/2_data_prepare.html)
-- [Inference with Existing Models](https://mmaction2.readthedocs.io/en/latest/user_guides/3_inference.html)
-- [Training and Testing](https://mmaction2.readthedocs.io/en/latest/user_guides/4_train_test.html)
+- [Learn about Configs](https://mmaction2.readthedocs.io/en/latest/user_guides/config.html#)
+- [Prepare Datasets](https://mmaction2.readthedocs.io/en/latest/user_guides/prepare_dataset.html)
+- [Inference with Existing Models](https://mmaction2.readthedocs.io/en/latest/user_guides/inference.html)
+- [Training and Testing](https://mmaction2.readthedocs.io/en/latest/user_guides/train_test.html)
 
 <details close>
 <summary>Research works built on MMAction2 by users from community</summary>

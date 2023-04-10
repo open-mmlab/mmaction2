@@ -34,7 +34,7 @@ We have prepared a wealth of documents to meet your various needs:
 
 - [Installation](installation.md)
 - [Quick Run](quick_run.md)
-- [Inference](../user_guides/Inference.md)
+- [Inference](../user_guides/inference.md)
 
 </details>
 
