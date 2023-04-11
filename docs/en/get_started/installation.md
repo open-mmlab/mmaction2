@@ -62,7 +62,6 @@ In this case, install mmaction2 from source:
 ```shell
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
-git checkout 1.x
 pip install -v -e .
 # "-v" means verbose, or more output
 # "-e" means installing a project in editable mode,
