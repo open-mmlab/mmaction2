@@ -225,6 +225,7 @@ def test_tin():
         recognizer, target_layer_name, input_shape, device='cuda:0')
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_x3d():
     config = get_recognizer_cfg('x3d/x3d_s_13x6x1_facebook-kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
