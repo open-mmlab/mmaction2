@@ -78,8 +78,8 @@ jobs:
           command: |
             python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
             python -m pip install --upgrade pip numpy
-            python -m pip install mmdet
-            python -m pip install mmcls
+            python -m pip install -q git+https://github.com/open-mmlab/mmdetection@2.x
+            python -m pip install -q git+https://github.com/open-mmlab/mmpretrain@mmcls-0.x
             python -m pip install -r requirements.txt
       - when:
           condition:
@@ -131,8 +131,8 @@ jobs:
           name: Install mmaction dependencies
           command: |
             docker exec mmaction pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
-            docker exec mmaction pip install git+https://github.com/open-mmlab/mmdetection/
-            docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification/
+            docker exec mmaction pip install git+https://github.com/open-mmlab/mmdetection@2.x
+            docker exec mmaction pip install git+https://github.com/open-mmlab/mmpretrain@mmcls-0.x
             docker exec mmaction pip install -r requirements.txt
             docker exec mmaction pip install --upgrade pip numpy
       - when:
