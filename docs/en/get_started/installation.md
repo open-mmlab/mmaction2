@@ -41,7 +41,7 @@ conda install pytorch torchvision cpuonly -c pytorch
 
 We recommend that users follow our best practices to install MMAction2. However, the whole process is highly customizable. See [Customize Installation](#customize-installation) section for more information.
 
-**Step 1.** Install [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection) (Optional) and [MMPose](https://github.com/open-mmlab/mmpose) (Optional) using [MIM](https://github.com/open-mmlab/mim).
+**Step 1.** Install [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional) and [MMPose](https://github.com/open-mmlab/mmpose) (optional) using [MIM](https://github.com/open-mmlab/mim).
 
 ```shell
 pip install -U openmim

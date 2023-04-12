@@ -108,12 +108,13 @@ conda create --name openmmlab python=3.8 -y
 conda activate open-mmlab
 conda install pytorch torchvision -c pytorch  # 以上命令将自动安装最新版本的 PyTorch 和 cudatoolkit,请检查它们是否和你的环境匹配
 pip install -U openmim
-mim install mmengine 'mmcv>=2.0.0'
-mim install "mmdet>=3.0.0"  # 可选
-mim install "mmpose>=1.0.0"  # 可选
+mim install mmengine
+mim install mmcv
+mim install mmdet  # 可选
+mim install mmpose  # 可选
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
-pip3 install -e .
+pip install -v -e .
 ```
 
 ## 模型库
