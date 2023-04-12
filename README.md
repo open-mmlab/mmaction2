@@ -73,7 +73,7 @@ English | [简体中文](/README_zh-CN.md)
 
 ## 🥳 🚀 What's New [🔝](#-table-of-contents)
 
-**The default branch has been switched to `1.x` from `master`, and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/latest/migration.html) for more details.**
+**The default branch has been switched to `main`(previous `1.x`) from `master`(current `0.x`), and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/latest/migration.html) for more details.**
 
 **Release (2023.04.06)**: v1.0.0 with the following new features:
 
