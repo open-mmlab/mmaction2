@@ -41,11 +41,14 @@ conda install pytorch torchvision cpuonly -c pytorch
 
 We recommend that users follow our best practices to install MMAction2. However, the whole process is highly customizable. See [Customize Installation](#customize-installation) section for more information.
 
-**Step 1.** Install [MMEngine](https://github.com/open-mmlab/mmengine) and [MMCV](https://github.com/open-mmlab/mmcv) using [MIM](https://github.com/open-mmlab/mim).
+**Step 1.** Install [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection) and [MMPose](https://github.com/open-mmlab/mmpose) using [MIM](https://github.com/open-mmlab/mim).
 
 ```shell
 pip install -U openmim
-mim install mmengine 'mmcv>=2.0.0'
+mim install mmengine
+mim install mmcv
+mim install mmdet
+mim install mmpose
 ```
 
 **Step 2.** Install MMAction2.
@@ -62,7 +65,6 @@ In this case, install mmaction2 from source:
 ```shell
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
-git checkout 1.x
 pip install -v -e .
 # "-v" means verbose, or more output
 # "-e" means installing a project in editable mode,
@@ -179,7 +181,7 @@ worry, almost all models in MMAction2 don't depend on these ops.
 
 ### Using MMAction2 with Docker
 
-We provide a [Dockerfile](https://github.com/open-mmlab/mmaction2/blob/1.x/docker/Dockerfile)
+We provide a [Dockerfile](https://github.com/open-mmlab/mmaction2/blob/main/docker/Dockerfile)
 to build an image. Ensure that your [docker version](https://docs.docker.com/engine/install/) >=19.03.
 
 ```shell
