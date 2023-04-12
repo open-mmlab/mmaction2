@@ -41,7 +41,7 @@ conda install pytorch torchvision cpuonly -c pytorch
 
 We recommend that users follow our best practices to install MMAction2. However, the whole process is highly customizable. See [Customize Installation](#customize-installation) section for more information.
 
-**Step 1.** Install [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection) and [MMPose](https://github.com/open-mmlab/mmpose) using [MIM](https://github.com/open-mmlab/mim).
+**Step 1.** Install [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection) (Optional) and [MMPose](https://github.com/open-mmlab/mmpose) (Optional) using [MIM](https://github.com/open-mmlab/mim).
 
 ```shell
 pip install -U openmim
@@ -198,7 +198,7 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 
 ## Troubleshooting
 
-1. When migrating from the old version 0.x to the new version 1.x, you may encounter issues with mismatched versions of dependent libraries. Below is a display of the versions of each dependent library after following the aforementioned installation process, as shown by `pip list` command. Please ensure that the versions of each dependent library displayed in your terminal are greater than or equal to (i.e., `>=`) the versions shown below for each dependent library.
+1. When migrating from the old version `0.x` to the new version `1.x`, you may encounter issues with mismatched versions of dependent libraries. Below is a display of the versions of each dependent library after following the aforementioned installation process, as shown by `pip list` command. Please ensure that the versions of each dependent library displayed in your terminal are greater than or equal to (i.e., `>=`) the versions shown below for each dependent library.
 
 ```shell
 mmaction2                1.0.0
