@@ -198,4 +198,12 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 
 ## Troubleshooting
 
-coming soon...
+1. When migrating from the old version 0.x to the new version 1.x, you may encounter issues with mismatched versions of dependent libraries. Below is a display of the versions of each dependent library after following the aforementioned installation process, as shown by `pip list` command. Please ensure that the versions of each dependent library displayed in your terminal are greater than or equal to (i.e., `>=`) the versions shown below for each dependent library.
+
+```shell
+mmaction2                1.0.0
+mmcv                     2.0.0
+mmdet                    3.0.0
+mmengine                 0.7.2
+mmpose                   1.0.0
+```
