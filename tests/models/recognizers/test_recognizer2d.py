@@ -108,7 +108,7 @@ def test_tsn():
 def test_tsm():
     register_all_modules()
     config = get_recognizer_cfg(
-        'tsm/tsm_imagenet-pretrained-mobilenetv2_8xb16-1x1x8-50e_kinetics400-rgb.py'  # noqa: E501
+        'tsm/tsm_imagenet-pretrained-mobilenetv2_8xb16-1x1x8-100e_kinetics400-rgb.py'  # noqa: E501
     )
     config.model['backbone']['pretrained'] = None
 
