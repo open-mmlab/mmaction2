@@ -41,11 +41,14 @@ conda install pytorch torchvision cpuonly -c pytorch
 
 We recommend that users follow our best practices to install MMAction2. However, the whole process is highly customizable. See [Customize Installation](#customize-installation) section for more information.
 
-**Step 1.** Install [MMEngine](https://github.com/open-mmlab/mmengine) and [MMCV](https://github.com/open-mmlab/mmcv) using [MIM](https://github.com/open-mmlab/mim).
+**Step 1.** Install [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional) and [MMPose](https://github.com/open-mmlab/mmpose) (optional) using [MIM](https://github.com/open-mmlab/mim).
 
 ```shell
 pip install -U openmim
-mim install mmengine 'mmcv>=2.0.0'
+mim install mmengine
+mim install mmcv
+mim install mmdet
+mim install mmpose
 ```
 
 **Step 2.** Install MMAction2.
@@ -79,7 +82,7 @@ git checkout dev-1.x
 Just install with pip.
 
 ```shell
-pip install "mmaction2>=1.0.0"
+pip install mmaction2
 ```
 
 ## Verify the installation
@@ -160,13 +163,13 @@ way. MIM solves such dependencies automatically and makes the installation
 easier. However, it is not a must.
 
 To install MMCV with pip instead of MIM, please follow
-[MMCV installation guides](https://mmcv.readthedocs.io/en/2.x/get_started/installation.html).
+[MMCV installation guides](https://mmcv.readthedocs.io/en/latest/get_started/installation.html).
 This requires manually specifying a find-url based on PyTorch version and its CUDA version.
 
 For example, the following command install mmcv built for PyTorch 1.10.x and CUDA 11.3.
 
 ```shell
-pip install 'mmcv>=2.0.0' -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
+pip install mmcv -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
 ```
 
 ### Install on CPU-only platforms
@@ -178,7 +181,7 @@ worry, almost all models in MMAction2 don't depend on these ops.
 
 ### Using MMAction2 with Docker
 
-We provide a [Dockerfile](https://github.com/open-mmlab/mmaction2/blob/1.x/docker/Dockerfile)
+We provide a [Dockerfile](https://github.com/open-mmlab/mmaction2/blob/main/docker/Dockerfile)
 to build an image. Ensure that your [docker version](https://docs.docker.com/engine/install/) >=19.03.
 
 ```shell
@@ -195,4 +198,12 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 
 ## Troubleshooting
 
-coming soon...
+1. When migrating from the old version `0.x` to the new version `1.x`, you may encounter issues with mismatched versions of dependent libraries. Below is a display of the versions of each dependent library after following the aforementioned installation process, as shown by `pip list` command. Please ensure that the versions of each dependent library displayed in your terminal are greater than or equal to (i.e., `>=`) the versions shown below for each dependent library.
+
+```shell
+mmaction2                1.0.0
+mmcv                     2.0.0
+mmdet                    3.0.0
+mmengine                 0.7.2
+mmpose                   1.0.0
+```
