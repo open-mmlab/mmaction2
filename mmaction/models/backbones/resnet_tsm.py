@@ -162,7 +162,7 @@ class ResNetTSM(ResNet):
                  shift_div=8,
                  shift_place='blockres',
                  temporal_pool=False,
-                 pretraind2d=True,
+                 pretrained2d=True,
                  **kwargs):
         super().__init__(depth, **kwargs)
         self.num_segments = num_segments
@@ -173,7 +173,7 @@ class ResNetTSM(ResNet):
         self.non_local = non_local
         self.non_local_stages = _ntuple(self.num_stages)(non_local)
         self.non_local_cfg = non_local_cfg
-        self.pretrained2d = pretraind2d
+        self.pretrained2d = pretrained2d
         self.init_structure()
 
     def init_structure(self):
