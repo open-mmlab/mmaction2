@@ -19,8 +19,8 @@ body:
       label: Branch
       description: Which branch/version are you using?
       options:
-        - master branch (0.x version, such as `v0.10.0`, or `dev` branch)
-        - 1.x branch (1.x version, such as `v1.0.0rc2`, or `dev-1.x` branch)
+        - main branch (1.x version, such as `v1.0.0`, or `dev-1.x` branch)
+        - 0.x branch (0.x version, such as `v0.24.1`)
     validations:
       required: true
 
