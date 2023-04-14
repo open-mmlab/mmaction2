@@ -25,7 +25,7 @@ class Test_ResNet_TSM(TestCase):
             resnet_tsm_50_block.init_weights()
 
     def test_init_from_scratch(self):
-        resnet_tsm_50 = ResNetTSM(50, pretrained=None, pretraind2d=False)
+        resnet_tsm_50 = ResNetTSM(50, pretrained=None, pretrained2d=False)
         resnet_tsm_50.init_weights()
 
     def test_resnet_tsm_temporal_shift_blockres(self):
