@@ -148,7 +148,7 @@ class ResNetTSM(ResNet):
             Defaults to 'blockres'.
         temporal_pool (bool): Whether to add temporal pooling.
             Defaults to False.
-        pretraind2d (bool): Whether to load pretrained 2D model.
+        pretrained2d (bool): Whether to load pretrained 2D model.
             Defaults to True.
         **kwargs (keyword arguments, optional): Arguments for ResNet.
     """
