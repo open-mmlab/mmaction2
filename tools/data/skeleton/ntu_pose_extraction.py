@@ -229,6 +229,31 @@ def ntu_det_postproc(vid, det_results):
         return bboxes2bbox(det_results, len(det_results))
 
 
+def pose_inference_with_align(args, frame_paths, det_results):
+    # filter frame without det bbox
+    det_results = [
+        frm_dets for frm_dets in det_results if frm_dets.shape[0] > 0
+    ]
+
+    pose_results, _ = pose_inference(args.pose_config, args.pose_checkpoint,
+                                     frame_paths, det_results, args.device)
+    # align the num_person among frames
+    num_persons = max([pose['keypoints'].shape[0] for pose in pose_results])
+    num_points = pose_results[0]['keypoints'].shape[1]
+    num_frames = len(pose_results)
+    keypoints = np.zeros((num_persons, num_frames, num_points, 2),
+                         dtype=np.float32)
+    scores = np.zeros((num_persons, num_frames, num_points), dtype=np.float32)
+
+    for f_idx, frm_pose in enumerate(pose_results):
+        frm_num_persons = frm_pose['keypoints'].shape[0]
+        for p_idx in range(frm_num_persons):
+            keypoints[p_idx, f_idx] = frm_pose['keypoints'][p_idx]
+            scores[p_idx, f_idx] = frm_pose['keypoint_scores'][p_idx]
+
+    return keypoints, scores
+
+
 def ntu_pose_extraction(vid, skip_postproc=False):
     tmp_dir = TemporaryDirectory()
     frame_paths, _ = frame_extract(vid, out_dir=tmp_dir.name)
@@ -242,19 +267,17 @@ def ntu_pose_extraction(vid, skip_postproc=False):
 
     if not skip_postproc:
         det_results = ntu_det_postproc(vid, det_results)
-    pose_results, _ = pose_inference(args.pose_config, args.pose_checkpoint,
-                                     frame_paths, det_results, args.device)
 
     anno = dict()
-    anno['keypoint'] = np.stack(
-        [pose['keypoints'].astype(np.float32) for pose in pose_results],
-        axis=1)
-    anno['keypoint_score'] = np.stack(
-        [pose['keypoint_scores'] for pose in pose_results], axis=1)
+
+    keypoints, scores = pose_inference_with_align(args, frame_paths,
+                                                  det_results)
+    anno['keypoint'] = keypoints
+    anno['keypoint_score'] = scores
     anno['frame_dir'] = osp.splitext(osp.basename(vid))[0]
     anno['img_shape'] = (1080, 1920)
     anno['original_shape'] = (1080, 1920)
-    anno['total_frames'] = len(pose_results)
+    anno['total_frames'] = keypoints.shape[1]
     anno['label'] = int(osp.basename(vid).split('A')[1][:3]) - 1
     tmp_dir.cleanup()
 
