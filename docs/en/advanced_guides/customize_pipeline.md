@@ -8,7 +8,7 @@ In this tutorial, we will introduce some methods about how to build the data pip
     - [Loading](#loading)
     - [Sampling Frames and Other Processing](#sampling-frames-and-other-processing)
     - [Formatting](#formatting)
-  - [Add new data transforms](#add-new-data-transforms)
+  - [Add New Data Transforms](#add-new-data-transforms)
 
 ## Design of Data Pipeline
 
