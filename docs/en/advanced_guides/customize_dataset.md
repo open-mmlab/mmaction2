@@ -1,8 +1,8 @@
-# Customize Datasets
+# Customize Dataset
 
 In this tutorial, we will introduce some methods about how to customize your own dataset by online conversion.
 
-- [Customize Datasets](#customize-datasets)
+- [Customize Dataset](#customize-dataset)
   - [General understanding of the Dataset in MMAction2](#general-understanding-of-the-dataset-in-mmaction2)
   - [Customize new datasets](#customize-new-datasets)
   - [Customize keypoint format for PoseDataset](#customize-keypoint-format-for-posedataset)
