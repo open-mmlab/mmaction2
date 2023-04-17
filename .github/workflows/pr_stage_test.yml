@@ -47,6 +47,8 @@ jobs:
         run: |
           pip install -U openmim
           mim install 'mmcv >= 2.0.0'
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Install MMDet
         run: pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
       - name: Install MMCls
