@@ -16,7 +16,7 @@ def test_mobilenetv2_tsm_backbone():
     imgs = generate_backbone_demo_inputs(input_shape)
 
     # mobilenetv2_tsm with width_mult = 1.0
-    mobilenetv2_tsm = MobileNetV2TSM()
+    mobilenetv2_tsm = MobileNetV2TSM(pretrained='mmcls://mobilenet_v2')
     mobilenetv2_tsm.init_weights()
     for cur_module in mobilenetv2_tsm.modules():
         if isinstance(cur_module, InvertedResidual) and \
@@ -33,13 +33,13 @@ def test_mobilenetv2_tsm_backbone():
     assert feat.shape == torch.Size([8, 1280, 2, 2])
 
     # mobilenetv2 with widen_factor = 0.5 forword
-    mobilenetv2_tsm_05 = MobileNetV2TSM(widen_factor=0.5)
+    mobilenetv2_tsm_05 = MobileNetV2TSM(widen_factor=0.5, pretrained2d=False)
     mobilenetv2_tsm_05.init_weights()
     feat = mobilenetv2_tsm_05(imgs)
     assert feat.shape == torch.Size([8, 1280, 2, 2])
 
     # mobilenetv2 with widen_factor = 1.5 forword
-    mobilenetv2_tsm_15 = MobileNetV2TSM(widen_factor=1.5)
+    mobilenetv2_tsm_15 = MobileNetV2TSM(widen_factor=1.5, pretrained2d=False)
     mobilenetv2_tsm_15.init_weights()
     feat = mobilenetv2_tsm_15(imgs)
     assert feat.shape == torch.Size([8, 1920, 2, 2])
