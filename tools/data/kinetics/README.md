@@ -29,6 +29,27 @@ Because of the expirations of some YouTube links, the sizes of kinetics dataset 
 
 :::
 
+`````{tabs}
+
+````{group-tab} Download from OpenDataLab
+
+[OpenDataLab](https://opendatalab.com/) provides our Kinetics dataset copies ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)), we recommend user to download from OpenDatalab. Before download, please make sure that the directory is located at `$MMACTION2/data/`
+
+```Bash
+# install OpenDataLab CLI tools
+pip install -U opendatalab
+# log in
+odl login
+# download dataset
+odl get Kinetics-400
+# decompress dataset
+cat *.tar.gz.* | tar -xvz
+```
+
+````
+
+````{group-tab} Download form Source Video
+
 ## Step 1. Prepare Annotations
 
 First of all, you can run the following script to prepare annotations by downloading from the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
@@ -125,6 +146,10 @@ bash generate_videos_filelist.sh ${DATASET}
 # execute the command below when rawframes are ready
 bash generate_rawframes_filelist.sh ${DATASET}
 ```
+
+````
+
+`````
 
 ## Step 5. Folder Structure
 

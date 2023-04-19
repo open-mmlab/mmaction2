@@ -27,6 +27,29 @@
 | Kinetics600 |  383393  |   27910    |
 | Kinetics700 |  542357  |   34824    |
 
+:::
+
+`````{tabs}
+
+````{group-tab} 从 OpenDataLab 下载
+
+[OpenDataLab](https://opendatalab.com/) 提供了我们使用的 Kinetics 数据集 ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700))，我们推荐用户从 OpenDataLab 下载 Kinetics 数据集。开始之前，请确保当前目录为 `$MMACTION2/data/`
+
+```Bash
+# 安装 OpenDataLab CLI 工具
+pip install -U opendatalab
+# 登录
+odl login
+# 下载数据集
+odl get Kinetics-400
+# 解压数据集
+cat *.tar.gz.* | tar -xvz
+```
+
+````
+
+````{group-tab} 从源文件下载
+
 ## 1. 准备标注文件
 
 首先，用户可以使用如下脚本从 [Kinetics 数据集官网](https://deepmind.com/research/open-source/open-source-datasets/kinetics/)下载标注文件并进行预处理：
@@ -120,6 +143,8 @@ bash generate_videos_filelist.sh ${DATASET}
 # 为帧文件夹生成文件列表
 bash generate_rawframes_filelist.sh ${DATASET}
 ```
+````
+`````
 
 ## 5. 目录结构
 
