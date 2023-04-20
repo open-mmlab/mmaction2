@@ -16,7 +16,6 @@
 ```
 
 For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/). The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
-Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/${DATASET}/`.
 
 :::{note}
 Because of the expirations of some YouTube links, the sizes of kinetics dataset copies may be different. Here are the sizes of our kinetics dataset copies that used to train all checkpoints.
@@ -29,11 +28,13 @@ Because of the expirations of some YouTube links, the sizes of kinetics dataset 
 
 :::
 
+**Step 1.** Download Videos
+
 `````{tabs}
 
 ````{group-tab} Download from OpenDataLab
 
-[OpenDataLab](https://opendatalab.com/) provides our Kinetics dataset copies ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)), we recommend user to download from OpenDatalab. Before download, please make sure that the directory is located at `$MMACTION2/data/`
+[OpenDataLab](https://opendatalab.com/) provides our Kinetics dataset copies ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)). All experiments on Kinetics in MMAction2 are based on this version, we recommend users to download from OpenDatalab. Before download, please make sure that the directory is located at `$MMACTION2/data/`.
 
 ```Bash
 # install OpenDataLab CLI tools
@@ -43,18 +44,17 @@ odl login
 # download dataset
 odl get Kinetics-400
 # decompress dataset
-cat *.tar.gz.* | tar -xvz
+cd Kinetics-400; cat *.tar.gz.* | tar -xvz
 ```
 
 ````
 
 ````{group-tab} Download form Source Video
 
-## Step 1. Prepare Annotations
-
-First of all, you can run the following script to prepare annotations by downloading from the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/${DATASET}/`. You can run the following script to prepare annotations by downloading from the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
 
 ```shell
+# download annotations from official website
 bash download_annotations.sh ${DATASET}
 ```
 
@@ -64,24 +64,12 @@ Among these, the annotation files of Kinetics400 and Kinetics600 are from [offic
 the annotation files of Kinetics700 are from [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) downloaded in 05/02/2021.
 
 ```shell
+# download annotations from backup source
 bash download_backup_annotations.sh ${DATASET}
 ```
 
-## Step 2. Prepare Videos
-
-### Option 1: Download from OpenDataLab
-
-**Recommend**: [OpenDataLab](https://opendatalab.com/) provides the Kinetics dataset ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)), users can download Kinetics dataset with short edge 320 pixels from here.
-
-:::{note}
-All experiments on Kinetics in MMAction2 are based on this version, we recommend users to try this version.
-
-### Option 2: Download from Other Source
-
-you can run the following script to prepare videos.
-The codes are adapted from the [official crawler](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics). Note that this might take a long time.
-
 ```shell
+# download videos. Note that this might take a long time.
 bash download_videos.sh ${DATASET}
 ```
 
@@ -100,7 +88,11 @@ python ../resize_videos.py ../../../data/${DATASET}/videos_train/ ../../../data/
 
 You can also download from [Academic Torrents](https://academictorrents.com/) ([kinetics400](https://academictorrents.com/details/184d11318372f70018cf9a72ef867e2fb9ce1d26) & [kinetics700](https://academictorrents.com/details/49f203189fb69ae96fb40a6d0e129949e1dfec98) with short edge 256 pixels are available) and [cvdfoundation/kinetics-dataset](https://github.com/cvdfoundation/kinetics-dataset) (Host by Common Visual Data Foundation and Kinetics400/Kinetics600/Kinetics-700-2020 are available)
 
-## Step 3. Extract RGB and Flow
+````
+
+`````
+
+## Step 2. Extract RGB and Flow (Optional)
 
 This part is **optional** if you only want to use the video loader.
 
@@ -109,6 +101,7 @@ Before extracting, please refer to [install.md](/docs/install.md) for installing
 If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance. And you can run the following script to soft link the extracted frames.
 
 ```shell
+cd ${MMACTION2}/tools/data/${DATASET}/
 # execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
 mkdir /mnt/SSD/${DATASET}_extracted_train/
 ln -s /mnt/SSD/${DATASET}_extracted_train/ ../../../data/${DATASET}/rawframes_train/
@@ -137,9 +130,24 @@ bash extract_frames.sh ${DATASET}
 The commands above can generate images with new short edge 256. If you want to generate images with short edge 320 (320p), or with fix size 340x256, you can change the args `--new-short 256` to `--new-short 320` or `--new-width 340 --new-height 256`.
 More details can be found in [data_preparation](/docs/data_preparation.md)
 
-## Step 4. Generate File List
+## Step 3. Generate File List
 
-you can run the follow scripts to generate file list in the format of videos and rawframes, respectively.
+`````{tabs}
+
+````{group-tab} Download from OpenDataLab
+
+OpenDatalab provides video file list, which is compatible with MMAction2.
+For rawframes format file lists, you can run the following scripts when rawframes are ready.
+
+```shell
+bash generate_rawframes_filelist.sh ${DATASET}
+```
+
+````
+
+````{group-tab} Download form Source Video
+
+You can run the follow scripts to generate file list in the format of videos and rawframes, respectively.
 
 ```shell
 bash generate_videos_filelist.sh ${DATASET}
@@ -151,7 +159,7 @@ bash generate_rawframes_filelist.sh ${DATASET}
 
 `````
 
-## Step 5. Folder Structure
+## Step 4. Folder Structure
 
 After the whole data pipeline for Kinetics preparation.
 you can get the rawframes (RGB + Flow), videos and annotation files for Kinetics.
@@ -178,8 +186,8 @@ mmaction2
 │   │   │   ├── wrapping_present
 │   │   │   ├── ...
 │   │   │   ├── zumba
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
+│   │   ├── rawframes_train (optional)
+│   │   ├── rawframes_val (optional)
 
 ```
 
