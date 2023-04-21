@@ -5,7 +5,7 @@ import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
 
 from mmaction.registry import MODELS
-from mmaction.utils.typing import SampleList
+from mmaction.utils import SampleList
 
 
 @MODELS.register_module()

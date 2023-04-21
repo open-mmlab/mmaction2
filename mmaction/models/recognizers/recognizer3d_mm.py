@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 import torch
 
 from mmaction.registry import MODELS
-from mmaction.utils.typing import OptSampleList
+from mmaction.utils import OptSampleList
 from .base import BaseRecognizer
 
 
