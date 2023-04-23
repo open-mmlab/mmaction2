@@ -45,7 +45,7 @@ odl login
 odl get Kinetics-400
 # decompress dataset
 cd Kinetics-400; cat *.tar.gz.* | tar -xvz
-# After decompressing the compressed file, you can delete them if you want.
+# after decompressing the compressed file, you can delete them if you want.
 rm *.tar.gz.*
 # rename folder
 cd ..; mv Kinetics-400 kinetics400
