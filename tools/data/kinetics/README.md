@@ -41,11 +41,16 @@ Because of the expirations of some YouTube links, the sizes of kinetics dataset 
 pip install -U opendatalab
 # log in
 odl login
-# download dataset
+# download dataset. Note that this might take a long time.
 odl get Kinetics-400
 # decompress dataset
 cd Kinetics-400; cat *.tar.gz.* | tar -xvz
+# After decompressing the compressed file, you can delete them if you want.
+rm *.tar.gz.*
+# rename folder
+cd ..; mv Kinetics-400 kinetics400
 ```
+
 
 ````
 
