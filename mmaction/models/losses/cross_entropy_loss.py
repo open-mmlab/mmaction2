@@ -1,8 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import List, Optional
+
 import numpy as np
 import torch
 import torch.nn.functional as F
-from typing import Optional, List
 
 from mmaction.registry import MODELS
 from .base import BaseWeightedLoss
@@ -32,13 +33,16 @@ class CrossEntropyLoss(BaseWeightedLoss):
             using other losses). Defaults to None.
     """
 
-    def __init__(self, loss_weight: float = 1.0, class_weight: Optional[List[float]] = None) -> None:
+    def __init__(self,
+                 loss_weight: float = 1.0,
+                 class_weight: Optional[List[float]] = None) -> None:
         super().__init__(loss_weight=loss_weight)
         self.class_weight = None
         if class_weight is not None:
             self.class_weight = torch.Tensor(class_weight)
 
-    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor, **kwargs) -> torch.Tensor:
+    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor,
+                 **kwargs) -> torch.Tensor:
         """Forward function.
 
         Args:
@@ -97,13 +101,16 @@ class BCELossWithLogits(BaseWeightedLoss):
             using other losses). Defaults to None.
     """
 
-    def __init__(self, loss_weight: float = 1.0, class_weight: Optional[List[float]] = None) -> None:
+    def __init__(self,
+                 loss_weight: float = 1.0,
+                 class_weight: Optional[List[float]] = None) -> None:
         super().__init__(loss_weight=loss_weight)
         self.class_weight = None
         if class_weight is not None:
             self.class_weight = torch.Tensor(class_weight)
 
-    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor, **kwargs) -> torch.Tensor:
+    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor,
+                 **kwargs) -> torch.Tensor:
         """Forward function.
 
         Args:
@@ -154,7 +161,8 @@ class CBFocalLoss(BaseWeightedLoss):
         self.weights = weights
         self.num_classes = len(weights)
 
-    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor, **kwargs) -> torch.Tensor:
+    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor,
+                 **kwargs) -> torch.Tensor:
         """Forward function.
 
         Args:

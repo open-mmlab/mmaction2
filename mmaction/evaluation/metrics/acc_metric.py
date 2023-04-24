@@ -31,15 +31,13 @@ class AccMetric(BaseMetric):
     """Accuracy evaluation metric."""
     default_prefix: Optional[str] = 'acc'
 
-    def __init__(
-            self,
-            metric_list: Optional[Union[str,
-                                        Tuple[str]]] = ('top_k_accuracy',
-                                                        'mean_class_accuracy'),
-            collect_device: str = 'cpu',
-            metric_options: Optional[Dict] = dict(
-                top_k_accuracy=dict(topk=(1, 5))),
-            prefix: Optional[str] = None) -> None:
+    def __init__(self,
+                 metric_list: Optional[Union[str, Tuple[str]]] = (
+                     'top_k_accuracy', 'mean_class_accuracy'),
+                 collect_device: str = 'cpu',
+                 metric_options: Optional[Dict] = dict(
+                     top_k_accuracy=dict(topk=(1, 5))),
+                 prefix: Optional[str] = None) -> None:
 
         # TODO: fix the metric_list argument with a better one.
         # `metrics` is not a safe argument here with mmengine.
@@ -136,7 +134,8 @@ class AccMetric(BaseMetric):
 
         return eval_results
 
-    def calculate(self, preds: List[np.ndarray], labels: List[Union[int, np.ndarray]]) -> Dict:
+    def calculate(self, preds: List[np.ndarray],
+                  labels: List[Union[int, np.ndarray]]) -> Dict:
         """Compute the metrics from processed results.
 
         Args:
