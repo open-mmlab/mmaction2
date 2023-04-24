@@ -28,8 +28,7 @@ def generate_data(num_classes=5, random_label=False, multi_label=False):
 
 def test_acc_metric():
     num_classes = 32
-    metric = AccMetric(
-        metric_list=('top_k_accuracy', 'mean_class_accuracy'))
+    metric = AccMetric(metric_list=('top_k_accuracy', 'mean_class_accuracy'))
     data_batch, predictions = generate_data(
         num_classes=num_classes, random_label=True)
     metric.process(data_batch, predictions)
@@ -46,8 +45,7 @@ def test_acc_metric():
     assert eval_results['mean1'] == 1.0
 
     metric = AccMetric(
-        metric_list=('mean_average_precision',
-                     'mmit_mean_average_precision'))
+        metric_list=('mean_average_precision', 'mmit_mean_average_precision'))
     data_batch, predictions = generate_data(
         num_classes=num_classes, multi_label=True)
     metric.process(data_batch, predictions)
