@@ -1,4 +1,4 @@
-_base_ = ['vit-base_videomae-k400-pre_16x4x1_kinetics-400.py']
+_base_ = ['vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400.py']
 
 # model settings
 model = dict(
