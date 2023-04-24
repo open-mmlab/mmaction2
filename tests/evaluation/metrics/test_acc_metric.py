@@ -9,27 +9,26 @@ from mmaction.registry import METRICS
 from mmaction.structures import ActionDataSample
 
 
-def generate_data(num_classes=5, random_label=False):
+def generate_data(num_classes=5, random_label=False, multi_label=False):
     data_batch = []
     data_samples = []
     for i in range(num_classes * 10):
-        logit = torch.randn(num_classes)
-        if random_label:
-            label = torch.randint(num_classes, size=[])
+        scores = torch.randn(num_classes)
+        if multi_label:
+            label = torch.ones_like(scores)
+        elif random_label:
+            label = torch.randint(num_classes, size=[1])
         else:
-            label = torch.tensor(logit.argmax().item())
+            label = torch.LongTensor([scores.argmax().item()])
         data_sample = dict(
-            pred_scores=dict(item=logit), gt_labels=dict(item=label))
+            pred_scores=dict(item=scores), gt_labels=dict(item=label))
         data_samples.append(data_sample)
     return data_batch, data_samples
 
 
-def test_accmetric():
+def test_acc_metric():
     num_classes = 32
-    metric = AccMetric(
-        metric_list=('top_k_accuracy', 'mean_class_accuracy',
-                     'mmit_mean_average_precision', 'mean_average_precision'),
-        num_classes=num_classes)
+    metric = AccMetric(metric_list=('top_k_accuracy', 'mean_class_accuracy'))
     data_batch, predictions = generate_data(
         num_classes=num_classes, random_label=True)
     metric.process(data_batch, predictions)
@@ -44,8 +43,15 @@ def test_accmetric():
     eval_results = metric.compute_metrics(metric.results)
     assert eval_results['top1'] == eval_results['top5'] == 1.0
     assert eval_results['mean1'] == 1.0
+
+    metric = AccMetric(
+        metric_list=('mean_average_precision', 'mmit_mean_average_precision'))
+    data_batch, predictions = generate_data(
+        num_classes=num_classes, multi_label=True)
+    metric.process(data_batch, predictions)
+    eval_results = metric.compute_metrics(metric.results)
+    assert eval_results['mean_average_precision'] == 1.0
     assert eval_results['mmit_mean_average_precision'] == 1.0
-    return
 
 
 class TestConfusionMatrix(TestCase):

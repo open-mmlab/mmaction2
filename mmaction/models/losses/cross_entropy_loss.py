@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import List, Optional
+
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -17,27 +19,30 @@ class CrossEntropyLoss(BaseWeightedLoss):
     1) Hard label: This label is an integer array and all of the elements are
         in the range [0, num_classes - 1]. This label's shape should be
         ``cls_score``'s shape with the `num_classes` dimension removed.
-    2) Soft label(probablity distribution over classes): This label is a
+    2) Soft label(probability distribution over classes): This label is a
         probability distribution and all of the elements are in the range
         [0, 1]. This label's shape must be the same as ``cls_score``. For now,
         only 2-dim soft label is supported.
 
     Args:
         loss_weight (float): Factor scalar multiplied on the loss.
-            Default: 1.0.
+            Defaults to 1.0.
         class_weight (list[float] | None): Loss weight for each class. If set
             as None, use the same weight 1 for all classes. Only applies
             to CrossEntropyLoss and BCELossWithLogits (should not be set when
-            using other losses). Default: None.
+            using other losses). Defaults to None.
     """
 
-    def __init__(self, loss_weight=1.0, class_weight=None):
+    def __init__(self,
+                 loss_weight: float = 1.0,
+                 class_weight: Optional[List[float]] = None) -> None:
         super().__init__(loss_weight=loss_weight)
         self.class_weight = None
         if class_weight is not None:
             self.class_weight = torch.Tensor(class_weight)
 
-    def _forward(self, cls_score, label, **kwargs):
+    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor,
+                 **kwargs) -> torch.Tensor:
         """Forward function.
 
         Args:
@@ -89,20 +94,23 @@ class BCELossWithLogits(BaseWeightedLoss):
 
     Args:
         loss_weight (float): Factor scalar multiplied on the loss.
-            Default: 1.0.
+            Defaults to 1.0.
         class_weight (list[float] | None): Loss weight for each class. If set
             as None, use the same weight 1 for all classes. Only applies
             to CrossEntropyLoss and BCELossWithLogits (should not be set when
-            using other losses). Default: None.
+            using other losses). Defaults to None.
     """
 
-    def __init__(self, loss_weight=1.0, class_weight=None):
+    def __init__(self,
+                 loss_weight: float = 1.0,
+                 class_weight: Optional[List[float]] = None) -> None:
         super().__init__(loss_weight=loss_weight)
         self.class_weight = None
         if class_weight is not None:
             self.class_weight = torch.Tensor(class_weight)
 
-    def _forward(self, cls_score, label, **kwargs):
+    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor,
+                 **kwargs) -> torch.Tensor:
         """Forward function.
 
         Args:
@@ -130,19 +138,19 @@ class CBFocalLoss(BaseWeightedLoss):
 
     Args:
         loss_weight (float): Factor scalar multiplied on the loss.
-            Default: 1.0.
+            Defaults to 1.0.
         samples_per_cls (list[int]): The number of samples per class.
-            Default: [].
+            Defaults to [].
         beta (float): Hyperparameter that controls the per class loss weight.
-            Default: 0.9999.
-        gamma (float): Hyperparameter of the focal loss. Default: 2.0.
+            Defaults to 0.9999.
+        gamma (float): Hyperparameter of the focal loss. Defaults to 2.0.
     """
 
     def __init__(self,
-                 loss_weight=1.0,
-                 samples_per_cls=[],
-                 beta=0.9999,
-                 gamma=2.):
+                 loss_weight: float = 1.0,
+                 samples_per_cls: List[int] = [],
+                 beta: float = 0.9999,
+                 gamma: float = 2.) -> None:
         super().__init__(loss_weight=loss_weight)
         self.samples_per_cls = samples_per_cls
         self.beta = beta
@@ -153,7 +161,8 @@ class CBFocalLoss(BaseWeightedLoss):
         self.weights = weights
         self.num_classes = len(weights)
 
-    def _forward(self, cls_score, label, **kwargs):
+    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor,
+                 **kwargs) -> torch.Tensor:
         """Forward function.
 
         Args:
