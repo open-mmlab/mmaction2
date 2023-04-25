@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import inspect
 import warnings
 from abc import ABCMeta, abstractmethod
 
@@ -46,8 +47,9 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
 
         # Record the source of the backbone.
         self.backbone_from = 'mmaction2'
-
-        if backbone['type'].startswith('mmcls.'):
+        if inspect.isclass(backbone['type']):
+            self.backbone = MODELS.build(backbone)
+        elif backbone['type'].startswith('mmcls.'):
             try:
                 # Register all mmcls models.
                 import mmcls.models  # noqa: F401
