@@ -146,7 +146,6 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         if self.with_neck:
             self.neck.init_weights()
 
-    @auto_fp16()
     def extract_feat(self, imgs):
         """Extract features through a backbone.
 
@@ -256,6 +255,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         return loss, log_vars
 
+    @auto_fp16(apply_to=('img', ))
     def forward(self, imgs, label=None, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
         if kwargs.get('gradcam', False):
