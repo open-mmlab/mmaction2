@@ -147,7 +147,7 @@ def test_tpn():
         'tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.py')
     config.model['backbone']['pretrained'] = None
 
-    input_shape = (2, 8, 3, 32, 32)
+    input_shape = (1, 8, 3, 64, 64)
     train_test_step(config, input_shape)
 
 
