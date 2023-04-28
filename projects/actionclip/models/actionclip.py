@@ -1,12 +1,14 @@
+from typing import Dict, List, Optional, Union
+
+import clip
 import mmengine
-from typing import List, Optional, Dict, Union
 import torch
 import torch.nn.functional as F
-import clip
 from mmengine.model import BaseModel
+from mmengine.structures import LabelData
+
 from mmaction.registry import MODELS
 from .adapter import TransformerAdapter
-from mmengine.structures import LabelData
 
 
 def text_prompt(labels_or_label_file):
@@ -17,21 +19,26 @@ def text_prompt(labels_or_label_file):
     else:
         raise ValueError('`labels_or_label_file` must be `list` or `str`. ')
 
-    template = [f"a photo of action {{}}", f"a picture of action {{}}", f"Human action of {{}}", f"{{}}, an action",
-                f"{{}} this is an action", f"{{}}, a video of action", f"Playing action of {{}}", f"{{}}",
-                f"Playing a kind of action, {{}}", f"Doing a kind of action, {{}}", f"Look, the human is {{}}",
-                f"Can you recognize the action of {{}}?", f"Video classification of {{}}", f"A video of {{}}",
-                f"The man is {{}}", f"The woman is {{}}"]
+    template = [
+        'a photo of action {}', 'a picture of action {}', 'Human action of {}',
+        '{}, an action', '{} this is an action', '{}, a video of action',
+        'Playing action of {}', '{}', 'Playing a kind of action, {}',
+        'Doing a kind of action, {}', 'Look, the human is {}',
+        'Can you recognize the action of {}?', 'Video classification of {}',
+        'A video of {}', 'The man is {}', 'The woman is {}'
+    ]
 
     num_prompt = len(template)
-    prompt = torch.cat([clip.tokenize(t.format(c)) for t in template for c in labels])
+    prompt = torch.cat(
+        [clip.tokenize(t.format(c)) for t in template for c in labels])
     return prompt, num_prompt
 
 
 @MODELS.register_module()
 class ActionClip(BaseModel):
 
-    def __init__(self, clip_arch: str,
+    def __init__(self,
+                 clip_arch: str,
                  num_adapter_segs: int,
                  num_adapter_layers: int = 6,
                  labels_or_label_file: Optional[Union[List[str], str]] = None,
@@ -47,7 +54,8 @@ class ActionClip(BaseModel):
         super(ActionClip, self).__init__(data_preprocessor=data_preprocessor)
 
         self.clip = clip.load(clip_arch, device='cpu')[0]
-        self.adapter = TransformerAdapter(self.clip, num_adapter_segs, num_adapter_layers)
+        self.adapter = TransformerAdapter(self.clip, num_adapter_segs,
+                                          num_adapter_layers)
 
         if labels_or_label_file is not None:
             self.prompt, self.num_prompt = text_prompt(labels_or_label_file)
@@ -67,7 +75,8 @@ class ActionClip(BaseModel):
     def encode_text(self, text):
         return self.clip.encode_text(text)
 
-    def forward(self, inputs: torch.Tensor,
+    def forward(self,
+                inputs: torch.Tensor,
                 data_samples: Optional[List] = None,
                 mode: str = 'tensor'):
 
@@ -76,17 +85,19 @@ class ActionClip(BaseModel):
 
         elif mode == 'predict':
             assert hasattr(self, 'prompt'),\
-                "`labels_or_label_file` is required to perform prediction. "
+                '`labels_or_label_file` is required to perform prediction. '
 
             video_features = self.encode_video(inputs)
-            video_features = video_features / video_features.norm(dim=-1, keepdim=True)
+            video_features = video_features / video_features.norm(
+                dim=-1, keepdim=True)
 
             bsz = len(data_samples)
             num_views = video_features.shape[0] // bsz
 
             if self.text_features is None:
                 text_features = self.encode_text(self.prompt.to(inputs.device))
-                self.text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+                self.text_features = text_features / text_features.norm(
+                    dim=-1, keepdim=True)
 
             # (bsz*num_views, num_prompt, num_classes) ->
             # (bsz, num_views*num_prompt, num_classes)
