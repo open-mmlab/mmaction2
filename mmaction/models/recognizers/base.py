@@ -255,7 +255,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         return loss, log_vars
 
-    @auto_fp16(apply_to=('img', ))
+    @auto_fp16(apply_to=('imgs', ))
     def forward(self, imgs, label=None, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
         if kwargs.get('gradcam', False):
