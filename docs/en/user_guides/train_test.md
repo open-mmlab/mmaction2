@@ -1,5 +1,19 @@
 # Training and Test
 
+- [Training and Test](#training-and-test)
+  - [Training](#training)
+    - [Training with your PC](#training-with-your-pc)
+    - [Training with multiple GPUs](#training-with-multiple-gpus)
+    - [Training with multiple machines](#training-with-multiple-machines)
+      - [Multiple machines in the same network](#multiple-machines-in-the-same-network)
+      - [Multiple machines managed with slurm](#multiple-machines-managed-with-slurm)
+  - [Test](#test)
+    - [Test with your PC](#test-with-your-pc)
+    - [Test with multiple GPUs](#test-with-multiple-gpus)
+    - [Test with multiple machines](#test-with-multiple-machines)
+      - [Multiple machines in the same network](#multiple-machines-in-the-same-network-1)
+      - [Multiple machines managed with slurm](#multiple-machines-managed-with-slurm-1)
+
 ## Training
 
 ### Training with your PC

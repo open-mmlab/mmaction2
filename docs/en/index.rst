@@ -22,6 +22,7 @@ You can switch between Chinese and English documents in the lower-left corner of
    user_guides/config.md
    user_guides/train_test.md
    user_guides/prepare_dataset.md
+   user_guides/finetune.md
 
 .. toctree::
    :maxdepth: 1
