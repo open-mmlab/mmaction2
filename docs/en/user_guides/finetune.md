@@ -3,6 +3,15 @@
 This tutorial provides instructions for users to use the pre-trained models
 to finetune them on other datasets, so that better performance can be achieved.
 
+- [Tutorial 2: Finetuning Models](#tutorial-2-finetuning-models)
+  - [Outline](#outline)
+  - [Choose Template Config](#choose-template-config)
+  - [Modify Head](#modify-head)
+  - [Modify Dataset](#modify-dataset)
+  - [Modify Training Schedule (Optional)](#modify-training-schedule-optional)
+  - [Use Pre-Trained Model](#use-pre-trained-model)
+  - [Start Training](#start-training)
+
 ## Outline
 
 There are two steps to finetune a model on a new dataset.
