@@ -16,7 +16,7 @@ to finetune them on other datasets, so that better performance can be achieved.
 
 There are two steps to finetune a model on a new dataset.
 
-1. Add support for the new dataset. See [Prepare Dataset](prepare_dataset.md) and [Customize Datast](../advanced_guides/customize_dataset.md).
+1. Add support for the new dataset. See [Prepare Dataset](prepare_dataset.md) and [Customize Dataset](../advanced_guides/customize_dataset.md).
 2. Modify the configs. This will be discussed in this tutorial.
 
 ## Choose Template Config
@@ -44,7 +44,7 @@ model = dict(
 
 MMAction2 supports UCF101, Kinetics-400, Moments in Time, Multi-Moments in Time, THUMOS14,
 Something-Something V1&V2, ActivityNet Dataset.
-The users may need to adapt one of the above dataset to fit for their special datasets.
+The users may need to adapt one of the above datasets to fit their special datasets.
 You could refer to [Prepare Dataset](prepare_dataset.md) and [Customize Datast](../advanced_guides/customize_dataset.md) for more details.
 In our case, UCF101 is already supported by various dataset types, like `VideoDataset`,
 so we change the config as follows.
@@ -60,7 +60,7 @@ ann_file_val = 'data/ucf101/ucf101_val_list.txt'
 
 ## Modify Training Schedule
 
-Finetuning usually requires smaller learning rate and less training epochs.
+Finetuning usually requires a smaller learning rate and fewer training epochs.
 
 ```python
 train_cfg = dict(
@@ -315,13 +315,13 @@ load_from = 'https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_im
 
 ```
 
-You can use the following command to finetune on your dataset.
+You can use the following command to finetune a model on your dataset.
 
 ```shell
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train TSN model on Kinetics-400 dataset in a deterministic option.
+Example: train the TSN model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
 python tools/train.py configs/recognition/tsn/tsn_ucf101.py  \
