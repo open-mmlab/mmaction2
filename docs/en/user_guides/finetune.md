@@ -8,7 +8,7 @@ to finetune them on other datasets, so that better performance can be achieved.
   - [Choose Template Config](#choose-template-config)
   - [Modify Head](#modify-head)
   - [Modify Dataset](#modify-dataset)
-  - [Modify Training Schedule (Optional)](#modify-training-schedule-optional)
+  - [Modify Training Schedule](#modify-training-schedule)
   - [Use Pre-Trained Model](#use-pre-trained-model)
   - [Start Training](#start-training)
 
@@ -58,7 +58,7 @@ ann_file_train = 'data/ucf101/ucf101_train_list.txt'
 ann_file_val = 'data/ucf101/ucf101_val_list.txt'
 ```
 
-## Modify Training Schedule (Optional)
+## Modify Training Schedule
 
 Finetuning usually requires smaller learning rate and less training epochs.
 
