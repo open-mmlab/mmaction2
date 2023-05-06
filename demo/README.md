@@ -240,8 +240,8 @@ python demo/demo_skeleton.py demo/demo_skeleton.mp4 demo/demo_skeleton_out.mp4 \
 
 ```shell
 python demo/demo_skeleton.py demo/demo_skeleton.mp4 demo/demo_skeleton_out.mp4 \
-    --config configs/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py \
-    --checkpoint https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint-e7bb9653.pth \
+    --config configs/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.py \
+    --checkpoint https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/stgcn_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20221129-484a394a.pth \
     --det-config demo/demo_configs/faster-rcnn_r50_fpn_2x_coco_infer.py \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --det-score-thr 0.9 \
@@ -298,7 +298,7 @@ Assume that you are located at `$MMACTION2` .
 
 ```shell
 python demo/demo_spatiotemporal_det.py demo/demo.mp4 demo/demo_spatiotemporal_det.mp4 \
-    --config configs/detection/ava/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.py \
+    --config configs/detection/slowonly/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.py \
     --checkpoint https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
     --det-config demo/demo_configs/faster-rcnn_r50_fpn_2x_coco_infer.py \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
@@ -356,8 +356,8 @@ Assume that you are located at `$MMACTION2` .
 1. Export an onnx file given the config file and checkpoint.
 
 ```shell
-python3 tools/deployment/export_onnx_stdet.py \
-    configs/detection/ava/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.py \
+python tools/deployment/export_onnx_stdet.py \
+    configs/detection/slowonly/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.py \
     https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
     --output_file slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.onnx \
     --num_frames 8
@@ -367,7 +367,7 @@ python3 tools/deployment/export_onnx_stdet.py \
 
 ```shell
 python demo/demo_spatiotemporal_det_onnx.py demo/demo.mp4 demo/demo_spatiotemporal_det.mp4 \
-    --config configs/detection/ava/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.py \
+    --config configs/detection/slowonly/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.py \
     --onnx-file slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.onnx \
     --det-config demo/demo_configs/faster-rcnn_r50_fpn_2x_coco_infer.py \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
@@ -416,7 +416,7 @@ Assume that you are located at `$MMACTION2`.
    ```shell
    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
    python demo/demo_inferencer.py demo/demo.mp4 \
-       --rec configs/recognition/tsn/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
+       --rec tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb \
        --label-file tools/data/kinetics/label_map_k400.txt
    ```
 
