@@ -19,7 +19,7 @@ MMAction2提供了高级 Python APIs，用于对给定视频进行推理:
 
 下载所需的配置：'mim download mmaction2 --config tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb --dest .'
 
-下载所需的演示视频：'wget https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/demo.mp4'
+下载所需的演示视频：'wget https://github.com/open-mmlab/mmaction2/blob/main/demo/demo.mp4'
 ```
 
 ```python
