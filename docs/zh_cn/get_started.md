@@ -169,7 +169,7 @@ MMAction2 可以仅在 CPU 环境中安装。在 CPU 模式下，你可以完成
 
 ### 通过Docker使用MMAction2
 
-我们提供一个[Dockerfile](https://github.com/open-mmlab/mmaction2/blob/1.x/docker/Dockerfile)用来构建镜像，确保你的 [Docker版本](https://docs.docker.com/engine/install/)>=19.03.
+我们提供一个[Dockerfile](https://github.com/open-mmlab/mmaction2/blob/main/docker/Dockerfile)用来构建镜像，确保你的 [Docker版本](https://docs.docker.com/engine/install/)>=19.03.
 
 ```shell
 # 例如构建PyTorch 1.6.0, CUDA 10.1, CUDNN 7的镜像

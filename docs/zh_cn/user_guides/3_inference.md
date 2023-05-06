@@ -35,4 +35,4 @@ model = init_recognizer(config_path, checkpoint_path, device="cpu")  # 也可以
 result = inference_recognizer(model, img_path)
 ```
 
-`result` 是一个包含 `pred_scores` 的字典。动作识别示例代码详见 [demo/demo.py](https://github.com/open-mmlab/mmaction2/blob/1.x/demo/demo.py)。
+`result` 是一个包含 `pred_scores` 的字典。动作识别示例代码详见 [demo/demo.py](https://github.com/open-mmlab/mmaction2/blob/main/demo/demo.py)。
