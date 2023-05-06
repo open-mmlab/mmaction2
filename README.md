@@ -26,7 +26,7 @@
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
 [📘Documentation](https://mmaction2.readthedocs.io/en/latest/) |
-[🛠️Installation](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) |
+[🛠️Installation](https://mmaction2.readthedocs.io/en/latest/get_started/installation/installation.html) |
 [👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/model_zoo/modelzoo.html) |
 [🆕Update News](https://mmaction2.readthedocs.io/en/latest/notes/changelog.html) |
 [🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
@@ -114,7 +114,7 @@ It is a part of the [OpenMMLab](http://openmmlab.com/) project.
 
 MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional) and [MMPose](https://github.com/open-mmlab/mmpose) (optional).
 
-Please refer to [install.md](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) for detailed instructions.
+Please refer to [install.md](https://mmaction2.readthedocs.io/en/latest/get_started/installation/installation.html) for detailed instructions.
 
 <details close>
 <summary>Quick instructions</summary>

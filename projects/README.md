@@ -8,7 +8,7 @@ Here is an [example project](./example_project) about how to add your algorithms
 
 We also provide some documentation listed below:
 
-- [Contribution Guide](https://mmaction2.readthedocs.io/en/latest/get_started/contribution_guide.html)
+- [Contribution Guide](https://mmaction2.readthedocs.io/en/latest/get_started/installation/contribution_guide.html)
 
   The guides for new contributors about how to add your projects to MMAction2.
 
