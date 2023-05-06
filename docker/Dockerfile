@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y git ninja-build libglib2.0-0 libsm6 lib
 
 # Install MMCV
 RUN pip install openmim
-RUN mim install mmengine "mmcv>=2.0.0"
+RUN mim install mmengine mmcv
 
 # Install MMAction2
 RUN conda clean --all
@@ -25,6 +25,6 @@ RUN git clone https://github.com/open-mmlab/mmaction2.git /mmaction2
 WORKDIR /mmaction2
 RUN mkdir -p /mmaction2/data
 ENV FORCE_CUDA="1"
-RUN git checkout 1.x
+RUN git checkout main
 RUN pip install cython --no-cache-dir
 RUN pip install --no-cache-dir -e .
