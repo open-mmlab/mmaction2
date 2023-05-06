@@ -114,7 +114,6 @@ jobs:
             docker build .circleci/docker -t mmaction:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
             docker run --gpus all -t -d -v /home/circleci/project:/mmaction -w /mmaction --name mmaction mmaction:gpu
             docker exec mmaction apt-get update
-            docker exec mmaction pip install "numpy==1.23"
             docker exec mmaction apt-get upgrade -y
             docker exec mmaction apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libturbojpeg pkg-config
             docker exec mmaction apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev libsrtp2-dev libsndfile1
