@@ -2,7 +2,7 @@ docutils==0.16.0
 einops
 myst-parser
 opencv-python
--e git+https://github.com/gaotongxiao/pytorch_sphinx_theme.git#egg=pytorch_sphinx_theme
+-e git+https://github.com/open-mmlab/pytorch_sphinx_theme.git#egg=pytorch_sphinx_theme
 scipy
 sphinx==4.0.2
 sphinx_copybutton

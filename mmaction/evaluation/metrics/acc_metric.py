@@ -31,16 +31,13 @@ class AccMetric(BaseMetric):
     """Accuracy evaluation metric."""
     default_prefix: Optional[str] = 'acc'
 
-    def __init__(
-            self,
-            metric_list: Optional[Union[str,
-                                        Tuple[str]]] = ('top_k_accuracy',
-                                                        'mean_class_accuracy'),
-            collect_device: str = 'cpu',
-            metric_options: Optional[Dict] = dict(
-                top_k_accuracy=dict(topk=(1, 5))),
-            prefix: Optional[str] = None,
-            num_classes: Optional[int] = None):
+    def __init__(self,
+                 metric_list: Optional[Union[str, Tuple[str]]] = (
+                     'top_k_accuracy', 'mean_class_accuracy'),
+                 collect_device: str = 'cpu',
+                 metric_options: Optional[Dict] = dict(
+                     top_k_accuracy=dict(topk=(1, 5))),
+                 prefix: Optional[str] = None) -> None:
 
         # TODO: fix the metric_list argument with a better one.
         # `metrics` is not a safe argument here with mmengine.
@@ -62,14 +59,8 @@ class AccMetric(BaseMetric):
                 'mmit_mean_average_precision', 'mean_average_precision'
             ]
 
-            if metric in [
-                    'mmit_mean_average_precision', 'mean_average_precision'
-            ]:
-                assert type(num_classes) == int
-
         self.metrics = metrics
         self.metric_options = metric_options
-        self.num_classes = num_classes
 
     def process(self, data_batch: Sequence[Tuple[Any, Dict]],
                 data_samples: Sequence[Dict]) -> None:
@@ -89,7 +80,12 @@ class AccMetric(BaseMetric):
             for item_name, score in pred.items():
                 pred[item_name] = score.cpu().numpy()
             result['pred'] = pred
-            result['label'] = label['item'].item()
+            if label['item'].size(0) == 1:
+                # single-label
+                result['label'] = label['item'].item()
+            else:
+                # multi-label
+                result['label'] = label['item'].cpu().numpy()
             self.results.append(result)
 
     def compute_metrics(self, results: List) -> Dict:
@@ -138,12 +134,13 @@ class AccMetric(BaseMetric):
 
         return eval_results
 
-    def calculate(self, preds: List[np.ndarray], labels: List[int]) -> Dict:
+    def calculate(self, preds: List[np.ndarray],
+                  labels: List[Union[int, np.ndarray]]) -> Dict:
         """Compute the metrics from processed results.
 
         Args:
             preds (list[np.ndarray]): List of the prediction scores.
-            labels (list[int]): List of the labels.
+            labels (list[int | np.ndarray]): List of the labels.
 
         Returns:
             dict: The computed metrics. The keys are the names of the metrics,
@@ -176,27 +173,15 @@ class AccMetric(BaseMetric):
                     'mean_average_precision',
                     'mmit_mean_average_precision',
             ]:
-                gt_labels_arrays = [
-                    self.label2array(self.num_classes, label)
-                    for label in labels
-                ]
-
                 if metric == 'mean_average_precision':
-                    mAP = mean_average_precision(preds, gt_labels_arrays)
+                    mAP = mean_average_precision(preds, labels)
                     eval_results['mean_average_precision'] = mAP
 
                 elif metric == 'mmit_mean_average_precision':
-                    mAP = mmit_mean_average_precision(preds, gt_labels_arrays)
+                    mAP = mmit_mean_average_precision(preds, labels)
                     eval_results['mmit_mean_average_precision'] = mAP
 
         return eval_results
-
-    @staticmethod
-    def label2array(num, label):
-        """Convert multi-label to array."""
-        arr = np.zeros(num, dtype=np.float32)
-        arr[label] = 1.
-        return arr
 
 
 @METRICS.register_module()

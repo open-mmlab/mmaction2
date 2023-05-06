@@ -18,7 +18,7 @@ You can switch between Chinese and English documents in the lower-left corner of
    :maxdepth: 1
    :caption: User Guides
 
-   user_guides/Inference.md
+   user_guides/inference.md
    user_guides/config.md
    user_guides/train_test.md
    user_guides/prepare_dataset.md

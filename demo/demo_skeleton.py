@@ -115,7 +115,7 @@ def visualize(args, frames, data_samples, action_label):
             show=False,
             wait_time=0,
             out_file=None,
-            kpt_score_thr=0.3)
+            kpt_thr=0.3)
         vis_frame = visualizer.get_image()
         cv2.putText(vis_frame, action_label, (10, 30), FONTFACE, FONTSCALE,
                     FONTCOLOR, THICKNESS, LINETYPE)

@@ -1,6 +1,6 @@
 # Quick Run
 
-This chapter will take you through the basic functions of MMAction2. And we assume you [installed MMAction2 from source](../installation#best-practices).
+This chapter will introduce you to the fundamental functionalities of MMAction2. We assume that you have [installed MMAction2 from source](../installation#best-practices).
 
 - [Quick Run](#quick-run)
   - [Inference](#inference)
@@ -15,7 +15,7 @@ This chapter will take you through the basic functions of MMAction2. And we assu
 
 ## Inference
 
-Run the following in MMAction2's root directory:
+Run the following command in the root directory of MMAction2:
 
 ```shell
 python demo/demo_inferencer.py  demo/demo.mp4 \
@@ -36,10 +36,10 @@ You should be able to see a pop-up video and the inference result printed out in
 ```
 
 ```{note}
-If you are running MMAction2 on a server without GUI or via SSH tunnel with X11 forwarding disabled, you may not see the pop-up window.
+If you are running MMAction2 on a server without a GUI or via an SSH tunnel with X11 forwarding disabled, you may not see the pop-up window.
 ```
 
-A detailed description of MMAction2's inference interface can be found [here](/demo/README#inferencer)
+A detailed description of MMAction2's inference interface can be found [here](/demo/README.md#inferencer).
 
 In addition to using our well-provided pre-trained models, you can also train models on your own datasets. In the next section, we will take you through the basic functions of MMAction2 by training TSN on the tiny [Kinetics](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) dataset as an example.
 
@@ -51,7 +51,7 @@ Since the variety of video dataset formats are not conducive to switching datase
 But here, efficiency means everything.
 ```
 
-Here, we have prepared a lite version of Kinetics dataset for demonstration purposes. Download our pre-prepared [zip](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) and extract it to the `data/` directory under mmaction2 to get our prepared video and annotation file.
+To get started, please download our pre-prepared [kinetics400_tiny.zip](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) and extract it to the `data/` directory in the root directory of MMAction2. This will provide you with the necessary videos and annotation file.
 
 ```Bash
 wget https://download.openmmlab.com/mmaction/kinetics400_tiny.zip
@@ -61,7 +61,7 @@ unzip kinetics400_tiny.zip -d data/
 
 ## Modify the Config
 
-Once the dataset is prepared, we will then specify the location of the training set and the training parameters by modifying the config file.
+After preparing the dataset, the next step is to modify the config file to specify the location of the training set and training parameters.
 
 In this example, we will train a TSN using resnet50 as its backbone. Since MMAction2 already has a config file for the full Kinetics400 dataset (`configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py`), we just need to make some modifications on top of it.
 
@@ -78,18 +78,17 @@ ann_file_val = 'data/kinetics400_tiny/kinetics_tiny_val_video.txt'
 
 ### Modify Runtime Config
 
-Also, because of the reduced dataset size, we'd better reduce training batchsize to 4 and the number of training epochs to 10 accordingly, shorten the validation interval as well as the weight storage interval to 1 rounds, and modify the learning rate decay strategy. Modify corresponding keys in  `configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py` as following lines to take effect.
+Additionally, due to the reduced size of the dataset, we recommend decreasing the training batch size to 4 and the number of training epochs to 10 accordingly. Furthermore, we suggest shortening the validation and weight storage intervals to 1 round each, and modifying the learning rate decay strategy. Modify the corresponding keys in  `configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py` as following lines to take effect.
 
-```Python
+```python
 # set training batch size to 4
 train_dataloader['batch_size'] = 4
 
 # Save checkpoints every epoch, and only keep the latest checkpoint
 default_hooks = dict(
-    checkpoint=dict(type='CheckpointHook', interval=3, max_keep_ckpts=1,),
-    )
-# Set the maximum number of epochs to 10, and validate the model every 3 epochs
-train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=10, val_interval=3)
+    checkpoint=dict(type='CheckpointHook', interval=1, max_keep_ckpts=1))
+# Set the maximum number of epochs to 10, and validate the model every 1 epochs
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=10, val_interval=1)
 # adjust learning rate schedule according to 10 epochs
 param_scheduler = [
     dict(
@@ -104,10 +103,9 @@ param_scheduler = [
 
 ### Modify Model Config
 
-Further, due to the small size of tiny kinetics dataset, we'd better to load a pre-trained model on original Kinetics dataset. We also need to modify the model according to the actual number of classes. Just directly put the following lines into `configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py`.
+Further, due to the small size of tiny Kinetics dataset, it is recommended to load a pre-trained model on the original Kinetics dataset. Additionally, the model needs to be modified according to the actual number of classes. Please directly add the following lines to `configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py`.
 
-```Python
-
+```python
 model = dict(
     cls_head=dict(num_classes=2))
 load_from = 'https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth'
@@ -121,7 +119,7 @@ For a more detailed description of config, please refer to [here](../user_guides
 
 ## Browse the Dataset
 
-Before we start the training, we can also visualize the frames processed by training-time [data transforms](<>). It's quite simple: pass the config file we need to visualize into the [browse_dataset.py](/tools/analysis_tools/browse_dataset.py) script.
+Before we start the training, we can also visualize the frames processed by training-time data transforms. It's quite simple: pass the config file we need to visualize into the [browse_dataset.py](/tools/analysis_tools/browse_dataset.py) script.
 
 ```Bash
 python tools/visualizations/browse_dataset.py \

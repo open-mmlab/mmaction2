@@ -1,6 +1,6 @@
 # Customize Logging
 
-MMAction2 produces a lot of logs during the running process, such as loss, iteration time, learning rate, etc. In this section, we will introduce you how to output custom log. More details about the logging system, please refer to [MMEngine](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/logging.html).
+MMAction2 produces a lot of logs during the running process, such as loss, iteration time, learning rate, etc. In this section, we will introduce you how to output custom log. More details about the logging system, please refer to [MMEngine Tutorial](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/logging.html).
 
 - [Customize Logging](#customize-logging)
   - [Flexible Logging System](#flexible-logging-system)
@@ -9,13 +9,13 @@ MMAction2 produces a lot of logs during the running process, such as loss, itera
 
 ## Flexible Logging System
 
-MMAction2 configures the logging system by LogProcessor in [default_runtime](/configs/_base_/default_runtime.py) in default, which is equivalent to:
+The MMAction2 logging system is configured by the `LogProcessor` in [default_runtime](/configs/_base_/default_runtime.py) by default, which is equivalent to:
 
 ```python
 log_processor = dict(type='LogProcessor', window_size=20, by_epoch=True)
 ```
 
-Defaultly, LogProcessor catches all filed start with `loss` return by `model.forward`. For example in the following model, `loss1` and `loss2` will be logged automatically without additional configuration.
+By default, the `LogProcessor` captures all fields that begin with `loss` returned by `model.forward`. For instance, in the following model, `loss1` and `loss2` will be logged automatically without any additional configuration.
 
 ```python
 from mmengine.model import BaseModel
@@ -32,14 +32,14 @@ class ToyModel(BaseModel):
         return dict(loss1=loss1, loss2=loss2)
 ```
 
-The format of the output log is as followed:
+The output log follows the following format:
 
 ```
 08/21 02:58:41 - mmengine - INFO - Epoch(train) [1][10/25]  lr: 1.0000e-02  eta: 0:00:00  time: 0.0019  data_time: 0.0004  loss1: 0.8381  loss2: 0.9007  loss: 1.7388
 08/21 02:58:41 - mmengine - INFO - Epoch(train) [1][20/25]  lr: 1.0000e-02  eta: 0:00:00  time: 0.0029  data_time: 0.0010  loss1: 0.1978  loss2: 0.4312  loss: 0.6290
 ```
 
-LogProcessor will output the log in the following format:
+`LogProcessor` will output the log in the following format:
 
 - The prefix of the log:
   - epoch mode(`by_epoch=True`): `Epoch(train) [{current_epoch}/{current_iteration}]/{dataloader_length}`
@@ -55,11 +55,11 @@ LogProcessor will output the log in the following format:
 log_processor outputs the epoch based log by default(`by_epoch=True`). To get an expected log matched with the `train_cfg`, we should set the same value for `by_epoch` in `train_cfg` and `log_processor`.
 ```
 
-Based on the rules above, the code snippet will count the average value of the loss1 and the loss2 every 20 iterations. More types of statistical methods, please refer to [MMEngine.LogProcessor](mmengine.runner.LogProcessor).
+Based on the rules above, the code snippet will count the average value of the loss1 and the loss2 every 20 iterations. More types of statistical methods, please refer to [mmengine.runner.LogProcessor](mmengine.runner.LogProcessor).
 
 ## Customize log
 
-The logging system could not only log the loss, lr, .etc but also collect and output the custom log. For example, if we want to statistic the intermediate loss:
+The logging system could not only log the `loss`, `lr`, .etc but also collect and output the custom log. For example, if we want to statistic the intermediate loss:
 
 The `ToyModel` calculate `loss_tmp` in forward, but don't save it into the return dict.
 
@@ -108,7 +108,7 @@ The `loss_tmp` will be added to the output log:
 
 ## Export the debug log
 
-To export the debug log to the `work_dir`, you can set log_level in config file as followed:
+To export the debug log to the `work_dir`, you can set log_level in config file as follows:
 
 ```
 log_level='DEBUG'
