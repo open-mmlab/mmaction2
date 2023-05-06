@@ -59,7 +59,7 @@ python tools/test.py configs/detection/lfb/slowonly-lfb-infer_r50_ava21-rgb.py \
     checkpoints/YOUR_BASELINE_CHECKPOINT.pth
 ```
 
-We use [slowonly_r50_4x16x1 checkpoint](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth) from [slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb](/configs/detection/ava/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py) to infer feature bank.
+We use [slowonly_r50_4x16x1 checkpoint](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth) from [slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb](/configs/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py) to infer feature bank.
 
 ### b. Train LFB
 
