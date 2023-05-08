@@ -15,6 +15,7 @@ Import:
 - configs/recognition/trn/metafile.yml
 - configs/recognition/swin/metafile.yml
 - configs/recognition/c2d/metafile.yml
+- configs/recognition/videomaev2/metafile.yml
 - configs/detection/slowfast/metafile.yml
 - configs/detection/slowonly/metafile.yml
 - configs/detection/acrn/metafile.yml
