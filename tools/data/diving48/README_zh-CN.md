@@ -15,11 +15,26 @@
 ```
 
 用户可参考该数据集的 [官网](http://www.svcl.ucsd.edu/projects/resound/dataset.html)，以获取数据集相关的基本信息。
-在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/diving48/`。
 
+`````{tabs}
+
+````{group-tab} 使用 MIM 下载
+# MIM 支持下载 Diving48 数据集。用户可以通过一行命令，从 OpenDataLab 进行下载，并进行预处理。
+```Bash
+# 安装 OpenDataLab CLI 工具
+pip install -U opendatalab
+# 登录 OpenDataLab
+odl login
+# 通过 MIM 进行数据集下载，预处理。注意这将花费较长时间
+mim download mmaction2 --dataset diving48
+```
+
+````
+
+````{group-tab} 从官方源下载
 ## 步骤 1. 下载标注文件
 
-用户可以使用以下命令下载标注文件（考虑到标注的准确性，这里仅下载 V2 版本）。
+用户可以使用以下命令下载标注文件（考虑到标注的准确性，这里仅下载 V2 版本）。在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/diving48/`。
 
 ```shell
 bash download_annotations.sh
@@ -81,7 +96,10 @@ bash generate_videos_filelist.sh
 bash generate_rawframes_filelist.sh
 ```
 
-## 步骤 5. 检查文件夹结构
+````
+`````
+
+### 检查文件夹结构
 
 在完成所有 Diving48 数据集准备流程后，
 用户可以获得对应的 RGB + 光流文件，视频文件以及标注文件。
@@ -97,7 +115,7 @@ mmaction2
 │   ├── diving48
 │   │   ├── diving48_{train,val}_list_rawframes.txt
 │   │   ├── diving48_{train,val}_list_videos.txt
-│   │   ├── annotations
+│   │   ├── annotations（可选）
 │   |   |   ├── Diving48_V2_train.json
 │   |   |   ├── Diving48_V2_test.json
 │   |   |   ├── Diving48_vocab.json
@@ -105,7 +123,7 @@ mmaction2
 │   |   |   ├── _8Vy3dlHg2w_00000.mp4
 │   |   |   ├── _8Vy3dlHg2w_00001.mp4
 │   |   |   ├── ...
-│   |   ├── rawframes
+│   |   ├── rawframes（可选）
 │   |   |   ├── 2x00lRzlTVQ_00000
 │   |   |   |   ├── img_00001.jpg
 │   |   |   |   ├── img_00002.jpg

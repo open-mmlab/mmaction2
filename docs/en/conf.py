@@ -48,6 +48,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'myst_parser',
+    'sphinx_markdown_tables',
     'sphinx_copybutton',
     'sphinx_tabs.tabs',
     'notfound.extension',

@@ -1,3 +1,4 @@
 include mmaction/.mim/model-index.yml
+include mmaction/.mim/dataset-index.yml
 recursive-include mmaction/.mim/configs *.py *.yml
 recursive-include mmaction/.mim/tools *.sh *.py

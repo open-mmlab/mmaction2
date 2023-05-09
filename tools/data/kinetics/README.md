@@ -15,8 +15,7 @@
 }
 ```
 
-For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/). The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
-Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/${DATASET}/`.
+For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
 
 :::{note}
 Because of the expirations of some YouTube links, the sizes of kinetics dataset copies may be different. Here are the sizes of our kinetics dataset copies that used to train all checkpoints.
@@ -29,7 +28,37 @@ Because of the expirations of some YouTube links, the sizes of kinetics dataset 
 
 :::
 
+`````{tabs}
+
+````{group-tab} Download by MIM
+:::{note}
+All experiments on Kinetics in MMAction2 are based on this version, we recommend users to try this version.
+:::
+
+MIM supports downloading from OpenDataLab and preprocessing Kinetics-400/600/700 dataset with one command line.
+
+```Bash
+# install OpenDataLab CLI tools
+pip install -U opendatalab
+# log in OpenDataLab
+odl login
+# download and preprocess Kinetics-400 by MIM. Note that this might take a long time.
+mim download mmaction2 --dataset kinetics400
+# download and preprocess Kinetics-600 by MIM. Note that this might take a long time.
+mim download mmaction2 --dataset kinetics600
+# download and preprocess Kinetics-700 by MIM. Note that this might take a long time.
+mim download mmaction2 --dataset kinetics700
+
+```
+
+````
+
+````{group-tab} Download form Official Source
+
 ## Step 1. Prepare Annotations
+
+The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/${DATASET}/`.
 
 First of all, you can run the following script to prepare annotations by downloading from the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
 
@@ -47,16 +76,6 @@ bash download_backup_annotations.sh ${DATASET}
 ```
 
 ## Step 2. Prepare Videos
-
-### Option 1: Download from OpenDataLab
-
-**Recommend**: [OpenDataLab](https://opendatalab.com/) provides the Kinetics dataset ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)), users can download Kinetics dataset with short edge 320 pixels from here.
-
-:::{note}
-All experiments on Kinetics in MMAction2 are based on this version, we recommend users to try this version.
-:::
-
-### Option 2: Download from Other Source
 
 you can run the following script to prepare videos.
 The codes are adapted from the [official crawler](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics). Note that this might take a long time.
@@ -127,7 +146,10 @@ bash generate_videos_filelist.sh ${DATASET}
 bash generate_rawframes_filelist.sh ${DATASET}
 ```
 
-## Step 5. Folder Structure
+````
+`````
+
+### Folder Structure
 
 After the whole data pipeline for Kinetics preparation.
 you can get the rawframes (RGB + Flow), videos and annotation files for Kinetics.
@@ -154,8 +176,8 @@ mmaction2
 │   │   │   ├── wrapping_present
 │   │   │   ├── ...
 │   │   │   ├── zumba
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
+│   │   ├── rawframes_train (optional)
+│   │   ├── rawframes_val (optional)
 
 ```
 
