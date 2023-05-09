@@ -1,6 +1,6 @@
 Collections:
 - Name: MViT
-  README: configs/recognition/MViT/README.md
+  README: configs/recognition/mvit/README.md
   Paper:
     URL: http://openaccess.thecvf.com//content/CVPR2022/papers/Li_MViTv2_Improved_Multiscale_Vision_Transformers_for_Classification_and_Detection_CVPR_2022_paper.pdf
     Title: "MViTv2: Improved Multiscale Vision Transformers for Classification and Detection"

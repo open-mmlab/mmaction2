@@ -15,8 +15,8 @@ Import:
 - configs/recognition/trn/metafile.yml
 - configs/recognition/swin/metafile.yml
 - configs/recognition/c2d/metafile.yml
-# - configs/recognition/mvit/metafile.yml
 - configs/recognition/omnisource/metafile.yml
+- configs/recognition/mvit/metafile.yml
 - configs/recognition/uniformer/metafile.yml
 - configs/recognition/uniformerv2/metafile.yml
 - configs/recognition/videomae/metafile.yml
