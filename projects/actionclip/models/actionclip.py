@@ -22,12 +22,13 @@ def text_prompt(labels_or_label_file, template=None):
 
     if template is None:
         template = [
-            'a photo of action {}', 'a picture of action {}', 'Human action of {}',
-            '{}, an action', '{} this is an action', '{}, a video of action',
-            'Playing action of {}', '{}', 'Playing a kind of action, {}',
-            'Doing a kind of action, {}', 'Look, the human is {}',
-            'Can you recognize the action of {}?', 'Video classification of {}',
-            'A video of {}', 'The man is {}', 'The woman is {}'
+            'a photo of action {}', 'a picture of action {}',
+            'Human action of {}', '{}, an action', '{} this is an action',
+            '{}, a video of action', 'Playing action of {}', '{}',
+            'Playing a kind of action, {}', 'Doing a kind of action, {}',
+            'Look, the human is {}', 'Can you recognize the action of {}?',
+            'Video classification of {}', 'A video of {}', 'The man is {}',
+            'The woman is {}'
         ]
     elif isinstance(template, str):
         template = [template]
@@ -57,7 +58,8 @@ class ActionClip(BaseModel):
                                           num_adapter_layers)
 
         if labels_or_label_file is not None:
-            self.prompt, self.num_prompt = text_prompt(labels_or_label_file, template)
+            self.prompt, self.num_prompt = text_prompt(labels_or_label_file,
+                                                       template)
             self.text_features = None
 
     def encode_video(self, video):
