@@ -102,7 +102,6 @@ with torch.no_grad():
     video_features = model.encode_video(video)
     text_features = model.encode_text(text)
 
-# Pick the top 5 most similar labels for the image
 video_features /= video_features.norm(dim=-1, keepdim=True)
 text_features /= text_features.norm(dim=-1, keepdim=True)
 similarity = (100 * video_features @ text_features.T).softmax(dim=-1)
