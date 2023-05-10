@@ -13,7 +13,7 @@ The canonical approach to video action recognition dictates a neural model to do
 <!-- [IMAGE] -->
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/58767402/223127347-135bb92b-2dee-46d9-95fc-cebf65c27fc8.png" width="800"/>
+<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/58767402/237413093-75d76018-0521-4642-af68-32141fb4fed1.png" width="800"/>
 </div>
 
 ## Usage
