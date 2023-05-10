@@ -67,12 +67,12 @@ mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb
 
 ### Kinetics400
 
-| frame sampling strategy | backbone | top1 acc | top5 acc |testing protocol |                     config                     |                     ckpt                     |   
-| :---------------------: | :------: | :------: | :--:|:--------------: | :--------------------------------------------: | :------------------------------------------: |
-|       1x1x8       |   ViT-B/32   |   77.6  | 93.8  |  8 clips  x 1 crop   | [config](./configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb/vit-b-32-8f.pth)\[1\] |
-|       1x1x8       |    ViT-B/16   |   80.3  |  95.2 |  8 clips  x 1 crop     | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x8_k400-rgb/vit-b-16-8f.pth)\[1\] |
-|       1x1x16       |   ViT-B/16   | 81.1   | 95.6   | 16 clips  x 1 crop     | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x16_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x16_k400-rgb/vit-b-16-16f.pth)\[1\] |
-|       1x1x32       |   ViT-B/16   |   81.3  |  95.8  | 32 clips  x 1 crop     | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb/vit-b-16-32f.pth)\[1\] |
+| frame sampling strategy | backbone | top1 acc | top5 acc |  testing protocol  |                                config                                |                                ckpt                                 |
+| :---------------------: | :------: | :------: | :------: | :----------------: | :------------------------------------------------------------------: | :-----------------------------------------------------------------: |
+|          1x1x8          | ViT-B/32 |   77.6   |   93.8   | 8 clips  x 1 crop  | [config](./configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb/vit-b-32-8f.pth)\[1\] |
+|          1x1x8          | ViT-B/16 |   80.3   |   95.2   | 8 clips  x 1 crop  | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x8_k400-rgb/vit-b-16-8f.pth)\[1\] |
+|         1x1x16          | ViT-B/16 |   81.1   |   95.6   | 16 clips  x 1 crop | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x16_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x16_k400-rgb/vit-b-16-16f.pth)\[1\] |
+|         1x1x32          | ViT-B/16 |   81.3   |   95.8   | 32 clips  x 1 crop | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb/vit-b-16-32f.pth)\[1\] |
 
 \[1\] The models are ported from the repo [ActionCLIP](https://github.com/sallymmx/ActionCLIP) and tested on our data. Currently, we only support the testing of ActionCLIP models. Due to the variation in testing data, our reported test accuracy differs from that of the original repository (on average, it is lower by one point). Please refer to this [issue](https://github.com/sallymmx/ActionCLIP/issues/14) for more details.
 
@@ -134,8 +134,6 @@ pred_result = inference_recognizer(model, 'test.mp4')
 probs = pred_result.pred_scores.item.cpu().numpy()
 print("Label probs:", probs)  # [9.995e-01 5.364e-07 6.666e-04]
 ```
-
-
 
 ## Citation
 
