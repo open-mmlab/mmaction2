@@ -77,6 +77,8 @@ mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb
 
 ## Zero-Shot Prediction
 
+We offer two methods for zero-shot prediction as follows. The `test.mp4` can be downloaded from [here](https://github-production-user-asset-6210df.s3.amazonaws.com/58767402/237333525-89ebee9a-573e-4e27-9047-0ad6422fa82f.mp4).
+
 ```python
 import torch
 import clip
