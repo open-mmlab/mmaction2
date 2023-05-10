@@ -11,22 +11,29 @@ from mmaction.registry import MODELS
 from .adapter import TransformerAdapter
 
 
-def text_prompt(labels_or_label_file):
+def text_prompt(labels_or_label_file, template=None):
     if isinstance(labels_or_label_file, str):
         labels = mmengine.list_from_file(labels_or_label_file)
     elif isinstance(labels_or_label_file, list):
         labels = labels_or_label_file
     else:
-        raise ValueError('`labels_or_label_file` must be `list` or `str`. ')
+        raise ValueError(f'`labels_or_label_file` must be `list` or `str`, '
+                         f'but got {type(labels_or_label_file)}')
 
-    template = [
-        'a photo of action {}', 'a picture of action {}', 'Human action of {}',
-        '{}, an action', '{} this is an action', '{}, a video of action',
-        'Playing action of {}', '{}', 'Playing a kind of action, {}',
-        'Doing a kind of action, {}', 'Look, the human is {}',
-        'Can you recognize the action of {}?', 'Video classification of {}',
-        'A video of {}', 'The man is {}', 'The woman is {}'
-    ]
+    if template is None:
+        template = [
+            'a photo of action {}', 'a picture of action {}', 'Human action of {}',
+            '{}, an action', '{} this is an action', '{}, a video of action',
+            'Playing action of {}', '{}', 'Playing a kind of action, {}',
+            'Doing a kind of action, {}', 'Look, the human is {}',
+            'Can you recognize the action of {}?', 'Video classification of {}',
+            'A video of {}', 'The man is {}', 'The woman is {}'
+        ]
+    elif isinstance(template, str):
+        template = [template]
+    elif not mmengine.is_seq_of(template, str):
+        raise ValueError(f'`template` must be list of `str`, `str` or `None`, '
+                         f'but got {type(template)}')
 
     num_prompt = len(template)
     prompt = torch.cat(
@@ -42,23 +49,15 @@ class ActionClip(BaseModel):
                  num_adapter_segs: int,
                  num_adapter_layers: int = 6,
                  labels_or_label_file: Optional[Union[List[str], str]] = None,
+                 template: Optional[Union[List[str], str]] = None,
                  data_preprocessor: Optional[Dict] = None):
-
-        if data_preprocessor is None:
-            data_preprocessor = dict(
-                type='ActionDataPreprocessor',
-                mean=[122.771, 116.746, 104.093],
-                std=[68.500, 66.632, 70.323],
-                format_shape='NCHW')
-
         super(ActionClip, self).__init__(data_preprocessor=data_preprocessor)
-
-        self.clip = clip.load(clip_arch, device='cpu')[0]
+        self.clip = clip.load(clip_arch)[0]
         self.adapter = TransformerAdapter(self.clip, num_adapter_segs,
                                           num_adapter_layers)
 
         if labels_or_label_file is not None:
-            self.prompt, self.num_prompt = text_prompt(labels_or_label_file)
+            self.prompt, self.num_prompt = text_prompt(labels_or_label_file, template)
             self.text_features = None
 
     def encode_video(self, video):
