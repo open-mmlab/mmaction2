@@ -1,21 +1,24 @@
 import torch
-
-from .actionclip import ActionClip
-from mmengine.runner.checkpoint import _load_checkpoint
 from mmengine.dataset import Compose
+from mmengine.runner.checkpoint import _load_checkpoint
 from torchvision.transforms import Normalize
 
+from .actionclip import ActionClip
 
 _MODELS = {
-    "ViT-B/32-8": "https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb/vit-b-32-8f.pth",
-    "ViT-B/16-8": "https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x8_k400-rgb/vit-b-16-8f.pth",
-    "ViT-B/16-16": "https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x16_k400-rgb/vit-b-16-16f.pth",
-    "ViT-B/16-32": "https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb/vit-b-16-32f.pth",
+    'ViT-B/32-8':
+    'https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb/vit-b-32-8f.pth',  # noqa: E501
+    'ViT-B/16-8':
+    'https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x8_k400-rgb/vit-b-16-8f.pth',  # noqa: E501
+    'ViT-B/16-16':
+    'https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x16_k400-rgb/vit-b-16-16f.pth',  # noqa: E501
+    'ViT-B/16-32':
+    'https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb/vit-b-16-32f.pth',  # noqa: E501
 }
 
 
 def available_models():
-    """Returns the names of available CLIP models"""
+    """Returns the names of available CLIP models."""
     return list(_MODELS.keys())
 
 
@@ -40,7 +43,8 @@ def _transform(num_segs):
 
 
 def init_actionclip(name, device):
-    assert name in _MODELS, f"Model {name} not found; available models = {available_models()}"
+    assert name in _MODELS, \
+        f'Model {name} not found; available models = {available_models()}'
     model_path = _MODELS[name]
 
     checkpoint = _load_checkpoint(model_path, map_location='cpu')
@@ -51,12 +55,15 @@ def init_actionclip(name, device):
     num_adapter_segs = int(name.split('-')[2])
     assert num_adapter_segs == \
            state_dict['adapter.frame_position_embeddings.weight'].shape[0]
-    num_adapter_layers = len(
-        [k for k in state_dict.keys() if k.startswith("adapter.") and k.endswith(".attn.in_proj_weight")])
+    num_adapter_layers = len([
+        k for k in state_dict.keys()
+        if k.startswith('adapter.') and k.endswith('.attn.in_proj_weight')
+    ])
 
-    model = ActionClip(clip_arch=clip_arch,
-                       num_adapter_segs=num_adapter_segs,
-                       num_adapter_layers=num_adapter_layers)
+    model = ActionClip(
+        clip_arch=clip_arch,
+        num_adapter_segs=num_adapter_segs,
+        num_adapter_layers=num_adapter_layers)
 
     model.load_state_dict(state_dict)
     model.to(device)
