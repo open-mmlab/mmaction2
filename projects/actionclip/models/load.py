@@ -18,7 +18,7 @@ _MODELS = {
 
 
 def available_models():
-    """Returns the names of available CLIP models."""
+    """Returns the names of available ActionCLIP models."""
     return list(_MODELS.keys())
 
 
