@@ -69,10 +69,10 @@ mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb
 
 | frame sampling strategy | backbone | top1 acc | top5 acc |testing protocol |                     config                     |                     ckpt                     |   
 | :---------------------: | :------: | :------: | :--:|:--------------: | :--------------------------------------------: | :------------------------------------------: |
-|       1x1x8       |   ViT-B/32   |   77.7   | 93.8  |  8 clips  x 1 crop   | [config](./configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20230309-73b97296.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.log) |
-|       1x1x8       |    ViT-B/16   |   80.3  |  95.2 |  8 clips  x 1 crop     | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20230309-73b97296.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.log) |
-|       1x1x16       |   ViT-B/16   | 81.1   | 95.6   | 16 clips  x 1 crop     | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x16_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20230309-73b97296.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d.log) |
-|       1x1x32       |   ViT-B/16   |   81.3  |  95.8  | 32 clips  x 1 crop     | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/msg3d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d/msg3d_8xb16-joint-u100-80e_ntu60-xsub-keypoint-2d_20230309-73b97296.pth) |
+|       1x1x8       |   ViT-B/32   |   77.6  | 93.8  |  8 clips  x 1 crop   | [config](./configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb/vit-b-32-8f.pth) |
+|       1x1x8       |    ViT-B/16   |   80.3  |  95.2 |  8 clips  x 1 crop     | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x8_k400-rgb/vit-b-16-8f.pth) |
+|       1x1x16       |   ViT-B/16   | 81.1   | 95.6   | 16 clips  x 1 crop     | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x16_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x16_k400-rgb/vit-b-16-16f.pth) |
+|       1x1x32       |   ViT-B/16   |   81.3  |  95.8  | 32 clips  x 1 crop     | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb/vit-b-16-32f.pth) |
 
 
 ## Zero-Shot Prediction
@@ -146,41 +146,3 @@ print("Label probs:", probs)  # [9.995e-01 5.364e-07 6.666e-04]
   year={2021}
 }
 ```
-
-## Checklist
-
-Here is a checklist of this project's progress, and you can ignore this part if you don't plan to contribute to MMAction2 projects.
-
-- [x] Milestone 1: PR-ready, and acceptable to be one of the `projects/`.
-
-  - [x] Finish the code
-
-    <!-- The code's design shall follow existing interfaces and convention. For example, each model component should be registered into `mmaction.registry.MODELS` and configurable via a config file. -->
-
-  - [x] Basic docstrings & proper citation
-
-    <!-- Each major class should contains a docstring, describing its functionality and arguments. If your code is copied or modified from other open-source projects, don't forget to cite the source project in docstring and make sure your behavior is not against its license. Typically, we do not accept any code snippet under GPL license. [A Short Guide to Open Source Licenses](https://medium.com/nationwide-technology/a-short-guide-to-open-source-licenses-cf5b1c329edd) -->
-
-  - [x] Converted checkpoint and results (Only for reproduction)
-
-    <!-- If you are reproducing the result from a paper, make sure the model in the project can match that results. Also please provide checkpoint links or a checkpoint conversion script for others to get the pre-trained model. -->
-
-- [x] Milestone 2: Indicates a successful model implementation.
-
-  - [x] Training results
-
-    <!-- If you are reproducing the result from a paper, train your model from scratch and verified that the final result can match the original result. Usually, ±0.1% is acceptable for the action recognition task on Kinetics400. -->
-
-- [ ] Milestone 3: Good to be a part of our core package!
-
-  - [ ] Unit tests
-
-    <!-- Unit tests for the major module are required. [Example](https://github.com/open-mmlab/mmaction2/blob/1.x/tests/models/backbones/test_resnet.py) -->
-
-  - [ ] Code style
-
-    <!-- Refactor your code according to reviewer's comment. -->
-
-  - [ ] `metafile.yml` and `README.md`
-
-    <!-- It will used for MMAction2 to acquire your models. [Example](https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/swin/metafile.yml). In particular, you may have to refactor this README into a standard one. [Example](https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/swin/README.md) -->
