@@ -127,7 +127,8 @@ config = mmengine.Config.fromfile(config_path)
 config.model.labels_or_label_file = labels
 config.model.template = template
 
-model = init_recognizer(config=config, checkpoint=checkpoint_path)
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = init_recognizer(config=config, checkpoint=checkpoint_path, device=device)
 
 pred_result = inference_recognizer(model, 'test.mp4')
 probs = pred_result.pred_scores.item.cpu().numpy()
