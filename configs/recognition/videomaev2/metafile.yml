@@ -1,0 +1,43 @@
+Collections:
+- Name: VideoMAEv2
+  README: configs/recognition/videomaev2/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2303.16727
+    Title: "VideoMAE V2: Scaling Video Masked Autoencoders with Dual Masking"
+
+Models:
+  - Name: vit-small-p16_videomaev2-vit-g-dist-k710-pre_16x4x1_kinetics-400
+    Config: configs/recognition/videomaev2/vit-small-p16_videomaev2-vit-g-dist-k710-pre_16x4x1_kinetics-400.py
+    In Collection: VideoMAEv2
+    Metadata:
+      Architecture: ViT-S
+      Resolution: short-side 320
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/VideoMAEv2/blob/master/docs/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/VideoMAEv2/
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 83.6
+        Top 5 Accuracy: 96.3
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/videomaev2/vit-base-p16_videomaev2-vit-g-dist-k710-pre_16x4x1_kinetics-400/vit-base-p16_videomaev2-vit-g-dist-k710-pre_16x4x1_kinetics-400_20230510-3e7f93b2.pth
+
+  - Name: vit-base-p16_videomaev2-vit-g-dist-k710-pre_16x4x1_kinetics-400
+    Config: configs/recognition/videomaev2/vit-base-p16_videomaev2-vit-g-dist-k710-pre_16x4x1_kinetics-400.py
+    In Collection: VideoMAEv2
+    Metadata:
+      Architecture: ViT-B
+      Resolution: short-side 320
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/OpenGVLab/VideoMAEv2/blob/master/docs/MODEL_ZOO.md
+      Code: https://github.com/OpenGVLab/VideoMAEv2/
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 86.6
+        Top 5 Accuracy: 97.3
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/videomaev2/vit-base-p16_videomaev2-vit-g-dist-k710-pre_16x4x1_kinetics-400/vit-base-p16_videomaev2-vit-g-dist-k710-pre_16x4x1_kinetics-400_20230510-3e7f93b2.pth
