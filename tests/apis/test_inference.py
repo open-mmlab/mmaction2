@@ -68,7 +68,7 @@ class TestInference(TestCase):
             self.assertIsInstance(result, ActionDataSample)
             self.assertTrue(result.pred_scores.item.shape, (400, ))
 
-    def test_detection_inferecne(self):
+    def test_detection_inference(self):
         from mmdet.apis import init_detector
         from mmdet.structures import DetDataSample
 
@@ -96,7 +96,7 @@ class TestInference(TestCase):
             self.assertTrue(results[0].shape, (4, ))
             self.assertIsInstance(data_samples[0], DetDataSample)
 
-    def test_pose_inferecne(self):
+    def test_pose_inference(self):
         from mmpose.apis import init_model
         from mmpose.structures import PoseDataSample
 
