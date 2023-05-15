@@ -20,7 +20,11 @@ The canonical approach to video action recognition dictates a neural model to do
 
 ### Setup Environment
 
-Please refer to [Installation](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) to install MMAction2.
+Please refer to [Installation](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) to install MMAction2. Run the following command to install `clip`.
+
+```shell
+pip install git+https://github.com/openai/CLIP.git
+```
 
 Assume that you are located at `$MMACTION2/projects/actionclip`.
 
@@ -80,6 +84,8 @@ mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb
 
 We offer two methods for zero-shot prediction as follows. The `test.mp4` can be downloaded from [here](https://github-production-user-asset-6210df.s3.amazonaws.com/58767402/237333525-89ebee9a-573e-4e27-9047-0ad6422fa82f.mp4).
 
+### Using Naive Pytorch
+
 ```python
 import torch
 import clip
@@ -109,6 +115,8 @@ probs = similarity.cpu().numpy()
 
 print("Label probs:", probs)  # [[9.995e-01 5.364e-07 6.666e-04]]
 ```
+
+### Using MMAction2 APIs
 
 ```python
 import mmengine
