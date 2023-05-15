@@ -2,6 +2,8 @@
 import numpy as np
 import pytest
 import torch
+import torch.nn.functional as F
+from mmcv.transforms import to_tensor
 from mmengine.structures import LabelData
 
 from mmaction.models import CutmixBlending, MixupBlending, RandomBatchAugment
@@ -20,7 +22,7 @@ def get_label(label_):
 def test_mixup():
     alpha = 0.2
     num_classes = 10
-    label = get_label(torch.randint(0, num_classes, (4, )))
+    label = get_label([to_tensor(x) for x in range(4)])
     mixup = MixupBlending(num_classes, alpha)
 
     # NCHW imgs
@@ -31,7 +33,14 @@ def test_mixup():
 
     # NCTHW imgs
     imgs = torch.randn(4, 4, 2, 3, 32, 32)
-    label = get_label(torch.randint(0, num_classes, (4, )))
+    label = get_label([to_tensor(x) for x in range(4)])
+    mixed_imgs, mixed_label = mixup(imgs, label)
+    assert mixed_imgs.shape == torch.Size((4, 4, 2, 3, 32, 32))
+    assert len(mixed_label) == 4
+
+    # multi-label with one-hot tensor as label
+    imgs = torch.randn(4, 4, 2, 3, 32, 32)
+    label = get_label(F.one_hot(torch.arange(4), num_classes=num_classes))
     mixed_imgs, mixed_label = mixup(imgs, label)
     assert mixed_imgs.shape == torch.Size((4, 4, 2, 3, 32, 32))
     assert len(mixed_label) == 4
@@ -40,19 +49,26 @@ def test_mixup():
 def test_cutmix():
     alpha = 0.2
     num_classes = 10
-    label = get_label(torch.randint(0, num_classes, (4, )))
-    mixup = CutmixBlending(num_classes, alpha)
+    label = get_label([to_tensor(x) for x in range(4)])
+    cutmix = CutmixBlending(num_classes, alpha)
 
     # NCHW imgs
     imgs = torch.randn(4, 4, 3, 32, 32)
-    mixed_imgs, mixed_label = mixup(imgs, label)
+    mixed_imgs, mixed_label = cutmix(imgs, label)
     assert mixed_imgs.shape == torch.Size((4, 4, 3, 32, 32))
     assert len(mixed_label) == 4
 
     # NCTHW imgs
     imgs = torch.randn(4, 4, 2, 3, 32, 32)
-    label = get_label(torch.randint(0, num_classes, (4, )))
-    mixed_imgs, mixed_label = mixup(imgs, label)
+    label = get_label([to_tensor(x) for x in range(4)])
+    mixed_imgs, mixed_label = cutmix(imgs, label)
+    assert mixed_imgs.shape == torch.Size((4, 4, 2, 3, 32, 32))
+    assert len(mixed_label) == 4
+
+    # multi-label with one-hot tensor as label
+    imgs = torch.randn(4, 4, 2, 3, 32, 32)
+    label = get_label(F.one_hot(torch.arange(4), num_classes=num_classes))
+    mixed_imgs, mixed_label = cutmix(imgs, label)
     assert mixed_imgs.shape == torch.Size((4, 4, 2, 3, 32, 32))
     assert len(mixed_label) == 4
 
@@ -61,7 +77,7 @@ def test_rand_blend():
     alpha_mixup = 0.2
     alpha_cutmix = 0.2
     num_classes = 10
-    label = get_label(torch.randint(0, num_classes, (4, )))
+    label = get_label([to_tensor(x) for x in range(4)])
     blending_augs = [
         dict(type='MixupBlending', alpha=alpha_mixup, num_classes=num_classes),
         dict(
@@ -89,7 +105,14 @@ def test_rand_blend():
     assert len(mixed_label) == 4
 
     imgs = torch.randn(4, 4, 2, 3, 32, 32)  # NCTHW imgs
-    label = get_label(torch.randint(0, num_classes, (4, )))
+    label = get_label([to_tensor(x) for x in range(4)])
+    mixed_imgs, mixed_label = rand_mix(imgs, label)
+    assert mixed_imgs.shape == torch.Size((4, 4, 2, 3, 32, 32))
+    assert len(mixed_label) == 4
+
+    # multi-label with one-hot tensor as label
+    imgs = torch.randn(4, 4, 2, 3, 32, 32)
+    label = get_label(F.one_hot(torch.arange(4), num_classes=num_classes))
     mixed_imgs, mixed_label = rand_mix(imgs, label)
     assert mixed_imgs.shape == torch.Size((4, 4, 2, 3, 32, 32))
     assert len(mixed_label) == 4
