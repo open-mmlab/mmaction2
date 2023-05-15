@@ -8,7 +8,7 @@ Collections:
 Models:
   - Name: uniformerv2-base-p16-res224_clip_8xb32-u8_kinetics400-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip_8xb32-u8_kinetics400-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-B/16
       Batch Size: 32
@@ -30,7 +30,7 @@ Models:
 
   - Name: uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics400-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics400-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-B/16
       Batch Size: 32
@@ -52,7 +52,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics400-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics400-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710
@@ -73,7 +73,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics400-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics400-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710
@@ -94,7 +94,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics400-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics400-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710
@@ -115,7 +115,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics400-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics400-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14@336
       Pretrained: Kinetics-710
@@ -136,7 +136,7 @@ Models:
 
   - Name: uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics600-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics600-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-B/16
       Pretrained: Kinetics-710
@@ -158,7 +158,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics600-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics600-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710
@@ -178,7 +178,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics600-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics600-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710
@@ -198,7 +198,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics600-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics600-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710
@@ -218,7 +218,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics600-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics600-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14@336
       Pretrained: Kinetics-710
@@ -236,8 +236,8 @@ Models:
         Top 5 Accuracy: 98.5
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics600/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics600-rgb_20221219-f984f5d2.pth
 
-  - Name: uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics700-rgb
-    Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics700-rgb.py
+  - Name: uniformerv2-base-p16-res224_clip-pre_8xb32-u8_kinetics700-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-pre_8xb32-u8_kinetics700-rgb.py
     In Collection: UniFormer
     Metadata:
       Architecture: UniFormerV2-B/16
@@ -253,7 +253,7 @@ Models:
     - Dataset: Kinetics-700
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 76.3
+        Top 1 Accuracy: 75.9
         Top 5 Accuracy: 92.9
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/uniformerv2-base-p16-res224_clip_8xb32-u8_kinetics700-rgb/uniformerv2-base-p16-res224_clip_8xb32-u8_kinetics700-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/uniformerv2-base-p16-res224_clip_8xb32-u8_kinetics700-rgb/uniformerv2-base-p16-res224_clip_8xb32-u8_kinetics700-rgb_20230313-f02e48ad.pth
@@ -275,14 +275,14 @@ Models:
     - Dataset: Kinetics-700
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 75.9
+        Top 1 Accuracy: 76.3
         Top 5 Accuracy: 92.9
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics700-rgb/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics700-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics700-rgb/uniformerv2-base-p16-res224_clip-kinetics710-pre_8xb32-u8_kinetics700-rgb_20230313-69070837.pth
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics700-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics700-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710
@@ -302,7 +302,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics700-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics700-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710
@@ -322,7 +322,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics700-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u32_kinetics700-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710
@@ -342,7 +342,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics700-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-kinetics710-pre_u32_kinetics700-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14@336
       Pretrained: Kinetics-710
@@ -362,7 +362,7 @@ Models:
 
   - Name: uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-B/16
       Pretrained: CLIP-400M
@@ -374,8 +374,8 @@ Models:
       Code: https://github.com/OpenGVLab/UniFormerV2
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb_20221219-77d34f81.pth
 
-  - Name: uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics700-rgb
-    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-kinetics710-pre_u8_kinetics700-rgb.py
+  - Name: uniformerv2-large-p14-res224_clip-pre_u8_kinetics710-rgb
+    Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-pre_u8_kinetics710-rgb.py
     In Collection: UniFormer
     Metadata:
       Architecture: UniFormerV2-L/14
@@ -390,7 +390,7 @@ Models:
 
   - Name: uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14@336
       Pretrained: Kinetics-710
@@ -404,7 +404,7 @@ Models:
 
   - Name: uniformerv2-base-p16-res224_clip-kinetics710-kinetics-k400-pre_16xb32-u8_mitv1-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-kinetics-k400-pre_16xb32-u8_mitv1-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-B/16
       Pretrained: Kinetics-710 + Kinetics-400
@@ -426,7 +426,7 @@ Models:
 
   - Name: uniformerv2-large-p16-res224_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p16-res224_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14
       Pretrained: Kinetics-710 + Kinetics-400
@@ -446,7 +446,7 @@ Models:
 
   - Name: uniformerv2-large-p16-res336_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p16-res336_clip-kinetics710-kinetics-k400-pre_u8_mitv1-rgb.py
-    In Collection: UniFormer
+    In Collection: UniFormerV2
     Metadata:
       Architecture: UniFormerV2-L/14@336
       Pretrained: Kinetics-710 + Kinetics-400

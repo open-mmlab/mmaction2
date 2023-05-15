@@ -1,6 +1,6 @@
 # MViT V2
 
-> [MViTv2: Improved Multiscale Vision Transformers for Classification and Detection](http://openaccess.thecvf.com//content/CVPR2022/papers/Li_MViTv2_Improved_Multiscale_Vision_Transformers_for_Classification_and_Detection_CVPR_2022_paper.pdf)
+[MViTv2: Improved Multiscale Vision Transformers for Classification and Detection](http://openaccess.thecvf.com//content/CVPR2022/papers/Li_MViTv2_Improved_Multiscale_Vision_Transformers_for_Classification_and_Detection_CVPR_2022_paper.pdf)
 
 <!-- [ALGORITHM] -->
 
@@ -8,14 +8,7 @@
 
 <!-- [ABSTRACT] -->
 
-In this paper, we study Multiscale Vision Transformers (MViTv2) as a unified architecture for image and video
-classification, as well as object detection. We present an improved version of MViT that incorporates
-decomposed relative positional embeddings and residual pooling connections. We instantiate this architecture
-in five sizes and evaluate it for ImageNet classification, COCO detection and Kinetics video recognition where
-it outperforms prior work. We further compare MViTv2s' pooling attention to window attention mechanisms where
-it outperforms the latter in accuracy/compute. Without bells-and-whistles, MViTv2 has state-of-the-art
-performance in 3 domains: 88.8% accuracy on ImageNet classification, 58.7 boxAP on COCO object detection as
-well as 86.1% on Kinetics-400 video classification.
+In this paper, we study Multiscale Vision Transformers (MViTv2) as a unified architecture for image and video classification, as well as object detection. We present an improved version of MViT that incorporates decomposed relative positional embeddings and residual pooling connections. We instantiate this architecture in five sizes and evaluate it for ImageNet classification, COCO detection and Kinetics video recognition where it outperforms prior work. We further compare MViTv2s' pooling attention to window attention mechanisms where it outperforms the latter in accuracy/compute. Without bells-and-whistles, MViTv2 has state-of-the-art performance in 3 domains: 88.8% accuracy on ImageNet classification, 58.7 boxAP on COCO object detection as well as 86.1% on Kinetics-400 video classification.
 
 <!-- [IMAGE] -->
 
