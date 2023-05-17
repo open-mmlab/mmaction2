@@ -91,6 +91,15 @@ If the contents here do not cover your issue, please create an issue using the [
   In MMAction2, We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](/docs/en/user_guides/config.md),
   users can directly change it by setting `load_from` in their configs.
 
+- **How to use `RawFrameDataset` for training?**
+
+  In MMAction2 1.x version, most of the configs take `VideoDataset` as the default dataset type, which is much more friendly to file storage. If you want to use `RawFrameDataset` instead, there are two steps to modify:
+
+  - Dataset: modify `dataset_type = 'VideoDataset'` to `dataset_type = 'RawFrameDataset'`, and please make sure that the variable has been passed to `dataset` in `train_dataloader`/`val_dataloader`/`test_dataloader`.
+  - Transforms: delete `dict(type='DecordInit', **file_client_args)`, modify `dict(type='DecordDecode')` to `dict(type='RawFrameDecode', **file_client_args)` in `train_pipeline`/`val_pipeline`/`test_pipeline`.
+
+  For more modifications about customizing datasets, please refer to [prepare dataset](../user_guides/prepare_dataset.md) and [customize dataset](../advanced_guides/customize_dataset.md).
+
 ## Testing
 
 - **How to make predicted score normalized by softmax within \[0, 1\]?**
