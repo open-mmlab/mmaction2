@@ -98,7 +98,7 @@ If the contents here do not cover your issue, please create an issue using the [
   - Dataset: modify `dataset_type = 'VideoDataset'` to `dataset_type = 'RawFrameDataset'`, and please make sure that the variable has been passed to `dataset` in `train_dataloader`/`val_dataloader`/`test_dataloader`.
   - Transforms: delete `dict(type='DecordInit', **file_client_args)`, modify `dict(type='DecordDecode')` to `dict(type='RawFrameDecode', **file_client_args)` in `train_pipeline`/`val_pipeline`/`test_pipeline`.
 
-  For More modifications about customizing datasets, please refer to [prepare dataset](../user_guides/prepare_dataset.md) and [customize dataset](../advanced_guides/customize_dataset.md).
+  For more modifications about customizing datasets, please refer to [prepare dataset](../user_guides/prepare_dataset.md) and [customize dataset](../advanced_guides/customize_dataset.md).
 
 ## Testing
 
