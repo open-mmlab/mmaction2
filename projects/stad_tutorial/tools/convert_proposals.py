@@ -26,24 +26,27 @@ def dump_det_result(args):
     stad_gt = load(args.stad_gt)
     train_list = stad_gt['train_videos'][0]
     val_list = stad_gt['test_videos'][0]
-    train_bbox_result = []
-    val_bbox_result = []
+    train_bbox_result = {}
+    val_bbox_result = {}
     for sample in track_iter_progress(det_result):
         bboxes = sample['pred_instances']['bboxes']
         scores = sample['pred_instances']['scores']
-        w, h = sample['ori_shape']
-        bboxes[::2] /= w
-        bboxes[1::2] /= h
+        h, w = sample['ori_shape']
+        bboxes[:, ::2] /= w
+        bboxes[:, 1::2] /= h
         img_path = sample['img_path']
         frm_key_list = img_path.split('.jpg')[0].split('/')
-        frm_key = ','.join([frm_key_list[-2], str(int(frm_key_list[-1]))])
+        frm_key = ','.join([
+            f'{frm_key_list[-3]}/{frm_key_list[-2]}.mp4',
+            f'{int(frm_key_list[-1]):04d}'
+        ])
         bbox = np.concatenate([bboxes, scores[:, None]], axis=1)
 
         vid_key = '/'.join(frm_key_list[-3:-1])
         if vid_key in train_list:
-            train_bbox_result.append({frm_key: bbox})
+            train_bbox_result[frm_key] = bbox
         elif vid_key in val_list:
-            val_bbox_result.append({frm_key: bbox})
+            val_bbox_result[frm_key] = bbox
         else:
             raise KeyError(vid_key)
     dump(train_bbox_result, args.out_result[:-4] + '_train.pkl')
