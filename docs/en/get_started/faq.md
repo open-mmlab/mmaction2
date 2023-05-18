@@ -95,8 +95,29 @@ If the contents here do not cover your issue, please create an issue using the [
 
   In MMAction2 1.x version, most of the configs take `VideoDataset` as the default dataset type, which is much more friendly to file storage. If you want to use `RawFrameDataset` instead, there are two steps to modify:
 
-  - Dataset: modify `dataset_type = 'VideoDataset'` to `dataset_type = 'RawFrameDataset'`, and please make sure that the variable has been passed to `dataset` in `train_dataloader`/`val_dataloader`/`test_dataloader`.
-  - Transforms: delete `dict(type='DecordInit', **file_client_args)`, modify `dict(type='DecordDecode')` to `dict(type='RawFrameDecode', **file_client_args)` in `train_pipeline`/`val_pipeline`/`test_pipeline`.
+  - Dataset:
+    modify dataset in `train_dataloader`/`val_dataloader`/`test_dataloader` from
+
+    ```
+    dataset=dict(
+        type=VideoDataset,
+        data_prefix=dict(video=xxx),
+        ...)
+    ```
+
+    to
+
+    ```
+    dataset=dict(
+        type=RawFrameDataset,
+        data_prefix=dict(img=xxx),
+        filename_tmpl='{:05}.jpg',
+        ...)
+    ```
+
+    remaining fields of `dataset` don't need to be modified. Please make sure that `filename_tmpl` is matching with your frame data, and you can refer to [config document](../user_guides/config.md) for more details about config file.
+
+  - Transforms: delete `dict(type='DecordInit', **file_client_args)`, modify `dict(type='DecordDecode')` to `dict(type='RawFrameDecode', **file_client_args)` in `train_pipeline`/`val_pipeline`/`test_pipeline`, and please make sure that `file_client_args = dict(io_backend='disk')` has been defined in your config.
 
   For more modifications about customizing datasets, please refer to [prepare dataset](../user_guides/prepare_dataset.md) and [customize dataset](../advanced_guides/customize_dataset.md).
 
