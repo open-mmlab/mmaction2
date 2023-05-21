@@ -5,6 +5,7 @@ import os.path as osp
 import pandas as pd
 
 DATA_DIR = '../../../data/video_retrieval/msrvtt'
+SUFFIX = '.mp4'
 
 raw_data_path = osp.join(DATA_DIR, 'msrvtt_data/MSRVTT_data.json')
 train_csv_path = [
@@ -35,7 +36,7 @@ for ip, op in zip(train_csv_path, train_json_path):
     train_video_ids = list(train_csv['video_id'].values)
     train_video_dict = {}
     for video_id in train_video_ids:
-        train_video_dict[video_id] = video_dict[video_id]
+        train_video_dict[video_id + SUFFIX] = video_dict[video_id]
 
     with open(op, 'w') as f:
         json.dump(train_video_dict, f)
@@ -44,7 +45,7 @@ test_data = pd.read_csv(test_csv_path)
 
 test_video_dict = {}
 for video_id, sentence in zip(test_data['video_id'], test_data['sentence']):
-    test_video_dict[video_id] = [sentence]
+    test_video_dict[video_id + SUFFIX] = [sentence]
 
 with open(test_json_path, 'w') as f:
     json.dump(test_video_dict, f)
