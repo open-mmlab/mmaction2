@@ -72,10 +72,14 @@ class PackActionInputs(BaseTransform):
             elif 'audios' in results:
                 audios = results['audios']
                 packed_results['inputs'] = to_tensor(audios)
+            elif 'text' in results:
+                text = results['text']
+                packed_results['inputs'] = to_tensor(text)
             else:
                 raise ValueError(
-                    'Cannot get `imgs`, `keypoint`, `heatmap_imgs` '
-                    'or `audios` in the input dict of `PackActionInputs`.')
+                    'Cannot get `imgs`, `keypoint`, `heatmap_imgs`, '
+                    '`audios` or `text` in the input dict of '
+                    '`PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
@@ -89,7 +93,8 @@ class PackActionInputs(BaseTransform):
             if 'proposals' in results:
                 data_sample.proposals = InstanceData(
                     bboxes=to_tensor(results['proposals']))
-        else:
+
+        if 'label' in results:
             label_data = LabelData()
             label_data.item = to_tensor(results['label'])
             data_sample.gt_labels = label_data
