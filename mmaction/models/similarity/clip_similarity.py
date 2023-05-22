@@ -1,10 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict
+from typing import Dict, Tuple
 
 import clip
 import torch
 from mmengine.model import BaseModel
 
+from mmengine.structures import InstanceData
 from mmaction.registry import MODELS
 from mmaction.utils.typing import ForwardResults, OptSampleList
 
@@ -16,11 +17,14 @@ class CLIPSimilarity(BaseModel):
         self,
         clip_arch: str,
         data_preprocessor: Dict[str, Dict],
+        to_float32: bool = False,
         loss: Dict = dict(type='CrossEntropyLoss', loss_weight=0.5)
     ) -> None:
         super(CLIPSimilarity,
               self).__init__(data_preprocessor=data_preprocessor)
         self.clip = clip.load(clip_arch)[0]
+        if to_float32:
+            self.clip.float()
         self.loss = MODELS.build(loss)
 
     def encode_video(self, video: torch.Tensor) -> torch.Tensor:
@@ -39,24 +43,30 @@ class CLIPSimilarity(BaseModel):
         """Encode text."""
         return self.clip.encode_text(text)
 
-    def forward(self,
-                inputs: Dict[str, torch.Tensor],
-                data_samples: OptSampleList = None,
-                mode: str = 'tensor') -> ForwardResults:
-        """Forward function."""
+    def extract_feat(self, inputs: Dict[str, torch.Tensor], norm: bool = True) -> Tuple:
+        text_inputs = inputs['text']
+        video_inputs = inputs['imgs']
+        text_features = self.encode_text(text_inputs)
+        video_features = self.encode_video(video_inputs)
 
-        if mode == 'loss':
-            text_inputs = inputs['text']
-            video_inputs = inputs['imgs']
-
-            text_features = self.encode_text(text_inputs)
-            video_features = self.encode_video(video_inputs)
-
+        if norm:
             text_features = text_features / text_features.norm(
                 dim=-1, keepdim=True)
             video_features = video_features / video_features.norm(
                 dim=-1, keepdim=True)
 
+        return video_features, text_features
+
+    def forward(self,
+                inputs: Dict[str, torch.Tensor],
+                data_samples: OptSampleList = None,
+                mode: str = 'tensor') -> ForwardResults:
+        """Forward function."""
+        if mode == 'tensor':
+            return self.extract_feat(inputs, norm=False)
+
+        elif mode == 'loss':
+            video_features, text_features = self.extract_feat(inputs)
             logit_scale = self.clip.logit_scale.exp()
             logits_per_video = logit_scale * video_features @ text_features.t()
             logits_per_text = logits_per_video.t()
@@ -72,5 +82,13 @@ class CLIPSimilarity(BaseModel):
             losses['sim_loss_t2v'] = sim_loss_t2v
             return losses
 
+        elif mode == 'predict':
+            video_features, text_features = self.extract_feat(inputs)
+            for ds, vf, tf in zip(data_samples, video_features, text_features):
+                features = InstanceData(video_feature=vf, text_feature=tf)
+                ds.features = features
+            return data_samples
+
         else:
-            raise ValueError('TODO')
+            raise RuntimeError(f'Invalid mode "{mode}". '
+                               'Only supports loss, predict and tensor mode')
