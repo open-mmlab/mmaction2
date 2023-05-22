@@ -1,6 +1,9 @@
-import clip
+# Copyright (c) OpenMMLab. All rights reserved.
 from typing import Dict
+
+import clip
 from mmcv.transforms import BaseTransform
+
 from mmaction.registry import TRANSFORMS
 
 

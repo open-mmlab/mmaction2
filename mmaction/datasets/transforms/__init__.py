@@ -19,9 +19,8 @@ from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, RandomCrop,
                          RandomRescale, RandomResizedCrop, Resize, TenCrop,
                          ThreeCrop)
-from .wrappers import ImgAug, PytorchVideoWrapper, TorchVisionWrapper
 from .text_transforms import CLIPTokenize
-
+from .wrappers import ImgAug, PytorchVideoWrapper, TorchVisionWrapper
 
 __all__ = [
     'ArrayDecode', 'AudioAmplify', 'AudioDecode', 'AudioDecodeInit',

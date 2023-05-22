@@ -1,19 +1,20 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
 import os.path as osp
-from typing import List, Dict
+from typing import Dict, List
+
 from mmengine.fileio import exists
 
-from .base import BaseActionDataset
 from mmaction.registry import DATASETS
+from .base import BaseActionDataset
 
 
 @DATASETS.register_module()
 class VideoTextDataset(BaseActionDataset):
-    """Video dataset for video-text task like video retrieval. """
+    """Video dataset for video-text task like video retrieval."""
 
     def load_data_list(self) -> List[Dict]:
-        """Load annotation file to get video information. """
+        """Load annotation file to get video information."""
         exists(self.ann_file)
         data_list = []
 

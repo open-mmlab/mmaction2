@@ -452,11 +452,12 @@ class UniformSample(BaseTransform):
         """To sample an n-frame clip from the video. UniformSample basically
         divides the video into n segments of equal length and randomly samples
         one frame from each segment. When the duration of video frames is
-        shorter than the desired length of the target clip, this approach
-        will duplicate the sampled frame instead of looping the sample in
-        "loop" mode. In the test mode, when we need to sample multiple clips,
+        shorter than the desired length of the target clip, this approach will
+        duplicate the sampled frame instead of looping the sample in "loop"
+        mode. In the test mode, when we need to sample multiple clips,
         specifically 'n' clips, this method will further divide the segments
-        based on the number of clips to be sampled. The 'i-th' clip will
+        based on the number of clips to be sampled. The 'i-th' clip will.
+
         sample the frame located at the position 'i * len(segment) / n'
         within the segment.
 
