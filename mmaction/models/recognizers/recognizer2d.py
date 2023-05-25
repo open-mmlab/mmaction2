@@ -64,7 +64,7 @@ class Recognizer2D(BaseRecognizer):
             x = self.backbone.features(inputs)
         elif self.backbone_from == 'timm':
             x = self.backbone.forward_features(inputs)
-        elif self.backbone_from == 'mmcls':
+        elif self.backbone_from in ['mmcls', 'mmpretrain']:
             x = self.backbone(inputs)
             if isinstance(x, tuple):
                 assert len(x) == 1
@@ -73,12 +73,22 @@ class Recognizer2D(BaseRecognizer):
             x = self.backbone(inputs)
 
         if self.backbone_from in ['torchvision', 'timm']:
-            # Transformer-based feature shape: B x L x C.
-            if len(x.shape) == 3 and x.shape[2] > 1:
-                x = nn.AdaptiveAvgPool1d(1)(x.transpose(1, 2))  # B x C x 1
-            # Resnet-based feature shape: B x C x Hs x Ws。
-            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
+            if not self.feature_shape:
+                # Transformer-based feature shape: B x L x C.
+                if len(x.shape) == 3:
+                    self.feature_shape = 'NLC'
+                # Resnet-based feature shape: B x C x Hs x Ws.
+                elif len(x.shape) == 4:
+                    self.feature_shape = 'NCHW'
+
+            if self.feature_shape == 'NHWC':
+                x = nn.AdaptiveAvgPool2d(1)(x.permute(0, 3, 1,
+                                                      2))  # B x C x 1 x 1
+            elif self.feature_shape == 'NCHW':
                 x = nn.AdaptiveAvgPool2d(1)(x)  # B x C x 1 x 1
+            elif self.feature_shape == 'NLC':
+                x = nn.AdaptiveAvgPool1d(1)(x.transpose(1, 2))  # B x C x 1
+
             x = x.reshape((x.shape[0], -1))  # B x C
             x = x.reshape(x.shape + (1, 1))  # B x C x 1 x 1
 
