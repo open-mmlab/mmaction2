@@ -7,7 +7,7 @@ import os
 import ssl
 import subprocess
 
-import mmcv
+import mmengine
 from joblib import Parallel, delayed
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -72,7 +72,7 @@ def download_wrapper(youtube_id, output_dir):
 
 def main(input, output_dir, num_jobs=24):
     # Reading and parsing ActivityNet.
-    youtube_ids = mmcv.load(input).keys()
+    youtube_ids = mmengine.load(input).keys()
     # Creates folders where videos will be saved later.
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -87,7 +87,7 @@ def main(input, output_dir, num_jobs=24):
             for index in youtube_ids)
 
     # Save download report.
-    mmcv.dump(status_list, 'download_report.json')
+    mmengine.dump(status_list, 'download_report.json')
 
 
 if __name__ == '__main__':
