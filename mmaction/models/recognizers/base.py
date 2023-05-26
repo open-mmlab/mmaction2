@@ -57,7 +57,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
             self.backbone_from = 'mmcls'
         elif backbone['type'].startswith('mmpretrain.'):
             try:
-                # Register all mmcls models.
+                # Register all mmpretrain models.
                 import mmpretrain.models  # noqa: F401
             except (ImportError, ModuleNotFoundError):
                 raise ImportError(
@@ -118,12 +118,18 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
 
     def init_weights(self) -> None:
         """Initialize the model network weights."""
-        super().init_weights()
         if self.backbone_from in ['torchvision', 'timm']:
             warnings.warn('We do not initialize weights for backbones in '
                           f'{self.backbone_from}, since the weights for '
                           f'backbones in {self.backbone_from} are initialized '
                           'in their __init__ functions.')
+
+            def fake_init():
+                pass
+
+            # avoid repeated initialization
+            self.backbone.init_weights = fake_init
+        super().init_weights()
 
     def loss(self, inputs: torch.Tensor, data_samples: SampleList,
              **kwargs) -> dict:
