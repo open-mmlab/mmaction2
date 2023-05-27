@@ -1,13 +1,34 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Any, List
 
 import clip
 import torch
 from mmengine.model import BaseModel
+<<<<<<< Updated upstream
+=======
+from mmengine.dist import all_gather, get_rank
+>>>>>>> Stashed changes
 from mmengine.structures import InstanceData
 
 from mmaction.registry import MODELS
 from mmaction.utils.typing import ForwardResults, OptSampleList
+
+
+class GatherLayer(torch.autograd.Function):
+    """Gather tensors from all process, supporting backward propagation."""
+
+    @staticmethod
+    def forward(ctx: Any, input: torch.Tensor) -> Tuple[List]:
+        ctx.save_for_backward(input)
+        output = all_gather(input)
+        return tuple(output)
+
+    @staticmethod
+    def backward(ctx: Any, *grads: torch.Tensor) -> torch.Tensor:
+        input, = ctx.saved_tensors
+        grad_out = torch.zeros_like(input)
+        grad_out[:] = grads[get_rank()]
+        return grad_out
 
 
 @MODELS.register_module()
@@ -69,6 +90,9 @@ class CLIPSimilarity(BaseModel):
 
         elif mode == 'loss':
             video_features, text_features = self.extract_feat(inputs)
+            video_features = torch.cat(GatherLayer.apply(video_features), dim=0)
+            text_features = torch.cat(GatherLayer.apply(text_features), dim=0)
+
             logit_scale = self.clip.logit_scale.exp()
             logits_per_video = logit_scale * video_features @ text_features.t()
             logits_per_text = logits_per_video.t()
