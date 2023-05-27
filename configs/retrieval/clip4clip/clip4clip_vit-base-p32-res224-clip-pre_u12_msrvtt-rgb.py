@@ -1,6 +1,5 @@
 _base_ = '../../_base_/default_runtime.py'
 
-
 model = dict(
     type='CLIPSimilarity',
     clip_arch='ViT-B/32',

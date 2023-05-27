@@ -4,8 +4,8 @@ from typing import Dict, Tuple
 import clip
 import torch
 from mmengine.model import BaseModel
-
 from mmengine.structures import InstanceData
+
 from mmaction.registry import MODELS
 from mmaction.utils.typing import ForwardResults, OptSampleList
 
@@ -43,7 +43,9 @@ class CLIPSimilarity(BaseModel):
         """Encode text."""
         return self.clip.encode_text(text)
 
-    def extract_feat(self, inputs: Dict[str, torch.Tensor], norm: bool = True) -> Tuple:
+    def extract_feat(self,
+                     inputs: Dict[str, torch.Tensor],
+                     norm: bool = True) -> Tuple:
         text_inputs = inputs['text']
         video_inputs = inputs['imgs']
         text_features = self.encode_text(text_inputs)

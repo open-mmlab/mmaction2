@@ -1,9 +1,9 @@
 decord >= 0.4.1
 einops
+git+https://github.com/openai/CLIP.git
 matplotlib
 numpy
 opencv-contrib-python
 Pillow
 scipy
 torch>=1.3
-git+https://github.com/openai/CLIP.git

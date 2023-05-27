@@ -1,9 +1,12 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import copy
-import numpy as np
-from typing import Dict, List, Optional, Sequence, Tuple
-from mmengine.evaluator import BaseMetric
-from mmaction.registry import METRICS
 from collections import OrderedDict
+from typing import Dict, List, Optional, Sequence, Tuple
+
+import numpy as np
+from mmengine.evaluator import BaseMetric
+
+from mmaction.registry import METRICS
 
 
 @METRICS.register_module()
@@ -21,7 +24,8 @@ class RetrievalMetric(BaseMetric):
 
         self.metric_list = metric_list
 
-    def process(self, data_batch: Optional[Dict], data_samples: Sequence[Dict]) -> None:
+    def process(self, data_batch: Optional[Dict],
+                data_samples: Sequence[Dict]) -> None:
         """Process one batch of data samples and data_samples. The processed
         results should be stored in ``self.results``, which will be used to
         compute the metrics when all batches have been processed.
@@ -70,11 +74,10 @@ class RetrievalMetric(BaseMetric):
             elif metric == 'R10':
                 metrics['R10'] = float(np.sum(ind < 10)) * 100 / len(ind)
             elif metric == 'MdR':
-                metrics["MdR"] = np.median(ind) + 1
+                metrics['MdR'] = np.median(ind) + 1
             elif metric == 'MnR':
-                metrics["MnR"] = np.mean(ind) + 1
+                metrics['MnR'] = np.mean(ind) + 1
             else:
                 raise ValueError('')
 
         return metrics
-
