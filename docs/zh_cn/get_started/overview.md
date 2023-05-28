@@ -57,7 +57,7 @@ MMAction2是一个基于PyTorch的开源工具包，支持大量的视频理解�
 </details>
 
 <details open>
-<summary><b>关于对MMAction2有一个大致的了解</b></summary>
+<summary><b>关于对MMAction2的大致了解</b></summary>
 
 - [一个20分钟的MMAction2框架指南](guide_to_framework.md)
 - [MMAction2中的数据流](../advanced_guides/dataflow.md)
