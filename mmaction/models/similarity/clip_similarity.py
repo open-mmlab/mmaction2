@@ -4,10 +4,7 @@ from typing import Dict, Tuple, Any, List
 import clip
 import torch
 from mmengine.model import BaseModel
-<<<<<<< Updated upstream
-=======
 from mmengine.dist import all_gather, get_rank
->>>>>>> Stashed changes
 from mmengine.structures import InstanceData
 
 from mmaction.registry import MODELS

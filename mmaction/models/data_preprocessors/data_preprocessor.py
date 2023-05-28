@@ -102,8 +102,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             training (bool): Whether to enable training time augmentation.
 
         Returns:
-            dict: Data in the same format as the model
-                input.
+            dict: Data in the same format as the model input.
         """
         inputs, data_samples = data['inputs'], data['data_samples']
         inputs, data_samples = self.preprocess(inputs, data_samples, training)
