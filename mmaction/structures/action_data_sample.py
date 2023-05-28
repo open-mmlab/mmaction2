@@ -164,7 +164,7 @@ class ActionDataSample(BaseDataElement):
 
     @property
     def gt_instances(self):
-        """Setter of `gt_instances`"""
+        """Property of `gt_instances`"""
         return self._gt_instances
 
     @gt_instances.setter
