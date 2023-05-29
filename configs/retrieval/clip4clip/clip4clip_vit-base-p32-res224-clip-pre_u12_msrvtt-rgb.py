@@ -12,7 +12,8 @@ model = dict(
                 mean=[122.771, 116.746, 104.093],
                 std=[68.500, 66.632, 70.323],
                 format_shape='NCHW'),
-            text=dict(type='ActionDataPreprocessor', to_float32=False))))
+            text=dict(type='ActionDataPreprocessor', to_float32=False))),
+    adapter=dict(type='SimpleMeanAdapter'))
 
 dataset_type = 'VideoTextDataset'
 data_root = 'data/video_retrieval/msrvtt'

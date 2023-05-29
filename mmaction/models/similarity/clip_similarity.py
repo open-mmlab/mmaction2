@@ -35,6 +35,7 @@ class CLIPSimilarity(BaseModel):
         self,
         clip_arch: str,
         data_preprocessor: Dict[str, Dict],
+        adapter: Dict,
         to_float32: bool = False,
         loss: Dict = dict(type='CrossEntropyLoss', loss_weight=0.5)
     ) -> None:
@@ -44,26 +45,29 @@ class CLIPSimilarity(BaseModel):
         if to_float32:
             self.clip.float()
         self.loss = MODELS.build(loss)
+        self.adapter = MODELS.build(adapter)
 
     def encode_video(self, video: torch.Tensor) -> torch.Tensor:
-        """Encode video."""
+        """Encode video. """
         b, n, c, h, w = video.shape
         video = video.view(-1, c, h, w)
         frames_features = self.encode_image(video)
-        video_features = frames_features.view(b, n, -1).mean(1)
+        frames_features = frames_features.view(b, n, -1)
+        video_features = self.adapter(frames_features)
         return video_features
 
     def encode_image(self, image: torch.Tensor) -> torch.Tensor:
-        """Encode image."""
+        """Encode image. """
         return self.clip.encode_image(image)
 
     def encode_text(self, text: torch.Tensor) -> torch.Tensor:
-        """Encode text."""
+        """Encode text. """
         return self.clip.encode_text(text)
 
     def extract_feat(self,
                      inputs: Dict[str, torch.Tensor],
                      norm: bool = True) -> Tuple:
+        """Extract features. """
         text_inputs = inputs['text']
         video_inputs = inputs['imgs']
         text_features = self.encode_text(text_inputs)
@@ -82,6 +86,7 @@ class CLIPSimilarity(BaseModel):
                 data_samples: OptSampleList = None,
                 mode: str = 'tensor') -> ForwardResults:
         """Forward function."""
+
         if mode == 'tensor':
             return self.extract_feat(inputs, norm=False)
 

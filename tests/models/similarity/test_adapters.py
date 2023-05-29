@@ -16,7 +16,7 @@ def test_transformer_adapter():
             transformer_heads=8,
             transformer_layers=2)
         features = torch.randn(2, num_segs_features, 64)
-        adapted_features = adapter(features)
+        adapter(features)
 
     num_segs = 8
     adapter = TransformerAdapter(
