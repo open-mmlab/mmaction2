@@ -29,7 +29,6 @@ MMAction2是一个基于PyTorch的开源工具包，支持大量的视频理解�
 
 我们准备了丰富的文件来满足您的各种需求:
 
-
 <details open>
 <summary><b>关于MMAction2的基本用法</b></summary>
 
