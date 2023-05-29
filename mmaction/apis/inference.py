@@ -39,7 +39,8 @@ def init_recognizer(config: Union[str, Path, mmengine.Config],
 
     init_default_scope(config.get('default_scope', 'mmaction'))
 
-    if config.model.backbone.get('pretrained', None):
+    if hasattr(config.model, 'backbone') and config.model.backbone.get(
+            'pretrained', None):
         config.model.backbone.pretrained = None
     model = MODELS.build(config.model)
 

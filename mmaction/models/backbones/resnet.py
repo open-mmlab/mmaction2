@@ -1,14 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from collections import OrderedDict
-from typing import List, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import mmengine
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmengine.logging import MMLogger
-from mmengine.model.weight_init import constant_init, kaiming_init
-from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
+from mmengine.model import BaseModule
+from mmengine.runner.checkpoint import _load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 from torch.utils import checkpoint as cp
 
@@ -306,7 +306,7 @@ def make_res_layer(block: nn.Module,
 
 
 @MODELS.register_module()
-class ResNet(nn.Module):
+class ResNet(BaseModule):
     """ResNet backbone.
 
     Args:
@@ -339,6 +339,11 @@ class ResNet(nn.Module):
         partial_bn (bool): Whether to use partial bn. Defaults to False.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Defaults to False.
+        init_cfg (dict or list[dict]): Initialization config dict. Defaults to
+            ``[
+            dict(type='Kaiming', layer='Conv2d',),
+            dict(type='Constant', layer='BatchNorm', val=1.)
+            ]``.
     """
 
     arch_settings = {
@@ -349,24 +354,30 @@ class ResNet(nn.Module):
         152: (Bottleneck, (3, 8, 36, 3))
     }
 
-    def __init__(self,
-                 depth: int,
-                 pretrained: Optional[str] = None,
-                 torchvision_pretrain: bool = True,
-                 in_channels: int = 3,
-                 num_stages: int = 4,
-                 out_indices: Sequence[int] = (3, ),
-                 strides: Sequence[int] = (1, 2, 2, 2),
-                 dilations: Sequence[int] = (1, 1, 1, 1),
-                 style: str = 'pytorch',
-                 frozen_stages: int = -1,
-                 conv_cfg: ConfigType = dict(type='Conv'),
-                 norm_cfg: ConfigType = dict(type='BN2d', requires_grad=True),
-                 act_cfg: ConfigType = dict(type='ReLU', inplace=True),
-                 norm_eval: bool = False,
-                 partial_bn: bool = False,
-                 with_cp: bool = False) -> None:
-        super().__init__()
+    def __init__(
+        self,
+        depth: int,
+        pretrained: Optional[str] = None,
+        torchvision_pretrain: bool = True,
+        in_channels: int = 3,
+        num_stages: int = 4,
+        out_indices: Sequence[int] = (3, ),
+        strides: Sequence[int] = (1, 2, 2, 2),
+        dilations: Sequence[int] = (1, 1, 1, 1),
+        style: str = 'pytorch',
+        frozen_stages: int = -1,
+        conv_cfg: ConfigType = dict(type='Conv'),
+        norm_cfg: ConfigType = dict(type='BN2d', requires_grad=True),
+        act_cfg: ConfigType = dict(type='ReLU', inplace=True),
+        norm_eval: bool = False,
+        partial_bn: bool = False,
+        with_cp: bool = False,
+        init_cfg: Optional[Union[Dict, List[Dict]]] = [
+            dict(type='Kaiming', layer='Conv2d'),
+            dict(type='Constant', layer='BatchNorm2d', val=1.)
+        ]
+    ) -> None:
+        super().__init__(init_cfg=init_cfg)
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
         self.depth = depth
@@ -540,14 +551,12 @@ class ResNet(nn.Module):
                 self._load_torchvision_checkpoint(logger)
             else:
                 # ours
-                load_checkpoint(
-                    self, self.pretrained, strict=False, logger=logger)
+                if self.pretrained:
+                    self.init_cfg = dict(
+                        type='Pretrained', checkpoint=self.pretrained)
+                    super().init_weights()
         elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv2d):
-                    kaiming_init(m)
-                elif isinstance(m, nn.BatchNorm2d):
-                    constant_init(m, 1)
+            super().init_weights()
         else:
             raise TypeError('pretrained must be a str or None')
 
