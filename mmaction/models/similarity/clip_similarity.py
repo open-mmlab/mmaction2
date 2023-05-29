@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, Tuple, Any, List
+from typing import Any, Dict, List, Tuple
 
 import clip
 import torch
-from mmengine.model import BaseModel
 from mmengine.dist import all_gather, get_rank
+from mmengine.model import BaseModel
 from mmengine.structures import InstanceData
 
 from mmaction.registry import MODELS
@@ -87,7 +87,8 @@ class CLIPSimilarity(BaseModel):
 
         elif mode == 'loss':
             video_features, text_features = self.extract_feat(inputs)
-            video_features = torch.cat(GatherLayer.apply(video_features), dim=0)
+            video_features = torch.cat(
+                GatherLayer.apply(video_features), dim=0)
             text_features = torch.cat(GatherLayer.apply(text_features), dim=0)
 
             logit_scale = self.clip.logit_scale.exp()

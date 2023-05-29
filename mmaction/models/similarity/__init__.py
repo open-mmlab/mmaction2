@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from .adapters import SimpleMeanAdapter, TransformerAdapter
 from .clip_similarity import CLIPSimilarity
-from .adapters import TransformerAdapter, SimpleMeanAdapter
 
 __all__ = ['CLIPSimilarity', 'TransformerAdapter', 'SimpleMeanAdapter']
