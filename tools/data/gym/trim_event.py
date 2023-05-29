@@ -3,7 +3,7 @@ import os
 import os.path as osp
 import subprocess
 
-import mmcv
+import mmengine
 
 data_root = '../../../data/gym'
 video_root = f'{data_root}/videos'
@@ -15,10 +15,10 @@ event_root = f'{data_root}/events'
 
 videos = os.listdir(video_root)
 videos = set(videos)
-annotation = mmcv.load(anno_file)
+annotation = mmengine.load(anno_file)
 event_annotation = {}
 
-mmcv.mkdir_or_exist(event_root)
+mmengine.mkdir_or_exist(event_root)
 
 for k, v in annotation.items():
     if k + '.mp4' not in videos:
@@ -55,4 +55,4 @@ for k, v in annotation.items():
         if segments is not None:
             event_annotation[event_name] = segments
 
-mmcv.dump(event_annotation, event_anno_file)
+mmengine.dump(event_annotation, event_anno_file)
