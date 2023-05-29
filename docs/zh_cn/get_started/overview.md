@@ -1,16 +1,16 @@
 # 概述
 
-## 什么是MMAction2
+## 什么是 MMAction2
 
-MMAction2是一个基于PyTorch的开源工具包，支持大量的视频理解模型，包括**动作识别、基于骨架的动作识别、时空动作检测和时间动作定位**。此外，它支持广泛使用的学术数据集，并提供许多有用的工具，帮助用户探索模型和数据集的各个方面，以及实现高质量的算法。一般来说，该工具包具有以下特性：
+MMAction2 是一个基于PyTorch的开源工具包，支持大量的视频理解模型，包括**动作识别、基于骨架的动作识别、时空动作检测和时间动作定位**。此外，它支持广泛使用的学术数据集，并提供许多有用的工具，帮助用户探索模型和数据集的各个方面，以及实现高质量的算法。一般来说，该工具包具有以下特性：
 
-**一站式、多模型**：MMAction2支持各种视频理解任务，实现最先进的动作识别、定位、检测模型。
+**一站式、多模型**：MMAction2 支持各种视频理解任务，实现最先进的动作识别、定位、检测模型。
 
-**模块化设计**：MMAction2的模块化设计使用户可以根据需要定义和重用模型中的模块。
+**模块化设计**：MMAction2 的模块化设计使用户可以根据需要定义和重用模型中的模块。
 
-**各种有用的工具**：MMAction2提供了一系列的分析工具，如可视化器、验证脚本、评估器等，以帮助用户进行故障排除、微调或比较模型。
+**各种有用的工具**：MMAction2 提供了一系列的分析工具，如可视化器、验证脚本、评估器等，以帮助用户进行故障排除、微调或比较模型。
 
-**由OpenMMLab提供支持**：与OpenMMLab家族中的其他算法库类似，MMAction2遵循OpenMMLab的严格开发指南和接口约定，大大降低了熟悉其他OpenMMLab项目的用户的学习成本。此外，由于OpenMMLab项目之间的统一接口，在MMAction2中很容易调用其他OpenMMLab项目实现的模型(如MMClassification)，这极大地便利了跨领域研究和实际应用。
+**由OpenMMLab提供支持**：与 OpenMMLab 家族中的其他算法库类似，MMAction2 遵循 OpenMMLab 的严格开发指南和接口约定，大大降低了熟悉其他 OpenMMLab 项目的用户的学习成本。此外，由于 OpenMMLab 项目之间的统一接口，在 MMAction2 中很容易调用其他 OpenMMLab 项目实现的模型(如 MMClassification )，这极大地便利了跨领域研究和实际应用。
 
 <table><tr>
   <td><img src="https://github.com/open-mmlab/mmaction2/raw/main/resources/mmaction2_overview.gif" width="380px">
@@ -29,9 +29,8 @@ MMAction2是一个基于PyTorch的开源工具包，支持大量的视频理解�
 
 我们准备了丰富的文件来满足您的各种需求:
 
-
 <details open>
-<summary><b>关于MMAction2的基本用法</b></summary>
+<summary><b> 关于MMAction2 的基本用法</b></summary>
 
 - [安装](installation.md)
 - [快速运行](quick_run.md)
@@ -57,10 +56,10 @@ MMAction2是一个基于PyTorch的开源工具包，支持大量的视频理解�
 </details>
 
 <details open>
-<summary><b>关于对MMAction2的一个大致了解</b></summary>
+<summary><b>关于对 MMAction2 的一个大致了解</b></summary>
 
-- [20分钟MMAction2框架指南](guide_to_framework.md)
-- [MMAction2中的数据流](../advanced_guides/dataflow.md)
+- [20分钟 MMAction2 框架指南](guide_to_framework.md)
+- [MMAction2 中的数据流](../advanced_guides/dataflow.md)
 
 </details>
 
@@ -84,15 +83,15 @@ MMAction2是一个基于PyTorch的开源工具包，支持大量的视频理解�
 </details>
 
 <details open>
-<summary><b>关于从MMAction2 .x迁移</b></summary>
+<summary><b>关于从 MMAction2 .x迁移</b></summary>
 
 - [从 MMAction2 0.x 迁移](../migration.md)
 
 </details>
 
 <details open>
-<summary><b>关于愿意为MMAction2做出贡献的研究人员和开发者</b></summary>
+<summary><b>关于愿意为 MMAction2 做出贡献的研究人员和开发者</b></summary>
 
-- [如何为MMAction2做出贡献](contribution_guide.md)
+- [如何为 MMAction2 做出贡献](contribution_guide.md)
 
 </details>
