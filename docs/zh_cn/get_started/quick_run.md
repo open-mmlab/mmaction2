@@ -1,4 +1,5 @@
 # 快速运行
+
 本章将介绍MMAction2的基本功能。我们假设你已经[安装了MMAction2的源代码](../installation#best-practices)。
 
 - [快速运行](#快速运行)
@@ -15,7 +16,6 @@
 ## 推理
 
 在MMAction2的根目录下执行如下命令:
-
 
 ```shell
 python demo/demo_inferencer.py  demo/demo.mp4 \
@@ -43,15 +43,14 @@ python demo/demo_inferencer.py  demo/demo.mp4 \
 
 除了使用我们提供的预训练模型，您还可以在自己的数据集上训练模型。在下一节中，我们将通过在 [Kinetics](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) 小数据集上训练TSN为例，带您了解MMAction2的基本功能。
 
-
 ## 准备数据集
 
 由于视频数据集格式的多样性不利于数据集的切换，MMAction2提出了统一的[数据格式](../user_guides/2_data_prepare.md) ，并为常用的视频数据集提供了[数据集准备器](../user_guides/data_prepare/dataset_prepare.md)。通常，要在MMAction2中使用这些数据集，你只需要按照步骤进行准备。
 
-
 ```{笔记}
 但在这里，效率意味着一切。
 ```
+
 首先，请下载我们预先准备好的 [kinetics400_tiny.zip](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) ，并将其解压到MMAction2根目录下的`data/`目录。这将为您提供必要的视频和注释文件。
 
 ```Bash
@@ -80,7 +79,6 @@ ann_file_val = 'data/kinetics400_tiny/kinetics_tiny_val_video.txt'
 ### 修改运行配置
 
 此外，由于数据集的大小减少，我们建议将训练批大小减少到4个，训练epoch的数量相应减少到10个。此外，我们建议将验证和权值存储间隔缩短为1轮，并修改学习率衰减策略。修改`configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py`中对应的关键字，如下所示生效。
-
 
 ```python
 # 设置训练批大小为4
@@ -123,7 +121,6 @@ load_from = 'https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_im
 ## 浏览数据集
 
 在开始训练之前，我们还可以将训练时数据转换处理的帧可视化。这很简单：传递我们需要可视化的配置文件到[browse_dataset.py](/tools/analysis_tools/browse_dataset.py)脚本中。
-
 
 ```Bash
 python tools/visualizations/browse_dataset.py \
@@ -192,7 +189,6 @@ python tools/train.py configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-
 ## 测试
 
 经过10个epoch后，我们观察到TSN在第6个epoch表现最好，`acc/top1` 达到1.0000:
-
 
 ```Bash
 03/24 16:36:25 - mmengine - INFO - Epoch(val) [6][1/1]  acc/top1: 1.0000  acc/top5: 1.0000  acc/mean1: 1.0000data_time: 1.0210  time: 1.1091

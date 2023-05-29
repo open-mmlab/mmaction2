@@ -22,6 +22,7 @@ register_all_modules(init_default_scope=True)
 ```
 
 ## 步骤0：准备数据
+
 请下载我们自制的[kinetics400_tiny](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) 数据集，并将其提取到`$MMACTION2/data`目录。
 
 解压后的目录结构应如下所示:
@@ -233,7 +234,6 @@ label:  tensor([0])
 ## 步骤2：构建一个数据集和数据加载器
 
 OpenMMLab中的所有`Dataset`类都必须继承自`mmengine`中的`BaseDataset`类。我们可以通过覆盖`load_data_list`方法来定制注释加载过程。此外，我们可以通过覆盖`get_data_info`方法，向作为输入传递给`pipeline`的`results`字典添加更多信息。有关`BaseDataset`类的更多详细信息，请参阅[MMEngine教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/basedataset.html) 。
-
 
 ```python
 import os.path as osp
