@@ -102,9 +102,10 @@ mim test mmaction tsm_imagenet-pretrained-mobilenetv2_8xb16-1x1x8-100e_kinetics4
 
 ## Results and models
 
-| Location |   Dataset    |         Teacher         |      Student      |  Acc  | Acc(T) | Acc(S) |       Config        | Download                                                         |
-| :------: | :----------: | :---------------------: | :---------------: | :---: | :----: | :----: | :-----------------: | :--------------------------------------------------------------- |
-|  logits  | Kinetics-400 | [TSM-ResNet50][tsm-r50] | [TSM-MobileNetV2] | 69.60 | 73.22  | 68.71  | [config][distill_c] | [teacher][r50_pth] \| [model][distill_pth] \| [log][distill_log] |
+| Location |   Dataset    |    Teacher     |      Student      |     Acc     | Acc(T) | Acc(S) |        Config         | Download                                                                      |
+| :------: | :----------: | :------------: | :---------------: | :---------: | :----: | :----: | :-------------------: | :---------------------------------------------------------------------------- |
+|  logits  | Kinetics-400 | [TSM-ResNet50] | [TSM-MobileNetV2] | 69.60(+0.9) | 73.22  | 68.71  | [config][distill_tsm] | [teacher][tsm_r50_pth] \| [model][distill_pth_tsm] \| [log][distill_log_tsm]  |
+|  logits  | Kinetics-400 |   [TSN-Swin]   |  [TSN-ResNet50]   | 75.54(+1.4) | 79.22  | 74.12  | [config][distill_tsn] | [teacher][tsn_swin_pth] \| [model][distill_pth_tsn] \| [log][distill_log_tsn] |
 
 ## Citation
 
@@ -117,9 +118,15 @@ mim test mmaction tsm_imagenet-pretrained-mobilenetv2_8xb16-1x1x8-100e_kinetics4
 }
 ```
 
-[distill_c]: configs/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400.py
-[distill_log]: https://download.openmmlab.com/mmaction/v1.0/projects/knowledge_distillation/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400.log
-[distill_pth]: https://download.openmmlab.com/mmaction/v1.0/projects/knowledge_distillation/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400_20230517-c3e8aa0d.pth
-[r50_pth]: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb_20220831-a6db1e5d.pth
+[distill_log_tsm]: https://download.openmmlab.com/mmaction/v1.0/projects/knowledge_distillation/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400.log
+[distill_log_tsn]: https://download.openmmlab.com/mmaction/v1.0/projects/knowledge_distillation/kd_logits_tsn-swin_tsn-r50_1x1x8_k400/kd_logits_tsn-swin_tsn-r50_1x1x8_k400.log
+[distill_pth_tsm]: https://download.openmmlab.com/mmaction/v1.0/projects/knowledge_distillation/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400_20230517-c3e8aa0d.pth
+[distill_pth_tsn]: https://download.openmmlab.com/mmaction/v1.0/projects/knowledge_distillation/kd_logits_tsn-swin_tsn-r50_1x1x8_k400/kd_logits_tsn-swin_tsn-r50_1x1x8_k400_student_20230530-f938d404.pth
+[distill_tsm]: configs/kd_logits_tsm-res50_tsm-mobilenetv2_8xb16_k400.py
+[distill_tsn]: configs/kd_logits_tsn-swin_tsn-r50_8xb16_k400.py
 [tsm-mobilenetv2]: ../../configs/recognition/tsm/tsm_imagenet-pretrained-mobilenetv2_8xb16-1x1x8-100e_kinetics400-rgb.py
-[tsm-r50]: ../../configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py
+[tsm-resnet50]: ../../configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py
+[tsm_r50_pth]: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb_20220831-a6db1e5d.pth
+[tsn-resnet50]: ../../configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py
+[tsn-swin]: ../../configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-swin-transformer_32xb8-1x1x8-50e_kinetics400-rgb.py
+[tsn_swin_pth]: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_32xb8-1x1x8-50e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_32xb8-1x1x8-50e_kinetics400-rgb_20230530-428f0064.pth
