@@ -320,6 +320,12 @@ class AVADataset(BaseActionDataset):
                     proposals = proposals[:self.num_max_proposals]
                     data_info['proposals'] = proposals
 
+                assert data_info['proposals'].max() <= 1 and \
+                    data_info['proposals'].min() >= 0, \
+                    (f'relative proposals invalid: max value '
+                     f'{data_info["proposals"].max()}, min value '
+                     f'{data_info["proposals"].min()}')
+
         ann = data_info.pop('ann')
         data_info['gt_bboxes'] = ann['gt_bboxes']
         data_info['gt_labels'] = ann['gt_labels']

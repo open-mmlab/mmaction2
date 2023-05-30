@@ -10,8 +10,7 @@ model = dict(
     init_cfg=dict(type='Pretrained', checkpoint=url),
     backbone=dict(
         _delete_=True,
-        type='ResNet3dSlowFast',
-        _scope_='mmaction',
+        type='mmaction.ResNet3dSlowFast',
         pretrained=None,
         resample_rate=8,
         speed_ratio=8,

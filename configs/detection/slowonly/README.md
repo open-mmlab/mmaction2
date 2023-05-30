@@ -54,12 +54,13 @@ We conduct ablation studies to show the improvements of training tricks using Sl
 
 ### MultiSports
 
-| frame sampling strategy | gpus |     backbone      |   pretrain   | f-mAP | v-map@0.2 | v-map@0.5 | v-map@0.1:0.9 | gpu_mem(M) |               config               |               ckpt               |               log                |
+| frame sampling strategy | gpus |     backbone      |   pretrain   | f-mAP | v-mAP@0.2 | v-mAP@0.5 | v-mAP@0.1:0.9 | gpu_mem(M) |               config               |               ckpt               |               log                |
 | :---------------------: | :--: | :---------------: | :----------: | :---: | :-------: | :-------: | :-----------: | :--------: | :--------------------------------: | :------------------------------: | :------------------------------: |
 |         4x16x1          |  8   | SlowOnly ResNet50 | Kinetics-400 | 26.40 |   15.48   |   10.62   |     9.65      |    8509    | [config](/configs/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb_20230320-a1ca5e76.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb.log) |
 
 1. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
 2. **+ context** indicates that using both RoI feature and global pooled feature for classification; **+ temporal max pooling** indicates that using max pooling in the temporal dimension for the feature; **nonlinear head** indicates that using a 2-layer mlp instead of a linear classifier.
+3. MultiSports dataset utilizes frame-mAP(f-mAP) and video-mAP(v-map) to evaluate performance. Frame-mAP evaluates on detection results of each frame, and video-mAP uses 3D IoU to evaluate tube-level results under several thresholds. You could refer to the [competition page](https://codalab.lisn.upsaclay.fr/competitions/3736#learn_the_details-evaluation) for details.
 
 For more details on data preparation, you can refer to
 
