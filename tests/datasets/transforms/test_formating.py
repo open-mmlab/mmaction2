@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 import pytest
 import torch
-from mmengine.structures import InstanceData, LabelData
+from mmengine.structures import InstanceData
 from mmengine.testing import assert_dict_has_keys
 from numpy.testing import assert_array_equal
 
@@ -49,9 +49,7 @@ class TestPackActionInputs(unittest.TestCase):
                          torch.LongTensor([1]))
 
         # audios input
-        results = dict(
-            audios=np.random.randn(3, 1, 128, 80),
-            label=[1])
+        results = dict(audios=np.random.randn(3, 1, 128, 80), label=[1])
         transform = PackActionInputs()
         results = transform(results)
         self.assertIn('inputs', results)
@@ -114,8 +112,7 @@ class TestPackActionInputs(unittest.TestCase):
 
         # imgs and text input
         data = dict(
-            imgs=np.random.randn(2, 256, 256, 3),
-            text=np.random.randn(77))
+            imgs=np.random.randn(2, 256, 256, 3), text=np.random.randn(77))
 
         transform = PackActionInputs(collect_keys=('imgs', 'text'))
         results = transform(copy.deepcopy(data))
@@ -123,7 +120,7 @@ class TestPackActionInputs(unittest.TestCase):
         self.assertIn('data_samples', results)
         self.assertIsInstance(results['inputs'], dict)
         self.assertEqual(results['inputs']['imgs'].shape, (2, 256, 256, 3))
-        self.assertEqual(results['inputs']['text'].shape, (77,))
+        self.assertEqual(results['inputs']['text'].shape, (77, ))
 
     def test_repr(self):
         cfg = dict(

@@ -48,7 +48,7 @@ class CLIPSimilarity(BaseModel):
         self.adapter = MODELS.build(adapter)
 
     def encode_video(self, video: torch.Tensor) -> torch.Tensor:
-        """Encode video. """
+        """Encode video."""
         b, n, c, h, w = video.shape
         video = video.view(-1, c, h, w)
         frames_features = self.encode_image(video)
@@ -57,17 +57,17 @@ class CLIPSimilarity(BaseModel):
         return video_features
 
     def encode_image(self, image: torch.Tensor) -> torch.Tensor:
-        """Encode image. """
+        """Encode image."""
         return self.clip.encode_image(image)
 
     def encode_text(self, text: torch.Tensor) -> torch.Tensor:
-        """Encode text. """
+        """Encode text."""
         return self.clip.encode_text(text)
 
     def extract_feat(self,
                      inputs: Dict[str, torch.Tensor],
                      norm: bool = True) -> Tuple:
-        """Extract features. """
+        """Extract features."""
         text_inputs = inputs['text']
         video_inputs = inputs['imgs']
         text_features = self.encode_text(text_inputs)
