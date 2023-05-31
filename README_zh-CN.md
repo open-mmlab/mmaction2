@@ -2,35 +2,35 @@
   <img src="https://github.com/open-mmlab/mmaction2/raw/main/resources/mmaction2_logo.png" width="600"/>
   <div>&nbsp;</div>
   <div align="center">
-    <b><font size="5">OpenMMLab 官网</font></b>
+    <b><font size="5">OpenMMLab官网</font></b>
     <sup>
       <a href="https://openmmlab.com">
-        <i><font size="4">HOT</font></i>
+        <i><font size="4">火</font></i>
       </a>
     </sup>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <b><font size="5">OpenMMLab 开放平台</font></b>
+    <b><font size="5">OpenMMLab平台</font></b>
     <sup>
       <a href="https://platform.openmmlab.com">
-        <i><font size="4">TRY IT OUT</font></i>
+        <i><font size="4">尝试一下</font></i>
       </a>
     </sup>
   </div>
 
 [![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
 [![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
-[![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
+[![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/main/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
 [![PyPI](https://img.shields.io/pypi/v/mmaction2)](https://pypi.org/project/mmaction2/)
-[![LICENSE](https://img.shields.io/github/license/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/blob/master/LICENSE)
+[![LICENSE](https://img.shields.io/github/license/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/blob/main/LICENSE)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-[📘文档](https://mmaction2.readthedocs.io/zh_CN/latest/) |
-[🛠️安装指南](https://mmaction2.readthedocs.io/zh_CN/latest/get_started.html) |
-[👀模型库](https://mmaction2.readthedocs.io/zh_CN/latest/modelzoo.html) |
-[🆕更新](https://mmaction2.readthedocs.io/zh_CN/latest/notes/changelog.html) |
-[🚀进行中项目](https://github.com/open-mmlab/mmaction2/projects) |
-[🤔问题反馈](https://github.com/open-mmlab/mmaction2/issues/new/choose)
+[📘文档](https://mmaction2.readthedocs.io/en/latest/) |
+[🛠️安装](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) |
+[👀模型库](https://mmaction2.readthedocs.io/en/latest/model_zoo/modelzoo.html) |
+[🆕更新日志](https://mmaction2.readthedocs.io/en/latest/notes/changelog.html) |
+[🚀正在进行的项目](https://github.com/open-mmlab/mmaction2/projects) |
+[🤔报告问题](https://github.com/open-mmlab/mmaction2/issues/new/choose)
 
 </div>
 
@@ -56,57 +56,71 @@
 
 [English](/README.md) | 简体中文
 
-## 简介
+## 📄 目录
 
-MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLab](https://openmmlab.com/) 项目的成员之一
+- [📄 目录](#-table-of-contents)
+- [🥳 🚀 最新进展](#--whats-new-)
+- [📖 简介](#-introduction-)
+- [🎁 主要功能](#-major-features-)
+- [🛠️ 安装](#️-installation-)
+- [👀 模型库](#-model-zoo-)
+- [👨‍🏫 入门](#-get-started-)
+- [🎫 许可](#-license-)
+- [🖊️ 引用](#️-citation-)
+- [🙌 参与贡献](#-contributing-)
+- [🤝 致谢](#-acknowledgement-)
+- [🏗️ OpenMMLab所有项目](#️-projects-in-openmmlab-)
 
-main 分支代码目前支持 **PyTorch 1.6以上** 的版本
+## 🥳 🚀 最新进展 [🔝](#-table-of-contents)
+
+**默认分支将从`master`（以前的`0.x`）转成`main`（当前的`1.x`），我们建议用户更新至最新版本，其支持更多模型，更强的预训练检查点，以及更简洁的代码实现。详情请参阅[迁移指南](https://mmaction2.readthedocs.io/en/latest/migration.html)**
+
+**发布(2023.04.06)**: v1.0.0支持以下新功能:
+
+- 支持RGB-PoseC3D(CVPR'2022)。
+- 支持训练UniFormer V2(Arxiv'2022)
+- 支持MSG3D(CVPR'2020)和CTRGCN(CVPR'2021)
+- 优化并增加更友好的文档
+
+## 📖 简介 [🔝](#-table-of-contents)
+
+MMAction2是一款基于PyTorch开发的动作识别开源工具包，是[open-mmlab](https://github.com/open-mmlab) 项目的一个子项目。
 
 <div align="center">
-  <div style="float:left;margin-right:10px;">
-  <img src="https://github.com/open-mmlab/mmaction2/raw/main/resources/mmaction2_overview.gif" width="380px"><br>
-    <p style="font-size:1.5vw;">Kinetics-400 上的动作识别</p>
-  </div>
-  <div style="float:right;margin-right:0px;">
-  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
-    <p style="font-size:1.5vw;">NTURGB+D-120 上的基于人体姿态的动作识别</p>
-  </div>
+  <img src="https://github.com/open-mmlab/mmaction2/raw/main/resources/mmaction2_overview.gif" width="380px">
+  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px">
+  <p style="font-size:1.5vw;"> Kinetics-400中动作识别（左） 和 NTU-RGB+D-120中基于骨架的动作识别（右）</p>
 </div>
+
 <div align="center">
   <img src="https://user-images.githubusercontent.com/30782254/155710881-bb26863e-fcb4-458e-b0c4-33cd79f96901.gif" width="580px"/><br>
-    <p style="font-size:1.5vw;">Kinetics-400 上的基于 skeleton 的时空动作检测和动作识别</p>
+    <p style="font-size:1.5vw;">Kinetics-400中基于骨架的时空动作检测及识别结果</p>
 </div>
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/main/resources/spatio-temporal-det.gif" width="800px"/><br>
-    <p style="font-size:1.5vw;">AVA-2.1 上的时空动作检测</p>
+    <p style="font-size:1.5vw;">AVA-2.1中时空动作检测结果</p>
 </div>
 
-## 主要特性
+## 🎁 主要功能 [🔝](#-table-of-contents)
 
-- **模块设计**：MMAction2 将统一的视频理解框架解耦成不同的模块组件，通过组合不同的模块组件，用户可以便捷地构建自定义的视频理解模型
+- **模块化设计**： 我们将视频理解框架拆分成了不同模块，用户可以很方便地通过组合不同的模块来构建出自定义化的视频理解框架。
 
-- **支持多种任务和数据集**：MMAction2 支持多种视频理解任务，包括动作识别，时序动作检测，时空动作检测以及基于人体姿态的动作识别
+- **支持四种主要的视频理解任务**： MMAction2为视频理解任务实现了多种多样的算法，包括动作识别，动作定位，时空动作检测，以及基于骨架的动作检测。
 
-- **详尽的单元测试和文档**：MMAction2 提供了详尽的说明文档，API 接口说明，全面的单元测试，以供社区参考
+- **严密的测试和丰富的文档**：我们提供了详尽的文档和API参考手册，以及单元测试。
 
-## 更新记录
+## 🛠️ 安装 [🔝](#-table-of-contents)
 
-**v1.0.0 版本 (2023.04.06)**:
+MMAction2依赖于[PyTorch](https://pytorch.org/)，[MMCV](https://github.com/open-mmlab/mmcv)，[MMEngine](https://github.com/open-mmlab/mmengine)，[MMDetection](https://github.com/open-mmlab/mmdetection) (可选)和[MMPose](https://github.com/open-mmlab/mmpose) (可选)
+具体步骤请参见[install.md](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html)
 
-- 支持骨骼动作识别模型 RGB-PoseC3D (CVPR'2022) .
-- 在 Projects 中支持 MSG3D(CVPR'2020) 和 CTRGCN(CVPR'2021).
-- 支持训练 UniFormer V2(Arxiv'2022).
-- 重构升级用户文档
-
-## 安装
-
-MMAction2 依赖 [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine), [MMDetection](https://github.com/open-mmlab/mmdetection) (可选), [MMPose](https://github.com/open-mmlab/mmpose) (可选)，以下是安装的简要步骤。
-更详细的安装指南请参考 [install.md](https://mmaction2.readthedocs.io/zh_CN/latest/get_started.html) 。
+<details close>
+<summary>快速上手</summary>
 
 ```shell
 conda create --name openmmlab python=3.8 -y
 conda activate open-mmlab
-conda install pytorch torchvision -c pytorch  # 以上命令将自动安装最新版本的 PyTorch 和 cudatoolkit,请检查它们是否和你的环境匹配
+conda install pytorch torchvision -c pytorch  # 该命令将自动安装最新版的PyTorch和cudatoolkit，请确认此是否匹配你的当前环境。
 pip install -U openmim
 mim install mmengine
 mim install mmcv
@@ -117,11 +131,19 @@ cd mmaction2
 pip install -v -e .
 ```
 
-## 模型库
+</details>
+
+## 👀 模型库 [🔝](#-table-of-contents)
+
+结果及模型位于[模型集](https://mmaction2.readthedocs.io/en/latest/model_zoo/modelzoo.html)
+
+<details close>
+
+<summary>支持的模型</summary>
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
-    <td colspan="5" style="font-weight:bold;">行为识别方法</td>
+    <td colspan="5" style="font-weight:bold;">动作识别</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/c3d/README.md">C3D</a> (CVPR'2014)</td>
@@ -160,17 +182,16 @@ pip install -v -e .
     <td></td>
   </tr>
   <tr>
-    <td colspan="5" style="font-weight:bold;">时序动作检测方法</td>
+    <td colspan="5" style="font-weight:bold;">动作定位</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/ssn/README.md">SSN</a> (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/bsn/README.md">BSN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/bmn/README.md">BMN</a> (ICCV'2019)</td>
     <td></td>
     <td></td>
   </tr>
   <tr>
-    <td colspan="5" style="font-weight:bold;">时空动作检测方法</td>
+    <td colspan="5" style="font-weight:bold;">时空动作检测</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/detection/acrn/README.md">ACRN</a> (ECCV'2018)</td>
@@ -180,107 +201,112 @@ pip install -v -e .
     <td></td>
   </tr>
   <tr>
-    <td colspan="5" style="font-weight:bold;">基于骨骼点的动作识别方法</td>
+    <td colspan="5" style="font-weight:bold;">基于骨架的动作识别</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/skeleton/posec3d/README.md">PoseC3D</a> (CVPR'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/skeleton/stgcnpp/README.md">STGCN++</a> (ArXiv'2022)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/projects/ctrgcn/README.md">CTRGCN</a> (CVPR'2021)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/projects/msg3d/README.md">MSG3D</a> (CVPR'2020)</td>
     <td></td>
   </tr>
 </table>
 
-各个模型的结果和设置都可以在对应的 config 目录下的 *README_zh-CN.md* 中查看。整体的概况也可也在 [**模型库**](https://mmaction2.readthedocs.io/zh_CN/latest/modelzoo.html) 页面中查看。
+</details>
 
-MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如果您对 MMAction2 有任何功能需求，请随时在 [问题](https://github.com/open-mmlab/mmaction2/issues/19) 中留言。
+<details close>
 
-## 数据集
+<summary>支持数据集</summary>
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
-    <td colspan="4" style="font-weight:bold;">动作识别数据集</td>
+    <td colspan="4" style="font-weight:bold;">动作识别</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/hmdb51/README.md">HMDB51</a> (<a href="https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/">Homepage</a>) (ICCV'2011)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/ucf101/README.md">UCF101</a> (<a href="https://www.crcv.ucf.edu/research/data-sets/ucf101/">Homepage</a>) (CRCV-IR-12-01)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">Homepage</a>) (CVPR'2015)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/kinetics/README.md">Kinetics-[400/600/700]</a> (<a href="https://deepmind.com/research/open-source/kinetics/">Homepage</a>) (CVPR'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/hmdb51/README.md">HMDB51</a> (<a href="https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/">主页</a>) (ICCV'2011)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/ucf101/README.md">UCF101</a> (<a href="https://www.crcv.ucf.edu/research/data-sets/ucf101/">主页</a>) (CRCV-IR-12-01)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">主页</a>) (CVPR'2015)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/kinetics/README.md">Kinetics-[400/600/700]</a> (<a href="https://deepmind.com/research/open-source/kinetics/">主页</a>) (CVPR'2017)</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/sthv1/README.md">SthV1</a>  (ICCV'2017)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/sthv2/README.md">SthV2</a> (<a href="https://developer.qualcomm.com/software/ai-datasets/something-something">Homepage</a>) (ICCV'2017)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/diving48/README.md">Diving48</a> (<a href="http://www.svcl.ucsd.edu/projects/resound/dataset.html">Homepage</a>) (ECCV'2018)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/jester/README.md">Jester</a> (<a href="https://developer.qualcomm.com/software/ai-datasets/jester">Homepage</a>) (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/sthv2/README.md">SthV2</a> (<a href="https://developer.qualcomm.com/software/ai-datasets/something-something">主页</a>) (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/diving48/README.md">Diving48</a> (<a href="http://www.svcl.ucsd.edu/projects/resound/dataset.html">主页</a>) (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/jester/README.md">Jester</a> (<a href="https://developer.qualcomm.com/software/ai-datasets/jester">主页</a>) (ICCV'2019)</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/mit/README.md">Moments in Time</a> (<a href="http://moments.csail.mit.edu/">Homepage</a>) (TPAMI'2019)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/mmit/README.md">Multi-Moments in Time</a> (<a href="http://moments.csail.mit.edu/challenge_iccv_2019.html">Homepage</a>) (ArXiv'2019)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/hvu/README.md">HVU</a> (<a href="https://github.com/holistic-video-understanding/HVU-Dataset">Homepage</a>) (ECCV'2020)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/omnisource/README.md">OmniSource</a> (<a href="https://kennymckormick.github.io/omnisource/">Homepage</a>) (ECCV'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/mit/README.md">Moments in Time</a> (<a href="http://moments.csail.mit.edu/">主页</a>) (TPAMI'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/mmit/README.md">Multi-Moments in Time</a> (<a href="http://moments.csail.mit.edu/challenge_iccv_2019.html">主页</a>) (ArXiv'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/hvu/README.md">HVU</a> (<a href="https://github.com/holistic-video-understanding/HVU-Dataset">主页</a>) (ECCV'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/omnisource/README.md">OmniSource</a> (<a href="https://kennymckormick.github.io/omnisource/">主页</a>) (ECCV'2020)</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/gym/README.md">FineGYM</a> (<a href="https://sdolivia.github.io/FineGym/">Homepage</a>) (CVPR'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/gym/README.md">FineGYM</a> (<a href="https://sdolivia.github.io/FineGym/">主页</a>) (CVPR'2020)</td>
     <td></td>
     <td></td>
     <td></td>
   </tr>
   <tr>
-    <td colspan="4" style="font-weight:bold;">时序动作检测数据集</td>
+    <td colspan="4" style="font-weight:bold;">动作定位</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/thumos14/README.md">THUMOS14</a> (<a href="https://www.crcv.ucf.edu/THUMOS14/download.html">Homepage</a>) (THUMOS Challenge 2014)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">Homepage</a>) (CVPR'2015)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/thumos14/README.md">THUMOS14</a> (<a href="https://www.crcv.ucf.edu/THUMOS14/download.html">主页</a>) (THUMOS Challenge 2014)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">主页</a>) (CVPR'2015)</td>
     <td></td>
     <td></td>
   </tr>
   <tr>
-    <td colspan="4" style="font-weight:bold;">时空动作检测数据集</td>
+    <td colspan="4" style="font-weight:bold;">时空动作检测</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/ucf101_24/README.md">UCF101-24*</a> (<a href="http://www.thumos.info/download.html">Homepage</a>) (CRCV-IR-12-01)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/jhmdb/README.md">JHMDB*</a> (<a href="http://jhmdb.is.tue.mpg.de/">Homepage</a>) (ICCV'2015)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/ava/README.md">AVA</a> (<a href="https://research.google.com/ava/index.html">Homepage</a>) (CVPR'2018)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/ava_kinetics/README.md">AVA-Kinetics</a> (<a href="https://research.google.com/ava/index.html">Homepage</a>) (Arxiv'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/ucf101_24/README.md">UCF101-24*</a> (<a href="http://www.thumos.info/download.html">主页</a>) (CRCV-IR-12-01)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/jhmdb/README.md">JHMDB*</a> (<a href="http://jhmdb.is.tue.mpg.de/">主页</a>) (ICCV'2015)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/ava/README.md">AVA</a> (<a href="https://research.google.com/ava/index.html">主页</a>) (CVPR'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/ava_kinetics/README.md">AVA-Kinetics</a> (<a href="https://research.google.com/ava/index.html">主页</a>) (Arxiv'2020)</td>
   </tr>
   <tr>
-    <td colspan="4" style="font-weight:bold;">基于骨骼点的动作识别数据集</td>
+    <td colspan="4" style="font-weight:bold;">基于骨架的动作识别</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-FineGYM</a> (<a href="https://kennymckormick.github.io/posec3d/">Homepage</a>) (ArXiv'2021)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-NTURGB+D</a> (<a href="https://kennymckormick.github.io/posec3d/">Homepage</a>) (ArXiv'2021)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-UCF101</a> (<a href="https://kennymckormick.github.io/posec3d/">Homepage</a>) (ArXiv'2021)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-HMDB51</a> (<a href="https://kennymckormick.github.io/posec3d/">Homepage</a>) (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-FineGYM</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-NTURGB+D</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-UCF101</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-HMDB51</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
   </tr>
 </table>
 
-标记 * 代表对应数据集并未被完全支持，但提供相应的数据准备步骤。整体的概况也可也在 [**数据集**](https://mmaction2.readthedocs.io/zh_CN/latest/supported_datasets.html) 页面中查看。
+</details>
 
-## 数据集准备
+## 👨‍🏫 入门 [🔝](#-table-of-contents)
 
-请参考 [数据准备](https://mmaction2.readthedocs.io/en/latest/user_guides/2_data_prepare.html) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](https://mmaction2.readthedocs.io/zh_CN/latest/supported_datasets.html) 中。
+对于基本用法，我们提供了如下用户指南：
 
-## FAQ
+- [从MMAction2 0.X版迁移过来](https://mmaction2.readthedocs.io/en/latest/migration.html)
+- [学习配置相关知识](https://mmaction2.readthedocs.io/en/latest/user_guides/config.html#)
+- [准备数据集](https://mmaction2.readthedocs.io/en/latest/user_guides/prepare_dataset.html)
+- [使用现有模型进行推理](https://mmaction2.readthedocs.io/en/latest/user_guides/inference.html)
+- [训练与测试](https://mmaction2.readthedocs.io/en/latest/user_guides/train_test.html)
 
-请参考 [FAQ](docs/zh_cn/notes/faq.md) 了解其他用户的常见问题。
+<details close>
+<summary>社区用户的基于MMAction2的研究工作</summary>
 
-## 相关工作
+- Video Swin Transformer. [\[paper\]](https://arxiv.org/abs/2106.13230)[\[github\]](https://github.com/SwinTransformer/Video-Swin-Transformer)
+- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2107.10161)[\[github\]](https://github.com/Cogito2012/DEAR)
+- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2103.17263)[\[github\]](https://github.com/xvjiarui/VFS)
 
-目前有许多研究工作或工程项目基于 MMAction2 搭建，例如：
+</details>
 
-- Video Swin Transformer. [\[论文\]](https://arxiv.org/abs/2106.13230)[\[代码\]](https://github.com/SwinTransformer/Video-Swin-Transformer)
-- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [\[论文\]](https://arxiv.org/abs/2107.10161)[\[代码\]](https://github.com/Cogito2012/DEAR)
-- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [\[论文\]](https://arxiv.org/abs/2103.17263)[\[代码\]](https://github.com/xvjiarui/VFS)
+## 🎫 许可 [🔝](#-table-of-contents)
 
-更多详情可见 [相关工作](docs/en/notes/projects.md) 。
+本项目基于[Apache 2.0 license](LICENSE)发布。
 
-## 许可
+## 🖊️ 引用 [🔝](#-table-of-contents)
 
-该项目开源自 [Apache 2.0 license](LICENSE).
-
-## 引用
-
-如果你觉得 MMAction2 对你的研究有所帮助，可以考虑引用它：
+如你发现本项目对你的研究有帮助，请考虑引用：
 
 ```BibTeX
 @misc{2020mmaction2,
@@ -291,33 +317,32 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
 }
 ```
 
-## 参与贡献
+## 🙌 参与贡献 [🔝](#-table-of-contents)
 
-我们非常欢迎用户对于 MMAction2 做出的任何贡献，可以参考 [贡献指南](https://github.com/open-mmlab/mmcv/blob/2.x/CONTRIBUTING_zh-CN.md) 文件了解更多细节。
+我们感谢所有参与改进MMAction2的贡献，更多贡献指南请参阅MMCV下的[CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/2.x/CONTRIBUTING.md)
 
-## 致谢
+## 🤝 致谢 [🔝](#-table-of-contents)
 
-MMAction2 是一款由不同学校和公司共同贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。
-我们希望该工具箱和基准测试可以为社区提供灵活的代码工具，供用户复现现有算法并开发自己的新模型，从而不断为开源社区提供贡献。
+MMAction2是一个来自众多高校和企业的研究人员及工程师共同参与构建的开源项目，我们感谢所有实现他们的算法，添加新功能的贡献者，以及那些提供有价值的反馈的用户。我们希望通过提供一款灵活的能够实现现有算法以及开发新的模型工具包，来服务于日益增长的研究群体，
 
-## OpenMMLab 的其他项目
+## 🏗️ OpenMMLab所有项目 [🔝](#-table-of-contents)
 
-- [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab 深度学习模型训练基础库
-- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab 计算机视觉基础库
-- [MMPreTrain](https://github.com/open-mmlab/mmpretrain): OpenMMLab 深度学习预训练工具箱
-- [MMagic](https://github.com/open-mmlab/mmagic): OpenMMLab 新一代人工智能内容生成（AIGC）工具箱
-- [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab 目标检测工具箱
-- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab 新一代通用 3D 目标检测平台
-- [MMRotate](https://github.com/open-mmlab/mmrotate): OpenMMLab 旋转框检测工具箱与测试基准
-- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab 一体化视频目标感知平台
-- [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab 语义分割工具箱
-- [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab 全流程文字检测识别理解工具包
-- [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab 姿态估计工具箱
-- [MMHuman3D](https://github.com/open-mmlab/mmhuman3d): OpenMMLab 人体参数化模型工具箱与测试基准
-- [MMFewShot](https://github.com/open-mmlab/mmfewshot): OpenMMLab 少样本学习工具箱与测试基准
-- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab 新一代视频理解工具箱
-- [MMFlow](https://github.com/open-mmlab/mmflow): OpenMMLab 光流估计工具箱与测试基准
-- [MMDeploy](https://github.com/open-mmlab/mmdeploy): OpenMMLab 模型部署框架
-- [MMRazor](https://github.com/open-mmlab/mmrazor): OpenMMLab 模型压缩工具箱与测试基准
-- [MIM](https://github.com/open-mmlab/mim): OpenMMlab 项目、算法、模型的统一入口
-- [Playground](https://github.com/open-mmlab/playground): 收集和展示 OpenMMLab 相关的前沿、有趣的社区项目
+- [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab训练深度学习模型的基础库
+- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab计算机视觉基础库
+- [MMPreTrain](https://github.com/open-mmlab/mmpretrain): OpenMMLab预训练工具包及基准
+- [MMagic](https://github.com/open-mmlab/mmagic): Open**MM**Lab高级（**A**）生成式（**G**）及智能（**I**）创建（**C**）工具包
+- [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab物体检测工具包及基准
+- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab下一代通用3D物体检测平台
+- [MMRotate](https://github.com/open-mmlab/mmrotate): OpenMMLab旋转物体检测工具包及基准
+- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab视频感知工具包及基准
+- [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab语义分割工具包及基准
+- [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab文本检测，识别及理解工具包
+- [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab姿态预测工具包及基准
+- [MMHuman3D](https://github.com/open-mmlab/mmhuman3d): OpenMMLab 3D人物参数模型工具包及基准
+- [MMFewShot](https://github.com/open-mmlab/mmfewshot): OpenMMLab少样本学习工具包及基准
+- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab下一代动作理解工具并及基准
+- [MMFlow](https://github.com/open-mmlab/mmflow): OpenMMLab光流法工具并及基准
+- [MMDeploy](https://github.com/open-mmlab/mmdeploy): OpenMMLab模型部署框架
+- [MMRazor](https://github.com/open-mmlab/mmrazor): OpenMMLab模型压缩工具包及基准
+- [MIM](https://github.com/open-mmlab/mim): MIM用于安装OpenMMLab所需包
+- [Playground](https://github.com/open-mmlab/playground): 一个用于收集和展示基于OpenMMLab构建的优质项目中心站点
