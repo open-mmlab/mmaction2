@@ -37,10 +37,7 @@ English | [简体中文](/README_zh-CN.md)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-MMAction2 is an open-source toolbox for video understanding based on PyTorch.
-It is a part of the [OpenMMLab](http://openmmlab.org/) project.
-
-The master branch works with **PyTorch 1.3+**.
+This repository contains the implementation details of  Video Action Recognition Benchmarking (VARB).
 
 <div align="center">
   <div style="float:left;margin-right:10px;">
