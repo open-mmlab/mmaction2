@@ -1,6 +1,5 @@
 av>=9.0
 future
-fvcore
 imgaug
 librosa
 lmdb
@@ -11,3 +10,4 @@ PyTurboJPEG
 soundfile
 tensorboard
 wandb
+git+https://github.com/openai/CLIP.git
