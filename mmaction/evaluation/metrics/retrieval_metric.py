@@ -12,7 +12,7 @@ from mmaction.registry import METRICS
 @METRICS.register_module()
 class RetrievalMetric(BaseMetric):
 
-    default_prefix = 'TODO'
+    default_prefix = 'retrieval'
 
     def __init__(self,
                  metric_list: Tuple[str] = ('R1', 'R5', 'R10', 'MdR', 'MnR'),
@@ -58,6 +58,10 @@ class RetrievalMetric(BaseMetric):
 
         video_features = np.stack([res['video_feature'] for res in results])
         text_features = np.stack([res['text_feature'] for res in results])
+
+        video_features = video_features / np.linalg.norm(video_features, axis=-1, keepdims=True)
+        text_features = text_features / np.linalg.norm(text_features, axis=-1, keepdims=True)
+
         similarity = text_features @ video_features.T
 
         sx = np.sort(-similarity)
