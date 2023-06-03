@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import pytest
 import torch
 
 from mmaction.evaluation.metrics import RetrievalMetric
@@ -23,6 +24,9 @@ def generate_data(num_samples=5, feat_dim=10, random_label=False):
 
 
 def test_acc_metric():
+    with pytest.raises(ValueError):
+        RetrievalMetric(metric_list='R100')
+
     num_samples = 20
     metric = RetrievalMetric()
     data_batch, predictions = generate_data(
