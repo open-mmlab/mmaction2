@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Any, Dict, List, Tuple
 
-import clip
 import torch
 from mmengine.dist import all_gather, get_rank
 from mmengine.model import BaseModel
@@ -41,6 +40,14 @@ class CLIPSimilarity(BaseModel):
     ) -> None:
         super(CLIPSimilarity,
               self).__init__(data_preprocessor=data_preprocessor)
+
+        try:
+            import clip
+        except ImportError:
+            raise ImportError('Please run `pip install '
+                              'git+https://github.com/openai/CLIP.git` '
+                              'to install clip first. ')
+
         self.clip = clip.load(clip_arch)[0]
         if to_float32:
             self.clip.float()
