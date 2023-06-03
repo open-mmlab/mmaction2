@@ -59,8 +59,10 @@ class RetrievalMetric(BaseMetric):
         video_features = np.stack([res['video_feature'] for res in results])
         text_features = np.stack([res['text_feature'] for res in results])
 
-        video_features = video_features / np.linalg.norm(video_features, axis=-1, keepdims=True)
-        text_features = text_features / np.linalg.norm(text_features, axis=-1, keepdims=True)
+        video_features = video_features / np.linalg.norm(
+            video_features, axis=-1, keepdims=True)
+        text_features = text_features / np.linalg.norm(
+            text_features, axis=-1, keepdims=True)
 
         similarity = text_features @ video_features.T
 
