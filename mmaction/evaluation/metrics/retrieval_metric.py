@@ -24,7 +24,7 @@ class RetrievalMetric(BaseMetric):
 
         for metric in metric_list:
             if metric not in ['R1', 'R5', 'R10', 'MdR', 'MnR']:
-                raise ValueError(f"RetrievalMetric only supports "
+                raise ValueError(f'RetrievalMetric only supports '
                                  f"'R1', 'R5', 'R10', 'MdR', 'MnR', "
                                  f"but got '{metric}. '")
 
