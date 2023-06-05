@@ -8,14 +8,13 @@ import numpy as np
 import onnxruntime
 import torch
 import torch.nn as nn
-
 from mmengine import Config
-from mmengine.structures import LabelData
 from mmengine.registry import init_default_scope
 from mmengine.runner import load_checkpoint
-from mmaction.structures import ActionDataSample
+from mmengine.structures import LabelData
 
 from mmaction.registry import MODELS
+from mmaction.structures import ActionDataSample
 
 
 def parse_args():
@@ -25,11 +24,13 @@ def parse_args():
     parser.add_argument(
         '--num_frames', type=int, default=150, help='number of input frames.')
     parser.add_argument(
-        '--num_person', type=int, default=2, help='number of maximun person.')
+        '--num_person', type=int, default=2, help='number of maximum person.')
     parser.add_argument(
-        '--num_joints', type=int, default=0, 
+        '--num_joints',
+        type=int,
+        default=0,
         help='number of joints. If not given, will use default settings from'
-             'the config file')
+        'the config file')
     parser.add_argument(
         '--device', type=str, default='cpu', help='CPU/CUDA device option')
     parser.add_argument(
@@ -106,7 +107,8 @@ def main():
     if num_joints == 0:
         layout = config.model.backbone.graph_cfg.layout
         if layout not in lookup:
-            raise KeyError('`layout` not supported, please specify `num_joints`')
+            raise KeyError(
+                '`layout` not supported, please specify `num_joints`')
         num_joints = lookup[layout]
 
     input_tensor = torch.randn(1, num_person, num_frames, num_joints, 3)
@@ -117,9 +119,9 @@ def main():
     data_sample = ActionDataSample()
     data_sample.pred_scores = LabelData()
     data_sample.pred_labels = LabelData()
-    base_output = base_model(input_tensor.unsqueeze(0), 
-                             data_samples=[data_sample], 
-                             mode='predict')[0]
+    base_output = base_model(
+        input_tensor.unsqueeze(0), data_samples=[data_sample],
+        mode='predict')[0]
     base_output = base_output.pred_scores.item.detach().cpu().numpy()
 
     model = GCNNet(base_model).to(args.device)
@@ -149,9 +151,7 @@ def main():
 
     # Test exported file
     session = onnxruntime.InferenceSession(args.output_file)
-    input_feed = {
-        'input_tensor': input_tensor.cpu().data.numpy()
-    }
+    input_feed = {'input_tensor': input_tensor.cpu().data.numpy()}
     outputs = session.run(['cls_score'], input_feed=input_feed)
     output = softmax(outputs[0][0])
 

@@ -8,14 +8,13 @@ import numpy as np
 import onnxruntime
 import torch
 import torch.nn as nn
-
 from mmengine import Config
-from mmengine.structures import LabelData
 from mmengine.registry import init_default_scope
 from mmengine.runner import load_checkpoint
-from mmaction.structures import ActionDataSample
+from mmengine.structures import LabelData
 
 from mmaction.registry import MODELS
+from mmaction.structures import ActionDataSample
 
 
 def parse_args():
@@ -27,9 +26,11 @@ def parse_args():
     parser.add_argument(
         '--image_size', type=int, default=64, help='size of the frame')
     parser.add_argument(
-        '--num_joints', type=int, default=0, 
+        '--num_joints',
+        type=int,
+        default=0,
         help='number of joints. If not given, will use default settings from'
-             'the config file')
+        'the config file')
     parser.add_argument(
         '--device', type=str, default='cpu', help='CPU/CUDA device option')
     parser.add_argument(
@@ -88,11 +89,10 @@ def main():
     config = Config.fromfile(args.config)
 
     if config.model.type != 'RecognizerGCN':
-        print(
-            'This script serves the sole purpose of converting PoseC3D skeleton '
-            'models in MMAction2 to ONNX files. Please note that attempting to '
-            'convert other models using this script may not yield successful '
-            'results.\n\n')
+        print('This script serves the sole purpose of converting PoseC3D '
+              'skeleton models in MMAction2 to ONNX files. Please note that '
+              'attempting to convert other models using this script may not '
+              'yield successful results.\n\n')
 
     init_default_scope(config.get('default_scope', 'mmaction'))
 
@@ -106,7 +106,8 @@ def main():
     if num_joints == 0:
         num_joints = config.model.backbone.in_channels
 
-    input_tensor = torch.randn(1, num_joints, num_frames, image_size, image_size)
+    input_tensor = torch.randn(1, num_joints, num_frames, image_size,
+                               image_size)
     input_tensor = input_tensor.clamp(-3, 3).to(args.device)
 
     base_model.eval()
@@ -114,9 +115,9 @@ def main():
     data_sample = ActionDataSample()
     data_sample.pred_scores = LabelData()
     data_sample.pred_labels = LabelData()
-    base_output = base_model(input_tensor.unsqueeze(0), 
-                             data_samples=[data_sample], 
-                             mode='predict')[0]
+    base_output = base_model(
+        input_tensor.unsqueeze(0), data_samples=[data_sample],
+        mode='predict')[0]
     base_output = base_output.pred_scores.item.detach().cpu().numpy()
 
     model = GCNNet(base_model).to(args.device)
@@ -145,9 +146,7 @@ def main():
 
     # Test exported file
     session = onnxruntime.InferenceSession(args.output_file)
-    input_feed = {
-        'input_tensor': input_tensor.cpu().data.numpy()
-    }
+    input_feed = {'input_tensor': input_tensor.cpu().data.numpy()}
     outputs = session.run(['cls_score'], input_feed=input_feed)
     output = softmax(outputs[0][0])
 
