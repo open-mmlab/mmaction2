@@ -216,7 +216,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                              f'["score", "prob", None]')
 
         batch_size = cls_scores.shape[0]
-        cls_scores = cls_scores.view(batch_size // num_segs, num_segs, -1)
+        cls_scores = cls_scores.view((batch_size // num_segs, num_segs) +
+                                     cls_scores.shape[1:])
 
         if self.average_clips is None:
             return cls_scores

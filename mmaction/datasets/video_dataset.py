@@ -86,6 +86,9 @@ class VideoDataset(BaseActionDataset):
                 assert self.num_classes is not None
                 filename, label = line_split[0], line_split[1:]
                 label = list(map(int, label))
+            # add fake label for inference datalist without label
+            elif len(line_split) == 1:
+                filename, label = line_split[0], -1
             else:
                 filename, label = line_split
                 label = int(label)

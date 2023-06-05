@@ -107,13 +107,29 @@ python generate_rawframes_filelist.py
 在 ActivityNet 上微调 TSN 模型之后，用户可以使用该模型进行 RGB 特征和光流特征的提取。
 
 ```shell
-python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_train_video.txt --output-prefix ../../../data/ActivityNet/rgb_feat --modality RGB --ckpt /path/to/rgb_checkpoint.pth
+python ../../misc/clip_feature_extraction.py tsn_extract_rgb_feat_config.py \
+  /path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_tarin_feat.pkl \
+  --video-list ../../../data/ActivityNet/anet_train_video.txt \
+  --video-root ../../../data/ActivityNet/rawframes \
+  --dump-score
 
-python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_val_video.txt --output-prefix ../../../data/ActivityNet/rgb_feat --modality RGB --ckpt /path/to/rgb_checkpoint.pth
+python ../../misc/clip_feature_extraction.py tsn_extract_rgb_feat_config.py \
+  path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_val_feat.pkl \
+  --video-list ../../../data/ActivityNet/anet_val_video.txt \
+  --video-root ../../../data/ActivityNet/rawframes \
+  --dump-score
 
-python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_train_video.txt --output-prefix ../../../data/ActivityNet/flow_feat --modality Flow --ckpt /path/to/flow_checkpoint.pth
+python ../../misc/clip_feature_extraction.py tsn_extract_flow_feat_config.py \
+  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_tarin_feat.pkl \
+  --video-list ../../../data/ActivityNet/anet_train_video.txt \
+  --video-root ../../../data/ActivityNet/rawframes \
+  --dump-score
 
-python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_val_video.txt --output-prefix ../../../data/ActivityNet/flow_feat --modality Flow --ckpt /path/to/flow_checkpoint.pth
+python ../../misc/clip_feature_extraction.py tsn_extract_flow_feat_config.py \
+  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_val_feat.pkl \
+  --video-list ../../../data/ActivityNet/anet_val_video.txt \
+  --video-root ../../../data/ActivityNet/rawframes \
+  --dump-score
 ```
 
 在提取完特征后，用户可以使用后处理脚本整合 RGB 特征和光流特征，生成 `100-t X 400-d` 维度的特征用于时序动作检测。

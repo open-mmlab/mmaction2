@@ -561,7 +561,7 @@ class TestSampling(BaseTestLoading):
             label=1)
         video_result = copy.deepcopy(self.video_results)
 
-        config = dict(clip_len=1, frame_interval=16)  # , start_index=0)
+        config = dict(clip_len=1, clip_interval=16)  # , start_index=0)
         sample_frames = UntrimmedSampleFrames(**config)
         sample_frames_results = sample_frames(frame_result)
         assert assert_dict_has_keys(sample_frames_results, target_keys)
@@ -570,9 +570,10 @@ class TestSampling(BaseTestLoading):
                            np.array([8, 24, 40, 56, 72, 88]))
         assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
                                        f'clip_len={1}, '
-                                       f'frame_interval={16})')
+                                       f'clip_interval={16}, '
+                                       f'frame_interval={1})')
 
-        config = dict(clip_len=1, frame_interval=16)  # , start_index=0)
+        config = dict(clip_len=1, clip_interval=16)  # , start_index=0)
         sample_frames = UntrimmedSampleFrames(**config)
         sample_frames_results = sample_frames(video_result)
         assert assert_dict_has_keys(sample_frames_results, target_keys)
@@ -581,9 +582,10 @@ class TestSampling(BaseTestLoading):
         assert_array_equal(sample_frames_results['frame_inds'], frame_inds)
         assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
                                        f'clip_len={1}, '
-                                       f'frame_interval={16})')
+                                       f'clip_interval={16}, '
+                                       f'frame_interval={1})')
 
-        config = dict(clip_len=1, frame_interval=16)
+        config = dict(clip_len=1, clip_interval=16)
         sample_frames = UntrimmedSampleFrames(**config)
         frame_result_ = copy.deepcopy(frame_result)
         frame_result_['start_index'] = 1
@@ -594,9 +596,10 @@ class TestSampling(BaseTestLoading):
                            np.array([8, 24, 40, 56, 72, 88]) + 1)
         assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
                                        f'clip_len={1}, '
-                                       f'frame_interval={16})')
+                                       f'clip_interval={16}, '
+                                       f'frame_interval={1})')
 
-        config = dict(clip_len=3, frame_interval=16)  # , start_index=0)
+        config = dict(clip_len=3, clip_interval=16)  # , start_index=0)
         sample_frames = UntrimmedSampleFrames(**config)
         sample_frames_results = sample_frames(frame_result)
         assert assert_dict_has_keys(sample_frames_results, target_keys)
@@ -609,7 +612,25 @@ class TestSampling(BaseTestLoading):
             ]))
         assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
                                        f'clip_len={3}, '
-                                       f'frame_interval={16})')
+                                       f'clip_interval={16}, '
+                                       f'frame_interval={1})')
+
+        config = dict(
+            clip_len=3, clip_interval=16, frame_interval=4)  # , start_index=0)
+        sample_frames = UntrimmedSampleFrames(**config)
+        sample_frames_results = sample_frames(frame_result)
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 18
+        assert_array_equal(
+            sample_frames_results['frame_inds'],
+            np.array([
+                4, 8, 12, 20, 24, 28, 36, 40, 44, 52, 56, 60, 68, 72, 76, 84,
+                88, 92
+            ]))
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={3}, '
+                                       f'clip_interval={16}, '
+                                       f'frame_interval={4})')
 
     def test_sample_ava_frames(self):
         target_keys = [
