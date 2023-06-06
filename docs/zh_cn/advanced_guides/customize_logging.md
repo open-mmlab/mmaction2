@@ -49,7 +49,7 @@ class ToyModel(BaseModel):
   - `time`：过去 `window_size` 次迭代的推理平均时间。
   - `data_time`：过去 `window_size` 次迭代的数据加载平均时间。
   - `eta`：完成训练的预计到达时间。
- - 损失：过去 `window_size` 次迭代中模型输出的平均损失。
+- 损失：过去 `window_size` 次迭代中模型输出的平均损失。
 
 ```{warning}
 默认情况下，log_processor 输出基于 epoch 的日志(`by_epoch=True`)。要得到与 `train_cfg` 匹配的预期日志，我们应在 `train_cfg` 和 `log_processor` 中设置相同的 `by_epoch` 值。
