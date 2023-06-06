@@ -2,20 +2,20 @@
 
 MMAction2 在运行过程中会产生大量的日志，如损失、迭代时间、学习率等。在这一部分，我们将向你介绍如何输出自定义日志。有关日志系统的更多详细信息，请参考 [MMEngine 教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/logging.html)。
 
-- [自定义日志](#customize-logging)
-  - [灵活的日志系统](#flexible-logging-system)
-  - [定制日志](#customize-log)
-  - [导出调试日志](#export-the-debug-log)
+- [自定义日志](#自定义日志)
+  - [灵活的日志系统](#灵活的日志系统)
+  - [定制日志](#定制日志)
+  - [导出调试日志](#导出调试日志)
 
 ## 灵活的日志系统
 
-默认情况下，MMAction2 的日志系统由 [default_runtime](/configs/_base_/default_runtime.py) 中的 `LogProcessor` 配置，等效于：
+默认情况下，MMAction2 的日志系统由 [default_runtime](/configs/_base_/default_runtime.py) 中的 `LogProcessor` 配置：
 
 ```python
 log_processor = dict(type='LogProcessor', window_size=20, by_epoch=True)
 ```
 
-默认情况下，`LogProcessor` 捕获 `model.forward` 返回的所有以 `loss` 开头的字段。例如，在以下模型中，`loss1` 和 `loss2` 将在没有任何额外配置的情况下自动记录日志。
+默认情况下，`LogProcessor` 捕获 `model.forward` 返回的所有以 `loss` 开头的字段。例如，在以下模型中，`loss1` 和 `loss2` 将在没有任何额外配置的情况下自动记录到日志。
 
 ```python
 from mmengine.model import BaseModel
@@ -49,7 +49,7 @@ class ToyModel(BaseModel):
   - `time`：过去 `window_size` 次迭代的推理平均时间。
   - `data_time`：过去 `window_size` 次迭代的数据加载平均时间。
   - `eta`：完成训练的预计到达时间。
--损失：过去 `window_size` 次迭代中模型输出的平均损失。
+ - 损失：过去 `window_size` 次迭代中模型输出的平均损失。
 
 ```{warning}
 默认情况下，log_processor 输出基于 epoch 的日志(`by_epoch=True`)。要得到与 `train_cfg` 匹配的预期日志，我们应在 `train_cfg` 和 `log_processor` 中设置相同的 `by_epoch` 值。
@@ -57,7 +57,7 @@ class ToyModel(BaseModel):
 
 根据以上规则，代码片段将每20次迭代计算 loss1 和 loss2 的平均值。更多类型的统计方法，请参考 [mmengine.runner.LogProcessor](mmengine.runner.LogProcessor)。
 
-## 自定义日志
+## 定制日志
 
 日志系统不仅可以记录 `loss`，`lr` 等，还可以收集和输出自定义日志。例如，如果我们想要统计中间损失：
 
@@ -115,11 +115,11 @@ log_level='DEBUG'
 ```
 
 ```
-08/21 18:16:22 - mmengine - DEBUG - 从 "mmengine" 的 "vis_backend" 注册表中获取类 `LocalVisBackend`
-08/21 18:16:22 - mmengine - DEBUG - 从注册表构建了一个 `LocalVisBackend` 实例，其实现可以在 mmengine.visualization.vis_backend 中找到
-08/21 18:16:22 - mmengine - DEBUG - 从 "mmengine" 的 "hook" 注册表中获取类 `RuntimeInfoHook`
-08/21 18:16:22 - mmengine - DEBUG - 从注册表构建了一个 `RuntimeInfoHook` 实例，其实现可以在 mmengine.hooks.runtime_info_hook 中找到
-08/21 18:16:22 - mmengine - DEBUG - 从 "mmengine" 的 "hook" 注册表中获取类 `IterTimerHook`
+08/21 18:16:22 - mmengine - DEBUG - Get class `LocalVisBackend` from "vis_backend" registry in "mmengine"
+08/21 18:16:22 - mmengine - DEBUG - An `LocalVisBackend` instance is built from registry, its implementation can be found in mmengine.visualization.vis_backend
+08/21 18:16:22 - mmengine - DEBUG - Get class `RuntimeInfoHook` from "hook" registry in "mmengine"
+08/21 18:16:22 - mmengine - DEBUG - An `RuntimeInfoHook` instance is built from registry, its implementation can be found in mmengine.hooks.runtime_info_hook
+08/21 18:16:22 - mmengine - DEBUG - Get class `IterTimerHook` from "hook" registry in "mmengine"
 ...
 ```
 
