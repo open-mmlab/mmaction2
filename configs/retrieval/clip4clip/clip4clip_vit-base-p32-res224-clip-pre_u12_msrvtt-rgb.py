@@ -4,6 +4,7 @@ model = dict(
     type='CLIPSimilarity',
     clip_arch='ViT-B/32',
     to_float32=True,
+    frozen_layers=0,
     data_preprocessor=dict(
         type='MultiModalDataPreprocessor',
         preprocessors=dict(
@@ -87,10 +88,12 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=1e-4, momentum=0.9, weight_decay=1e-4),
-    clip_grad=dict(max_norm=1.0, norm_type=2))
+    optimizer=dict(type='AdamW', lr=1e-05, betas=(0.9, 0.999), eps=1e-08, weight_decay=0.05),
+    paramwise_cfg=dict(norm_decay_mult=0., bias_decay_mult=0.),
+    # clip_grad=dict(max_norm=1.0, norm_type=2),
+)
 
-default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
+default_hooks = dict(checkpoint=dict(save_best=None))
 
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically

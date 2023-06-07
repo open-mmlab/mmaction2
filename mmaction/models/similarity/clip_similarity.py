@@ -29,6 +29,21 @@ class GatherLayer(torch.autograd.Function):
 
 @MODELS.register_module()
 class CLIPSimilarity(BaseModel):
+    """CLIP-based similarity model.
+
+    Args:
+        clip_arch (str): The architecture of the clip model.
+            Supported choices are `'ViT-B/32'`, `'ViT-B/16'`,
+            `'ViT-L/14'` and `'ViT-L/14@336px'`.
+        data_preprocessor (dict): The pre-process config.
+        adapter (dict): The 3D adapter config.
+        to_float32 (bool): Whether to convert the dtype of params of clip
+            model to float32.
+        frozen_layers: Layers to be frozen (all params fixed). -1 means
+            not freezing any parameters. Defaults to -1.
+        loss (dict): The config of loss. Defaults to
+            `dict(type='CrossEntropyLoss', loss_weight=0.5)`.
+    """
 
     def __init__(
         self,
@@ -36,6 +51,7 @@ class CLIPSimilarity(BaseModel):
         data_preprocessor: Dict[str, Dict],
         adapter: Dict,
         to_float32: bool = False,
+        frozen_layers: int = -1,
         loss: Dict = dict(type='CrossEntropyLoss', loss_weight=0.5)
     ) -> None:
         super(CLIPSimilarity,
@@ -53,6 +69,8 @@ class CLIPSimilarity(BaseModel):
             self.clip.float()
         self.loss = MODELS.build(loss)
         self.adapter = MODELS.build(adapter)
+        self.frozen_layers = frozen_layers
+        self._freeze_stages()
 
     def encode_video(self, video: torch.Tensor) -> torch.Tensor:
         """Encode video."""
@@ -128,3 +146,22 @@ class CLIPSimilarity(BaseModel):
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
+
+    def train(self, mode: bool = True) -> None:
+        """Set the optimization status when training. """
+        super().train(mode)
+        self._freeze_stages()
+
+    def _freeze_stages(self) -> None:
+        """Prevent all the parameters from being optimized before
+        ``self.frozen_layers``."""
+
+        for name, param in self.clip.named_parameters():
+            if name.find("ln_final") == 0 or name.find("text_projection") == 0 or name.find("logit_scale") == 0 \
+                    or name.find("visual.ln_post") == 0 or name.find("visual.proj") == 0:
+                continue
+            elif name.find("visual.transformer.resblocks.") == 0 or name.find("transformer.resblocks.") == 0:
+                layer_num = int(name.split(".resblocks.")[1].split(".")[0])
+                if layer_num >= self.frozen_layers:
+                    continue
+            param.requires_grad = False
