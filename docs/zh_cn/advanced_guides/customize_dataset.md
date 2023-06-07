@@ -3,11 +3,11 @@
 在本教程中，我们将介绍如何通过在线转换来自定义你的数据集。
 
 - [自定义数据集](#自定义数据集)
-  - [MMAction2中数据集的一般理解](#MMAction2中数据集的一般理解)
+  - [MMAction2数据集概述](#MMAction2数据集概述)
   - [定制新的数据集](#定制新的数据集)
   - [为PoseDataset自定义关键点格式](#为PoseDataset自定义关键点格式)
 
-## MMAction2中数据集的一般理解
+## MMAction2数据集概述
 
 MMAction2 提供了任务特定的 `Dataset` 类，例如用于动作识别的 `VideoDataset`/`RawframeDataset`，用于时空动作检测的 `AVADataset`，用于基于骨骼的动作识别的`PoseDataset`。这些任务特定的数据集只需要实现 `load_data_list(self)` 来从注释文件生成数据列表。剩下的函数由超类（即 `BaseActionDataset` 和 `BaseDataset`）自动处理。下表显示了模块的固有关系和主要方法。
 
