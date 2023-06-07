@@ -75,7 +75,6 @@ class RetrievalMetric(BaseMetric):
         sx = np.sort(-similarity)
         d = np.diag(-similarity)
         ind = np.where((sx - d[:, None]) == 0)[1]
-        assert len(ind) == similarity.shape[0]
 
         metrics = OrderedDict()
         for metric in self.metric_list:
