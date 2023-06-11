@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from collections import OrderedDict
-from typing import Dict, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
@@ -29,15 +29,17 @@ class QuickGELU(nn.Module):
 class ResidualAttentionBlock(nn.Module):
     """"ResidualAttentionBlock.
 
-    d_model (int): The dimension of the model. n_head (int): The number of
-    heads. attn_mask (torch.Tensor, optional): The attention mask. Defaults to
-    None.
+    Args:
+        d_model (int): The dimension of the model.
+        n_head (int): The number of heads.
+        attn_mask (torch.Tensor, optional): The attention mask.
+            Defaults to None.
     """
 
     def __init__(self,
                  d_model: int,
                  n_head: int,
-                 attn_mask: torch.Tensor = None) -> None:
+                 attn_mask: Optional[torch.Tensor] = None) -> None:
         super().__init__()
 
         self.attn = nn.MultiheadAttention(d_model, n_head)
@@ -67,16 +69,19 @@ class ResidualAttentionBlock(nn.Module):
 class Transformer(nn.Module):
     """"ResidualAttentionBlock.
 
-    width (int): The width of transformer. heads (int): The number of heads of
-    transformer. layers (int): The number of layers of transformer. attn_mask
-    (torch.Tensor, optional): The attention mask. Defaults to None.
+    Args:
+        width (int): The width of transformer.
+        heads (int): The number of heads of transformer.
+        layers (int): The number of layers of transformer.
+        attn_mask (torch.Tensor, optional): The attention mask.
+            Defaults to None.
     """
 
     def __init__(self,
                  width: int,
                  layers: int,
                  heads: int,
-                 attn_mask: torch.Tensor = None):
+                 attn_mask: Optional[torch.Tensor] = None):
         super().__init__()
         self.width = width
         self.layers = layers
@@ -94,18 +99,16 @@ class Transformer(nn.Module):
 class TransformerAdapter(BaseModule):
     """"Transformer adapter, modified from github.com/openai/CLIP.
 
-    num_segs (int): The number of segments. transformer_width (int): The width
-    of transformer. transformer_heads (int): The number of heads of
-    transformer. transformer_layers (int): The number of layers of transformer.
+    Args:
+        num_segs (int): The number of segments.
+        transformer_width (int): The width of transformer.
+        transformer_heads (int): The number of heads of transformer.
+        transformer_layers (int): The number of layers of transformer.
     """
 
-    def __init__(self,
-                 num_segs: int,
-                 transformer_width: int,
-                 transformer_heads: int,
-                 transformer_layers: int,
-                 init_cfg: Optional[Dict] = None) -> None:
-        super(TransformerAdapter, self).__init__(init_cfg=init_cfg)
+    def __init__(self, num_segs: int, transformer_width: int,
+                 transformer_heads: int, transformer_layers: int) -> None:
+        super(TransformerAdapter, self).__init__()
         self.num_segs = num_segs
 
         self.positional_embedding = nn.Parameter(
