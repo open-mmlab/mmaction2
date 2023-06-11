@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 from collections import OrderedDict
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from mmengine.evaluator import BaseMetric
@@ -11,11 +11,24 @@ from mmaction.registry import METRICS
 
 @METRICS.register_module()
 class RetrievalMetric(BaseMetric):
+    """Metric for video retrieval task.
+
+    Args:
+        metric_list (str | tuple[str]): The list of the metrics to be
+            computed. Defaults to ``('R1', 'R5', 'R10', 'MdR', 'MnR')``.
+        collect_device (str): Device name used for collecting results from
+            different ranks during distributed training. Must be 'cpu' or
+            'gpu'. Defaults to 'cpu'.
+        prefix (str, optional): The prefix that will be added in the metric
+            names to disambiguate homonymous metrics of different evaluators.
+            If prefix is not provided in the argument, self.default_prefix
+            will be used instead. Defaults to None.
+    """
 
     default_prefix = 'retrieval'
 
     def __init__(self,
-                 metric_list: Tuple[str] = ('R1', 'R5', 'R10', 'MdR', 'MnR'),
+                 metric_list: Union[Tuple[str], str] = ('R1', 'R5', 'R10', 'MdR', 'MnR'),
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
