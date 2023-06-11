@@ -148,7 +148,7 @@ class CLIPSimilarity(BaseModel):
                                'Only supports loss, predict and tensor mode')
 
     def train(self, mode: bool = True) -> None:
-        """Set the optimization status when training. """
+        """Set the optimization status when training."""
         super().train(mode)
         self._freeze_stages()
 
@@ -157,16 +157,19 @@ class CLIPSimilarity(BaseModel):
         ``self.frozen_layers``."""
 
         if self.frozen_layers >= 0:
-            top_layers = ['ln_final', 'text_projection', 'logit_scale',
-                          'visual.ln_post', 'visual.proj']
-            mid_layers = ['visual.transformer.resblocks',
-                          'transformer.resblocks']
+            top_layers = [
+                'ln_final', 'text_projection', 'logit_scale', 'visual.ln_post',
+                'visual.proj'
+            ]
+            mid_layers = [
+                'visual.transformer.resblocks', 'transformer.resblocks'
+            ]
 
             for name, param in self.clip.named_parameters():
                 if any(name.find(n) == 0 for n in top_layers):
                     continue
                 elif any(name.find(n) == 0 for n in mid_layers):
-                    layer_n = int(name.split(".resblocks.")[1].split(".")[0])
+                    layer_n = int(name.split('.resblocks.')[1].split('.')[0])
                     if layer_n >= self.frozen_layers:
                         continue
                 param.requires_grad = False

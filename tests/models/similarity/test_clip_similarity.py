@@ -1,22 +1,29 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from unittest.mock import MagicMock
+
 import torch
-from mmaction.utils import register_all_modules
+
+from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
 from mmaction.testing import get_similarity_cfg
-from mmaction.registry import MODELS
+from mmaction.utils import register_all_modules
 
 
 def test_clip_similarity():
     register_all_modules()
-    cfg = get_similarity_cfg('clip4clip/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb.py')
+    cfg = get_similarity_cfg(
+        'clip4clip/'
+        'clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb.py')
     model = MODELS.build(cfg.model)
     model.train()
 
     data_batch = {
-        'inputs': {'imgs': [torch.randint(0, 256, (2, 3, 224, 224))],
-                   'text': [torch.randint(0, 49408, (77, ))]},
-        'data_samples': [ActionDataSample()]}
+        'inputs': {
+            'imgs': [torch.randint(0, 256, (2, 3, 224, 224))],
+            'text': [torch.randint(0, 49408, (77, ))]
+        },
+        'data_samples': [ActionDataSample()]
+    }
 
     # test train_step
     optim_wrapper = MagicMock()
@@ -37,17 +44,20 @@ def test_clip_similarity():
     # test frozen layers
     def check_frozen_layers(mdl, frozen_layers):
         if frozen_layers >= 0:
-            top_layers = ['ln_final', 'text_projection', 'logit_scale',
-                          'visual.ln_post', 'visual.proj']
-            mid_layers = ['visual.transformer.resblocks',
-                          'transformer.resblocks']
+            top_layers = [
+                'ln_final', 'text_projection', 'logit_scale', 'visual.ln_post',
+                'visual.proj'
+            ]
+            mid_layers = [
+                'visual.transformer.resblocks', 'transformer.resblocks'
+            ]
 
             for name, param in mdl.named_parameters():
                 if any(name.find(n) == 0 for n in top_layers):
                     assert param.requires_grad is True
                     continue
                 elif any(name.find(n) == 0 for n in mid_layers):
-                    layer_n = int(name.split(".resblocks.")[1].split(".")[0])
+                    layer_n = int(name.split('.resblocks.')[1].split('.')[0])
                     if layer_n >= frozen_layers:
                         assert param.requires_grad is True
                         continue

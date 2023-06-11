@@ -88,7 +88,12 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(
-    optimizer=dict(type='AdamW', lr=1e-05, betas=(0.9, 0.999), eps=1e-08, weight_decay=0.05),
+    optimizer=dict(
+        type='AdamW',
+        lr=1e-05,
+        betas=(0.9, 0.999),
+        eps=1e-08,
+        weight_decay=0.05),
     paramwise_cfg=dict(norm_decay_mult=0., bias_decay_mult=0.),
     # clip_grad=dict(max_norm=1.0, norm_type=2),
 )

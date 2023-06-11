@@ -28,7 +28,8 @@ class RetrievalMetric(BaseMetric):
     default_prefix = 'retrieval'
 
     def __init__(self,
-                 metric_list: Union[Tuple[str], str] = ('R1', 'R5', 'R10', 'MdR', 'MnR'),
+                 metric_list: Union[Tuple[str],
+                                    str] = ('R1', 'R5', 'R10', 'MdR', 'MnR'),
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
