@@ -156,12 +156,17 @@ class CLIPSimilarity(BaseModel):
         """Prevent all the parameters from being optimized before
         ``self.frozen_layers``."""
 
-        for name, param in self.clip.named_parameters():
-            if name.find("ln_final") == 0 or name.find("text_projection") == 0 or name.find("logit_scale") == 0 \
-                    or name.find("visual.ln_post") == 0 or name.find("visual.proj") == 0:
-                continue
-            elif name.find("visual.transformer.resblocks.") == 0 or name.find("transformer.resblocks.") == 0:
-                layer_num = int(name.split(".resblocks.")[1].split(".")[0])
-                if layer_num >= self.frozen_layers:
+        if self.frozen_layers >= 0:
+            top_layers = ['ln_final', 'text_projection', 'logit_scale',
+                          'visual.ln_post', 'visual.proj']
+            mid_layers = ['visual.transformer.resblocks',
+                          'transformer.resblocks']
+
+            for name, param in self.clip.named_parameters():
+                if any(name.find(n) == 0 for n in top_layers):
                     continue
-            param.requires_grad = False
+                elif any(name.find(n) == 0 for n in mid_layers):
+                    layer_n = int(name.split(".resblocks.")[1].split(".")[0])
+                    if layer_n >= self.frozen_layers:
+                        continue
+                param.requires_grad = False
