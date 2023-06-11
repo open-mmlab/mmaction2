@@ -64,7 +64,7 @@ class CLIPSimilarity(BaseModel):
                               'git+https://github.com/openai/CLIP.git` '
                               'to install clip first. ')
 
-        self.clip = clip.load(clip_arch)[0]
+        self.clip = clip.load(clip_arch, device='cpu')[0]
         if to_float32:
             self.clip.float()
         self.loss = MODELS.build(loss)
