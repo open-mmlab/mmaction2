@@ -20,13 +20,11 @@ dataset_type = 'VideoTextDataset'
 data_root = 'data/video_retrieval/msrvtt'
 file_client_args = dict(io_backend='disk')
 train_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit', io_backend='disk'),
     dict(type='UniformSample', clip_len=12, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='RandomResizedCrop'),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5),
+    dict(type='CenterCrop', crop_size=224),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='CLIPTokenize'),
     dict(type='PackActionInputs', collect_keys=('imgs', 'text'))
@@ -87,6 +85,24 @@ train_cfg = dict(
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
+param_scheduler = [
+    dict(
+        type='LinearLR',
+        start_factor=0.05,
+        by_epoch=True,
+        begin=0,
+        end=0.5,
+        convert_to_iter_based=True),
+    dict(
+        type='CosineAnnealingLR',
+        T_max=4.5,
+        eta_min=0,
+        by_epoch=True,
+        begin=0.5,
+        end=5,
+        convert_to_iter_based=True)
+]
+
 optim_wrapper = dict(
     optimizer=dict(
         type='AdamW',
@@ -95,7 +111,6 @@ optim_wrapper = dict(
         eps=1e-08,
         weight_decay=0.05),
     paramwise_cfg=dict(norm_decay_mult=0., bias_decay_mult=0.),
-    # clip_grad=dict(max_norm=1.0, norm_type=2),
 )
 
 default_hooks = dict(checkpoint=dict(save_best=None))
