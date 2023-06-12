@@ -1,6 +1,6 @@
-# Preparing Video Retrieval Datasets
+# 准备视频检索数据集
 
-## Introduction
+## 简介
 
 <!-- [DATASET] -->
 
@@ -14,17 +14,17 @@
 }
 ```
 
-Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/video_retrieval/`.
+在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/video_retrieval/`。
 
-## Preparing MSRVTT dataset
+## 准备 MSRVTT 数据集
 
-For basic dataset information, you can refer to the MSRVTT dataset [website](https://www.microsoft.com/en-us/research/publication/msr-vtt-a-large-video-description-dataset-for-bridging-video-and-language/). Run the following command to prepare the MSRVTT dataset:
+用户可参考该数据集的[官网](https://www.microsoft.com/en-us/research/publication/msr-vtt-a-large-video-description-dataset-for-bridging-video-and-language/)，以获取数据集相关的基本信息。运行下面的命令准备 MSRVTT 数据集：
 
 ```shell
 bash prepare_msrvtt.sh
 ```
 
-After preparation, the folder structure will look like:
+完场上述准备步骤后，文件目录如下：
 
 ```
 mmaction2
