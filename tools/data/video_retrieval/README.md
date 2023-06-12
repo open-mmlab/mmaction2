@@ -1,4 +1,4 @@
-# Preparing Skeleton Dataset
+# Preparing Video Retrieval Datasets
 
 ## Introduction
 
@@ -14,8 +14,33 @@
 }
 ```
 
+For basic dataset information, you can refer to the MSRVTT dataset [website](https://www.microsoft.com/en-us/research/publication/msr-vtt-a-large-video-description-dataset-for-bridging-video-and-language/).
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/video_retrieval/`.
+
 ## Preparing MSRVTT dataset
+
+Run the following command to prepare the MSRVTT dataset:
 
 ```shell
 bash prepare_msrvtt.sh
+```
+
+The folder structure will look like:
+
+```
+mmaction2
+├── mmaction
+├── tools
+├── configs
+├── data
+│   ├── video_retrieval
+│   │   └── msrvtt
+│   │       ├── train_9k.json
+│   │       ├── train_7k.json
+│   │       ├── test_JSFUSION.json
+│   │       └─── videos
+│   │           ├── video0.mp4
+│   │           ├── video1.mp4
+│   │           ├── ...
+│   │           └── video9999.mp4
 ```
