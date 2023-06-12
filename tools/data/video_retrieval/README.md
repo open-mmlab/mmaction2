@@ -25,7 +25,7 @@ Run the following command to prepare the MSRVTT dataset:
 bash prepare_msrvtt.sh
 ```
 
-The folder structure will look like:
+After preparation, the folder structure will look like:
 
 ```
 mmaction2
