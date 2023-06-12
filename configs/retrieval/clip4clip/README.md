@@ -24,7 +24,7 @@ Video-text retrieval plays an essential role in multi-modal research and has bee
 | :---------------------: | :--------: | :--: | :------: | :-----: | :------: | :------: | :------: | :-------: | :-: | :--: | :--------------: | :---: | :----: | :----------: | :--------: | :-------: |
 |       uniform 12        |  224x224   |  8   | ViT-B/32 |  Mean   |   clip   |   43.1   |   69.4   |   78.9    | 2.0 | 16.8 | 1 clips x 1 crop |  xxx  |  xxx   | [config](<>) | [ckpt](<>) | [log](<>) |
 
-For more details on data preparation, you can refer to [preparing_video_retrieval](/tools/data/video_retrieval/README.md).
+For more details on data preparation, you can refer to [video_retrieval](/tools/data/video_retrieval/README.md).
 
 ## Train
 
