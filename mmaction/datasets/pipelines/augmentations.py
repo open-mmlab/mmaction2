@@ -341,6 +341,9 @@ class Imgaug:
     """
 
     def __init__(self, transforms):
+        # Hack to fix incompatibility of ImgAug and latest Numpy
+        if digit_version(np.__version__) >= digit_version('1.24.0'):
+            np.bool = bool
         import imgaug.augmenters as iaa
 
         if transforms == 'default':
