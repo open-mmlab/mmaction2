@@ -20,15 +20,11 @@ Video-text retrieval plays an essential role in multi-modal research and has bee
 
 ### MSRVTT-9k
 
-| frame sampling strategy |   resolution   | gpus |  backbone   | adapter | Recall@1 | Recall@5 | Recall@10 | MdR | MnR |[reference](<(https://github.com/Sense-X/UniFormer/blob/main/video_classification/README.md)>) top1 acc | [reference](<(https://github.com/Sense-X/UniFormer/blob/main/video_classification/README.md)>) top5 acc | mm-Kinetics top1 acc | mm-Kinetics top5 acc | testing protocol | FLOPs | params |                                              config                                               |                                                                           ckpt                                                                           |
-| :---------------------: | :------------: |  :---------: | :---------: | :------: |:------: | :------: | :-----------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: | :------------------: | :------------------: | :--------------: | :---: | :----: | :-----------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|         uniform 12    | 224x224 | 8 | CLIP | Mean |    |   94.6   |                                                  80.8                                                   |                                                  94.7                                                   |         80.9         |         94.6         | 4 clips x 1 crop | 41.8G | 21.4M  | [config](/configs/recognition/uniformer/uniformer-small_imagenet1k-pre_16x4x1_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv1/uniformer-small_imagenet1k-pre_16x4x1_kinetics400-rgb_20221219-c630a037.pth) |
+| frame sampling strategy | resolution | gpus | backbone | adapter | pretrain | Recall@1 | Recall@5 | Recall@10 | MdR | MnR  | testing protocol | FLOPs | params |    config    |    ckpt    |    log    |
+| :---------------------: | :--------: | :--: | :------: | :-----: | :------: | :------: | :------: | :-------: | :-: | :--: | :--------------: | :---: | :----: | :----------: | :--------: | :-------: |
+|       uniform 12        |  224x224   |  8   | ViT-B/32 |  Mean   |   clip   |   43.1   |   69.4   |   78.9    | 2.0 | 16.8 | 1 clips x 1 crop |  xxx  |  xxx   | [config](<>) | [ckpt](<>) | [log](<>) |
 
-1. The **gpus** indicates the number of gpus we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-
-For more details on data preparation, you can refer to `Prepare audio` in [Data Preparation Tutorial](/docs/en/user_guides/2_data_prepare.md).
+For more details on data preparation, you can refer to [preparing_video_retrieval](/tools/data/video_retrieval/README.md).
 
 ## Train
 
