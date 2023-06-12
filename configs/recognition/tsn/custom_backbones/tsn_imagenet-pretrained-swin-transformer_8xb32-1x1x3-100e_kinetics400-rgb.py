@@ -4,5 +4,6 @@ model = dict(
     backbone=dict(
         type='timm.swin_base_patch4_window7_224',
         pretrained=True,
+        feature_shape='NHWC',
         _delete_=True),
     cls_head=dict(in_channels=1024))

@@ -55,6 +55,15 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 raise ImportError('Please install mmcls to use this backbone.')
             self.backbone = MODELS.build(backbone)
             self.backbone_from = 'mmcls'
+        elif backbone['type'].startswith('mmpretrain.'):
+            try:
+                # Register all mmpretrain models.
+                import mmpretrain.models  # noqa: F401
+            except (ImportError, ModuleNotFoundError):
+                raise ImportError(
+                    'Please install mmpretrain to use this backbone.')
+            self.backbone = MODELS.build(backbone)
+            self.backbone_from = 'mmpretrain'
         elif backbone['type'].startswith('torchvision.'):
             try:
                 import torchvision.models
@@ -62,6 +71,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 raise ImportError('Please install torchvision to use this '
                                   'backbone.')
             backbone_type = backbone.pop('type')[12:]
+            self.feature_shape = backbone.pop('feature_shape', None)
             self.backbone = torchvision.models.__dict__[backbone_type](
                 **backbone)
             # disable the classifier
@@ -72,9 +82,10 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
             try:
                 import timm
             except (ImportError, ModuleNotFoundError):
-                raise ImportError('Please install timm to use this '
+                raise ImportError('Please install timm>=0.9.0 to use this '
                                   'backbone.')
             backbone_type = backbone.pop('type')[5:]
+            self.feature_shape = backbone.pop('feature_shape', None)
             # disable the classifier
             backbone['num_classes'] = 0
             self.backbone = timm.create_model(backbone_type, **backbone)
@@ -107,12 +118,18 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
 
     def init_weights(self) -> None:
         """Initialize the model network weights."""
-        super().init_weights()
         if self.backbone_from in ['torchvision', 'timm']:
             warnings.warn('We do not initialize weights for backbones in '
                           f'{self.backbone_from}, since the weights for '
                           f'backbones in {self.backbone_from} are initialized '
                           'in their __init__ functions.')
+
+            def fake_init():
+                pass
+
+            # avoid repeated initialization
+            self.backbone.init_weights = fake_init
+        super().init_weights()
 
     def loss(self, inputs: torch.Tensor, data_samples: SampleList,
              **kwargs) -> dict:

@@ -87,12 +87,21 @@ def test_tsn_timm_backbone():
     register_all_modules()
     config = get_recognizer_cfg(
         'tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py')
-    config.model['backbone']['pretrained'] = None
     timm_backbone = dict(type='timm.efficientnet_b0', pretrained=False)
     config.model['backbone'] = timm_backbone
     config.model['cls_head']['in_channels'] = 1280
 
-    input_shape = (1, 8, 3, 32, 32)
+    input_shape = (1, 3, 3, 32, 32)
+    train_test_step(config, input_shape)
+
+    timm_swin = dict(
+        type='timm.swin_base_patch4_window7_224',
+        pretrained=False,
+        feature_shape='NHWC')
+    config.model['backbone'] = timm_swin
+    config.model['cls_head']['in_channels'] = 1024
+
+    input_shape = (1, 3, 3, 224, 224)
     train_test_step(config, input_shape)
 
 
