@@ -30,9 +30,6 @@ model = dict(
 
 data_root = 'data/'
 file_client_args = dict(backend='disk')
-# file_client_args = dict(
-#    backend='petrel',
-#    path_mapping=dict({data_root: 's3://openmmlab/datasets/pose/'}))
 
 train_pipeline = [
     dict(type='LoadImageFromFile', file_client_args=file_client_args),

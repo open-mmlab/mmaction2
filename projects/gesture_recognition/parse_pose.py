@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import json
+import os
 
 import numpy as np
 
@@ -167,11 +168,12 @@ if __name__ == '__main__':
     args = parse_args()
     data_root = args.data_root + '/'
     prefix = args.out_anno_prefix
+    os.makedirs('hand_det', exist_ok=True)
 
     result = convert2dict(data_root, train_files)
-    with open(f'{prefix}_train.json', 'w') as f:
+    with open(f'hand_det/{prefix}_train.json', 'w') as f:
         json.dump(result, f)
 
     result = convert2dict(data_root, val_files)
-    with open(f'{prefix}_val.json', 'w') as f:
+    with open(f'hand_det/{prefix}_val.json', 'w') as f:
         json.dump(result, f)
