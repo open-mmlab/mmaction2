@@ -22,7 +22,7 @@ Video-text retrieval plays an essential role in multi-modal research and has bee
 
 | frame sampling strategy | resolution | gpus | backbone | adapter | pretrain | Recall@1 | Recall@5 | Recall@10 | MdR | MnR  | testing protocol | FLOPs | params |    config    |    ckpt    |    log    |
 | :---------------------: | :--------: | :--: | :------: | :-----: | :------: | :------: | :------: | :-------: | :-: | :--: | :--------------: | :---: | :----: | :----------: | :--------: | :-------: |
-|       uniform 12        |  224x224   |  8   | ViT-B/32 |  Mean   |   clip   |   43.1   |   69.4   |   78.9    | 2.0 | 16.8 | 1 clips x 1 crop |  xxx  |  xxx   | [config](<>) | [ckpt](<>) | [log](<>) |
+|       uniform 12        |  224x224   |  8   | ViT-B/32 |  Mean   |   clip   |   43.1   |   69.4   |   78.9    | 2.0 | 16.8 | 1 clips x 1 crop |  xxx  |  xxx   | [config](</configs/retrieval/clip4clip/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb.py>) | [ckpt](<https://download.openmmlab.com/mmaction/v1.0/retrieval/clip4clip/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb_20230612-b9706e54.pth>) | [log](<https://download.openmmlab.com/mmaction/v1.0/retrieval/clip4clip/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb.log>) |
 
 For more details on data preparation, you can refer to [video_retrieval](/tools/data/video_retrieval/README.md).
 
