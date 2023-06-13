@@ -20,7 +20,7 @@ dataset_type = 'VideoTextDataset'
 data_root = 'data/video_retrieval/msrvtt'
 file_client_args = dict(io_backend='disk')
 train_pipeline = [
-    dict(type='DecordInit', io_backend='disk'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='UniformSample', clip_len=12, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
