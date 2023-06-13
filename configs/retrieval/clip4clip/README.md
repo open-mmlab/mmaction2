@@ -38,7 +38,7 @@ Example: train CLIP4Clip model on MSRVTT-9k dataset in a deterministic option wi
 
 ```shell
 python tools/train.py configs/retrieval/clip4clip/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb.py \
-    --cfg-options randomness.seed=0 randomness.deterministic=True
+    --seed 0 --deterministic
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
