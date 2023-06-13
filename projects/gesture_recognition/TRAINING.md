@@ -33,7 +33,7 @@ mmdetection
        │-- ..
 ```
 
-We provide a [parse_pose.py](projects/gesture_recognition/parse_pose.py) file to convert the annotation files of the above pose datasets to a COCO-style detection annotation. Suppose you are at `$MMDet/data`, run the following command and it will generate `hand_det_train.json` and `hand_det_val.json` at `$MMDet/data/hand_det/`
+We provide a [parse_pose.py](/projects/gesture_recognition/parse_pose.py) file to convert the annotation files of the above pose datasets to a COCO-style detection annotation. Suppose you are at `$MMDet/data`, run the following command and it will generate `hand_det_train.json` and `hand_det_val.json` at `$MMDet/data/hand_det/`
 
 ```
 python3 $MMAction/projects/gesture_recognition/parse_pose.py
@@ -43,13 +43,13 @@ The training annotation file combines the above four data sets, and the validati
 
 ## Training and inference
 
-We provide a [config](projects/gesture_recognition/configs/rtmdet_nano_320-8xb32_multi-dataset-hand.py) to train a RTMDet detection model. Suppose you are at `$MMDet`, you can run the follow command to train the hand detection model with 8 GPUs:
+We provide a [config](/projects/gesture_recognition/configs/rtmdet_nano_320-8xb32_multi-dataset-hand.py) to train a [RTMDet](https://arxiv.org/abs/2212.07784) detection model. Suppose you are at `$MMDet`, you can run the follow command to train the hand detection model with 8 GPUs:
 
 ```bash
 bash tools/dist_train.sh $MMAction/projects/gesture_recognition/configs/rtmdet_nano_320-8xb32_multi-dataset-hand.py 8
 ```
 
-To see the detection result for a single image, we can use `$MMDet/demo/image_demo.py`. The follow command will do inference on [this image](projects/gesture_recognition/demo/hand_det.jpg) and the output should be similar to [this image](projects/gesture_recognition/demo/hand_det_out.jpg)/
+To see the detection result for a single image, we can use `$MMDet/demo/image_demo.py`. The follow command will do inference on [hand_det.jpg](/projects/gesture_recognition/demo/hand_det.jpg) (a video frame from the [jester dataset](/tools/data/jester)) and the output should be similar to [this image](/projects/gesture_recognition/demo/hand_det_out.jpg).
 
 ```bash
 python3 $MMDet/demo/image_demo.py $MMAction/projects/gesture_recognition/demo/hand_det.jpg PATH_TO_HAND_DET_CHECKPOINT --out-dir='.'
