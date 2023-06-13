@@ -1,4 +1,3 @@
-# model settings
 model = dict(
     type='Recognizer2D',
     backbone=dict(
@@ -30,7 +29,12 @@ model = dict(
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.5,
-        init_std=0.01),
-    # model training and testing settings
+        init_std=0.01,
+        average_clips='prob'),
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        format_shape='NCHW'),
     train_cfg=None,
-    test_cfg=dict(average_clips='prob', fcn_test=True))
+    test_cfg=dict(fcn_test=True))

@@ -1,55 +1,57 @@
 Collections:
-- Name: TRN
-  README: configs/recognition/trn/README.md
-  Paper:
-    URL: https://arxiv.org/abs/1711.08496
-    Title: Temporal Relational Reasoning in Videos
+  - Name: TRN
+    README: configs/recognition/trn/README.md
+    Paper:
+      URL: https://arxiv.org/abs/1711.08496
+      Title: 'Temporal Relational Reasoning in Videos'
+
 Models:
-- Config: configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py
-  In Collection: TRN
-  Metadata:
-    Architecture: ResNet50
-    Batch Size: 16
-    Epochs: 50
-    Parameters: 26641154
-    Pretrained: ImageNet
-    Resolution: height 100
-    Training Data: SthV1
-    Training Resources: 8 GPUs
-  Modality: RGB
-  Name: trn_r50_1x1x8_50e_sthv1_rgb
-  Results:
-  - Dataset: SthV1
-    Metrics:
-      Top 1 Accuracy: 33.88
-      Top 1 Accuracy (efficient): 31.62
-      Top 5 Accuracy: 62.12
-      Top 5 Accuracy (efficient): 60.01
-    Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/trn_r50_1x1x8_50e_sthv1_rgb_20210401-163704a8.pth
-- Config: configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py
-  In Collection: TRN
-  Metadata:
-    Architecture: ResNet50
-    Batch Size: 16
-    Epochs: 50
-    Parameters: 26641154
-    Pretrained: ImageNet
-    Resolution: height 256
-    Training Data: SthV2
-    Training Resources: 8 GPUs
-  Modality: RGB
-  Name: trn_r50_1x1x8_50e_sthv2_rgb
-  Results:
-  - Dataset: SthV2
-    Metrics:
-      Top 1 Accuracy: 51.28
-      Top 1 Accuracy (efficient): 48.39
-      Top 5 Accuracy: 78.65
-      Top 5 Accuracy (efficient): 76.58
-    Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210816-7abbc4c1.pth
+  - Name: trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb
+    Config: configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py
+    In Collection: TRN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 50
+      FLOPs: 42.94G
+      params: 26.64M
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: SthV1
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: SthV1
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 33.65
+        Top 1 Accuracy (efficient): 31.60
+        Top 5 Accuracy: 62.22
+        Top 5 Accuracy (efficient): 60.15
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb_20220815-e13db2e9.pth
+
+  - Name: trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb
+    Config: configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.py
+    In Collection: TRN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 50
+      FLOPs: 42.94G
+      params: 26.64M
+      Pretrained: 224x224
+      Resolution: height 240
+      Training Data: SthV2
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: SthV2
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 51.20
+        Top 1 Accuracy (efficient): 47.65
+        Top 5 Accuracy: 78.42
+        Top 5 Accuracy (efficient): 76.27
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb_20220815-e01617db.pth

@@ -2,14 +2,16 @@
 import torch
 import torch.nn as nn
 from einops import rearrange
-from mmcv.cnn import build_norm_layer, constant_init
-from mmcv.cnn.bricks.registry import ATTENTION, FEEDFORWARD_NETWORK
+from mmcv.cnn import build_norm_layer
 from mmcv.cnn.bricks.transformer import FFN, build_dropout
-from mmcv.runner.base_module import BaseModule
-from mmcv.utils import digit_version
+from mmengine.model import BaseModule
+from mmengine.model.weight_init import constant_init
+from mmengine.utils import digit_version
+
+from mmaction.registry import MODELS
 
 
-@ATTENTION.register_module()
+@MODELS.register_module()
 class DividedTemporalAttentionWithNorm(BaseModule):
     """Temporal Attention in Divided Space Time Attention.
 
@@ -58,9 +60,11 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         self.init_weights()
 
     def init_weights(self):
+        """Initialize weights."""
         constant_init(self.temporal_fc, val=0, bias=0)
 
     def forward(self, query, key=None, value=None, residual=None, **kwargs):
+        """Defines the computation performed at every call."""
         assert residual is None, (
             'Always adding the shortcut in the forward function')
 
@@ -87,7 +91,7 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         return new_query
 
 
-@ATTENTION.register_module()
+@MODELS.register_module()
 class DividedSpatialAttentionWithNorm(BaseModule):
     """Spatial Attention in Divided Space Time Attention.
 
@@ -134,10 +138,11 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         self.init_weights()
 
     def init_weights(self):
-        # init DividedSpatialAttentionWithNorm by default
+        """init DividedSpatialAttentionWithNorm by default."""
         pass
 
     def forward(self, query, key=None, value=None, residual=None, **kwargs):
+        """Defines the computation performed at every call."""
         assert residual is None, (
             'Always adding the shortcut in the forward function')
 
@@ -176,7 +181,7 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         return new_query
 
 
-@FEEDFORWARD_NETWORK.register_module()
+@MODELS.register_module()
 class FFNWithNorm(FFN):
     """FFN with pre normalization layer.
 
@@ -212,5 +217,6 @@ class FFNWithNorm(FFN):
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
 
     def forward(self, x, residual=None):
+        """Defines the computation performed at every call."""
         assert residual is None, ('Cannot apply pre-norm with FFNWithNorm')
         return super().forward(self.norm(x), x)

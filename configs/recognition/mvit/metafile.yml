@@ -1,0 +1,183 @@
+Collections:
+- Name: MViT
+  README: configs/recognition/mvit/README.md
+  Paper:
+    URL: http://openaccess.thecvf.com//content/CVPR2022/papers/Li_MViTv2_Improved_Multiscale_Vision_Transformers_for_Classification_and_Detection_CVPR_2022_paper.pdf
+    Title: "MViTv2: Improved Multiscale Vision Transformers for Classification and Detection"
+
+Models:
+  - Name: mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb_infer
+    Config: configs/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb.py
+    In Collection: MViT
+    Metadata:
+      Architecture: MViT-small
+      Resolution: 224x224
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
+      Code: https://github.com/facebookresearch/SlowFast/
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 81.1
+        Top 5 Accuracy: 94.7
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/converted/mvit-small-p244_16x4x1_kinetics400-rgb_20221021-9ebaaeed.pth
+
+  - Name: mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb
+    Config: configs/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb.py
+    In Collection: MViT
+    Metadata:
+      Architecture: MViT-small
+      Batch Size: 16
+      Epochs: 100
+      FLOPs: 64G
+      Parameters: 34.5M
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 32 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 80.6
+        Top 5 Accuracy: 94.7
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb_20230201-23284ff3.pth
+
+  - Name: mvit-base-p244_32x3x1_kinetics400-rgb
+    Config: configs/recognition/mvit/mvit-base-p244_32x3x1_kinetics400-rgb.py
+    In Collection: MViT
+    Metadata:
+      Architecture: MViT-base
+      Resolution: 224x224
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
+      Code: https://github.com/facebookresearch/SlowFast/
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 81.1
+        Top 5 Accuracy: 94.7
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/converted/mvit-base-p244_32x3x1_kinetics400-rgb_20221021-f392cd2d.pth
+
+  - Name: mvit-large-p244_40x3x1_kinetics400-rgb
+    Config: configs/recognition/mvit/mvit-large-p244_40x3x1_kinetics400-rgb.py
+    In Collection: MViT
+    Metadata:
+      Architecture: MViT-large
+      Resolution: 312x312
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
+      Code: https://github.com/facebookresearch/SlowFast/
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 81.1
+        Top 5 Accuracy: 94.7
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/converted/mvit-large-p244_40x3x1_kinetics400-rgb_20221021-11fe1f97.pth
+
+  - Name: mvit-small-p244_k400-pre_16xb16-u16-100e_sthv2-rgb_infer
+    Config: configs/recognition/mvit/mvit-small-p244_k400-pre_16xb16-u16-100e_sthv2-rgb.py
+    In Collection: MViT
+    Metadata:
+      Architecture: MViT-small
+      Resolution: 224x224
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
+      Code: https://github.com/facebookresearch/SlowFast/
+    Results:
+    - Dataset: SthV2
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 68.1
+        Top 5 Accuracy: 91.0
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/converted/mvit-small-p244_u16_sthv2-rgb_20221021-65ecae7d.pth
+
+  - Name: mvit-small-p244_k400-pre_16xb16-u16-100e_sthv2-rgb
+    Config: configs/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb.py
+    In Collection: MViT
+    Metadata:
+      Architecture: MViT-small
+      Batch Size: 16
+      Epochs: 100
+      FLOPs: 64G
+      Parameters: 34.4M
+      Pretrained: Kinetics-400
+      Resolution: 224x224
+      Training Data: SthV2
+      Training Resources: 16 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: SthV2
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 68.2
+        Top 5 Accuracy: 91.3
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_k400-pre_16xb16-u16-100e_sthv2-rgb/mvit-small-p244_k400-pre_16xb16-u16-100e_sthv2-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_k400-pre_16xb16-u16-100e_sthv2-rgb/mvit-small-p244_k400-pre_16xb16-u16-100e_sthv2-rgb_20230201-4065c1b9.pth
+
+  - Name: mvit-base-p244_u32_sthv2-rgb
+    Config: configs/recognition/mvit/mvit-base-p244_u32_sthv2-rgb.py
+    In Collection: MViT
+    Metadata:
+      Architecture: MViT-base
+      Resolution: 224x224
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
+      Code: https://github.com/facebookresearch/SlowFast/
+    Results:
+    - Dataset: SthV2
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 70.8
+        Top 5 Accuracy: 92.7
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/converted/mvit-base-p244_u32_sthv2-rgb_20221021-d5de5da6.pth
+
+  - Name: mvit-large-p244_u40_sthv2-rgb
+    Config: configs/recognition/mvit/mvit-large-p244_u40_sthv2-rgb.py
+    In Collection: MViT
+    Metadata:
+      Architecture: MViT-large
+      Resolution: 312x312
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md
+      Code: https://github.com/facebookresearch/SlowFast/
+    Results:
+    - Dataset: SthV2
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 73.2
+        Top 5 Accuracy: 94.0
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/converted/mvit-large-p244_u40_sthv2-rgb_20221021-61696e07.pth
+
+  - Name: mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb
+    Config: configs/recognition/mvit/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb.py
+    In Collection: MViT
+    Metadata:
+      Architecture: MViT-small
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 71G
+      Parameters: 36.4M
+      Pretrained: Kinetics-400 MaskFeat
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 81.8
+        Top 5 Accuracy: 95.2
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb_20230201-5bced1d0.pth

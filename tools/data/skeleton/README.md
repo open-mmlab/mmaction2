@@ -15,48 +15,46 @@
 
 ## Introduction
 
-We release the skeleton annotations used in [Revisiting Skeleton-based Action Recognition](https://arxiv.org/abs/2104.13586). By default, we use [Faster-RCNN](https://github.com/open-mmlab/mmdetection/blob/master/configs/faster_rcnn/faster_rcnn_r50_caffe_fpn_mstrain_1x_coco-person.py) with ResNet50 backbone for human detection and [HRNet-w32](https://github.com/open-mmlab/mmpose/blob/master/configs/top_down/hrnet/coco/hrnet_w32_coco_256x192.py) for single person pose estimation. For FineGYM, we use Ground-Truth bounding boxes for the athlete instead of detection bounding boxes. Currently, we release the skeleton annotations for FineGYM and NTURGB-D Xsub split. Other annotations will be soo released.
+We release the skeleton annotations used in [Revisiting Skeleton-based Action Recognition](https://arxiv.org/abs/2104.13586). By default, we use [Faster-RCNN](https://github.com/open-mmlab/mmdetection/blob/master/configs/faster_rcnn/faster_rcnn_r50_caffe_fpn_mstrain_1x_coco-person.py) with ResNet50 backbone for human detection and [HRNet-w32](https://github.com/open-mmlab/mmpose/blob/master/configs/body/2d_kpt_sview_rgb_img/topdown_heatmap/coco/hrnet_w32_coco_256x192.py) for single person pose estimation. For FineGYM, we use Ground-Truth bounding boxes for the athlete instead of detection bounding boxes.
 
 ## Prepare Annotations
 
-Currently, we support HMDB51, UCF101, FineGYM and NTURGB+D. For FineGYM, you can execute following scripts to prepare the annotations.
+We provide links to the pre-processed skeleton annotations, you can directly download them and use them for training & testing.
 
-```shell
-bash download_annotations.sh ${DATASET}
-```
+- NTURGB+D \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/ntu60_2d.pkl
+- NTURGB+D \[3D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/ntu60_3d.pkl
+- NTURGB+D 120 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/ntu120_2d.pkl
+- NTURGB+D 120 \[3D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/ntu120_3d.pkl
+- GYM \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/gym_2d.pkl
+  - GYM 2D skeletons are extracted with ground-truth human bounding boxes, which can be downloaded with [link](https://download.openmmlab.com/mmaction/pyskl/data/gym/gym_gt_bboxes.pkl). Please cite [PoseConv3D](https://arxiv.org/abs/2104.13586) if you use it in your project.
+- UCF101 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/ucf101_2d.pkl
+- HMDB51 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/hmdb51_2d.pkl
+- Diving48 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/diving48_2d.pkl
+- Kinetics400 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/k400_2d.pkl (Table of contents only, no skeleton annotations)
 
-Due to [Conditions of Use](http://rose1.ntu.edu.sg/Datasets/actionRecognition.asp) of the NTURGB+D dataset, we can not directly release the annotations used in our experiments. So that we provide a script to generate pose annotations for videos in NTURGB+D datasets, which generate a dictionary and save it as a single pickle file. You can create a list which contain all annotation dictionaries of corresponding videos and save them as a pickle file. Then you can get the `ntu60_xsub_train.pkl`, `ntu60_xsub_val.pkl`, `ntu120_xsub_train.pkl`, `ntu120_xsub_val.pkl` that we used in training.
+For Kinetics400, since the skeleton annotations are large, we do not provide the direct download links on aliyun. Please use the following link to download the `kpfiles` and extract it under `$MMACTION2/data/k400` for Kinetics400 training & testing: https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EeyDCVskqLtClMVVwqD53acBF2FEwkctp3vtRbkLfnKSTw?e=B3SZlM
 
-For those who have not enough computations for pose extraction, we provide the outputs of the above pipeline here, corresponding to 4 different splits of NTURGB+D datasets:
-
-- ntu60_xsub_train: https://download.openmmlab.com/mmaction/posec3d/ntu60_xsub_train.pkl
-- ntu60_xsub_val: https://download.openmmlab.com/mmaction/posec3d/ntu60_xsub_val.pkl
-- ntu120_xsub_train: https://download.openmmlab.com/mmaction/posec3d/ntu120_xsub_train.pkl
-- ntu120_xsub_val: https://download.openmmlab.com/mmaction/posec3d/ntu120_xsub_val.pkl
-- hmdb51: https://download.openmmlab.com/mmaction/posec3d/hmdb51.pkl
-- ucf101: https://download.openmmlab.com/mmaction/posec3d/ucf101.pkl
-
-To generate 2D pose annotations for a single video, first, you need to install mmdetection and mmpose from src code. After that, you need to replace the placeholder `mmdet_root` and `mmpose_root` in `ntu_pose_extraction.py` with your installation path. Then you can use following scripts for NTURGB+D video pose extraction:
+If you want to generate 2D skeleton annotations of specified video, please install mmdetection and mmpose first, then use the following script to extract skeleton annotations of NTURGB+D video:
 
 ```python
 python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.pkl
 ```
 
-After you get pose annotations for all videos in a dataset split, like `ntu60_xsub_val`. You can gather them into a single list and save the list as `ntu60_xsub_val.pkl`. You can use those larger pickle files for training and testing.
+please note that, due to the upgrade of mmpose, the inference results may have slight differences from the provided skeleton annotations.
 
-## The Format of PoseC3D Annotations
+## The Format of Annotations
 
-Here we briefly introduce the format of PoseC3D Annotations, we will take `gym_train.pkl` as an example: the content of `gym_train.pkl` is a list of length 20484, each item is a dictionary that is the skeleton annotation of one video. Each dictionary has following fields:
+Each pickle file corresponds to an action recognition dataset. The content of a pickle file is a dictionary with two fields: `split` and `annotations`
 
-- keypoint: The keypoint coordinates, which is a numpy array of the shape N (#person) x T (temporal length) x K (#keypoints, 17 in our case) x 2 (x, y coordinate).
-- keypoint_score:  The keypoint confidence scores, which is a numpy array of the shape N (#person) x T (temporal length) x K (#keypoints, 17 in our case).
-- frame_dir: The corresponding video name.
-- label: The action category.
-- img_shape: The image shape of each frame.
-- original_shape: Same as above.
-- total_frames: The temporal length of the video.
-
-For training with your custom dataset, you can refer to [Custom Dataset Training](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md).
+1. Split: The value of the `split` field is a dictionary: the keys are the split names, while the values are lists of video identifiers that belong to the specific clip.
+2. Annotations: The value of the `annotations` field is a list of skeleton annotations, each skeleton annotation is a dictionary, containing the following fields:
+   1. `frame_dir` (str): The identifier of the corresponding video.
+   2. `total_frames` (int): The number of frames in this video.
+   3. `img_shape` (tuple\[int\]): The shape of a video frame, a tuple with two elements, in the format of (height, width). Only required for 2D skeletons.
+   4. `original_shape` (tuple\[int\]): Same as `img_shape`.
+   5. `label` (int): The action label.
+   6. `keypoint` (np.ndarray, with shape \[M x T x V x C\]): The keypoint annotation. M: number of persons; T: number of frames (same as `total_frames`); V: number of keypoints (25 for NTURGB+D 3D skeleton, 17 for CoCo, 18 for OpenPose, etc. ); C: number of dimensions for keypoint coordinates (C=2 for 2D keypoint, C=3 for 3D keypoint).
+   7. `keypoint_score` (np.ndarray, with shape \[M x T x V\]): The confidence score of keypoints. Only required for 2D skeletons.
 
 ## Visualization
 
@@ -128,4 +126,4 @@ We provide scripts to convert skeleton annotations from third-party projects to 
 - [x] NTU120_XSet
 - [x] UCF101
 - [x] HMDB51
-- [ ] Kinetics
+- [x] Kinetics

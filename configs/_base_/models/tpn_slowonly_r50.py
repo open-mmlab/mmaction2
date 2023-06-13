@@ -1,4 +1,3 @@
-# model settings
 model = dict(
     type='Recognizer3D',
     backbone=dict(
@@ -34,7 +33,13 @@ model = dict(
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.5,
-        init_std=0.01),
+        init_std=0.01,
+        average_clips='prob'),
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        format_shape='NCTHW'),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(average_clips='prob'))
+    test_cfg=dict(fcn_test=True))

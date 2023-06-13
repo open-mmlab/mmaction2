@@ -4,7 +4,7 @@ import torch.nn as nn
 from mmcv.cnn import NonLocal3d
 from torch.nn.modules.utils import _ntuple
 
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from .resnet import ResNet
 
 
@@ -28,6 +28,7 @@ class NL3DWrapper(nn.Module):
         self.num_segments = num_segments
 
     def forward(self, x):
+        """Defines the computation performed at every call."""
         x = self.block(x)
 
         n, c, h, w = x.size()
@@ -122,7 +123,7 @@ class TemporalShift(nn.Module):
         return out.view(n, c, h, w)
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNetTSM(ResNet):
     """ResNet backbone for TSM.
 
@@ -164,6 +165,18 @@ class ResNetTSM(ResNet):
         self.non_local = non_local
         self.non_local_stages = _ntuple(self.num_stages)(non_local)
         self.non_local_cfg = non_local_cfg
+        # TODO use convert key to load weights
+        super().init_weights()
+        self.init_structure()
+
+    def init_structure(self):
+        """Initialize structure for tsm."""
+        if self.is_shift:
+            self.make_temporal_shift()
+        if len(self.non_local_cfg) != 0:
+            self.make_non_local()
+        if self.temporal_pool:
+            self.make_temporal_pool()
 
     def make_temporal_shift(self):
         """Make temporal shift for some layers."""
@@ -254,6 +267,7 @@ class ResNetTSM(ResNet):
                     kernel_size=(3, 1, 1), stride=(2, 1, 1), padding=(1, 0, 0))
 
             def forward(self, x):
+                """Defines the computation performed at every call."""
                 # [N, C, H, W]
                 n, c, h, w = x.size()
                 # [N // num_segments, C, num_segments, H, W]
@@ -268,6 +282,7 @@ class ResNetTSM(ResNet):
         self.layer2 = TemporalPool(self.layer2, self.num_segments)
 
     def make_non_local(self):
+        """Wrap resnet layer into non local wrapper."""
         # This part is for ResNet50
         for i in range(self.num_stages):
             non_local_stage = self.non_local_stages[i]
@@ -284,12 +299,5 @@ class ResNetTSM(ResNet):
                                                  self.non_local_cfg)
 
     def init_weights(self):
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        super().init_weights()
-        if self.is_shift:
-            self.make_temporal_shift()
-        if len(self.non_local_cfg) != 0:
-            self.make_non_local()
-        if self.temporal_pool:
-            self.make_temporal_pool()
+        """Initialize weights."""
+        pass

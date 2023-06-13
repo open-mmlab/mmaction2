@@ -1,186 +1,118 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch
-from torch import nn
+import torch.nn as nn
+from torch import Tensor
 
-from ..builder import RECOGNIZERS
+from mmaction.registry import MODELS
+from mmaction.utils import SampleList
 from .base import BaseRecognizer
 
 
-@RECOGNIZERS.register_module()
+@MODELS.register_module()
 class Recognizer2D(BaseRecognizer):
     """2D recognizer model framework."""
 
-    def forward_train(self, imgs, labels, **kwargs):
-        """Defines the computation performed at every call when training."""
+    def extract_feat(self,
+                     inputs: Tensor,
+                     stage: str = 'neck',
+                     data_samples: SampleList = None,
+                     test_mode: bool = False) -> tuple:
+        """Extract features of different stages.
 
-        assert self.with_cls_head
-        batches = imgs.shape[0]
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-        num_segs = imgs.shape[0] // batches
+        Args:
+            inputs (Tensor): The input data.
+            stage (str): Which stage to output the feature.
+                Defaults to ``neck``.
+            data_samples (List[:obj:`ActionDataSample`]): Action data
+                samples, which are only needed in training. Defaults to None.
+            test_mode: (bool): Whether in test mode. Defaults to False.
 
-        losses = dict()
+        Returns:
+                Tensor: The extracted features.
+                dict: A dict recording the kwargs for downstream
+                    pipeline. These keys are usually included:
+                    ``num_segs``, ``fcn_test``, ``loss_aux``.
+        """
 
-        x = self.extract_feat(imgs)
+        # Record the kwargs required by `loss` and `predict`.
+        loss_predict_kwargs = dict()
 
-        if self.backbone_from in ['torchvision', 'timm']:
-            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
-                # apply adaptive avg pooling
-                x = nn.AdaptiveAvgPool2d(1)(x)
-            x = x.reshape((x.shape[0], -1))
-            x = x.reshape(x.shape + (1, 1))
+        num_segs = inputs.shape[1]
+        loss_predict_kwargs['num_segs'] = num_segs
 
-        if self.with_neck:
-            x = [
-                each.reshape((-1, num_segs) +
-                             each.shape[1:]).transpose(1, 2).contiguous()
-                for each in x
-            ]
-            x, loss_aux = self.neck(x, labels.squeeze())
-            x = x.squeeze(2)
-            num_segs = 1
-            losses.update(loss_aux)
-
-        cls_score = self.cls_head(x, num_segs)
-        gt_labels = labels.squeeze()
-        loss_cls = self.cls_head.loss(cls_score, gt_labels, **kwargs)
-        losses.update(loss_cls)
-
-        return losses
-
-    def _do_test(self, imgs):
-        """Defines the computation performed at every call when evaluation,
-        testing and gradcam."""
-        batches = imgs.shape[0]
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-        num_segs = imgs.shape[0] // batches
-
-        x = self.extract_feat(imgs)
-
-        if self.backbone_from in ['torchvision', 'timm']:
-            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
-                # apply adaptive avg pooling
-                x = nn.AdaptiveAvgPool2d(1)(x)
-            x = x.reshape((x.shape[0], -1))
-            x = x.reshape(x.shape + (1, 1))
-
-        if self.with_neck:
-            x = [
-                each.reshape((-1, num_segs) +
-                             each.shape[1:]).transpose(1, 2).contiguous()
-                for each in x
-            ]
-            x, _ = self.neck(x)
-            x = x.squeeze(2)
-            num_segs = 1
-
-        if self.feature_extraction:
-            # perform spatial pooling
-            avg_pool = nn.AdaptiveAvgPool2d(1)
-            x = avg_pool(x)
-            # squeeze dimensions
-            x = x.reshape((batches, num_segs, -1))
-            # temporal average pooling
-            x = x.mean(axis=1)
-            return x
-
-        # When using `TSNHead` or `TPNHead`, shape is [batch_size, num_classes]
-        # When using `TSMHead`, shape is [batch_size * num_crops, num_classes]
+        # [N, num_crops * num_segs, C, H, W] ->
+        # [N * num_crops * num_segs, C, H, W]
         # `num_crops` is calculated by:
         #   1) `twice_sample` in `SampleFrames`
         #   2) `num_sample_positions` in `DenseSampleFrames`
         #   3) `ThreeCrop/TenCrop` in `test_pipeline`
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
+        inputs = inputs.view((-1, ) + inputs.shape[2:])
 
-        # should have cls_head if not extracting features
-        cls_score = self.cls_head(x, num_segs)
+        # Check settings of `fcn_test`.
+        fcn_test = False
+        if test_mode:
+            if self.test_cfg is not None and self.test_cfg.get(
+                    'fcn_test', False):
+                fcn_test = True
+                num_segs = self.test_cfg.get('num_segs',
+                                             self.backbone.num_segments)
+            loss_predict_kwargs['fcn_test'] = fcn_test
 
-        assert cls_score.size()[0] % batches == 0
-        # calculate num_crops automatically
-        cls_score = self.average_clip(cls_score,
-                                      cls_score.size()[0] // batches)
-        return cls_score
+        # Extract features through backbone.
+        if (hasattr(self.backbone, 'features')
+                and self.backbone_from == 'torchvision'):
+            x = self.backbone.features(inputs)
+        elif self.backbone_from == 'timm':
+            x = self.backbone.forward_features(inputs)
+        elif self.backbone_from == 'mmcls':
+            x = self.backbone(inputs)
+            if isinstance(x, tuple):
+                assert len(x) == 1
+                x = x[0]
+        else:
+            x = self.backbone(inputs)
 
-    def _do_fcn_test(self, imgs):
-        # [N, num_crops * num_segs, C, H, W] ->
-        # [N * num_crops * num_segs, C, H, W]
-        batches = imgs.shape[0]
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-        num_segs = self.test_cfg.get('num_segs', self.backbone.num_segments)
+        if self.backbone_from in ['torchvision', 'timm']:
+            # Transformer-based feature shape: B x L x C.
+            if len(x.shape) == 3 and x.shape[2] > 1:
+                x = nn.AdaptiveAvgPool1d(1)(x.transpose(1, 2))  # B x C x 1
+            # Resnet-based feature shape: B x C x Hs x Ws。
+            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
+                x = nn.AdaptiveAvgPool2d(1)(x)  # B x C x 1 x 1
+            x = x.reshape((x.shape[0], -1))  # B x C
+            x = x.reshape(x.shape + (1, 1))  # B x C x 1 x 1
 
-        if self.test_cfg.get('flip', False):
-            imgs = torch.flip(imgs, [-1])
-        x = self.extract_feat(imgs)
+        # Return features extracted through backbone.
+        if stage == 'backbone':
+            return x, loss_predict_kwargs
 
+        loss_aux = dict()
         if self.with_neck:
+            # x is a tuple with multiple feature maps.
             x = [
                 each.reshape((-1, num_segs) +
                              each.shape[1:]).transpose(1, 2).contiguous()
                 for each in x
             ]
-            x, _ = self.neck(x)
-        else:
+            x, loss_aux = self.neck(x, data_samples=data_samples)
+            if not fcn_test:
+                x = x.squeeze(2)
+                loss_predict_kwargs['num_segs'] = 1
+        elif fcn_test:
+            # full convolution (fcn) testing when no neck
+            # [N * num_crops * num_segs, C', H', W'] ->
+            # [N * num_crops, C', num_segs, H', W']
             x = x.reshape((-1, num_segs) +
                           x.shape[1:]).transpose(1, 2).contiguous()
 
-        # When using `TSNHead` or `TPNHead`, shape is [batch_size, num_classes]
-        # When using `TSMHead`, shape is [batch_size * num_crops, num_classes]
-        # `num_crops` is calculated by:
-        #   1) `twice_sample` in `SampleFrames`
-        #   2) `num_sample_positions` in `DenseSampleFrames`
-        #   3) `ThreeCrop/TenCrop` in `test_pipeline`
-        #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
-        cls_score = self.cls_head(x, fcn_test=True)
+        loss_predict_kwargs['loss_aux'] = loss_aux
 
-        assert cls_score.size()[0] % batches == 0
-        # calculate num_crops automatically
-        cls_score = self.average_clip(cls_score,
-                                      cls_score.size()[0] // batches)
-        return cls_score
+        # Return features extracted through neck.
+        if stage == 'neck':
+            return x, loss_predict_kwargs
 
-    def forward_test(self, imgs):
-        """Defines the computation performed at every call when evaluation and
-        testing."""
-        if self.test_cfg.get('fcn_test', False):
-            # If specified, spatially fully-convolutional testing is performed
-            assert not self.feature_extraction
-            assert self.with_cls_head
-            return self._do_fcn_test(imgs).cpu().numpy()
-        return self._do_test(imgs).cpu().numpy()
-
-    def forward_dummy(self, imgs, softmax=False):
-        """Used for computing network FLOPs.
-
-        See ``tools/analysis/get_flops.py``.
-
-        Args:
-            imgs (torch.Tensor): Input images.
-
-        Returns:
-            Tensor: Class score.
-        """
-        assert self.with_cls_head
-        batches = imgs.shape[0]
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-        num_segs = imgs.shape[0] // batches
-
-        x = self.extract_feat(imgs)
-        if self.with_neck:
-            x = [
-                each.reshape((-1, num_segs) +
-                             each.shape[1:]).transpose(1, 2).contiguous()
-                for each in x
-            ]
-            x, _ = self.neck(x)
-            x = x.squeeze(2)
-            num_segs = 1
-
-        outs = self.cls_head(x, num_segs)
-        if softmax:
-            outs = nn.functional.softmax(outs)
-        return (outs, )
-
-    def forward_gradcam(self, imgs):
-        """Defines the computation performed at every call when using gradcam
-        utils."""
-        assert self.with_cls_head
-        return self._do_test(imgs)
+        # Return raw logits through head.
+        if self.with_cls_head and stage == 'head':
+            # [N * num_crops, num_classes]
+            x = self.cls_head(x, **loss_predict_kwargs)
+            return x, loss_predict_kwargs

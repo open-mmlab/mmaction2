@@ -3,13 +3,13 @@ import math
 
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import (ConvModule, Swish, build_activation_layer, constant_init,
-                      kaiming_init)
-from mmcv.runner import load_checkpoint
-from mmcv.utils import _BatchNorm
+from mmcv.cnn import ConvModule, Swish, build_activation_layer
+from mmengine.logging import MMLogger
+from mmengine.model.weight_init import constant_init, kaiming_init
+from mmengine.runner import load_checkpoint
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 
 
 class SEModule(nn.Module):
@@ -27,6 +27,7 @@ class SEModule(nn.Module):
 
     @staticmethod
     def _round_width(width, multiplier, min_width=8, divisor=8):
+        """Round width of filters based on width multiplier."""
         width *= multiplier
         min_width = min_width or divisor
         width_out = max(min_width,
@@ -36,6 +37,14 @@ class SEModule(nn.Module):
         return int(width_out)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data.
+
+        Returns:
+            Tensor: The output of the module.
+        """
         module_input = x
         x = self.avg_pool(x)
         x = self.fc1(x)
@@ -167,7 +176,7 @@ class BlockX3D(nn.Module):
 
 
 # We do not support initialize with 2D pretrain weight for X3D
-@BACKBONES.register_module()
+@MODELS.register_module()
 class X3D(nn.Module):
     """X3D backbone. https://arxiv.org/pdf/2004.04730.pdf.
 
@@ -477,7 +486,7 @@ class X3D(nn.Module):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)

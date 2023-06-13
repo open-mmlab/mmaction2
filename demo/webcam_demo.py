@@ -8,11 +8,10 @@ from threading import Thread
 import cv2
 import numpy as np
 import torch
-from mmcv import Config, DictAction
-from mmcv.parallel import collate, scatter
+from mmengine import Config, DictAction
+from mmengine.dataset import Compose, pseudo_collate
 
 from mmaction.apis import init_recognizer
-from mmaction.datasets.pipelines import Compose
 
 FONTFACE = cv2.FONT_HERSHEY_COMPLEX_SMALL
 FONTSCALE = 1
@@ -20,7 +19,6 @@ FONTCOLOR = (255, 255, 255)  # BGR, white
 MSGCOLOR = (128, 128, 128)  # BGR, gray
 THICKNESS = 1
 LINETYPE = 1
-
 EXCLUED_STEPS = [
     'OpenCVInit', 'OpenCVDecode', 'DecordInit', 'DecordDecode', 'PyAVInit',
     'PyAVDecode', 'RawFrameDecode'
@@ -30,7 +28,7 @@ EXCLUED_STEPS = [
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 webcam demo')
     parser.add_argument('config', help='test config file path')
-    parser.add_argument('checkpoint', help='checkpoint file')
+    parser.add_argument('checkpoint', help='checkpoint file/url')
     parser.add_argument('label', help='label file')
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
@@ -89,7 +87,7 @@ def show_results():
                 if score < threshold:
                     break
                 location = (0, 40 + i * 20)
-                text = selected_label + ': ' + str(round(score, 2))
+                text = selected_label + ': ' + str(round(score * 100, 2))
                 text_info[location] = text
                 cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
                             FONTCOLOR, THICKNESS, LINETYPE)
@@ -107,6 +105,8 @@ def show_results():
         ch = cv2.waitKey(1)
 
         if ch == 27 or ch == ord('q') or ch == ord('Q'):
+            camera.release()
+            cv2.destroyAllWindows()
             break
 
         if drawing_fps > 0:
@@ -133,13 +133,13 @@ def inference():
         cur_data = data.copy()
         cur_data['imgs'] = cur_windows
         cur_data = test_pipeline(cur_data)
-        cur_data = collate([cur_data], samples_per_gpu=1)
-        if next(model.parameters()).is_cuda:
-            cur_data = scatter(cur_data, [device])[0]
+        cur_data = pseudo_collate([cur_data])
 
+        # Forward the model
         with torch.no_grad():
-            scores = model(return_loss=False, **cur_data)[0]
-
+            result = model.test_step(cur_data)[0]
+        scores = result.pred_scores.item.tolist()
+        scores = np.array(scores)
         score_cache.append(scores)
         scores_sum += scores
 
@@ -147,29 +147,26 @@ def inference():
             scores_avg = scores_sum / average_size
             num_selected_labels = min(len(label), 5)
 
-            scores_tuples = tuple(zip(label, scores_avg))
-            scores_sorted = sorted(
-                scores_tuples, key=itemgetter(1), reverse=True)
-            results = scores_sorted[:num_selected_labels]
+            score_tuples = tuple(zip(label, scores_avg))
+            score_sorted = sorted(
+                score_tuples, key=itemgetter(1), reverse=True)
+            results = score_sorted[:num_selected_labels]
 
             result_queue.append(results)
             scores_sum -= score_cache.popleft()
 
-        if inference_fps > 0:
-            # add a limiter for actual inference fps <= inference_fps
-            sleep_time = 1 / inference_fps - (time.time() - cur_time)
-            if sleep_time > 0:
-                time.sleep(sleep_time)
-            cur_time = time.time()
-
-    camera.release()
-    cv2.destroyAllWindows()
+            if inference_fps > 0:
+                # add a limiter for actual inference fps <= inference_fps
+                sleep_time = 1 / inference_fps - (time.time() - cur_time)
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
+                cur_time = time.time()
 
 
 def main():
-    global frame_queue, camera, frame, results, threshold, sample_length, \
-        data, test_pipeline, model, device, average_size, label, \
-        result_queue, drawing_fps, inference_fps
+    global average_size, threshold, drawing_fps, inference_fps, \
+        device, model, camera, data, label, sample_length, \
+        test_pipeline, frame_queue, result_queue
 
     args = parse_args()
     average_size = args.average_size
@@ -180,9 +177,11 @@ def main():
     device = torch.device(args.device)
 
     cfg = Config.fromfile(args.config)
-    cfg.merge_from_dict(args.cfg_options)
+    if args.cfg_options is not None:
+        cfg.merge_from_dict(args.cfg_options)
 
-    model = init_recognizer(cfg, args.checkpoint, device=device)
+    # Build the recognizer from a config file and checkpoint file/url
+    model = init_recognizer(cfg, args.checkpoint, device=args.device)
     camera = cv2.VideoCapture(args.camera_id)
     data = dict(img_shape=None, modality='RGB', label=-1)
 
@@ -192,7 +191,7 @@ def main():
     # prepare test pipeline from non-camera pipeline
     cfg = model.cfg
     sample_length = 0
-    pipeline = cfg.data.test.pipeline
+    pipeline = cfg.test_pipeline
     pipeline_ = pipeline.copy()
     for step in pipeline:
         if 'SampleFrames' in step['type']:

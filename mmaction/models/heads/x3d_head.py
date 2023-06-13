@@ -1,19 +1,20 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch.nn as nn
-from mmcv.cnn import normal_init
+from mmengine.model.weight_init import normal_init
+from torch import Tensor, nn
 
-from ..builder import HEADS
+from mmaction.registry import MODELS
+from mmaction.utils import ConfigType
 from .base import BaseHead
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class X3DHead(BaseHead):
     """Classification head for I3D.
 
     Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
-        loss_cls (dict): Config for building loss.
+        loss_cls (dict or ConfigDict): Config for building loss.
             Default: dict(type='CrossEntropyLoss')
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         dropout_ratio (float): Probability of dropout layer. Default: 0.5.
@@ -22,14 +23,15 @@ class X3DHead(BaseHead):
     """
 
     def __init__(self,
-                 num_classes,
-                 in_channels,
-                 loss_cls=dict(type='CrossEntropyLoss'),
-                 spatial_type='avg',
-                 dropout_ratio=0.5,
-                 init_std=0.01,
-                 fc1_bias=False):
-        super().__init__(num_classes, in_channels, loss_cls)
+                 num_classes: int,
+                 in_channels: int,
+                 loss_cls: ConfigType = dict(type='CrossEntropyLoss'),
+                 spatial_type: str = 'avg',
+                 dropout_ratio: float = 0.5,
+                 init_std: float = 0.01,
+                 fc1_bias: bool = False,
+                 **kwargs) -> None:
+        super().__init__(num_classes, in_channels, loss_cls, **kwargs)
 
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
@@ -57,19 +59,19 @@ class X3DHead(BaseHead):
         else:
             raise NotImplementedError
 
-    def init_weights(self):
+    def init_weights(self) -> None:
         """Initiate the parameters from scratch."""
         normal_init(self.fc1, std=self.init_std)
         normal_init(self.fc2, std=self.init_std)
 
-    def forward(self, x):
+    def forward(self, x: Tensor, **kwargs) -> Tensor:
         """Defines the computation performed at every call.
 
         Args:
-            x (torch.Tensor): The input data.
+            x (Tensor): The input data.
 
         Returns:
-            torch.Tensor: The classification scores for input samples.
+            Tensor: The classification scores for input samples.
         """
         # [N, in_channels, T, H, W]
         assert self.pool is not None

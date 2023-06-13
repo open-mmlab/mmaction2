@@ -1,44 +1,34 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from ..builder import BACKBONES
+from typing import Sequence
+
+from mmaction.registry import MODELS
 from .resnet3d_slowfast import ResNet3dPathway
 
-try:
-    from mmdet.models.builder import BACKBONES as MMDET_BACKBONES
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
 
-
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNet3dSlowOnly(ResNet3dPathway):
     """SlowOnly backbone based on ResNet3dPathway.
 
     Args:
-        *args (arguments): Arguments same as :class:`ResNet3dPathway`.
         conv1_kernel (Sequence[int]): Kernel size of the first conv layer.
-            Default: (1, 7, 7).
+            Defaults to ``(1, 7, 7)``.
         conv1_stride_t (int): Temporal stride of the first conv layer.
-            Default: 1.
+            Defaults to 1.
         pool1_stride_t (int): Temporal stride of the first pooling layer.
-            Default: 1.
-        inflate (Sequence[int]): Inflate Dims of each block.
-            Default: (0, 0, 1, 1).
-        **kwargs (keyword arguments): Keywords arguments for
-            :class:`ResNet3dPathway`.
+            Defaults to 1.
+        inflate (Sequence[int]): Inflate dims of each block.
+            Defaults to ``(0, 0, 1, 1)``.
+        with_pool2 (bool): Whether to use pool2. Defaults to False.
     """
 
     def __init__(self,
-                 *args,
-                 lateral=False,
-                 conv1_kernel=(1, 7, 7),
-                 conv1_stride_t=1,
-                 pool1_stride_t=1,
-                 inflate=(0, 0, 1, 1),
-                 with_pool2=False,
-                 **kwargs):
+                 conv1_kernel: Sequence[int] = (1, 7, 7),
+                 conv1_stride_t: int = 1,
+                 pool1_stride_t: int = 1,
+                 inflate: Sequence[int] = (0, 0, 1, 1),
+                 with_pool2: bool = False,
+                 **kwargs) -> None:
         super().__init__(
-            *args,
-            lateral=lateral,
             conv1_kernel=conv1_kernel,
             conv1_stride_t=conv1_stride_t,
             pool1_stride_t=pool1_stride_t,
@@ -47,7 +37,3 @@ class ResNet3dSlowOnly(ResNet3dPathway):
             **kwargs)
 
         assert not self.lateral
-
-
-if mmdet_imported:
-    MMDET_BACKBONES.register_module()(ResNet3dSlowOnly)

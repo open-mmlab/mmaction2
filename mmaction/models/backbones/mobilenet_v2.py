@@ -1,12 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import ConvModule, constant_init, kaiming_init
-from mmcv.runner import load_checkpoint
-from torch.nn.modules.batchnorm import _BatchNorm
+from mmcv.cnn import ConvModule
+from mmengine.logging import MMLogger
+from mmengine.model.weight_init import constant_init, kaiming_init
+from mmengine.runner import load_checkpoint
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 
 
 def make_divisible(value, divisor, min_value=None, min_ratio=0.9):
@@ -104,6 +105,14 @@ class InvertedResidual(nn.Module):
         self.conv = nn.Sequential(*layers)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data.
+
+        Returns:
+            Tensor: The output of the module.
+        """
 
         def _inner_forward(x):
             if self.use_res_connect:
@@ -119,7 +128,7 @@ class InvertedResidual(nn.Module):
         return out
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class MobileNetV2(nn.Module):
     """MobileNetV2 backbone.
 
@@ -253,8 +262,10 @@ class MobileNetV2(nn.Module):
         return nn.Sequential(*layers)
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)
         elif self.pretrained is None:
             for m in self.modules():
@@ -266,6 +277,15 @@ class MobileNetV2(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data.
+
+        Returns:
+            Tensor or Tuple[Tensor]: The feature of the input samples extracted
+            by the backbone.
+        """
         x = self.conv1(x)
 
         outs = []
@@ -281,6 +301,8 @@ class MobileNetV2(nn.Module):
         return tuple(outs)
 
     def _freeze_stages(self):
+        """Prevent all the parameters from being optimized before
+        ``self.frozen_stages``."""
         if self.frozen_stages >= 0:
             self.conv1.eval()
             for param in self.conv1.parameters():
@@ -293,6 +315,7 @@ class MobileNetV2(nn.Module):
                 param.requires_grad = False
 
     def train(self, mode=True):
+        """Set the optimization status when training."""
         super(MobileNetV2, self).train(mode)
         self._freeze_stages()
         if mode and self.norm_eval:

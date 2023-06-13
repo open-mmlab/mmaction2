@@ -1,11 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmcv.utils import collect_env as collect_basic_env
-from mmcv.utils import get_git_hash
+from mmengine.utils import get_git_hash
+from mmengine.utils.dl_utils import collect_env as collect_basic_env
 
 import mmaction
 
 
 def collect_env():
+    """Collect the information of the running environments."""
     env_info = collect_basic_env()
     env_info['MMAction2'] = (
         mmaction.__version__ + '+' + get_git_hash(digits=7))

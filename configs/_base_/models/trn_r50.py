@@ -16,7 +16,10 @@ model = dict(
         relation_type='TRNMultiScale',
         hidden_dim=256,
         dropout_ratio=0.8,
-        init_std=0.001),
-    # model training and testing settings
-    train_cfg=None,
-    test_cfg=dict(average_clips='prob'))
+        init_std=0.001,
+        average_clips='prob'),
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        format_shape='NCHW'))

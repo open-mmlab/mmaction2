@@ -3,15 +3,15 @@ import numpy as np
 import torch
 import torch.nn as nn
 from einops import rearrange
-from mmcv import ConfigDict
-from mmcv.cnn import build_conv_layer, build_norm_layer, kaiming_init
+from mmcv.cnn import build_conv_layer, build_norm_layer
 from mmcv.cnn.bricks.transformer import build_transformer_layer_sequence
-from mmcv.cnn.utils.weight_init import trunc_normal_
-from mmcv.runner import _load_checkpoint, load_state_dict
+from mmengine import ConfigDict
+from mmengine.logging import MMLogger
+from mmengine.model.weight_init import kaiming_init, trunc_normal_
+from mmengine.runner.checkpoint import _load_checkpoint, load_state_dict
 from torch.nn.modules.utils import _pair
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 
 
 class PatchEmbed(nn.Module):
@@ -54,16 +54,25 @@ class PatchEmbed(nn.Module):
         self.init_weights()
 
     def init_weights(self):
+        """Initialize weights."""
         # Lecun norm from ClassyVision
         kaiming_init(self.projection, mode='fan_in', nonlinearity='linear')
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data.
+
+        Returns:
+            Tensor: The output of the module.
+        """
         x = rearrange(x, 'b c t h w -> (b t) c h w')
         x = self.projection(x).flatten(2).transpose(1, 2)
         return x
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class TimeSformer(nn.Module):
     """TimeSformer. A PyTorch impl of `Is Space-Time Attention All You Need for
     Video Understanding? <https://arxiv.org/abs/2102.05095>`_
@@ -223,10 +232,10 @@ class TimeSformer(nn.Module):
         if pretrained:
             self.pretrained = pretrained
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
-            state_dict = _load_checkpoint(self.pretrained)
+            state_dict = _load_checkpoint(self.pretrained, map_location='cpu')
             if 'state_dict' in state_dict:
                 state_dict = state_dict['state_dict']
 

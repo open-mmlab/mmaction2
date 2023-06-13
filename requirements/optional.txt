@@ -1,11 +1,13 @@
-av
+av>=9.0
+future
+fvcore
 imgaug
 librosa
 lmdb
 moviepy
-onnx
-onnxruntime
 packaging
 pims
 PyTurboJPEG
-timm
+soundfile
+tensorboard
+wandb

@@ -1,13 +1,19 @@
-# optimizer
-optimizer = dict(
-    type='SGD', lr=0.01, momentum=0.9,
-    weight_decay=0.0001)  # this lr is used for 8 gpus
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
-# learning policy
-lr_config = dict(
-    policy='step',
-    step=[90, 130],
-    warmup='linear',
-    warmup_by_epoch=True,
-    warmup_iters=10)
-total_epochs = 150
+train_cfg = dict(
+    type='EpochBasedTrainLoop', max_epochs=150, val_begin=1, val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+
+param_scheduler = [
+    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=10),
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=150,
+        by_epoch=True,
+        milestones=[90, 130],
+        gamma=0.1)
+]
+
+optim_wrapper = dict(
+    optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001),
+    clip_grad=dict(max_norm=40, norm_type=2))

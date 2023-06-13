@@ -1,25 +1,21 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import copy as cp
-import os
-import os.path as osp
-import shutil
+import tempfile
 
 import cv2
 import mmcv
+import mmengine
 import numpy as np
 import torch
-from mmcv import DictAction
-from mmcv.runner import load_checkpoint
+from mmengine import DictAction
+from mmengine.runner import load_checkpoint
+from mmengine.structures import InstanceData
 
-from mmaction.models import build_detector
-
-try:
-    from mmdet.apis import inference_detector, init_detector
-except (ImportError, ModuleNotFoundError):
-    raise ImportError('Failed to import `inference_detector` and '
-                      '`init_detector` form `mmdet.apis`. These apis are '
-                      'required in this demo! ')
+from mmaction.apis import detection_inference
+from mmaction.registry import MODELS
+from mmaction.structures import ActionDataSample
+from mmaction.utils import frame_extract
 
 try:
     import moviepy.editor as mpy
@@ -57,14 +53,13 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
         plate (str): The plate used for visualization. Default: plate_blue.
         max_num (int): Max number of labels to visualize for a person box.
             Default: 5.
-
     Returns:
         list[np.ndarray]: Visualized frames.
     """
 
     assert max_num + 1 <= len(plate)
     plate = [x[::-1] for x in plate]
-    frames_ = cp.deepcopy(frames)
+    frames_out = cp.deepcopy(frames)
     nf, na = len(frames), len(annotations)
     assert nf % na == 0
     nfpa = len(frames) // len(annotations)
@@ -77,7 +72,7 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
             continue
         for j in range(nfpa):
             ind = i * nfpa + j
-            frame = frames_[ind]
+            frame = frames_out[ind]
             for ann in anno:
                 box = ann[0]
                 label = ann[1]
@@ -102,26 +97,76 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
                     cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
                                 FONTCOLOR, THICKNESS, LINETYPE)
 
-    return frames_
+    return frames_out
+
+
+def load_label_map(file_path):
+    """Load Label Map.
+
+    Args:
+        file_path (str): The file path of label map.
+    Returns:
+        dict: The label map (int -> label name).
+    """
+    lines = open(file_path).readlines()
+    lines = [x.strip().split(': ') for x in lines]
+    return {int(x[0]): x[1] for x in lines}
+
+
+def abbrev(name):
+    """Get the abbreviation of label name:
+
+    'take (an object) from (a person)' -> 'take ... from ...'
+    """
+    while name.find('(') != -1:
+        st, ed = name.find('('), name.find(')')
+        name = name[:st] + '...' + name[ed + 1:]
+    return name
+
+
+def pack_result(human_detection, result, img_h, img_w):
+    """Short summary.
+
+    Args:
+        human_detection (np.ndarray): Human detection result.
+        result (type): The predicted label of each human proposal.
+        img_h (int): The image height.
+        img_w (int): The image width.
+    Returns:
+        tuple: Tuple of human proposal, label name and label score.
+    """
+    human_detection[:, 0::2] /= img_w
+    human_detection[:, 1::2] /= img_h
+    results = []
+    if result is None:
+        return None
+    for prop, res in zip(human_detection, result):
+        res.sort(key=lambda x: -x[1])
+        results.append(
+            (prop.data.cpu().numpy(), [x[0] for x in res], [x[1]
+                                                            for x in res]))
+    return results
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
+    parser.add_argument('video', help='video file/url')
+    parser.add_argument('out_filename', help='output filename')
     parser.add_argument(
         '--config',
-        default=('configs/detection/ava/'
-                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py'),
-        help='spatio temporal detection config file path')
+        default=('configs/detection/slowonly/slowonly_kinetics400-pretrained-'
+                 'r101_8xb16-8x8x1-20e_ava21-rgb.py'),
+        help='spatialtemporal detection model config file path')
     parser.add_argument(
         '--checkpoint',
         default=('https://download.openmmlab.com/mmaction/detection/ava/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/'
-                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb'
-                 '_20201217-16378594.pth'),
-        help='spatio temporal detection checkpoint file/url')
+                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_'
+                 '20201217-16378594.pth'),
+        help='spatialtemporal detection model checkpoint file/url')
     parser.add_argument(
         '--det-config',
-        default='demo/faster_rcnn_r50_fpn_2x_coco.py',
+        default='demo/demo_configs/faster-rcnn_r50_fpn_2x_coco_infer.py',
         help='human detection config file path (from mmdet)')
     parser.add_argument(
         '--det-checkpoint',
@@ -136,11 +181,15 @@ def parse_args():
         default=0.9,
         help='the threshold of human detection score')
     parser.add_argument(
+        '--det-cat-id',
+        type=int,
+        default=0,
+        help='the category id for human detection')
+    parser.add_argument(
         '--action-score-thr',
         type=float,
         default=0.5,
         help='the threshold of human action score')
-    parser.add_argument('--video', help='video file/url')
     parser.add_argument(
         '--label-map',
         default='tools/data/ava/label_map.txt',
@@ -148,9 +197,10 @@ def parse_args():
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
-        '--out-filename',
-        default='demo/stdet_demo.mp4',
-        help='output filename')
+        '--short-side',
+        type=int,
+        default=256,
+        help='specify the short-side length of the image')
     parser.add_argument(
         '--predict-stepsize',
         default=8,
@@ -179,123 +229,24 @@ def parse_args():
     return args
 
 
-def frame_extraction(video_path):
-    """Extract frames given video_path.
-
-    Args:
-        video_path (str): The video_path.
-    """
-    # Load the video, extract frames into ./tmp/video_name
-    target_dir = osp.join('./tmp', osp.basename(osp.splitext(video_path)[0]))
-    os.makedirs(target_dir, exist_ok=True)
-    # Should be able to handle videos up to several hours
-    frame_tmpl = osp.join(target_dir, 'img_{:06d}.jpg')
-    vid = cv2.VideoCapture(video_path)
-    frames = []
-    frame_paths = []
-    flag, frame = vid.read()
-    cnt = 0
-    while flag:
-        frames.append(frame)
-        frame_path = frame_tmpl.format(cnt + 1)
-        frame_paths.append(frame_path)
-        cv2.imwrite(frame_path, frame)
-        cnt += 1
-        flag, frame = vid.read()
-    return frame_paths, frames
-
-
-def detection_inference(args, frame_paths):
-    """Detect human boxes given frame paths.
-
-    Args:
-        args (argparse.Namespace): The arguments.
-        frame_paths (list[str]): The paths of frames to do detection inference.
-
-    Returns:
-        list[np.ndarray]: The human detection results.
-    """
-    model = init_detector(args.det_config, args.det_checkpoint, args.device)
-    assert model.CLASSES[0] == 'person', ('We require you to use a detector '
-                                          'trained on COCO')
-    results = []
-    print('Performing Human Detection for each frame')
-    prog_bar = mmcv.ProgressBar(len(frame_paths))
-    for frame_path in frame_paths:
-        result = inference_detector(model, frame_path)
-        # We only keep human detections with score larger than det_score_thr
-        result = result[0][result[0][:, 4] >= args.det_score_thr]
-        results.append(result)
-        prog_bar.update()
-    return results
-
-
-def load_label_map(file_path):
-    """Load Label Map.
-
-    Args:
-        file_path (str): The file path of label map.
-
-    Returns:
-        dict: The label map (int -> label name).
-    """
-    lines = open(file_path).readlines()
-    lines = [x.strip().split(': ') for x in lines]
-    return {int(x[0]): x[1] for x in lines}
-
-
-def abbrev(name):
-    """Get the abbreviation of label name:
-
-    'take (an object) from (a person)' -> 'take ... from ...'
-    """
-    while name.find('(') != -1:
-        st, ed = name.find('('), name.find(')')
-        name = name[:st] + '...' + name[ed + 1:]
-    return name
-
-
-def pack_result(human_detection, result, img_h, img_w):
-    """Short summary.
-
-    Args:
-        human_detection (np.ndarray): Human detection result.
-        result (type): The predicted label of each human proposal.
-        img_h (int): The image height.
-        img_w (int): The image width.
-
-    Returns:
-        tuple: Tuple of human proposal, label name and label score.
-    """
-    human_detection[:, 0::2] /= img_w
-    human_detection[:, 1::2] /= img_h
-    results = []
-    if result is None:
-        return None
-    for prop, res in zip(human_detection, result):
-        res.sort(key=lambda x: -x[1])
-        results.append(
-            (prop.data.cpu().numpy(), [x[0] for x in res], [x[1]
-                                                            for x in res]))
-    return results
-
-
 def main():
     args = parse_args()
 
-    frame_paths, original_frames = frame_extraction(args.video)
+    tmp_dir = tempfile.TemporaryDirectory()
+    frame_paths, original_frames = frame_extract(
+        args.video, out_dir=tmp_dir.name)
     num_frame = len(frame_paths)
     h, w, _ = original_frames[0].shape
 
-    # resize frames to shortside 256
-    new_w, new_h = mmcv.rescale_size((w, h), (256, np.Inf))
+    # resize frames to shortside
+    new_w, new_h = mmcv.rescale_size((w, h), (args.short_side, np.Inf))
     frames = [mmcv.imresize(img, (new_w, new_h)) for img in original_frames]
     w_ratio, h_ratio = new_w / w, new_h / h
 
     # Get clip_len, frame_interval and calculate center index of each clip
-    config = mmcv.Config.fromfile(args.config)
+    config = mmengine.Config.fromfile(args.config)
     config.merge_from_dict(args.cfg_options)
-    val_pipeline = config.data.val.pipeline
+    val_pipeline = config.val_pipeline
 
     sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
     clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
@@ -319,31 +270,29 @@ def main():
 
     # Get Human detection results
     center_frames = [frame_paths[ind - 1] for ind in timestamps]
-    human_detections = detection_inference(args, center_frames)
+
+    human_detections, _ = detection_inference(args.det_config,
+                                              args.det_checkpoint,
+                                              center_frames,
+                                              args.det_score_thr,
+                                              args.det_cat_id, args.device)
+    torch.cuda.empty_cache()
     for i in range(len(human_detections)):
         det = human_detections[i]
         det[:, 0:4:2] *= w_ratio
         det[:, 1:4:2] *= h_ratio
         human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
 
-    # Get img_norm_cfg
-    img_norm_cfg = config['img_norm_cfg']
-    if 'to_rgb' not in img_norm_cfg and 'to_bgr' in img_norm_cfg:
-        to_bgr = img_norm_cfg.pop('to_bgr')
-        img_norm_cfg['to_rgb'] = to_bgr
-    img_norm_cfg['mean'] = np.array(img_norm_cfg['mean'])
-    img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
-
     # Build STDET model
     try:
         # In our spatiotemporal detection demo, different actions should have
         # the same number of bboxes.
-        config['model']['test_cfg']['rcnn']['action_thr'] = .0
+        config['model']['test_cfg']['rcnn'] = dict(action_thr=0)
     except KeyError:
         pass
 
     config.model.backbone.pretrained = None
-    model = build_detector(config.model, test_cfg=config.get('test_cfg'))
+    model = MODELS.build(config.model)
 
     load_checkpoint(model, args.checkpoint, map_location='cpu')
     model.to(args.device)
@@ -351,9 +300,14 @@ def main():
 
     predictions = []
 
+    img_norm_cfg = dict(
+        mean=np.array(config.model.data_preprocessor.mean),
+        std=np.array(config.model.data_preprocessor.std),
+        to_rgb=False)
+
     print('Performing SpatioTemporal Action Detection for each clip')
     assert len(timestamps) == len(human_detections)
-    prog_bar = mmcv.ProgressBar(len(timestamps))
+    prog_bar = mmengine.ProgressBar(len(timestamps))
     for timestamp, proposal in zip(timestamps, human_detections):
         if proposal.shape[0] == 0:
             predictions.append(None)
@@ -368,25 +322,24 @@ def main():
         input_array = np.stack(imgs).transpose((3, 0, 1, 2))[np.newaxis]
         input_tensor = torch.from_numpy(input_array).to(args.device)
 
+        datasample = ActionDataSample()
+        datasample.proposals = InstanceData(bboxes=proposal)
+        datasample.set_metainfo(dict(img_shape=(new_h, new_w)))
         with torch.no_grad():
-            result = model(
-                return_loss=False,
-                img=[input_tensor],
-                img_metas=[[dict(img_shape=(new_h, new_w))]],
-                proposals=[[proposal]])
-            result = result[0]
+            result = model(input_tensor, [datasample], mode='predict')
+            scores = result[0].pred_instances.scores
             prediction = []
             # N proposals
             for i in range(proposal.shape[0]):
                 prediction.append([])
             # Perform action score thr
-            for i in range(len(result)):
-                if i + 1 not in label_map:
+            for i in range(scores.shape[1]):
+                if i not in label_map:
                     continue
                 for j in range(proposal.shape[0]):
-                    if result[i][j, 4] > args.action_score_thr:
-                        prediction[j].append((label_map[i + 1], result[i][j,
-                                                                          4]))
+                    if scores[j, i] > args.action_score_thr:
+                        prediction[j].append((label_map[i], scores[j,
+                                                                   i].item()))
             predictions.append(prediction)
         prog_bar.update()
 
@@ -400,7 +353,7 @@ def main():
         start = timestamps[0] - old_frame_interval / n * (n - 1) / 2
         new_frame_inds = np.arange(
             len(timestamps) * n) * old_frame_interval / n + start
-        return new_frame_inds.astype(np.int)
+        return new_frame_inds.astype(np.int64)
 
     dense_n = int(args.predict_stepsize / args.output_stepsize)
     frames = [
@@ -413,8 +366,7 @@ def main():
                                 fps=args.output_fps)
     vid.write_videofile(args.out_filename)
 
-    tmp_frame_dir = osp.dirname(frame_paths[0])
-    shutil.rmtree(tmp_frame_dir)
+    tmp_dir.cleanup()
 
 
 if __name__ == '__main__':

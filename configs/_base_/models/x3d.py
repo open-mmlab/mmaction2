@@ -8,7 +8,13 @@ model = dict(
         num_classes=400,
         spatial_type='avg',
         dropout_ratio=0.5,
-        fc1_bias=False),
+        fc1_bias=False,
+        average_clips='prob'),
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[114.75, 114.75, 114.75],
+        std=[57.38, 57.38, 57.38],
+        format_shape='NCTHW'),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(average_clips='prob'))
+    test_cfg=None)

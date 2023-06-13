@@ -3,10 +3,11 @@ from copy import deepcopy
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import NORM_LAYERS
+
+from mmaction.registry import MODELS
 
 
-@NORM_LAYERS.register_module()
+@MODELS.register_module()
 class SubBatchNorm3D(nn.Module):
     """Sub BatchNorm3d splits the batch dimension into N splits, and run BN on
     each of them separately (so that the stats are computed on each subset of
@@ -31,6 +32,7 @@ class SubBatchNorm3D(nn.Module):
         self.init_weights(cfg)
 
     def init_weights(self, cfg):
+        """Initialize weights."""
         if cfg.get('affine', True):
             self.weight = torch.nn.Parameter(torch.ones(self.num_features))
             self.bias = torch.nn.Parameter(torch.zeros(self.num_features))
@@ -39,6 +41,7 @@ class SubBatchNorm3D(nn.Module):
             self.affine = False
 
     def _get_aggregated_mean_std(self, means, stds, n):
+        """Calculate aggregated mean and std."""
         mean = means.view(n, -1).sum(0) / n
         std = stds.view(n, -1).sum(0) / n + (
             (means.view(n, -1) - mean)**2).view(n, -1).sum(0) / n
@@ -61,6 +64,7 @@ class SubBatchNorm3D(nn.Module):
         )
 
     def forward(self, x):
+        """Defines the computation performed at every call."""
         if self.training:
             n, c, t, h, w = x.shape
             assert n % self.num_splits == 0

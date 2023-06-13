@@ -11,6 +11,7 @@
 In this paper we discuss several forms of spatiotemporal convolutions for video analysis and study their effects on action recognition. Our motivation stems from the observation that 2D CNNs applied to individual frames of the video have remained solid performers in action recognition. In this work we empirically demonstrate the accuracy advantages of 3D CNNs over 2D CNNs within the framework of residual learning. Furthermore, we show that factorizing the 3D convolutional filters into separate spatial and temporal components yields significantly advantages in accuracy. Our empirical study leads to the design of a new spatiotemporal convolutional block "R(2+1)D" which gives rise to CNNs that achieve results comparable or superior to the state-of-the-art on Sports-1M, Kinetics, UCF101 and HMDB51.
 
 <!-- [IMAGE] -->
+
 <div align=center>
 <img src="https://user-images.githubusercontent.com/34324155/143043885-3d00413c-b556-445e-9673-f5805c08c195.png" width="800"/>
 </div>
@@ -19,24 +20,15 @@ In this paper we discuss several forms of spatiotemporal convolutions for video 
 
 ### Kinetics-400
 
-|config | resolution | gpus | backbone | pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[r2plus1d_r34_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py) | short-side 256|8x4| ResNet34|None |67.30|87.65|x|5019|[ckpt](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb_20200729-aa94765e.pth)|[log](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/20200728_021421.log)|[json](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/20200728_021421.log.json)|
-|[r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py) | short-side 256|8| ResNet34|None |67.3|87.8|x|5019|[ckpt](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb_20200826-ab35a529.pth)|[log](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/20200724_201360.log.json)|[json](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/20200724_201360.log)|
-|[r2plus1d_r34_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py) | short-side 320|8x2| ResNet34|None |68.68|88.36|1.6 (80x3 frames)|5019|[ckpt](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_8x8x1_180e_kinetics400_rgb_20200618-3fce5629.pth)| [log](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb/r21d_8x8.log)| [json](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_8x8_69.58_88.36.log.json)|
-|[r2plus1d_r34_32x2x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb.py) |short-side 320|8x2| ResNet34|None |74.60|91.59|0.5 (320x3 frames)|12975| [ckpt](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb/r2plus1d_r34_32x2x1_180e_kinetics400_rgb_20200618-63462eb3.pth) | [log](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb/r21d_32x2.log)| [json](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb/r2plus1d_r34_32x2_74.6_91.6.log.json)|
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol  | FLOPs | params |                config                |                ckpt                |                log                |
+| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :---------------: | :---: | :----: | :----------------------------------: | :--------------------------------: | :-------------------------------: |
+|          8x8x1          |  224x224   |  8   | ResNet34 |   None   |  69.76   |  88.41   | 10 clips x 3 crop | 53.1G | 63.8M  | [config](/configs/recognition/r2plus1d/r2plus1d_r34_8xb8-8x8x1-180e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/r2plus1d/r2plus1d_r34_8xb8-8x8x1-180e_kinetics400-rgb/r2plus1d_r34_8xb8-8x8x1-180e_kinetics400-rgb_20220812-47cfe041.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/r2plus1d/r2plus1d_r34_8xb8-8x8x1-180e_kinetics400-rgb/r2plus1d_r34_8xb8-8x8x1-180e_kinetics400-rgb.log) |
+|         32x2x1          |  224x224   |  8   | ResNet34 |   None   |  75.46   |  92.28   | 10 clips x 3 crop | 213G  | 63.8M  | [config](/configs/recognition/r2plus1d/r2plus1d_r34_8xb8-32x2x1-180e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/r2plus1d/r2plus1d_r34_8xb8-32x2x1-180e_kinetics400-rgb/r2plus1d_r34_8xb8-32x2x1-180e_kinetics400-rgb_20220812-4270588c.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/r2plus1d/r2plus1d_r34_8xb8-32x2x1-180e_kinetics400-rgb/r2plus1d_r34_8xb8-32x2x1-180e_kinetics400-rgb.log) |
 
-:::{note}
+1. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
+2. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
 
-1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-2. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time, not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
-3. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
-
-:::
-
-For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to [Kinetics400](/tools/data/kinetics/README.md).
 
 ## Train
 
@@ -46,15 +38,14 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train R(2+1)D model on Kinetics-400 dataset in a deterministic option with periodic validation.
+Example: train R(2+1)D model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py \
-    --work-dir work_dirs/r2plus1d_r34_3d_8x8x1_180e_kinetics400_rgb \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/recognition/r2plus1d/r2plus1d_r34_8xb8-8x8x1-180e_kinetics400-rgb.py \
+    --seed=0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -64,15 +55,14 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test R(2+1)D model on Kinetics-400 dataset and dump the result to a json file.
+Example: test R(2+1)D model on Kinetics-400 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json --average-clips=prob
+python tools/test.py configs/recognition/r2plus1d/r2plus1d_r34_8xb8-8x8x1-180e_kinetics400-rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 

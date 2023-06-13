@@ -17,7 +17,12 @@ model = dict(
         in_channels=4096,
         spatial_type=None,
         dropout_ratio=0.5,
-        init_std=0.01),
-    # model training and testing settings
+        init_std=0.01,
+        average_clips='prob'),
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[104, 117, 128],
+        std=[1, 1, 1],
+        format_shape='NCTHW'),
     train_cfg=None,
-    test_cfg=dict(average_clips='score'))
+    test_cfg=None)

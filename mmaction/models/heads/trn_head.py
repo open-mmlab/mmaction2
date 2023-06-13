@@ -4,9 +4,9 @@ import itertools
 import numpy as np
 import torch
 import torch.nn as nn
-from mmcv.cnn import normal_init
+from mmengine.model.weight_init import normal_init
 
-from ..builder import HEADS
+from mmaction.registry import MODELS
 from .base import BaseHead
 
 
@@ -32,10 +32,17 @@ class RelationModule(nn.Module):
             nn.ReLU(), nn.Linear(bottleneck_dim, self.num_classes))
 
     def init_weights(self):
-        # Use the default kaiming_uniform for all nn.linear layers.
+        """Use the default kaiming_uniform for all nn.linear layers."""
         pass
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data.
+        Returns:
+            Tensor: The classification scores for input samples.
+        """
         # [N, num_segs * hidden_dim]
         x = x.view(x.size(0), -1)
         x = self.classifier(x)
@@ -83,7 +90,7 @@ class RelationModuleMultiScale(nn.Module):
             self.fc_fusion_scales.append(fc_fusion)
 
     def init_weights(self):
-        # Use the default kaiming_uniform for all nn.linear layers.
+        """Use the default kaiming_uniform for all nn.linear layers."""
         pass
 
     def forward(self, x):
@@ -109,7 +116,7 @@ class RelationModuleMultiScale(nn.Module):
         return act_all
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class TRNHead(BaseHead):
     """Class head for TRN.
 
@@ -179,7 +186,7 @@ class TRNHead(BaseHead):
         normal_init(self.fc_cls, std=self.init_std)
         self.consensus.init_weights()
 
-    def forward(self, x, num_segs):
+    def forward(self, x, num_segs, **kwargs):
         """Defines the computation performed at every call.
 
         Args:

@@ -21,6 +21,7 @@ class BaseWeightedLoss(nn.Module, metaclass=ABCMeta):
 
     @abstractmethod
     def _forward(self, *args, **kwargs):
+        """Forward function."""
         pass
 
     def forward(self, *args, **kwargs):

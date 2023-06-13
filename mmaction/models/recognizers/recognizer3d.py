@@ -1,128 +1,114 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
-from torch import nn
+from torch import Tensor
 
-from ..builder import RECOGNIZERS
+from mmaction.registry import MODELS
+from mmaction.utils import OptSampleList
 from .base import BaseRecognizer
 
 
-@RECOGNIZERS.register_module()
+@MODELS.register_module()
 class Recognizer3D(BaseRecognizer):
     """3D recognizer model framework."""
 
-    def forward_train(self, imgs, labels, **kwargs):
-        """Defines the computation performed at every call when training."""
-
-        assert self.with_cls_head
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-        losses = dict()
-
-        x = self.extract_feat(imgs)
-        if self.with_neck:
-            x, loss_aux = self.neck(x, labels.squeeze())
-            losses.update(loss_aux)
-
-        cls_score = self.cls_head(x)
-        gt_labels = labels.squeeze()
-        loss_cls = self.cls_head.loss(cls_score, gt_labels, **kwargs)
-        losses.update(loss_cls)
-
-        return losses
-
-    def _do_test(self, imgs):
-        """Defines the computation performed at every call when evaluation,
-        testing and gradcam."""
-        batches = imgs.shape[0]
-        num_segs = imgs.shape[1]
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-
-        if self.max_testing_views is not None:
-            total_views = imgs.shape[0]
-            assert num_segs == total_views, (
-                'max_testing_views is only compatible '
-                'with batch_size == 1')
-            view_ptr = 0
-            feats = []
-            while view_ptr < total_views:
-                batch_imgs = imgs[view_ptr:view_ptr + self.max_testing_views]
-                x = self.extract_feat(batch_imgs)
-                if self.with_neck:
-                    x, _ = self.neck(x)
-                feats.append(x)
-                view_ptr += self.max_testing_views
-            # should consider the case that feat is a tuple
-            if isinstance(feats[0], tuple):
-                len_tuple = len(feats[0])
-                feat = [
-                    torch.cat([x[i] for x in feats]) for i in range(len_tuple)
-                ]
-                feat = tuple(feat)
-            else:
-                feat = torch.cat(feats)
-        else:
-            feat = self.extract_feat(imgs)
-            if self.with_neck:
-                feat, _ = self.neck(feat)
-
-        if self.feature_extraction:
-            feat_dim = len(feat[0].size()) if isinstance(feat, tuple) else len(
-                feat.size())
-            assert feat_dim in [
-                5, 2
-            ], ('Got feature of unknown architecture, '
-                'only 3D-CNN-like ([N, in_channels, T, H, W]), and '
-                'transformer-like ([N, in_channels]) features are supported.')
-            if feat_dim == 5:  # 3D-CNN architecture
-                # perform spatio-temporal pooling
-                avg_pool = nn.AdaptiveAvgPool3d(1)
-                if isinstance(feat, tuple):
-                    feat = [avg_pool(x) for x in feat]
-                    # concat them
-                    feat = torch.cat(feat, axis=1)
-                else:
-                    feat = avg_pool(feat)
-                # squeeze dimensions
-                feat = feat.reshape((batches, num_segs, -1))
-                # temporal average pooling
-                feat = feat.mean(axis=1)
-            return feat
-
-        # should have cls_head if not extracting features
-        assert self.with_cls_head
-        cls_score = self.cls_head(feat)
-        cls_score = self.average_clip(cls_score, num_segs)
-        return cls_score
-
-    def forward_test(self, imgs):
-        """Defines the computation performed at every call when evaluation and
-        testing."""
-        return self._do_test(imgs).cpu().numpy()
-
-    def forward_dummy(self, imgs, softmax=False):
-        """Used for computing network FLOPs.
-
-        See ``tools/analysis/get_flops.py``.
+    def extract_feat(self,
+                     inputs: Tensor,
+                     stage: str = 'neck',
+                     data_samples: OptSampleList = None,
+                     test_mode: bool = False) -> tuple:
+        """Extract features of different stages.
 
         Args:
-            imgs (torch.Tensor): Input images.
+            inputs (torch.Tensor): The input data.
+            stage (str): Which stage to output the feature.
+                Defaults to ``'neck'``.
+            data_samples (list[:obj:`ActionDataSample`], optional): Action data
+                samples, which are only needed in training. Defaults to None.
+            test_mode (bool): Whether in test mode. Defaults to False.
 
         Returns:
-            Tensor: Class score.
+                torch.Tensor: The extracted features.
+                dict: A dict recording the kwargs for downstream
+                    pipeline. These keys are usually included:
+                    ``loss_aux``.
         """
-        assert self.with_cls_head
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-        x = self.extract_feat(imgs)
 
-        if self.with_neck:
-            x, _ = self.neck(x)
+        # Record the kwargs required by `loss` and `predict`
+        loss_predict_kwargs = dict()
 
-        outs = self.cls_head(x)
-        if softmax:
-            outs = nn.functional.softmax(outs)
-        return (outs, )
+        num_segs = inputs.shape[1]
+        # [N, num_crops, C, T, H, W] ->
+        # [N * num_crops, C, T, H, W]
+        # `num_crops` is calculated by:
+        #   1) `twice_sample` in `SampleFrames`
+        #   2) `num_sample_positions` in `DenseSampleFrames`
+        #   3) `ThreeCrop/TenCrop` in `test_pipeline`
+        #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
+        inputs = inputs.view((-1, ) + inputs.shape[2:])
 
-    def forward_gradcam(self, imgs):
-        """Defines the computation performed at every call when using gradcam
-        utils."""
-        assert self.with_cls_head
-        return self._do_test(imgs)
+        # Check settings of test
+        if test_mode:
+            if self.test_cfg is not None:
+                loss_predict_kwargs['fcn_test'] = self.test_cfg.get(
+                    'fcn_test', False)
+            if self.test_cfg is not None and self.test_cfg.get(
+                    'max_testing_views', False):
+                max_testing_views = self.test_cfg.get('max_testing_views')
+                assert isinstance(max_testing_views, int)
+
+                total_views = inputs.shape[0]
+                assert num_segs == total_views, (
+                    'max_testing_views is only compatible '
+                    'with batch_size == 1')
+                view_ptr = 0
+                feats = []
+                while view_ptr < total_views:
+                    batch_imgs = inputs[view_ptr:view_ptr + max_testing_views]
+                    feat = self.backbone(batch_imgs)
+                    if self.with_neck:
+                        feat, _ = self.neck(feat)
+                    feats.append(feat)
+                    view_ptr += max_testing_views
+                # recursively traverse feats until it's a tensor, then concat
+
+                def recursively_cat(feats):
+                    out_feats = []
+                    for e_idx, elem in enumerate(feats[0]):
+                        batch_elem = [feat[e_idx] for feat in feats]
+                        if not isinstance(elem, torch.Tensor):
+                            batch_elem = recursively_cat(batch_elem)
+                        else:
+                            batch_elem = torch.cat(batch_elem)
+                        out_feats.append(batch_elem)
+
+                    return tuple(out_feats)
+
+                if isinstance(feats[0], tuple):
+                    x = recursively_cat(feats)
+                else:
+                    x = torch.cat(feats)
+            else:
+                x = self.backbone(inputs)
+                if self.with_neck:
+                    x, _ = self.neck(x)
+
+            return x, loss_predict_kwargs
+        else:
+            # Return features extracted through backbone
+            x = self.backbone(inputs)
+            if stage == 'backbone':
+                return x, loss_predict_kwargs
+
+            loss_aux = dict()
+            if self.with_neck:
+                x, loss_aux = self.neck(x, data_samples=data_samples)
+
+            # Return features extracted through neck
+            loss_predict_kwargs['loss_aux'] = loss_aux
+            if stage == 'neck':
+                return x, loss_predict_kwargs
+
+            # Return raw logits through head.
+            if self.with_cls_head and stage == 'head':
+                x = self.cls_head(x, **loss_predict_kwargs)
+                return x, loss_predict_kwargs

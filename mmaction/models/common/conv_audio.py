@@ -1,42 +1,48 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Tuple, Union
+
 import torch
 import torch.nn as nn
-from mmcv.cnn import CONV_LAYERS, ConvModule, constant_init, kaiming_init
+from mmcv.cnn import ConvModule
+from mmengine.model.weight_init import constant_init, kaiming_init
 from torch.nn.modules.utils import _pair
 
+from mmaction.registry import MODELS
 
-@CONV_LAYERS.register_module()
+
+@MODELS.register_module()
 class ConvAudio(nn.Module):
     """Conv2d module for AudioResNet backbone.
 
         <https://arxiv.org/abs/2001.08740>`_.
 
     Args:
-        in_channels (int): Same as nn.Conv2d.
-        out_channels (int): Same as nn.Conv2d.
-        kernel_size (int | tuple[int]): Same as nn.Conv2d.
-        op (string): Operation to merge the output of freq
-            and time feature map. Choices are 'sum' and 'concat'.
-            Default: 'concat'.
-        stride (int | tuple[int]): Same as nn.Conv2d.
-        padding (int | tuple[int]): Same as nn.Conv2d.
-        dilation (int | tuple[int]): Same as nn.Conv2d.
-        groups (int): Same as nn.Conv2d.
-        bias (bool | str): If specified as `auto`, it will be decided by the
-            norm_cfg. Bias will be set as True if norm_cfg is None, otherwise
-            False.
+        in_channels (int): Same as ``nn.Conv2d``.
+        out_channels (int): Same as ``nn.Conv2d``.
+        kernel_size (Union[int, Tuple[int]]): Same as ``nn.Conv2d``.
+        op (str): Operation to merge the output of freq
+            and time feature map. Choices are ``sum`` and ``concat``.
+            Defaults to ``concat``.
+        stride (Union[int, Tuple[int]]): Same as ``nn.Conv2d``. Defaults to 1.
+        padding (Union[int, Tuple[int]]): Same as ``nn.Conv2d``. Defaults to 0.
+        dilation (Union[int, Tuple[int]]): Same as ``nn.Conv2d``.
+            Defaults to 1.
+        groups (int): Same as ``nn.Conv2d``. Defaults to 1.
+        bias (Union[bool, str]): If specified as ``auto``, it will be decided
+            by the ``norm_cfg``. Bias will be set as True if ``norm_cfg``
+            is None, otherwise False. Defaults to False.
     """
 
     def __init__(self,
-                 in_channels,
-                 out_channels,
-                 kernel_size,
-                 op='concat',
-                 stride=1,
-                 padding=0,
-                 dilation=1,
-                 groups=1,
-                 bias=False):
+                 in_channels: int,
+                 out_channels: int,
+                 kernel_size: Union[int, Tuple[int]],
+                 op: str = 'concat',
+                 stride: Union[int, Tuple[int]] = 1,
+                 padding: Union[int, Tuple[int]] = 0,
+                 dilation: Union[int, Tuple[int]] = 1,
+                 groups: int = 1,
+                 bias: Union[bool, str] = False) -> None:
         super().__init__()
 
         kernel_size = _pair(kernel_size)
@@ -80,7 +86,7 @@ class ConvAudio(nn.Module):
 
         self.init_weights()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call.
 
         Args:
@@ -97,7 +103,7 @@ class ConvAudio(nn.Module):
             out = x_1 + x_2
         return out
 
-    def init_weights(self):
+    def init_weights(self) -> None:
         """Initiate the parameters from scratch."""
         kaiming_init(self.conv_1.conv)
         kaiming_init(self.conv_2.conv)

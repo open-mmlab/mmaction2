@@ -19,9 +19,12 @@ model = dict(
         in_channels=2048,
         spatial_type='avg',
         dropout_ratio=0.5,
-        init_std=0.01),
-    # model training and testing settings
-    train_cfg=None,
-    test_cfg=dict(average_clips='prob'))
+        init_std=0.01,
+        average_clips='prob'),
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        format_shape='NCTHW'))
 
 # This setting refers to https://github.com/open-mmlab/mmaction/blob/master/mmaction/models/tenons/backbones/resnet_i3d.py#L329-L332  # noqa: E501

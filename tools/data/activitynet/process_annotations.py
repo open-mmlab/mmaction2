@@ -18,7 +18,7 @@ ann_file = f'{data_file}/anet_anno_action.json'
 
 anno_database = load_json(ann_file)
 
-video_record = np.loadtxt(info_file, dtype=np.str, delimiter=',', skiprows=1)
+video_record = np.loadtxt(info_file, dtype=str, delimiter=',', skiprows=1)
 
 video_dict_train = {}
 video_dict_val = {}
@@ -29,8 +29,8 @@ for _, video_item in enumerate(video_record):
     video_name = video_item[0]
     video_info = anno_database[video_name]
     video_subset = video_item[5]
-    video_info['fps'] = video_item[3].astype(np.float)
-    video_info['rfps'] = video_item[4].astype(np.float)
+    video_info['fps'] = video_item[3].astype(np.float64)
+    video_info['rfps'] = video_item[4].astype(np.float64)
     video_dict_full[video_name] = video_info
     if video_subset == 'training':
         video_dict_train[video_name] = video_info
