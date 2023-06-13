@@ -14,6 +14,7 @@ def test_clip_similarity():
     cfg = get_similarity_cfg(
         'clip4clip/'
         'clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb.py')
+    cfg.model.frozen_layers = -1  # no frozen layers
     model = MODELS.build(cfg.model)
     model.train()
 
@@ -52,25 +53,25 @@ def test_clip_similarity():
                 'visual.transformer.resblocks', 'transformer.resblocks'
             ]
 
-            for name, param in mdl.named_parameters():
+            for name, param in mdl.clip.named_parameters():
                 if any(name.find(n) == 0 for n in top_layers):
                     assert param.requires_grad is True
-                    continue
                 elif any(name.find(n) == 0 for n in mid_layers):
                     layer_n = int(name.split('.resblocks.')[1].split('.')[0])
                     if layer_n >= frozen_layers:
                         assert param.requires_grad is True
-                        continue
-                param.requires_grad = False
-
+                    else:
+                        assert param.requires_grad is False
+                else:
+                    assert param.requires_grad is False
         else:
-            all(p.requires_grad for p in mdl.parameters())
+            assert all([p.requires_grad for p in mdl.clip.parameters()])
 
-    check_frozen_layers(model, 0)
-
-    model.frozen_layers = -1
-    model.train()
     check_frozen_layers(model, -1)
+
+    model.frozen_layers = 0
+    model.train()
+    check_frozen_layers(model, 0)
 
     model.frozen_layers = 6
     model.train()
