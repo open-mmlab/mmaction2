@@ -86,7 +86,7 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
                     if k >= max_num:
                         break
                     text = abbrev(lb)
-                    text = ': '.join([text, str(score[k])])
+                    text = ': '.join([text, f'{score[k]:>.2f}'])
                     location = (0 + st[0], 18 + k * 18 + st[1])
                     textsize = cv2.getTextSize(text, FONTFACE, FONTSCALE,
                                                THICKNESS)[0]

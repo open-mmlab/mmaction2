@@ -731,15 +731,18 @@ class SampleAVAFrames(SampleFrames):
         fps = results['fps']
         timestamp = results['timestamp']
         timestamp_start = results['timestamp_start']
-        shot_info = results['shot_info']
+        start_index = results.get('start_index', 0)
+        if results.get('total_frames') is not None:
+            shot_info = (0, results['total_frames'])
+        else:
+            shot_info = results['shot_info']
 
-        center_index = fps * (timestamp - timestamp_start) + 1
+        center_index = fps * (timestamp - timestamp_start) + start_index
 
         skip_offsets = np.random.randint(
             -self.frame_interval // 2, (self.frame_interval + 1) // 2,
             size=self.clip_len)
         frame_inds = self._get_clips(center_index, skip_offsets, shot_info)
-        start_index = results.get('start_index', 0)
 
         frame_inds = np.array(frame_inds, dtype=np.int32) + start_index
         results['frame_inds'] = frame_inds
@@ -1209,6 +1212,18 @@ class DecordDecode(BaseTransform):
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
         results['img_shape'] = imgs[0].shape[:2]
+
+        # we resize the gt_bboxes and proposals to their real scale
+        if 'gt_bboxes' in results:
+            h, w = results['img_shape']
+            scale_factor = np.array([w, h, w, h])
+            gt_bboxes = results['gt_bboxes']
+            gt_bboxes = (gt_bboxes * scale_factor).astype(np.float32)
+            results['gt_bboxes'] = gt_bboxes
+            if 'proposals' in results and results['proposals'] is not None:
+                proposals = results['proposals']
+                proposals = (proposals * scale_factor).astype(np.float32)
+                results['proposals'] = proposals
 
         return results
 
