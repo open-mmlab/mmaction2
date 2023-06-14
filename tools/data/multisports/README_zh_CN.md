@@ -1,6 +1,6 @@
-# Preparing Multisports
+# 准备 MultiSports
 
-## Introduction
+## 介绍
 
 <!-- [DATASET] -->
 
@@ -14,16 +14,16 @@
 }
 ```
 
-For basic dataset information, please refer to the official [project](https://deeperaction.github.io/datasets/multisports.html) and the [paper](https://arxiv.org/abs/2105.07404).
-Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/multisports/`.
+关于基本数据集信息，请参考官方 [项目](https://deeperaction.github.io/datasets/multisports.html) 和 [论文](https://arxiv.org/abs/2105.07404)。
+在我们开始之前，请确保目录位于 `$MMACTION2/tools/data/multisports/`。
 
-## Step 1. Prepare Annotations
+## 第一步：准备标注
 
-First of all, you have to download annotations and videos to `$MMACTION2/data/multisports` on the official [website](https://github.com/MCG-NJU/MultiSports), please also download the Person Boxes and put it to `$MMACTION2/data/multisports`.
+首先，你必须从官方 [网站](https://github.com/MCG-NJU/MultiSports) 下载标注和视频到 `$MMACTION2/data/multisports`，请同时下载人物检测框并将其放到 `$MMACTION2/data/multisports`。
 
-## Step 2. Prepare Videos
+## 第二步：准备视频
 
-Before this step, please make sure the folder structure looks like:
+在这一步之前，请确保文件夹结构如下：
 
 ```
 mmaction2
@@ -44,7 +44,7 @@ mmaction2
 │   |   |   ├──...
 ```
 
-Then, you can use the following command to uncompress.
+然后，你可以使用以下命令进行解压。
 
 ```shell
 cd $MMACTION2/data/multisports/
@@ -56,20 +56,20 @@ find . -name '*.zip' -exec unzip {} \;
 cd $MMACTION2/tools/data/multisports/
 ```
 
-## Step 3. Convert Annotations
+## 第三步：转换标注文件
 
-you can run the following script to convert annotations and proposals as we need.
+你可以运行以下脚本来转换我们需要的标注文件和候选框。
 
 ```shell
 cd $MMACTION2/tools/data/multisports/
 python parse_anno.py
 ```
 
-## Step 5. Check Directory Structure
+## 第五步：检查目录结构
 
-After the whole data process, you will get the videos and annotation files for MultiSports.
+完成整个数据处理后，你将得到 MultiSports 数据集的视频和标注文件。
 
-In the context of the whole project (for MultiSports only), the folder structure will look like:
+在整个项目的目录中（仅针对 MultiSports），文件夹结构如下：
 
 ```
 mmaction2
@@ -107,5 +107,5 @@ mmaction2
 │   |   |   ├──...
 ```
 
-We don't need the zip files under the project, you can handle them as you want.
-For training and evaluating on MultiSports, please refer to [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
+我们不需要项目下的 zip 文件，你可以按照自己的意愿处理它们。
+关于在 MultiSports 上进行训练和评估，请参考 [训练和测试教程](/docs/en/user_guides/train_test.md)。
