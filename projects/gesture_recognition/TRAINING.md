@@ -60,3 +60,22 @@ python3 $MMDet/demo/image_demo.py $MMAction/projects/gesture_recognition/demo/ha
 We directly use the pose estimation model from MMPose. Please refer to [RTMPose](https://github.com/open-mmlab/mmpose/tree/main/configs/hand_2d_keypoint/rtmpose) for details.
 
 # Gesture recognition
+
+## Data Preparation
+
+We use the [jester dataset](/tools/data/jester)) to train a skeleton based gesture recognition model. Please follow the link to prepare this dataset (in frames).
+
+Once we have the jester dataset, we provide the [extract_keypoint.py](/projects/gesture_recognition/extract_keypoint.py) to extract the hand keypoints for all video frames in the dataset. This step requires the hand detection model and the pose estimation model in the above two stages. Here is an example to extract the keypoints for the dataset. You may need to modify the path to the dataset, configs or checkpoints according to your system.
+
+```bash
+ROOT_TO_JESTER='20bn-jester-v1'
+POSE_CONFIG='rtmpose-m_8xb32-210e_coco-wholebody-hand-256x256.py'
+POSE_CKPT='rtmdet-nano_8xb32-300e_multi-dataset-hand-320x320_20230524-f6ffed6a.pth'
+DET_CONFIG='rtmdet-nano_8xb32-300e_multi-dataset-hand-320x320.py'
+DET_CKPT='hand-cocktail5-4e-4-bs256-210e-b74fb594_20230320.pth'
+python3 -u extract_keypoint.py $ROOT_TO_JESTER \
+    --pose_config $POSE_CONFIG --pose_ckpt $POSE_CKPT \
+    --det_config $DET_CONFIG --det-ckpt $DET_CKPT
+```
+
+The program will generate a `jester.pkl` file in your current directory. We will use this file for skeleton based gesture recognition training.
