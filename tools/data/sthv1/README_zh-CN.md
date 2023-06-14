@@ -139,4 +139,4 @@ mmaction2
 
 ```
 
-关于对 Something-Something V1 进行训练和验证，可以参考 [基础教程](/docs_zh_CN/getting_started.md)。
+关于对 Something-Something V1 进行训练和验证，请参考 [训练和测试教程](/docs/en/user_guides/train_test.md)。

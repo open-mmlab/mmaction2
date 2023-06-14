@@ -141,4 +141,4 @@ mmaction2
 
 ```
 
-For training and evaluating on Something-Something V1, please refer to [getting_started.md](/docs/getting_started.md).
+For training and evaluating on Something-Something V1, please refer to [Training and Test Tutorial](/docs/en/user_guides/train_test.md).

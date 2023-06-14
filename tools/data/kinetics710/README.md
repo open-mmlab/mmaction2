@@ -15,7 +15,7 @@
 }
 ```
 
-For basic dataset information, please refer to the [paper](https://arxiv.org/pdf/2211.09552.pdf). The scripts can be used for preparing kinetics710. MMAction2 supports Kinetics-710
+For basic dataset information, please refer to the [paper](https://arxiv.org/pdf/2211.09552.pdf). The scripts can be used for preparing kinetics-710. MMAction2 supports Kinetics-710
 dataset as a concat dataset, which means only provides a list of annotation files, and makes use of the original data of Kinetics-400/600/700 dataset. You could refer to the [config](/configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip_u8_kinetics710-rgb.py)
 for details, which also provides a template config about how to use concat dataset in MMAction2.
 Before we start, please make sure that the directory is located at `$MMACTION2`.
@@ -38,7 +38,7 @@ mim download mmaction2 --dataset kinetics-700
 
 ## Step 2. Download Kinetics-710 Annotations
 
-We provide the annotation list of Kinetics-710 corresponding to OpenDataLab version Kinetics, you could download it from aliyun and unzip it to the $MMACTION2/data/
+We provide the annotation list of Kinetics-710 corresponding to OpenDataLab version Kinetics, you could download it from aliyun and unzip it to the `$MMACTION2/data/`
 
 ```shell
 wget -P data https://download.openmmlab.com/mmaction/dataset/kinetics710/annotations.zip
@@ -88,4 +88,4 @@ mmaction2
 │   │   ├── k700_val_list_videos.txt
 ```
 
-For training and evaluating on Kinetics, please refer to [getting_started](/docs/getting_started.md).
+For training and evaluating on Kinetics, please refer to [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
