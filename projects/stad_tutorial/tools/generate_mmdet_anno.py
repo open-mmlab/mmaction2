@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 from collections import defaultdict
 
@@ -47,7 +48,6 @@ def generate_mmdet_coco_anno(args):
                     x1, y1, x2, y2 = bbox_info['bbox']
                     bbox = [x1, y1, x2 - x1, y2 - y1]
                     anno_instance = {
-                        # 'segmentation': [],
                         'area': bbox[2] * bbox[3],
                         'image_id': img_id,
                         'bbox': bbox,

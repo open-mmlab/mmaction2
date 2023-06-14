@@ -1,4 +1,4 @@
-# _base_ = 'mmdet::faster_rcnn/faster-rcnn_r50-caffe_fpn_ms-1x_coco.py'
+# Copyright (c) OpenMMLab. All rights reserved.
 _base_ = './faster-rcnn_r50-caffe_fpn_ms-1x_coco.py'
 model = dict(roi_head=dict(bbox_head=dict(num_classes=1)))
 

@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import os
 import os.path as osp
 
@@ -6,10 +7,8 @@ import cv2
 src_dir = 'data/multisports/trainval'
 target_dir = 'data/multisports/rawframes'
 
-# sport_list = ['aerobic_gymnastics', 'volleyball', 'football', 'basketball']
 sport_list = ['aerobic_gymnastics']
 for sport in sport_list:
-    # sport =
     video_root = osp.join(src_dir, sport)
     if not osp.exists(video_root):
         print('No {} video dir to generate rgb images.'.format(video_root))
