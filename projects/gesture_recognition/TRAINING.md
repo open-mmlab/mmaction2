@@ -78,4 +78,12 @@ python3 -u extract_keypoint.py $ROOT_TO_JESTER \
     --det_config $DET_CONFIG --det-ckpt $DET_CKPT
 ```
 
-The program will generate a `jester.pkl` file in your current directory. We will use this file for skeleton based gesture recognition training.
+The program will generate a `jester.pkl` file in your current directory. Then move this file to `$MMAction`. We will use this file for skeleton based gesture recognition training.
+
+## Training and inference
+
+We provide a [config](/projects/gesture_recognition/configs/stgcnpp_8xb16-joint-u100-16e_jester-keypoint-2d.py) to train a STGCN++ model. Suppose you are at `$MMAction`, you can run the follow command to train the model with 8 GPUs:
+
+```bash
+bash tools/dist_train.sh $MMAction/projects/gesture_recognition/configs/stgcnpp_8xb16-joint-u100-80e_jester-keypoint-2d.py 8
+```
