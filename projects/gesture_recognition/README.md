@@ -12,9 +12,9 @@ In this project, we present a skeleton based pipeline for gesture recognition. T
 
 Hand detection results on OneHand10K validation dataset
 
-| Arch                                                       | Input Size | PCK@0.2 |  bbox mAP  | bbox mAP 50  | bbox mAP 75 |                            ckpt                            |                            log                             |
-| :--------------------------------------------------------- | :--------: | :-----: | :---: | :--: | :--------------------------------------------------------: | :--------------------------------------------------------: |
-| [rtmpose_nano](/projects/gesture_recognition/configs/rtmdet_nano_320-8xb32_multi-dataset-hand.py) |  320x320   |  0.8100 | 0.9870 | 0.9190 | [ckpt](https://download.openmmlab.com/) | [log](https://download.openmmlab.com/) |
+| Arch                                                                                | Input Size | bbox mAP | bbox mAP 50 | bbox mAP 75 |                  ckpt                   |                  log                   |
+| :---------------------------------------------------------------------------------- | :--------: | :------: | :---------: | :---------: | :-------------------------------------: | :------------------------------------: |
+| [rtmpose_nano](/projects/gesture_recognition/configs/rtmdet_nano_320-8xb32_multi-dataset-hand.py) |  320x320   |  0.8100  |   0.9870    |   0.9190    | [ckpt](https://download.openmmlab.com/) | [log](https://download.openmmlab.com/) |
 
 ## Pose estimation stage
 
@@ -22,6 +22,6 @@ Pose estimation results on COCO-WholeBody-Hand validation set
 
 | Arch                                                                                              | Input Size | PCK@0.2 |  AUC  | EPE  |                  ckpt                   |                  log                   |
 | :------------------------------------------------------------------------------------------------ | :--------: | :-----: | :---: | :--: | :-------------------------------------: | :------------------------------------: |
-| [rtmpose_m](/configs/hand_2d_keypoint/rtmpose/coco_wholebody_hand/rtmpose-m_8xb32-210e_coco-wholebody-hand-256x256.py) |  256x256   |  0.815  | 0.837 | 4.51 | [ckpt](https://download.openmmlab.com/) | [log](https://download.openmmlab.com/) |
+| [rtmpose_m](/projects/gesture_recognition/configs/rtmpose-m_8xb32-210e_coco-wholebody-hand-256x256.py) |  256x256   |  0.815  | 0.837 | 4.51 | [ckpt](https://download.openmmlab.com/) | [log](https://download.openmmlab.com/) |
 
 ## Gesture recognition stage
