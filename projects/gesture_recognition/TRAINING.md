@@ -49,12 +49,14 @@ We provide a [config](/projects/gesture_recognition/configs/rtmdet_nano_320-8xb3
 bash tools/dist_train.sh $MMAction/projects/gesture_recognition/configs/rtmdet_nano_320-8xb32_multi-dataset-hand.py 8
 ```
 
-To see the detection result for a single image, we can use `$MMDet/demo/image_demo.py`. The follow command will do inference on [hand_det.jpg](/projects/gesture_recognition/demo/hand_det.jpg) (a video frame from the [jester dataset](/tools/data/jester)) and the output should be similar to [this image](/projects/gesture_recognition/demo/hand_det_out.jpg).
+To see the detection result for a single image, we can use `$MMDet/demo/image_demo.py`. The follow command will do inference on a single [image](/projects/gesture_recognition/demo/hand_det.jpg) (from a video in the [jester dataset](/tools/data/jester)) and the output should be similar to [this image](/projects/gesture_recognition/demo/hand_det_out.jpg).
 
 ```bash
 python3 $MMDet/demo/image_demo.py $MMAction/projects/gesture_recognition/demo/hand_det.jpg PATH_TO_HAND_DET_CHECKPOINT --out-dir='.'
 ```
 
-# Pose estimation stage
+# Pose estimation
 
-# Gesture recognition stage
+We directly use the pose estimation model from MMPose. Please refer to [RTMPose](https://github.com/open-mmlab/mmpose/tree/main/configs/hand_2d_keypoint/rtmpose) for details.
+
+# Gesture recognition
