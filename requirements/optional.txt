@@ -4,10 +4,10 @@ imgaug
 librosa
 lmdb
 moviepy
+openai-clip
 packaging
 pims
 PyTurboJPEG
 soundfile
 tensorboard
 wandb
-openai-clip
