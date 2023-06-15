@@ -10,4 +10,5 @@ PyTurboJPEG
 soundfile
 tensorboard
 wandb
--e git+https://github.com/openai/CLIP.git
+openai-clip
+
