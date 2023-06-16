@@ -68,7 +68,16 @@ jobs:
             pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
             pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
             pip install -r requirements.txt
-            pip install timm
+      - when:
+          condition:
+            equal: [ "1.13.0", << parameters.torch >> ]
+          steps:
+            - run: pip install timm
+      - when:
+          condition:
+            equal: [ "1.6.0", << parameters.torch >> ]
+          steps:
+            - run: pip install timm==0.6.7
       - when:
           condition:
             equal: [ "0.10.0", << parameters.torchvision >> ]
