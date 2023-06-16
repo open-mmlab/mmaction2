@@ -56,7 +56,7 @@ class ActionVisualizer(Visualizer):
         >>> import torch
         >>> import decord
         >>> from pathlib import Path
-        >>> from mmaction.core import ActionDataSample, ActionVisualizer
+        >>> from mmaction.structures import ActionDataSample, ActionVisualizer
         >>> from mmengine.structures import LabelData
         >>> # Example frame
         >>> video = decord.VideoReader('./demo/demo.mp4')

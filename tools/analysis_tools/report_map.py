@@ -3,10 +3,10 @@ import argparse
 import os
 import os.path as osp
 
-import mmcv
+import mmengine
 import numpy as np
 
-from mmaction.core import ActivityNetLocalization
+from mmaction.evaluation import ActivityNetLocalization
 
 args = None
 
@@ -17,9 +17,9 @@ def cuhk17_top1():
     if not osp.exists('cuhk_anet17_pred.json'):
         os.system('wget https://download.openmmlab.com/'
                   'mmaction/localization/cuhk_anet17_pred.json')
-    proposal = mmcv.load(args.proposal)
+    proposal = mmengine.load(args.proposal)
     results = proposal['results']
-    cuhk_pred = mmcv.load('cuhk_anet17_pred.json')['results']
+    cuhk_pred = mmengine.load('cuhk_anet17_pred.json')['results']
 
     def get_topk(preds, k):
         preds.sort(key=lambda x: x['score'])
@@ -36,7 +36,7 @@ def cuhk17_top1():
             new_value.append(x)
         results[k] = new_value
     proposal['results'] = results
-    mmcv.dump(proposal, args.det_output)
+    mmengine.dump(proposal, args.det_output)
 
 
 cls_funcs = {'cuhk17_top1': cuhk17_top1}
