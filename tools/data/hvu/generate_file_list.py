@@ -5,7 +5,7 @@ import glob
 import os
 import os.path as osp
 
-import mmcv
+import mmengine
 
 annotation_root = '../../data/hvu/annotations'
 tag_file = 'hvu_tags.json'
@@ -109,7 +109,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    tag_cates = mmcv.load(tag_file)
+    tag_cates = mmengine.load(tag_file)
     tag2category = {}
     for k in tag_cates:
         for tag in tag_cates[k]:
@@ -149,4 +149,4 @@ if __name__ == '__main__':
         ]
     elif args.mode == 'videos':
         result = [dict(filename=k[0] + '.mp4', label=k[1]) for k in data_list]
-    mmcv.dump(result, args.output)
+    mmengine.dump(result, args.output)

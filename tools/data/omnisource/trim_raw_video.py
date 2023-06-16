@@ -4,7 +4,7 @@ import os.path as osp
 import sys
 from subprocess import check_output
 
-import mmcv
+import mmengine
 
 
 def get_duration(vid_name):
@@ -28,7 +28,7 @@ def trim(vid_name):
 
     # We output 10-second clips into the folder `name`
     dest = name
-    mmcv.mkdir_or_exist(dest)
+    mmengine.mkdir_or_exist(dest)
 
     command_tmpl = ('ffmpeg -y loglevel error -i {} -ss {} -t {} -crf 18 '
                     '-c:v libx264 {}/part_{}.mp4')

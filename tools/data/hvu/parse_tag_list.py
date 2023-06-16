@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import mmcv
+import mmengine
 
 tag_list = '../../../data/hvu/annotations/hvu_categories.csv'
 
@@ -13,4 +13,4 @@ for line in lines:
 for k in tag_categories:
     tag_categories[k].sort()
 
-mmcv.dump(tag_categories, 'hvu_tags.json')
+mmengine.dump(tag_categories, 'hvu_tags.json')
