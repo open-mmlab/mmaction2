@@ -81,7 +81,7 @@ There should be about 100k videos. It is OK if some videos are missing and we wi
 
 ## Step 4. Extract RGB Frames
 
-This step is similar to Step 4 in [Preparing AVA](https://github.com/open-mmlab/mmaction2/tree/dev-1.x/tools/data/ava#step-4-extract-rgb-and-flow).
+This step is similar to Step 4 in [Preparing AVA](https://github.com/open-mmlab/mmaction2/tree/main/tools/data/ava#step-4-extract-rgb-and-flow).
 
 Here we provide a script to extract RGB frames using ffmpeg:
 

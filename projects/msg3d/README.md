@@ -20,7 +20,7 @@ Spatial-temporal graphs have been widely used by skeleton-based action recogniti
 
 ### Setup Environment
 
-Please refer to [Get Started](https://mmaction2.readthedocs.io/en/latest/get_started.html) to install MMAction2.
+Please refer to [Get Started](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) to install MMAction2.
 
 At first, add the current folder to `PYTHONPATH`, so that Python can find your code. Run command in the current directory to add it.
 
@@ -32,7 +32,7 @@ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 ### Data Preparation
 
-Prepare the NTU60 dataset according to the [instruction](https://github.com/open-mmlab/mmaction2/blob/1.x/tools/data/skeleton/README.md).
+Prepare the NTU60 dataset according to the [instruction](https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md).
 
 ### Training commands
 
@@ -132,7 +132,7 @@ Here is a checklist of this project's progress, and you can ignore this part if 
 
   - [ ] Unit tests
 
-    <!-- Unit tests for the major module are required. [Example](https://github.com/open-mmlab/mmaction2/blob/1.x/tests/models/backbones/test_resnet.py) -->
+    <!-- Unit tests for the major module are required. [Example](https://github.com/open-mmlab/mmaction2/blob/main/tests/models/backbones/test_resnet.py) -->
 
   - [ ] Code style
 
@@ -140,4 +140,4 @@ Here is a checklist of this project's progress, and you can ignore this part if 
 
   - [ ] `metafile.yml` and `README.md`
 
-    <!-- It will used for MMAction2 to acquire your models. [Example](https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/swin/metafile.yml). In particular, you may have to refactor this README into a standard one. [Example](https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/swin/README.md) -->
+    <!-- It will used for MMAction2 to acquire your models. [Example](https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/swin/metafile.yml). In particular, you may have to refactor this README into a standard one. [Example](https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/swin/README.md) -->
