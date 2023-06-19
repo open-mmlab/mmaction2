@@ -137,6 +137,8 @@ def main():
 
     # The flag is used to determine whether it is omnisource training
     cfg.setdefault('omnisource', False)
+    # The flag is used to determine whether to use infinite_sampler
+    cfg.setdefault('use_infinite_sampler', False)
 
     # The flag is used to register module's hooks
     cfg.setdefault('module_hooks', [])

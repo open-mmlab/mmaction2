@@ -11,8 +11,8 @@ from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer, get_dist_info)
 from mmcv.runner.hooks import Fp16OptimizerHook
 
-from ..core import (DistEvalHook, EvalHook, OmniSourceDistSamplerSeedHook,
-                    OmniSourceRunner)
+from ..core import (DistEvalHook, EvalHook, InfiniteEpochBasedRunner,
+                    OmniSourceDistSamplerSeedHook, OmniSourceRunner)
 from ..datasets import build_dataloader, build_dataset
 from ..utils import (PreciseBNHook, build_ddp, build_dp, default_device,
                      get_root_logger)
@@ -91,7 +91,8 @@ def train_model(model,
         persistent_workers=cfg.data.get('persistent_workers', False),
         num_gpus=len(cfg.gpu_ids),
         dist=distributed,
-        seed=cfg.seed)
+        seed=cfg.seed,
+        use_infinite_sampler=cfg.use_infinite_sampler)
     dataloader_setting = dict(dataloader_setting,
                               **cfg.data.get('train_dataloader', {}))
 
@@ -137,7 +138,12 @@ def train_model(model,
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)
 
-    Runner = OmniSourceRunner if cfg.omnisource else EpochBasedRunner
+    if cfg.omnisource:
+        Runner = OmniSourceRunner
+    elif cfg.use_infinite_sampler:
+        Runner = InfiniteEpochBasedRunner
+    else:
+        Runner = EpochBasedRunner
     runner = Runner(
         model,
         optimizer=optimizer,
@@ -265,7 +271,8 @@ def train_model(model,
             persistent_workers=cfg.data.get('persistent_workers', False),
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
-            shuffle=False)
+            shuffle=False,
+            use_infinite_sampler=cfg.use_infinite_sampler)
         dataloader_setting = dict(dataloader_setting,
                                   **cfg.data.get('test_dataloader', {}))
 
