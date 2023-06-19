@@ -1,4 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+# This script serves the sole purpose of converting spatial-temporal detection
+# models supported in MMAction2 to ONNX files. Please note that attempting to
+# convert other models using this script may not yield successful results.
 import argparse
 
 import onnxruntime
@@ -125,6 +128,13 @@ class STDet(nn.Module):
 def main():
     args = parse_args()
     config = Config.fromfile(args.config)
+
+    if config.model.type != 'FastRCNN':
+        print('This script serves the sole purpose of converting spatial '
+              'temporal detection models in MMAction2 to ONNX files. Please '
+              'note that attempting to convert other models using this script '
+              'may not yield successful results.\n\n')
+
     init_default_scope(config.get('default_scope', 'mmaction'))
 
     base_model = MODELS.build(config.model)
