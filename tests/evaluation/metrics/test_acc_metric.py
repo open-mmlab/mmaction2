@@ -67,7 +67,8 @@ def test_ava_detection():
     label_map = osp.join(data_prefix, 'action_list.txt')
 
     # eval bbox
-    detection = ava_eval(result_path, 'mAP', label_map, gt_path, None)
+    detection = ava_eval(
+        result_path, 'mAP', label_map, gt_path, None, num_proc=1)
     assert_array_almost_equal(detection['overall'], 0.09385522)
 
 

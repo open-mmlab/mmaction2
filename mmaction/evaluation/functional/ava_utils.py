@@ -207,7 +207,8 @@ def ava_eval(result_file,
              exclude_file,
              verbose=True,
              ignore_empty_frames=True,
-             custom_classes=None):
+             custom_classes=None,
+             num_proc=32):
     """Perform ava evaluation."""
 
     assert result_type in ['mAP']
@@ -238,7 +239,7 @@ def ava_eval(result_file,
     all_gt_labels = np.concatenate(list(gt_labels.values()))
     gt_count = {k: np.sum(all_gt_labels == k) for k in class_whitelist}
 
-    pool = multiprocessing.Pool(32)
+    pool = multiprocessing.Pool(num_proc)
     if ignore_empty_frames:
         tups = [(gt_bboxes[k], gt_labels[k], boxes[k], labels[k], scores[k])
                 for k in gt_bboxes if k not in excluded_keys]
