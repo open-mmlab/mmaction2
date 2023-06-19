@@ -9,7 +9,7 @@
       </a>
     </sup>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <b><font size="5">OpenMMLab平台</font></b>
+    <b><font size="5">OpenMMLab 平台</font></b>
     <sup>
       <a href="https://platform.openmmlab.com">
         <i><font size="4">尝试一下</font></i>
