@@ -173,7 +173,7 @@ Models:
     Config: configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb.py
     In Collection: TSN
     Metadata:
-      Architecture: ResNet50
+      Architecture: Swin-base
       Batch Size: 32
       Epochs: 100
       FLOPs: 386.7G
@@ -190,6 +190,29 @@ Models:
         Top 1 Accuracy: 77.03
         Top 5 Accuracy: 92.61
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb_20220906-65ed814e.pth
+
+  - Name: tsn_imagenet-pretrained-swin-transformer_32xb8-1x1x8-50e_kinetics400-rgb
+    Config: configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-swin-transformer_32xb8-1x1x8-50e_kinetics400-rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: Swin-base
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 386.7G
+      Parameters: 87.15M
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: Kinetics-400
+      Training Resources: 32 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 79.22
+        Top 5 Accuracy: 94.20
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_32xb8-1x1x8-50e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_32xb8-1x1x8-50e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb_20220906-65ed814e.pth
 
   - Name: tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb
