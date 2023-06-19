@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 import torch
+from mmengine.utils import digit_version
 
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
@@ -93,11 +94,16 @@ def test_tsn_timm_backbone():
 
     input_shape = (1, 3, 3, 32, 32)
     train_test_step(config, input_shape)
+    import timm
+    if digit_version(timm.__version__) <= digit_version('0.6.7'):
+        feature_shape = 'NLC'
+    else:
+        feature_shape = 'NHWC'
 
     timm_swin = dict(
         type='timm.swin_base_patch4_window7_224',
         pretrained=False,
-        feature_shape='NHWC')
+        feature_shape=feature_shape)
     config.model['backbone'] = timm_swin
     config.model['cls_head']['in_channels'] = 1024
 

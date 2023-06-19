@@ -64,10 +64,20 @@ jobs:
             pip install git+ssh://git@github.com/open-mmlab/mmengine.git@main
             pip install -U openmim
             mim install 'mmcv >= 2.0.0'
-            pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-3.x
+            pip install git+https://git@github.com/open-mmlab/mmdetection.git@dev-3.x
             pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+            pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
             pip install -r requirements.txt
-            pip install timm
+      - when:
+          condition:
+            equal: [ "1.13.0", << parameters.torch >> ]
+          steps:
+            - run: pip install timm
+      - when:
+          condition:
+            equal: [ "1.6.0", << parameters.torch >> ]
+          steps:
+            - run: pip install timm==0.6.7
       - when:
           condition:
             equal: [ "0.10.0", << parameters.torchvision >> ]
@@ -120,6 +130,7 @@ jobs:
             docker exec mmaction pip install -U openmim
             docker exec mmaction mim install 'mmcv >= 2.0.0'
             docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmdetection.git@dev-3.x
+            docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmpose.git@dev-1.x
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
             docker exec mmaction pip install -r requirements.txt
       - run:

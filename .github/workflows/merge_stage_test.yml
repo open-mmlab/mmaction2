@@ -60,6 +60,8 @@ jobs:
         run: pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
       - name: Install MMCls
         run: pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+      - name: Install MMPose
+        run: pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
       - name: Install PytorchVideo
         run: pip install pytorchvideo
         if: ${{matrix.torchvision == '0.10.0'}}
@@ -128,6 +130,8 @@ jobs:
         run: pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
       - name: Install MMCls
         run: pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+      - name: Install MMPose
+        run: pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
       - name: Install unittest dependencies
         run: pip install -r requirements.txt
       - name: Install PytorchVideo
@@ -190,6 +194,7 @@ jobs:
           mim install 'mmcv >= 2.0.0'
           pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
           pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+          pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
           pip install -r requirements.txt
       - name: Install PytorchVideo
         run: pip install pytorchvideo
@@ -228,6 +233,7 @@ jobs:
           mim install 'mmcv >= 2.0.0'
           pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
           pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+          pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
           pip install -r requirements.txt
       - name: Install PytorchVideo
         run: python -m pip install pytorchvideo
