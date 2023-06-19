@@ -17,18 +17,18 @@
     </sup>
   </div>
 
-[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
-[![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
-[![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/main/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
+[![文档](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/zh_CN/latest/index.html)
+[![构建](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
+[![代码覆盖率](https://codecov.io/gh/open-mmlab/mmaction2/branch/main/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
 [![PyPI](https://img.shields.io/pypi/v/mmaction2)](https://pypi.org/project/mmaction2/)
-[![LICENSE](https://img.shields.io/github/license/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/blob/main/LICENSE)
-[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
-[![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
+[![许可](https://img.shields.io/github/license/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/blob/main/LICENSE)
+[![问题解决平均耗时](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
+[![尚未解决问题占比](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-[📘文档](https://mmaction2.readthedocs.io/en/latest/) |
-[🛠️安装](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) |
-[👀模型库](https://mmaction2.readthedocs.io/en/latest/model_zoo/modelzoo.html) |
-[🆕更新日志](https://mmaction2.readthedocs.io/en/latest/notes/changelog.html) |
+[📘文档](https://mmaction2.readthedocs.io/zh_CN/latest/index.html) |
+[🛠️安装](https://mmaction2.readthedocs.io/zh_CN/latest/get_started.html#id2) |
+[👀模型库](https://mmaction2.readthedocs.io/zh_CN/latest/modelzoo.html) |
+[🆕更新日志](https://mmaction2.readthedocs.io/zh_CN/latest/notes/changelog.html) |
 [🚀正在进行的项目](https://github.com/open-mmlab/mmaction2/projects) |
 [🤔报告问题](https://github.com/open-mmlab/mmaction2/issues/new/choose)
 
@@ -58,18 +58,18 @@
 
 ## 📄 目录
 
-- [📄 目录](#-table-of-contents)
-- [🥳 🚀 最新进展](#--whats-new-)
-- [📖 简介](#-introduction-)
-- [🎁 主要功能](#-major-features-)
-- [🛠️ 安装](#️-installation-)
-- [👀 模型库](#-model-zoo-)
-- [👨‍🏫 入门](#-get-started-)
-- [🎫 许可](#-license-)
-- [🖊️ 引用](#️-citation-)
-- [🙌 参与贡献](#-contributing-)
-- [🤝 致谢](#-acknowledgement-)
-- [🏗️ OpenMMLab所有项目](#️-projects-in-openmmlab-)
+- [📄 目录](#-目录)
+- [🥳 🚀 最新进展 🔝](#--最新进展-)
+- [📖 简介 🔝](#-简介-)
+- [🎁 主要功能 🔝](#-主要功能-)
+- [🛠️ 安装 🔝](#️-安装-)
+- [👀 模型库 🔝](#-模型库-)
+- [👨‍🏫 入门 🔝](#-入门-)
+- [🎫 许可 🔝](#-许可-)
+- [🖊️ 引用 🔝](#️-引用-)
+- [🙌 参与贡献 🔝](#-参与贡献-)
+- [🤝 致谢 🔝](#-致谢-)
+- [🏗️ OpenMMLab所有项目 🔝](#️-openmmlab所有项目-)
 
 ## 🥳 🚀 最新进展 [🔝](#-table-of-contents)
 
