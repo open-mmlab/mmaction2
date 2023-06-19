@@ -413,7 +413,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
   evaluation = dict(  # 训练期间做验证的设置
       interval=5,  # 执行验证的间隔
       metrics=['top_k_accuracy', 'mean_class_accuracy'],  # 验证方法
-      save_best='top_k_accuracy')  # 设置 `top_k_accuracy` 作为指示器，用于存储最好的模型权重文件
+      save_best='top1_acc')  # 设置 `top1_acc` 作为指示器，用于存储最好的模型权重文件
   log_config = dict(  # 注册日志钩子的设置
       interval=20,  # 打印日志间隔
       hooks=[  # 训练期间执行的钩子
