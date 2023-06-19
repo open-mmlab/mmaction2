@@ -56,11 +56,11 @@ For more details, you can refer to the **Testing** part in the [Training and Tes
 <!-- [DATASET] -->
 
 ```BibTeX
-@article{zhao2017cuhk,
-  title={Cuhk \& ethz \& siat submission to activitynet challenge 2017},
-  author={Zhao, Y and Zhang, B and Wu, Z and Yang, S and Zhou, L and Yan, S and Wang, L and Xiong, Y and Lin, D and Qiao, Y and others},
-  journal={arXiv preprint arXiv:1710.08011},
-  volume={8},
-  year={2017}
+@inproceedings{qing2021temporal,
+  title={Temporal Context Aggregation Network for Temporal Action Proposal Refinement},
+  author={Qing, Zhiwu and Su, Haisheng and Gan, Weihao and Wang, Dongliang and Wu, Wei and Wang, Xiang and Qiao, Yu and Yan, Junjie and Gao, Changxin and Sang, Nong},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={485--494},
+  year={2021}
 }
 ```
