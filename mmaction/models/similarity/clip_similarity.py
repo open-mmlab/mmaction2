@@ -7,7 +7,7 @@ from mmengine.model import BaseModel
 from mmengine.structures import InstanceData
 
 from mmaction.registry import MODELS
-from mmaction.utils.typing import ForwardResults, OptSampleList
+from mmaction.utils import ForwardResults, OptSampleList
 
 
 class GatherLayer(torch.autograd.Function):
