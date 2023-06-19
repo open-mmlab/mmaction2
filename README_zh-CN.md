@@ -2,7 +2,7 @@
   <img src="https://github.com/open-mmlab/mmaction2/raw/main/resources/mmaction2_logo.png" width="600"/>
   <div>&nbsp;</div>
   <div align="center">
-    <b><font size="5">OpenMMLab官网</font></b>
+    <b><font size="5">OpenMMLab 官网</font></b>
     <sup>
       <a href="https://openmmlab.com">
         <i><font size="4">火</font></i>
@@ -327,22 +327,22 @@ MMAction2是一个来自众多高校和企业的研究人员及工程师共同�
 
 ## 🏗️ OpenMMLab所有项目 [🔝](#-table-of-contents)
 
-- [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab训练深度学习模型的基础库
-- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab计算机视觉基础库
-- [MMPreTrain](https://github.com/open-mmlab/mmpretrain): OpenMMLab预训练工具包及基准
-- [MMagic](https://github.com/open-mmlab/mmagic): Open**MM**Lab高级（**A**）生成式（**G**）及智能（**I**）创建（**C**）工具包
-- [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab物体检测工具包及基准
-- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab下一代通用3D物体检测平台
-- [MMRotate](https://github.com/open-mmlab/mmrotate): OpenMMLab旋转物体检测工具包及基准
-- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab视频感知工具包及基准
-- [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab语义分割工具包及基准
-- [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab文本检测，识别及理解工具包
-- [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab姿态预测工具包及基准
-- [MMHuman3D](https://github.com/open-mmlab/mmhuman3d): OpenMMLab 3D人物参数模型工具包及基准
-- [MMFewShot](https://github.com/open-mmlab/mmfewshot): OpenMMLab少样本学习工具包及基准
-- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab下一代动作理解工具并及基准
-- [MMFlow](https://github.com/open-mmlab/mmflow): OpenMMLab光流法工具并及基准
-- [MMDeploy](https://github.com/open-mmlab/mmdeploy): OpenMMLab模型部署框架
-- [MMRazor](https://github.com/open-mmlab/mmrazor): OpenMMLab模型压缩工具包及基准
-- [MIM](https://github.com/open-mmlab/mim): MIM用于安装OpenMMLab所需包
-- [Playground](https://github.com/open-mmlab/playground): 一个用于收集和展示基于OpenMMLab构建的优质项目中心站点
+- [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab foundational library for training deep learning models.
+- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
+- [MMPreTrain](https://github.com/open-mmlab/mmpretrain): OpenMMLab pre-training toolbox and benchmark.
+- [MMagic](https://github.com/open-mmlab/mmagic): Open**MM**Lab **A**dvanced, **G**enerative and **I**ntelligent **C**reation toolbox.
+- [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab detection toolbox and benchmark.
+- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab's next-generation platform for general 3D object detection.
+- [MMRotate](https://github.com/open-mmlab/mmrotate): OpenMMLab rotated object detection toolbox and benchmark.
+- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab video perception toolbox and benchmark.
+- [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab semantic segmentation toolbox and benchmark.
+- [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab text detection, recognition, and understanding toolbox.
+- [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab pose estimation toolbox and benchmark.
+- [MMHuman3D](https://github.com/open-mmlab/mmhuman3d): OpenMMLab 3D human parametric model toolbox and benchmark.
+- [MMFewShot](https://github.com/open-mmlab/mmfewshot): OpenMMLab fewshot learning toolbox and benchmark.
+- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab's next-generation action understanding toolbox and benchmark.
+- [MMFlow](https://github.com/open-mmlab/mmflow): OpenMMLab optical flow toolbox and benchmark.
+- [MMDeploy](https://github.com/open-mmlab/mmdeploy): OpenMMLab Model Deployment Framework.
+- [MMRazor](https://github.com/open-mmlab/mmrazor): OpenMMLab model compression toolbox and benchmark.
+- [MIM](https://github.com/open-mmlab/mim): MIM installs OpenMMLab packages.
+- [Playground](https://github.com/open-mmlab/playground): A central hub for gathering and showcasing amazing projects built upon OpenMMLab.
