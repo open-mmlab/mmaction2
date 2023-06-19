@@ -73,46 +73,46 @@
 
 ## 🥳 🚀 最新进展 [🔝](#-table-of-contents)
 
-**默认分支将从`master`（以前的`0.x`）转成`main`（当前的`1.x`），我们建议用户更新至最新版本，其支持更多模型，更强的预训练检查点，以及更简洁的代码实现。详情请参阅[迁移指南](https://mmaction2.readthedocs.io/en/latest/migration.html)**
+**默认分支将从 `master` （以前的`0.x`） 转成 `main`（当前的 `1.x`），我们建议用户更新至最新版本，其支持更多模型，更强的预训练检查点，以及更简洁的代码实现。详情请参阅[迁移指南](https://mmaction2.readthedocs.io/en/latest/migration.html)**
 
 **发布(2023.04.06)**: v1.0.0支持以下新功能:
 
-- 支持RGB-PoseC3D(CVPR'2022)。
-- 支持训练UniFormer V2(Arxiv'2022)
-- 支持MSG3D(CVPR'2020)和CTRGCN(CVPR'2021)
+- 支持 RGB-PoseC3D(CVPR'2022)。
+- 支持训练 UniFormer V2(Arxiv'2022)
+- 支持 MSG3D(CVPR'2020) 和 CTRGCN(CVPR'2021)
 - 优化并增加更友好的文档
 
 ## 📖 简介 [🔝](#-table-of-contents)
 
-MMAction2是一款基于PyTorch开发的动作识别开源工具包，是[open-mmlab](https://github.com/open-mmlab) 项目的一个子项目。
+MMAction2 是一款基于 PyTorch 开发的动作识别开源工具包，是 [open-mmlab](https://github.com/open-mmlab)  项目的一个子项目。
 
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/main/resources/mmaction2_overview.gif" width="380px">
   <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px">
-  <p style="font-size:1.5vw;"> Kinetics-400中动作识别（左） 和 NTU-RGB+D-120中基于骨架的动作识别（右）</p>
+  <p style="font-size:1.5vw;"> Kinetics-400 中动作识别（左） 和 NTU-RGB+D-120 中基于骨架的动作识别（右）</p>
 </div>
 
 <div align="center">
   <img src="https://user-images.githubusercontent.com/30782254/155710881-bb26863e-fcb4-458e-b0c4-33cd79f96901.gif" width="580px"/><br>
-    <p style="font-size:1.5vw;">Kinetics-400中基于骨架的时空动作检测及识别结果</p>
+    <p style="font-size:1.5vw;">Kinetics-400 中基于骨架的时空动作检测及识别结果</p>
 </div>
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/main/resources/spatio-temporal-det.gif" width="800px"/><br>
-    <p style="font-size:1.5vw;">AVA-2.1中时空动作检测结果</p>
+    <p style="font-size:1.5vw;">AVA-2.1 中时空动作检测结果</p>
 </div>
 
 ## 🎁 主要功能 [🔝](#-table-of-contents)
 
 - **模块化设计**： 我们将视频理解框架拆分成了不同模块，用户可以很方便地通过组合不同的模块来构建出自定义化的视频理解框架。
 
-- **支持四种主要的视频理解任务**： MMAction2为视频理解任务实现了多种多样的算法，包括动作识别，动作定位，时空动作检测，以及基于骨架的动作检测。
+- **支持四种主要的视频理解任务**： MMAction2 为视频理解任务实现了多种多样的算法，包括动作识别，动作定位，时空动作检测，以及基于骨架的动作检测。
 
-- **严密的测试和丰富的文档**：我们提供了详尽的文档和API参考手册，以及单元测试。
+- **严密的测试和丰富的文档**：我们提供了详尽的文档和 API 参考手册，以及单元测试。
 
 ## 🛠️ 安装 [🔝](#-table-of-contents)
 
-MMAction2依赖于[PyTorch](https://pytorch.org/)，[MMCV](https://github.com/open-mmlab/mmcv)，[MMEngine](https://github.com/open-mmlab/mmengine)，[MMDetection](https://github.com/open-mmlab/mmdetection) (可选)和[MMPose](https://github.com/open-mmlab/mmpose) (可选)
-具体步骤请参见[install.md](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html)
+MMAction2依赖于 [PyTorch](https://pytorch.org/)，[MMCV](https://github.com/open-mmlab/mmcv)，[MMEngine](https://github.com/open-mmlab/mmengine)，[MMDetection](https://github.com/open-mmlab/mmdetection) (可选)和 [MMPose](https://github.com/open-mmlab/mmpose) (可选)
+具体步骤请参见 [install.md](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html)
 
 <details close>
 <summary>快速上手</summary>
@@ -285,14 +285,14 @@ pip install -v -e .
 
 对于基本用法，我们提供了如下用户指南：
 
-- [从MMAction2 0.X版迁移过来](https://mmaction2.readthedocs.io/en/latest/migration.html)
+- [从 MMAction2 0.X 版迁移过来](https://mmaction2.readthedocs.io/en/latest/migration.html)
 - [学习配置相关知识](https://mmaction2.readthedocs.io/en/latest/user_guides/config.html#)
 - [准备数据集](https://mmaction2.readthedocs.io/en/latest/user_guides/prepare_dataset.html)
 - [使用现有模型进行推理](https://mmaction2.readthedocs.io/en/latest/user_guides/inference.html)
 - [训练与测试](https://mmaction2.readthedocs.io/en/latest/user_guides/train_test.html)
 
 <details close>
-<summary>社区用户的基于MMAction2的研究工作</summary>
+<summary>社区用户的基于 MMAction2 的研究工作</summary>
 
 - Video Swin Transformer. [\[paper\]](https://arxiv.org/abs/2106.13230)[\[github\]](https://github.com/SwinTransformer/Video-Swin-Transformer)
 - Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2107.10161)[\[github\]](https://github.com/Cogito2012/DEAR)
@@ -302,7 +302,7 @@ pip install -v -e .
 
 ## 🎫 许可 [🔝](#-table-of-contents)
 
-本项目基于[Apache 2.0 license](LICENSE)发布。
+本项目基于 [Apache 2.0 license](LICENSE) 发布。
 
 ## 🖊️ 引用 [🔝](#-table-of-contents)
 
@@ -319,11 +319,11 @@ pip install -v -e .
 
 ## 🙌 参与贡献 [🔝](#-table-of-contents)
 
-我们感谢所有参与改进MMAction2的贡献，更多贡献指南请参阅MMCV下的[CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/2.x/CONTRIBUTING.md)
+我们感谢所有参与改进MMAction2的贡献，更多贡献指南请参阅 MMCV 下的 [CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/2.x/CONTRIBUTING.md)
 
 ## 🤝 致谢 [🔝](#-table-of-contents)
 
-MMAction2是一个来自众多高校和企业的研究人员及工程师共同参与构建的开源项目，我们感谢所有实现他们的算法，添加新功能的贡献者，以及那些提供有价值的反馈的用户。我们希望通过提供一款灵活的能够实现现有算法以及开发新的模型工具包，来服务于日益增长的研究群体，
+MMAction2 是一个来自众多高校和企业的研究人员及工程师共同参与构建的开源项目，我们感谢所有实现他们的算法，添加新功能的贡献者，以及那些提供有价值的反馈的用户。我们希望通过提供一款灵活的能够实现现有算法以及开发新的模型工具包，来服务于日益增长的研究群体，
 
 ## 🏗️ OpenMMLab所有项目 [🔝](#-table-of-contents)
 
