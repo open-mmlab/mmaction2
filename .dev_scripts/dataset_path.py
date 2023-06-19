@@ -4,5 +4,4 @@ dataset = dict(
     ava='s3://openmmlab/datasets/action/ava',
     ntu='/mnt/petrelfs/share_data/lilin/datasets/skeleton',
     msr_vtt='/mnt/petrelfs/share_data/lilin/datasets/msrvtt',
-    ava_kinetics='',
-    hacs='')
+    hacs='/mnt/petrelfs/share_data/hukai/HACS')
