@@ -411,32 +411,32 @@ class SampleFrames(BaseTransform):
 
 @TRANSFORMS.register_module()
 class UniformSample(BaseTransform):
-    """Uniformly sample frames from the video. Currently used for Something-
-    Something V2 dataset. Modified from
-    https://github.com/facebookresearch/SlowFast/blob/64a
+    """Uniformly sample frames from the video.
+
+    Modified from https://github.com/facebookresearch/SlowFast/blob/64a
     bcc90ccfdcbb11cf91d6e525bed60e92a8796/slowfast/datasets/ssv2.py#L159.
 
-    To sample an n-frame clip from the video. UniformSampleFrames basically
+    To sample an n-frame clip from the video. UniformSample basically
     divides the video into n segments of equal length and randomly samples one
     frame from each segment.
 
     Required keys:
 
-    - total_frames
-    - start_index
+        - total_frames
+        - start_index
 
     Added keys:
 
-    - frame_inds
-    - clip_len
-    - frame_interval
-    - num_clips
+        - frame_inds
+        - clip_len
+        - frame_interval
+        - num_clips
 
     Args:
         clip_len (int): Frames of each sampled output clip.
-        num_clips (int): Number of clips to be sampled. Default: 1.
+        num_clips (int): Number of clips to be sampled. Defaults to 1.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
+            Defaults to False.
     """
 
     def __init__(self,
@@ -448,17 +448,24 @@ class UniformSample(BaseTransform):
         self.num_clips = num_clips
         self.test_mode = test_mode
 
-    def _get_sample_clips(self, num_frames: int) -> np.array:
-        """When video frames is shorter than target clip len, this strategy
-        would repeat sample frame, rather than loop sample in 'loop' mode. In
-        test mode, this strategy would sample the middle frame of each segment,
-        rather than set a random seed, and therefore only support sample 1
-        clip.
+    def _get_sample_clips(self, num_frames: int) -> np.ndarray:
+        """To sample an n-frame clip from the video. UniformSample basically
+        divides the video into n segments of equal length and randomly samples
+        one frame from each segment. When the duration of video frames is
+        shorter than the desired length of the target clip, this approach will
+        duplicate the sampled frame instead of looping the sample in "loop"
+        mode. In the test mode, when we need to sample multiple clips,
+        specifically 'n' clips, this method will further divide the segments
+        based on the number of clips to be sampled. The 'i-th' clip will.
+
+        sample the frame located at the position 'i * len(segment) / n'
+        within the segment.
 
         Args:
             num_frames (int): Total number of frame in the video.
+
         Returns:
-            seq (list): the indexes of frames of sampled from the video.
+            seq (np.ndarray): the indexes of frames of sampled from the video.
         """
         seg_size = float(num_frames - 1) / self.clip_len
         inds = []
@@ -477,7 +484,15 @@ class UniformSample(BaseTransform):
 
         return np.array(inds)
 
-    def transform(self, results: dict):
+    def transform(self, results: Dict) -> Dict:
+        """Perform the Uniform Sampling.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
         num_frames = results['total_frames']
 
         inds = self._get_sample_clips(num_frames)
@@ -490,7 +505,7 @@ class UniformSample(BaseTransform):
         results['num_clips'] = self.num_clips
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'clip_len={self.clip_len}, '
                     f'num_clips={self.num_clips}, '

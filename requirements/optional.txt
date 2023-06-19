@@ -1,10 +1,10 @@
 av>=9.0
 future
-fvcore
 imgaug
 librosa
 lmdb
 moviepy
+openai-clip
 packaging
 pims
 PyTurboJPEG

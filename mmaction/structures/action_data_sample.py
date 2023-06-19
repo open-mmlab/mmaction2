@@ -176,3 +176,18 @@ class ActionDataSample(BaseDataElement):
     def gt_instances(self):
         """Deleter of `gt_instances`"""
         del self._gt_instances
+
+    @property
+    def features(self):
+        """Setter of `features`"""
+        return self._features
+
+    @features.setter
+    def features(self, value):
+        """Setter of `features`"""
+        self.set_field(value, '_features', dtype=InstanceData)
+
+    @features.deleter
+    def features(self):
+        """Deleter of `features`"""
+        del self._features

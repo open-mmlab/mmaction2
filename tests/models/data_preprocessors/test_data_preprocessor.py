@@ -95,3 +95,8 @@ def test_data_preprocessor():
                        (raw_3d_data['inputs'][0] - psr.mean) / psr.std)
     assert_array_equal(data[1]['inputs'][1],
                        (raw_3d_data['inputs'][1] - psr.mean) / psr.std)
+
+    raw_data = generate_dummy_data(2, (77, ))
+    psr = ActionDataPreprocessor(to_float32=False)
+    data = psr(raw_data)
+    assert data['inputs'].dtype == raw_data['inputs'][0].dtype

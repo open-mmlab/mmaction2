@@ -191,6 +191,7 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/bmn/README.md">BMN</a> (ICCV'2019)</td>
     <td></td>
     <td></td>
+    <td></td>
   </tr>
   <tr>
     <td colspan="5" style="font-weight:bold;">Spatio-Temporal Action Detection</td>
@@ -215,7 +216,23 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/projects/msg3d/README.md">MSG3D</a> (CVPR'2020)</td>
     <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
   </tr>
+  <tr>
+    <td colspan="5" style="font-weight:bold;">Video Retrieval</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/retrieval/clip4clip/README.md">CLIP4Clip</a> (ArXiv'2022)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+
+</tr>
+
 </table>
 
 </details>
@@ -285,6 +302,16 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-UCF101</a> (<a href="https://kennymckormick.github.io/posec3d/">Homepage</a>) (ArXiv'2021)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-HMDB51</a> (<a href="https://kennymckormick.github.io/posec3d/">Homepage</a>) (ArXiv'2021)</td>
   </tr>
+  <tr>
+    <td colspan="4" style="font-weight:bold;">Video Retrieval</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/video_retrieval/README.md">MSRVTT</a> (<a href="https://www.microsoft.com/en-us/research/publication/msr-vtt-a-large-video-description-dataset-for-bridging-video-and-language/">Homepage</a>) (CVPR'2016)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+
 </table>
 
 </details>
