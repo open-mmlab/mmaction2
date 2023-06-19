@@ -10,6 +10,28 @@ from mmengine.optim import DefaultOptimWrapperConstructor
 from mmaction.registry import OPTIM_WRAPPER_CONSTRUCTORS
 
 
+def get_layer_id_for_vit(var_name: str, max_layer_id: int) -> int:
+    """Get the layer id to set the different learning rates for ViT.
+
+    Args:
+        var_name (str): The key of the model.
+        num_max_layer (int): Maximum number of backbone layers.
+    Returns:
+        int: Returns the layer id of the key.
+    """
+
+    if var_name in ('backbone.cls_token', 'backbone.mask_token',
+                    'backbone.pos_embed'):
+        return 0
+    elif var_name.startswith('backbone.patch_embed'):
+        return 0
+    elif var_name.startswith('backbone.blocks'):
+        layer_id = int(var_name.split('.')[2])
+        return layer_id + 1
+    else:
+        return max_layer_id + 1
+
+
 def get_layer_id_for_mvit(var_name, max_layer_id):
     """Get the layer id to set the different learning rates in ``layer_wise``
     decay_type.
@@ -86,6 +108,9 @@ class LearningRateDecayOptimizerConstructor(DefaultOptimWrapperConstructor):
                 if 'MViT' in module.backbone.__class__.__name__:
                     layer_id = get_layer_id_for_mvit(
                         name, self.paramwise_cfg.get('num_layers'))
+                    logger.info(f'set param {name} as id {layer_id}')
+                elif 'VisionTransformer' in module.backbone.__class__.__name__:
+                    layer_id = get_layer_id_for_vit(name, num_layers)
                     logger.info(f'set param {name} as id {layer_id}')
                 else:
                     raise NotImplementedError()
