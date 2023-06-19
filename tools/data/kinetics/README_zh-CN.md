@@ -51,6 +51,7 @@ bash download_backup_annotations.sh ${DATASET}
 
 :::{note}
 MMAction2 代码仓库中提供的 Kinetics 实验性能，都是基于这个版本的数据得到的。我们建议用户使用这个版本的 Kinetics 数据集进行实验。
+:::
 
 ### 选项 2：从其他数据源下载
 

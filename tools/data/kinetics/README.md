@@ -54,6 +54,7 @@ bash download_backup_annotations.sh ${DATASET}
 
 :::{note}
 All experiments on Kinetics in MMAction2 are based on this version, we recommend users to try this version.
+:::
 
 ### Option 2: Download from Other Source
 

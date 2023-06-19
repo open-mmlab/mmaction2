@@ -6,7 +6,7 @@ import os.path as osp
 
 import numpy as np
 import scipy.interpolate
-from mmcv import dump, load
+from mmengine import dump, load
 
 args = None
 
@@ -88,9 +88,13 @@ def merge_feat(name):
 def main():
     global args
     args = parse_args()
-    rgb_feat = os.listdir(args.rgb)
-    flow_feat = os.listdir(args.flow)
+    rgb_feat = [file for file in os.listdir(args.rgb) if file.endswith('.pkl')]
+    flow_feat = [
+        file for file in os.listdir(args.flow) if file.endswith('.pkl')
+    ]
     assert set(rgb_feat) == set(flow_feat)
+    # for feat in rgb_feat:
+    #     merge_feat(feat)
     pool = multiprocessing.Pool(32)
     pool.map(merge_feat, rgb_feat)
 

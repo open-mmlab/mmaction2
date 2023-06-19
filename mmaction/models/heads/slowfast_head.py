@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Tuple
+
 import torch
 from mmengine.model.weight_init import normal_init
 from torch import Tensor, nn
@@ -53,22 +55,22 @@ class SlowFastHead(BaseHead):
         """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
-    def forward(self, x: Tensor, **kwargs) -> None:
+    def forward(self, x: Tuple[Tensor], **kwargs) -> None:
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): The input data.
+            x (tuple[torch.Tensor]): The input data.
 
         Returns:
             Tensor: The classification scores for input samples.
         """
-        # ([N, channel_fast, T, H, W], [(N, channel_slow, T, H, W)])
-        x_fast, x_slow = x
-        # ([N, channel_fast, 1, 1, 1], [N, channel_slow, 1, 1, 1])
-        x_fast = self.avg_pool(x_fast)
+        # ([N, channel_slow, T1, H, W], [(N, channel_fast, T2, H, W)])
+        x_slow, x_fast = x
+        # ([N, channel_slow, 1, 1, 1], [N, channel_fast, 1, 1, 1])
         x_slow = self.avg_pool(x_slow)
+        x_fast = self.avg_pool(x_fast)
         # [N, channel_fast + channel_slow, 1, 1, 1]
-        x = torch.cat((x_slow, x_fast), dim=1)
+        x = torch.cat((x_fast, x_slow), dim=1)
 
         if self.dropout is not None:
             x = self.dropout(x)

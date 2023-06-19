@@ -518,16 +518,19 @@ class UntrimmedSampleFrames(BaseTransform):
     """Sample frames from the untrimmed video.
 
     Required keys are "filename", "total_frames", added or modified keys are
-    "frame_inds", "frame_interval" and "num_clips".
+    "frame_inds", "clip_interval" and "num_clips".
 
     Args:
-        clip_len (int): The length of sampled clips. Default: 1.
+        clip_len (int): The length of sampled clips. Defaults to  1.
+        clip_interval (int): Clip interval of adjacent center of sampled
+            clips. Defaults to 16.
         frame_interval (int): Temporal interval of adjacent sampled frames.
-            Default: 16.
+            Defaults to 1.
     """
 
-    def __init__(self, clip_len=1, frame_interval=16):
+    def __init__(self, clip_len=1, clip_interval=16, frame_interval=1):
         self.clip_len = clip_len
+        self.clip_interval = clip_interval
         self.frame_interval = frame_interval
 
     def transform(self, results):
@@ -540,18 +543,21 @@ class UntrimmedSampleFrames(BaseTransform):
         total_frames = results['total_frames']
         start_index = results['start_index']
 
-        clip_centers = np.arange(self.frame_interval // 2, total_frames,
-                                 self.frame_interval)
+        clip_centers = np.arange(self.clip_interval // 2, total_frames,
+                                 self.clip_interval)
         num_clips = clip_centers.shape[0]
         frame_inds = clip_centers[:, None] + np.arange(
-            -(self.clip_len // 2), self.clip_len -
-            (self.clip_len // 2))[None, :]
+            -(self.clip_len // 2 * self.frame_interval),
+            self.frame_interval *
+            (self.clip_len -
+             (self.clip_len // 2)), self.frame_interval)[None, :]
         # clip frame_inds to legal range
         frame_inds = np.clip(frame_inds, 0, total_frames - 1)
 
         frame_inds = np.concatenate(frame_inds) + start_index
         results['frame_inds'] = frame_inds.astype(np.int32)
         results['clip_len'] = self.clip_len
+        results['clip_interval'] = self.clip_interval
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = num_clips
         return results
@@ -559,6 +565,7 @@ class UntrimmedSampleFrames(BaseTransform):
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
                     f'clip_len={self.clip_len}, '
+                    f'clip_interval={self.clip_interval}, '
                     f'frame_interval={self.frame_interval})')
         return repr_str
 
