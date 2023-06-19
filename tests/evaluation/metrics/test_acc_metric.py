@@ -1,8 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
+import platform
 from unittest import TestCase
 
 import numpy as np
+import pytest
 import torch
 from mmengine import load
 from numpy.testing import assert_array_almost_equal
@@ -58,6 +60,7 @@ def test_acc_metric():
     assert eval_results['mmit_mean_average_precision'] == 1.0
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Multiprocess Fail')
 def test_ava_detection():
     data_prefix = osp.normpath(
         osp.join(osp.dirname(__file__), '../../data/eval_detection'))
