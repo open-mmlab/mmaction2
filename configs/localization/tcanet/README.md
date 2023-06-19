@@ -1,4 +1,4 @@
-# BMN
+# TCANet
 
 [Temporal Context Aggregation Network for Temporal Action Proposal Refinement](https://openaccess.thecvf.com/content/CVPR2021/papers/Qing_Temporal_Context_Aggregation_Network_for_Temporal_Action_Proposal_Refinement_CVPR_2021_paper.pdf)
 
@@ -52,16 +52,6 @@ python3 tools/test.py  configs/localization/tcanet/tcanet_2048x100_2x8_9e_hacs_f
 For more details, you can refer to the **Testing** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
-
-```BibTeX
-@inproceedings{lin2019bmn,
-  title={Bmn: Boundary-matching network for temporal action proposal generation},
-  author={Lin, Tianwei and Liu, Xiao and Li, Xin and Ding, Errui and Wen, Shilei},
-  booktitle={Proceedings of the IEEE International Conference on Computer Vision},
-  pages={3889--3898},
-  year={2019}
-}
-```
 
 <!-- [DATASET] -->
 
