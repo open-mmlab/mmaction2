@@ -113,7 +113,7 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-work_dir = './work_dirs/tcanet_2048x100_2x8_9e_hacs_feature/'
+work_dir = './work_dirs/tcanet_2xb8-2048x100-9e_hacs-feature/'
 test_evaluator = dict(
     type='ANetMetric',
     metric_type='AR@AN',
