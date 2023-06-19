@@ -120,3 +120,26 @@ Models:
         Top 5 Accuracy: 92.72
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb_20220930-f8d74db7.pth
+
+  - Name: swin-small-p244-w877_in1k-pre_32xb4-amp-32x2x1-30e_kinetics710-rgb
+    Config: configs/recognition/swin/swin-small-p244-w877_in1k-pre_32xb4-amp-32x2x1-30e_kinetics710-rgb.py
+    In Collection: Swin
+    Metadata:
+      Architecture: Swin-S
+      Batch Size: 4
+      Epochs: 30
+      FLOPs: 604G
+      Parameters: 197M
+      Pretrained: ImageNet-1K
+      Resolution: 224x224
+      Training Data: Kinetics-710
+      Training Resources: 32 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-710
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 76.90
+        Top 5 Accuracy: 92.96
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-small-p244-w877_in1k-pre_32xb4-amp-32x2x1-30e_kinetics710-rgb/swin-small-p244-w877_in1k-pre_32xb4-amp-32x2x1-30e_kinetics710-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-small-p244-w877_in1k-pre_32xb4-amp-32x2x1-30e_kinetics710-rgb/swin-small-p244-w877_in1k-pre_32xb4-amp-32x2x1-30e_kinetics710-rgb_20230612-8e082ff1.pth
