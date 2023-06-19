@@ -39,7 +39,7 @@ Train TCANet model on HACS dataset with the SlowOnly feature.
 bash tools/dist_train.sh configs/localization/tcanet/tcanet_2048x100_2x8_9e_hacs_feature.py 2
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -49,7 +49,7 @@ Test TCANet model on HACS dataset with the SlowOnly feature.
 python3 tools/test.py  configs/localization/tcanet/tcanet_2048x100_2x8_9e_hacs_feature.py CHECKPOINT.PTH
 ```
 
-For more details, you can refer to the **Testing** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
+For more details, you can refer to the **Testing** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
