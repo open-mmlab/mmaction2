@@ -111,8 +111,10 @@ class Graph:
     """The Graph to model the skeletons.
 
     Args:
-        layout (str): must be one of the following candidates:
-            'openpose', 'nturgb+d', 'coco'. Defaults to ``'coco'``.
+        layout (str or dict): must be one of the following candidates:
+            'openpose', 'nturgb+d', 'coco', or a dict with the following
+            keys: 'num_node', 'inward', and 'center'.
+            Defaults to ``'coco'``.
         mode (str): must be one of the following candidates:
             'stgcn_spatial', 'spatial'. Defaults to ``'spatial'``.
         max_hop (int): the maximal distance between two connected
@@ -120,7 +122,7 @@ class Graph:
     """
 
     def __init__(self,
-                 layout: str = 'coco',
+                 layout: Union[str, dict] = 'coco',
                  mode: str = 'spatial',
                  max_hop: int = 1) -> None:
 
@@ -128,7 +130,12 @@ class Graph:
         self.layout = layout
         self.mode = mode
 
-        assert layout in ['openpose', 'nturgb+d', 'coco']
+        if isinstance(layout, dict):
+            assert 'num_node' in layout
+            assert 'inward' in layout
+            assert 'center' in layout
+        else:
+            assert layout in ['openpose', 'nturgb+d', 'coco']
 
         self.set_layout(layout)
         self.hop_dis = get_hop_distance(self.num_node, self.inward, max_hop)
@@ -163,6 +170,10 @@ class Graph:
                            (12, 6), (9, 7), (7, 5), (10, 8), (8, 6), (5, 0),
                            (6, 0), (1, 0), (3, 1), (2, 0), (4, 2)]
             self.center = 0
+        elif isinstance(layout, dict):
+            self.num_node = layout['num_node']
+            self.inward = layout['inward']
+            self.center = layout['center']
         else:
             raise ValueError(f'Do Not Exist This Layout: {layout}')
         self.self_link = [(i, i) for i in range(self.num_node)]
