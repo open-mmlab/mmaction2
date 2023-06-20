@@ -19,7 +19,7 @@ MMAction2提供了高级 Python APIs，用于对给定视频进行推理:
 
 下载所需的配置：'mim download mmaction2 --config tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb --dest .'
 
-下载所需的演示视频：'wget https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/demo.mp4'
+下载所需的演示视频：'wget https://github.com/open-mmlab/mmaction2/blob/main/demo/demo.mp4'
 ```
 
 ```python
@@ -35,4 +35,4 @@ model = init_recognizer(config_path, checkpoint_path, device="cpu")  # 也可以
 result = inference_recognizer(model, img_path)
 ```
 
-`result` 是一个包含 `pred_scores` 的字典。动作识别示例代码详见 [demo/demo.py](https://github.com/open-mmlab/mmaction2/blob/1.x/demo/demo.py)。
+`result` 是一个包含 `pred_scores` 的字典。动作识别示例代码详见 [demo/demo.py](https://github.com/open-mmlab/mmaction2/blob/main/demo/demo.py)。

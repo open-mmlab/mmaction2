@@ -21,9 +21,12 @@ class MViTHead(BaseHead):
         in_channels (int): Number of channels in input feature.
         loss_cls (dict or ConfigDict): Config for building loss.
             Defaults to `dict(type='CrossEntropyLoss')`.
-        dropout_ratio (float): Probability of dropout layer. Default: 0.5.
+        dropout_ratio (float): Probability of dropout layer. Defaults to 0.5.
         init_std (float): Std value for Initiation. Defaults to 0.02.
-        init_scale (float): Scale factor for Initiation parameters. Default: 1.
+        init_scale (float): Scale factor for Initiation parameters.
+            Defaults to 1.
+        with_cls_token (bool): Whether the backbone output feature with
+            cls_token. Defaults to True.
         kwargs (dict, optional): Any keyword argument to be used to initialize
             the head.
     """
@@ -35,11 +38,13 @@ class MViTHead(BaseHead):
                  dropout_ratio: float = 0.5,
                  init_std: float = 0.02,
                  init_scale: float = 1.0,
+                 with_cls_token: bool = True,
                  **kwargs) -> None:
         super().__init__(num_classes, in_channels, loss_cls, **kwargs)
         self.init_std = init_std
         self.init_scale = init_scale
         self.dropout_ratio = dropout_ratio
+        self.with_cls_token = with_cls_token
         if self.dropout_ratio != 0:
             self.dropout = nn.Dropout(p=self.dropout_ratio)
         else:
@@ -59,8 +64,12 @@ class MViTHead(BaseHead):
         The input ``feats`` is a tuple of list of tensor, and each tensor is
         the feature of a backbone stage.
         """
-        _, cls_token = feats[-1]
-        return cls_token
+        if self.with_cls_token:
+            _, cls_token = feats[-1]
+            return cls_token
+        else:
+            patch_token = feats[-1]
+            return patch_token.mean(dim=(2, 3, 4))
 
     def forward(self, x: Tuple[List[Tensor]], **kwargs) -> Tensor:
         """Defines the computation performed at every call.

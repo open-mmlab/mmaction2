@@ -467,7 +467,8 @@ class MultiScaleBlock(BaseModule):
             rel_pos_embed=rel_pos_embed,
             residual_pooling=residual_pooling,
             input_size=input_size,
-            rel_pos_zero_init=rel_pos_zero_init)
+            rel_pos_zero_init=rel_pos_zero_init,
+            with_cls_token=with_cls_token)
         self.drop_path = DropPath(
             drop_path) if drop_path > 0.0 else nn.Identity()
 
@@ -802,6 +803,7 @@ class MViT(BaseModule):
                 stride_kv=stride_kv,
                 rel_pos_embed=rel_pos_embed,
                 residual_pooling=residual_pooling,
+                with_cls_token=with_cls_token,
                 dim_mul_in_attention=dim_mul_in_attention,
                 input_size=input_size,
                 rel_pos_zero_init=rel_pos_zero_init)

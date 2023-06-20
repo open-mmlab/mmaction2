@@ -30,7 +30,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **"Why I got the error message 'Please install XXCODEBASE to use XXX' even if I have already installed XXCODEBASE?"**
 
-  You got that error message because our project failed to import a function or a class from XXCODEBASE. You can try to run the corresponding line to see what happens. One possible reason is, for some codebases in OpenMMLAB, you need to install mmcv and mmengine before you install them. You could follow this [tutorial](https://mmaction2.readthedocs.io/en/latest/get_started.html#installation) to install them.
+  You got that error message because our project failed to import a function or a class from XXCODEBASE. You can try to run the corresponding line to see what happens. One possible reason is, for some codebases in OpenMMLAB, you need to install mmcv and mmengine before you install them. You could follow this [tutorial](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html#installation) to install them.
 
 ## Data
 
@@ -48,9 +48,9 @@ If the contents here do not cover your issue, please create an issue using the [
 
   We have both pipeline for processing videos and frames.
 
-  **For videos**, We should decode them on the fly in the pipeline, so pairs like `DecordInit & DecordDecode`, `OpenCVInit & OpenCVDecode`, `PyAVInit & PyAVDecode` should be used for this case like [this example](https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py#L14-L16).
+  **For videos**, We should decode them on the fly in the pipeline, so pairs like `DecordInit & DecordDecode`, `OpenCVInit & OpenCVDecode`, `PyAVInit & PyAVDecode` should be used for this case like [this example](https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py#L14-L16).
 
-  **For Frames**, the image has been decoded offline, so pipeline item `RawFrameDecode` should be used for this case like [this example](https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py#L17).
+  **For Frames**, the image has been decoded offline, so pipeline item `RawFrameDecode` should be used for this case like [this example](https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py#L17).
 
   `KeyError: 'total_frames'` is caused by incorrectly using `RawFrameDecode` step for videos, since when the input is a video, it can not get the `total_frames` beforehand.
 
@@ -65,7 +65,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **How to fix stages of backbone when finetuning a model?**
 
-  You can refer to [`def _freeze_stages()`](https://github.com/open-mmlab/mmaction2/blob/1.x/mmaction/models/backbones/resnet3d.py#L791) and [`frozen_stages`](https://github.com/open-mmlab/mmaction2/blob/1.x/mmaction/models/backbones/resnet3d.py#L369-L370).
+  You can refer to [`def _freeze_stages()`](https://github.com/open-mmlab/mmaction2/blob/main/mmaction/models/backbones/resnet3d.py#L791) and [`frozen_stages`](https://github.com/open-mmlab/mmaction2/blob/main/mmaction/models/backbones/resnet3d.py#L369-L370).
   Reminding to set `find_unused_parameters = True` in config files for distributed training or testing.
 
   Actually, users can set `frozen_stages` to freeze stages in backbones except C3D model, since almost all backbones inheriting from `ResNet` and `ResNet3D` support the inner function `_freeze_stages()`.
@@ -90,6 +90,36 @@ If the contents here do not cover your issue, please create an issue using the [
 
   In MMAction2, We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](/docs/en/user_guides/config.md),
   users can directly change it by setting `load_from` in their configs.
+
+- **How to use `RawFrameDataset` for training?**
+
+  In MMAction2 1.x version, most of the configs take `VideoDataset` as the default dataset type, which is much more friendly to file storage. If you want to use `RawFrameDataset` instead, there are two steps to modify:
+
+  - Dataset:
+    modify dataset in `train_dataloader`/`val_dataloader`/`test_dataloader` from
+
+    ```
+    dataset=dict(
+        type=VideoDataset,
+        data_prefix=dict(video=xxx),
+        ...)
+    ```
+
+    to
+
+    ```
+    dataset=dict(
+        type=RawFrameDataset,
+        data_prefix=dict(img=xxx),
+        filename_tmpl='{:05}.jpg',
+        ...)
+    ```
+
+    remaining fields of `dataset` don't need to be modified. Please make sure that `filename_tmpl` is matching with your frame data, and you can refer to [config document](../user_guides/config.md) for more details about config file.
+
+  - Transforms: delete `dict(type='DecordInit', **file_client_args)`, modify `dict(type='DecordDecode')` to `dict(type='RawFrameDecode', **file_client_args)` in `train_pipeline`/`val_pipeline`/`test_pipeline`, and please make sure that `file_client_args = dict(io_backend='disk')` has been defined in your config.
+
+  For more modifications about customizing datasets, please refer to [prepare dataset](../user_guides/prepare_dataset.md) and [customize dataset](../advanced_guides/customize_dataset.md).
 
 ## Testing
 
