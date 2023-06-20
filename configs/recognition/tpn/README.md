@@ -41,7 +41,11 @@ Visual tempo characterizes the dynamics and the temporal scale of an action. Mod
 
 :::
 
-For more details on data preparation, you can refer to Kinetics400, Something-Something V1 and Something-Something V2 in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to
+
+- [Kinetics](/tools/data/kinetics/README.md)
+- [Something-something V1](/tools/data/sthv1/README.md)
+- [Something-something V2](/tools/data/sthv2/README.md)
 
 ## Train
 

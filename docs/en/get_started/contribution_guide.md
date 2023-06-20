@@ -5,7 +5,7 @@ All kinds of contributions are welcome, including but not limited to the followi
 - Fixes (typo, bugs)
 - New features and components
 - Add documentation or translate the documentation into other languages
-- Add new project (Recommended) about video understanding algorithm with less restriction, refer to [here](/projects/README.md) for details
+- Add new project (Recommended) about video understanding algorithm with less restriction, refer to [here](https://github.com/open-mmlab/mmaction2/tree/main/projects/README.md) for details
 
 ## Workflow
 

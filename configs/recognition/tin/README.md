@@ -50,7 +50,11 @@ Here, we use `finetune` to indicate that we use [TSM model](https://download.ope
 
 :::
 
-For more details on data preparation, you can refer to Kinetics400, Something-Something V1 and Something-Something V2 in [Prepare Datasets](/docs/en/user_guides/2_data_prepare.md).
+For more details on data preparation, you can refer to
+
+- [Kinetics](/tools/data/kinetics/README.md)
+- [Something-something V1](/tools/data/sthv1/README.md)
+- [Something-something V2](/tools/data/sthv2/README.md)
 
 ## Train
 
