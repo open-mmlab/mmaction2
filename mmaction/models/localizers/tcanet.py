@@ -7,12 +7,12 @@ from mmcv.cnn import build_norm_layer
 from mmcv.cnn.bricks.transformer import FFN, MultiheadAttention
 from mmengine.model import BaseModel
 from torch import Tensor, nn
-from utils import (batch_iou, bbox_se_transform_batch, bbox_se_transform_inv,
-                   bbox_xw_transform_batch, bbox_xw_transform_inv,
-                   post_processing)
 
 from mmaction.registry import MODELS
 from mmaction.utils import OptConfigType
+from .utils import (batch_iou, bbox_se_transform_batch, bbox_se_transform_inv,
+                    bbox_xw_transform_batch, bbox_xw_transform_inv,
+                    post_processing)
 
 
 class LGTE(BaseModel):
@@ -50,7 +50,7 @@ class LGTE(BaseModel):
 
         norm_cfg = dict(type='LN', eps=1e-6)
         self.norm1 = build_norm_layer(norm_cfg, input_dim)[1]
-        self.norm1 = build_norm_layer(norm_cfg, input_dim)[1]
+        self.norm2 = build_norm_layer(norm_cfg, input_dim)[1]
 
         mask = self._mask_matrix(num_heads, temporal_dim, window_size)
         self.register_buffer('mask', mask)
@@ -59,11 +59,12 @@ class LGTE(BaseModel):
         """Forward call for LGTE.
 
         Args:
-            x (torch.Tensor): The input tensor with shape (B, T, C)
+            x (torch.Tensor): The input tensor with shape (B, C, L)
         """
         x = x.permute(2, 0, 1)
         mask = self.mask.repeat(x.size(1), 1, 1, 1)
-        x = self.atten(x, mask)
+        L = x.shape[0]
+        x = self.atten(x, attn_mask=mask.reshape(-1, L, L))
         x = self.norm1(x)
         x = self.ffn(x)
         x = self.norm2(x)
@@ -156,7 +157,7 @@ class TemporalTransform:
         self.action_sample_num = action_sample_num
         self.se_sample_num = se_sample_num
 
-    def forward(self, segments: Tensor, features: Tensor) -> List[Tensor]:
+    def __call__(self, segments: Tensor, features: Tensor) -> List[Tensor]:
         s_len = segments[:, 1] - segments[:, 0]
         starts_segments = [
             segments[:, 0] - self.prop_boundary_ratio * s_len, segments[:, 0]
@@ -180,10 +181,7 @@ class TemporalTransform:
 
     def _sample_one_temporal(self, segments: Tensor, out_len: int,
                              features: Tensor) -> Tensor:
-        total_temporal_len = features.size(2) * self.temporal_interval
-        segments = torch.clamp(segments / total_temporal_len, max=1., min=0.)
-        segments = segments * 2 - 1
-
+        segments = segments.clamp(0, 1) * 2 - 1
         theta = segments.new_zeros((features.size(0), 2, 3))
         theta[:, 1, 1] = 1.0
         theta[:, 0, 0] = (segments[:, 1] - segments[:, 0]) / 2.0
@@ -221,10 +219,13 @@ class TBR(BaseModel):
         proposals1 = proposals[:, :2]
         starts_feat1, actions_feat1, ends_feat1 = self.ttn(
             proposals1, features)
-        reg1se = self.reg1se(starts_feat1, ends_feat1)
+
+        reg1se = self.reg1se(torch.cat([starts_feat1, ends_feat1], dim=1))
+
         features1xw = torch.cat([starts_feat1, actions_feat1, ends_feat1],
                                 dim=2)
         reg1xw = self.reg1xw(features1xw).squeeze(2)
+
         preds_iou1 = reg1xw[:, 2].sigmoid()
         reg1xw = reg1xw[:, :2]
 
@@ -400,13 +401,31 @@ class TCANet(BaseModel):
 
     def loss(self, batch_inputs, batch_data_samples, **kwargs):
         features = self._forward(batch_inputs)
-        gt_boxes = torch.stack(
-            [sample.gt_instances['gt_bbox'] for sample in batch_data_samples])
-        proposals = torch.stack(
-            [sample.proposals['proposals'] for sample in batch_data_samples])
+        proposals_ = [
+            sample.proposals['proposals'] for sample in batch_data_samples
+        ]
 
-        batch_size = proposals.size(0)
-        proposals_num = proposals.size(1)
+        batch_size = len(proposals_)
+        proposals_num = max([_.shape[0] for _ in proposals_])
+
+        proposals = torch.zeros((batch_size, proposals_num, 3),
+                                device=features.device)
+        for i, proposal in enumerate(proposals_):
+            proposals[i, :proposal.shape[0]] = proposal
+
+        gt_boxes_ = [
+            sample.gt_instances['gt_bbox'] for sample in batch_data_samples
+        ]
+        gt_boxes = torch.zeros((batch_size, proposals_num, 2),
+                               device=features.device)
+        for i, gt_box in enumerate(gt_boxes_):
+            L = gt_box.shape[0]
+            if L <= proposals_num:
+                gt_boxes[i, :L] = gt_box
+            else:
+                random_index = torch.randperm(L)[:proposals_num]
+                gt_boxes[i] = gt_box[random_index]
+
         for i in range(batch_size):
             proposals[i, :, 2] = i
         proposals = proposals.view(batch_size * proposals_num, 3)
@@ -436,37 +455,49 @@ class TCANet(BaseModel):
 
     def predict(self, batch_inputs, batch_data_samples, **kwargs):
         features = self._forward(batch_inputs)
-        gt_boxes = torch.stack(
-            [sample.gt_instances['gt_bbox'] for sample in batch_data_samples])
-        proposals = torch.stack(
-            [sample.proposals['proposals'] for sample in batch_data_samples])
-        scores = torch.stack(
-            [sample.proposals['scores'] for sample in batch_data_samples])
+        proposals_ = [
+            sample.proposals['proposals'] for sample in batch_data_samples
+        ]
 
-        batch_size = proposals.size(0)
-        proposals_num = proposals.size(1)
+        batch_size = len(proposals_)
+        proposals_num = max([_.shape[0] for _ in proposals_])
+
+        proposals = torch.zeros((batch_size, proposals_num, 3),
+                                device=features.device)
+        for i, proposal in enumerate(proposals_):
+            proposals[i, :proposal.shape[0]] = proposal
+
+        scores = proposals[:, :, 2]
         for i in range(batch_size):
             proposals[i, :, 2] = i
+
         proposals = proposals.view(batch_size * proposals_num, 3)
         proposals_select = proposals[:, 0:2].sum(dim=1) > 0
         proposals = proposals[proposals_select, :]
+        scores = scores.view(-1)[proposals_select]
 
         features = features[proposals[:, 2].long()]
 
-        preds_iou1, proposals1, _, _ = self.tbr1(proposals, features, gt_boxes,
-                                                 0.5, False)
-        preds_iou2, proposals2, _, _ = self.tbr2(proposals1, features,
-                                                 gt_boxes, 0.6, False)
-        preds_iou3, proposals3, _, _ = self.tbr3(proposals2, features,
-                                                 gt_boxes, 0.7, False)
+        preds_iou1, proposals1 = self.tbr1(proposals, features, None, 0.5,
+                                           False)[:2]
+        preds_iou2, proposals2 = self.tbr2(proposals1, features, None, 0.6,
+                                           False)[:2]
+        preds_iou3, proposals3 = self.tbr3(proposals2, features, None, 0.7,
+                                           False)[:2]
 
-        all_proposals = [torch.cat([proposals, scores], dim=1)]
-        all_proposals += [torch.cat([proposals1, scores * preds_iou1], dim=1)]
-        all_proposals += [torch.cat([proposals2, scores * preds_iou2], dim=1)]
-        all_proposals += [torch.cat([proposals3, scores * preds_iou3], dim=1)]
+        all_proposals = []
+        # all_proposals = [proposals]
+        all_proposals += [
+            torch.cat([proposals1, (scores * preds_iou1).view(-1, 1)], dim=1)
+        ]
+        all_proposals += [
+            torch.cat([proposals2, (scores * preds_iou2).view(-1, 1)], dim=1)
+        ]
+        all_proposals += [
+            torch.cat([proposals3, (scores * preds_iou3).view(-1, 1)], dim=1)
+        ]
 
-        all_proposals = torch.stack(all_proposals).cpu().numpy()
-
+        all_proposals = torch.cat(all_proposals, dim=0).cpu().numpy()
         video_info = batch_data_samples[0].metainfo
         proposal_list = post_processing(all_proposals, video_info,
                                         self.soft_nms_alpha,
@@ -474,4 +505,9 @@ class TCANet(BaseModel):
                                         self.soft_nms_high_threshold,
                                         self.post_process_top_k,
                                         self.feature_extraction_interval)
-        return proposal_list
+        output = [
+            dict(
+                video_name=video_info['video_name'],
+                proposal_list=proposal_list)
+        ]
+        return output

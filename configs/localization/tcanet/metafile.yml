@@ -1,0 +1,29 @@
+Collections:
+- Name: TCANET
+  README: configs/localization/tcanet/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2103.13141
+    Title: "Temporal Context Aggregation Network for Temporal Action Proposal Refinement"
+
+Models:
+  - Name: tcanet_2xb8-2048x100-9e_hacs-feature.py
+    Config: configs/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.py
+    In Collection: TCANET
+    Metadata:
+      Batch Size: 8
+      Epochs: 9
+      Training Data: HACS
+      Training Resources: 2 GPUs
+      feature: slowonly
+    Modality: RGB
+    Results:
+      - Dataset: HACS
+        Task: Temporal Action Localization
+        Metrics:
+              AUC: 51.39
+              AR@1: 3.61
+              AR@5: 16.92
+              AR@10: 21.94
+              AR@100: 62.80
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature_20230621-d6bc10b0.pth
