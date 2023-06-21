@@ -27,7 +27,7 @@ Temporal Boundary Regressor (TBR) is designed to combine these two regression gr
 
 | feature  | gpus | pretrain |  AUC  | AR@1 | AR@5  | AR@10 | AR@100 | gpu_mem(M) | iter time(s) |                     config                     |                     ckpt                     |                     log                     |
 | :------: | :--: | :------: | :---: | :--: | :---: | :---: | :----: | :--------: | :----------: | :--------------------------------------------: | :------------------------------------------: | :-----------------------------------------: |
-| SlowOnly |  2   |   None   | 51.37 | 3.62 | 16.94 | 21.97 | 62.76  |     -      |      -       | [config](/configs/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature_20230621-d6bc10b0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.log) |
+| SlowOnly |  2   |   None   | 51.39 | 3.61 | 16.92 | 21.94 | 62.80  |     -      |      -       | [config](/configs/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature_20230621-d6bc10b0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.log) |
 
 For more details on data preparation, you can refer to [HACS Data Preparation](/tools/data/hacs/README.md).
 

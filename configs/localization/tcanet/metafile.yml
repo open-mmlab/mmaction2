@@ -20,10 +20,10 @@ Models:
       - Dataset: HACS
         Task: Temporal Action Localization
         Metrics:
-              AUC: 51.37
-              AR@1: 3.62
-              AR@5: 16.94
-              AR@10: 21.97
-              AR@100: 62.76
+              AUC: 51.39
+              AR@1: 3.61
+              AR@5: 16.92
+              AR@10: 21.94
+              AR@100: 62.80
     Training Log: https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature_20230621-d6bc10b0.pth
