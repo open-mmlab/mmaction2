@@ -11,6 +11,7 @@ import numpy as np
 import torch
 from mmcv.transforms import BaseTransform
 from mmengine.fileio import FileClient
+from mmengine.fileio import get as mmengine_get
 
 from mmaction.registry import TRANSFORMS
 from mmaction.utils import get_random_string, get_shm_dir, get_thread_id
@@ -1430,7 +1431,16 @@ class RawFrameDecode(BaseTransform):
             frame_idx += offset
             if modality == 'RGB':
                 filepath = osp.join(directory, filename_tmpl.format(frame_idx))
-                img_bytes = self.file_client.get(filepath)
+
+                # A hack to handle AVA-Kinetics for unit testing
+                try:
+                    img_bytes = self.file_client.get(filepath)
+                except FileNotFoundError:
+                    folder, frame = filepath.split('/')[-2:]
+                    url = 's3://openmmlab/datasets/action/ava/rawframes/'
+                    url = url + f'{folder}/{frame}'
+                    img_bytes = mmengine_get(url)
+
                 # Get frame with channel order RGB directly.
                 cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
                 imgs.append(cur_frame)
