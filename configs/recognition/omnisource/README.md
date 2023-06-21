@@ -77,3 +77,12 @@ For more details, you can refer to the **Test** part in the [Training and Test T
   year={2019}
 }
 ```
+
+```BibTeX
+@article{duan2020omni,
+  title={Omni-sourced Webly-supervised Learning for Video Recognition},
+  author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
+  journal={arXiv preprint arXiv:2003.13042},
+  year={2020}
+}
+```

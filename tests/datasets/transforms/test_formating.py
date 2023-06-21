@@ -140,7 +140,7 @@ class TestPackLocalizationInputs(unittest.TestCase):
             gt_bbox=np.array([[0.1, 0.3], [0.375, 0.625]]),
             filename='test.txt')
 
-        cfg = dict(type='PackLocalizationInputs', keys='gt_bbox')
+        cfg = dict(type='PackLocalizationInputs', keys=('gt_bbox', ))
         transform = TRANSFORMS.build(cfg)
         results = transform(copy.deepcopy(data))
         self.assertIn('inputs', results)

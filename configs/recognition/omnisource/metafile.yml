@@ -1,7 +1,9 @@
 Collections:
   - Name: Omnisource
     README: configs/recognition/omnisource/README.md
-
+    Paper:
+      URL: https://arxiv.org/abs/2003.13042
+      Title: 'Omni-sourced Webly-supervised Learning for Video Recognition'
 
 Models:
   - Name: slowonly_r50_8xb16-8x8x1-256e_imagenet-kinetics400-rgb

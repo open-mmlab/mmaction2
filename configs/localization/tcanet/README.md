@@ -25,9 +25,9 @@ Temporal Boundary Regressor (TBR) is designed to combine these two regression gr
 
 ### HACS dataset
 
-| feature  | gpus | pretrain |  AUC  | AR@1  | AR@5  | AR@10 | AR@100 | gpu_mem(M) | iter time(s) |                    config                     |                     ckpt                     |                     log                     |
-| :------: | :--: | :------: | :---: | :---: | :---: | :---: | :----: | :--------: | :----------: | :-------------------------------------------: | :------------------------------------------: | :-----------------------------------------: |
-| SlowOnly |  2   |   None   | 68.33 | 32.89 | 49.43 | 56.64 | 75.29  |    5412    |      -       | [config](/configs/localization/tcanet/tcanet_2xb8-2048x100-9e_hacs-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-2048x100-9e_hacs-feature_20230619-95fd88b0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-2048x100-9e_hacs-feature.log) |
+| feature  | gpus | pretrain |  AUC  | AR@1 | AR@5  | AR@10 | AR@100 | gpu_mem(M) | iter time(s) |                     config                     |                     ckpt                     |                     log                     |
+| :------: | :--: | :------: | :---: | :--: | :---: | :---: | :----: | :--------: | :----------: | :--------------------------------------------: | :------------------------------------------: | :-----------------------------------------: |
+| SlowOnly |  2   |   None   | 51.39 | 3.61 | 16.92 | 21.94 | 62.80  |     -      |      -       | [config](/configs/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature_20230621-d6bc10b0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.log) |
 
 For more details on data preparation, you can refer to [HACS Data Preparation](/tools/data/hacs/README.md).
 
@@ -36,7 +36,7 @@ For more details on data preparation, you can refer to [HACS Data Preparation](/
 Train TCANet model on HACS dataset with the SlowOnly feature.
 
 ```shell
-bash tools/dist_train.sh configs/localization/tcanet/tcanet_2048x100_2x8_9e_hacs_feature.py 2
+bash tools/dist_train.sh configs/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.py 2
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
@@ -46,7 +46,7 @@ For more details, you can refer to the **Training** part in the [Training and Te
 Test TCANet model on HACS dataset with the SlowOnly feature.
 
 ```shell
-python3 tools/test.py  configs/localization/tcanet/tcanet_2048x100_2x8_9e_hacs_feature.py CHECKPOINT.PTH
+python3 tools/test.py  configs/localization/tcanet/tcanet_2xb8-700x100-9e_hacs-feature.py CHECKPOINT.PTH
 ```
 
 For more details, you can refer to the **Testing** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
