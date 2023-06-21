@@ -3,7 +3,7 @@ _base_ = '../../_base_/default_runtime.py'
 # model settings
 model = dict(
     type='TCANet',
-    feat_dim=2048,
+    feat_dim=700,
     se_sample_num=32,
     action_sample_num=64,
     temporal_dim=100,
@@ -28,7 +28,7 @@ train_pipeline = [
     dict(type='GenerateLocalizationLabels'),
     dict(
         type='PackLocalizationInputs',
-        keys=('gt_bbox', ),
+        keys=('gt_bbox', 'proposals'),
         meta_keys=('video_name', ))
 ]
 
@@ -37,18 +37,28 @@ val_pipeline = [
     dict(type='GenerateLocalizationLabels'),
     dict(
         type='PackLocalizationInputs',
-        keys=('gt_bbox', ),
-        meta_keys=('video_name', 'duration_second', 'duration_frame',
-                   'annotations', 'feature_frame'))
+        keys=('gt_bbox', 'proposals'),
+        meta_keys=(
+            'video_name',
+            'duration_second',
+            'duration_frame',
+            'annotations',
+            'feature_frame',
+        ))
 ]
 
 test_pipeline = [
     dict(type='LoadLocalizationFeature'),
     dict(
         type='PackLocalizationInputs',
-        keys=('gt_bbox', ),
-        meta_keys=('video_name', 'duration_second', 'duration_frame',
-                   'annotations', 'feature_frame'))
+        keys=('gt_bbox', 'proposals'),
+        meta_keys=(
+            'video_name',
+            'duration_second',
+            'duration_frame',
+            'annotations',
+            'feature_frame',
+        ))
 ]
 
 train_dataloader = dict(

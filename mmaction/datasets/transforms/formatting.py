@@ -143,11 +143,21 @@ class PackLocalizationInputs(BaseTransform):
                 'dict of `PackActionInputs`.')
 
         data_sample = ActionDataSample()
-        instance_data = InstanceData()
         for key in self.keys:
-            if key in results:
+            if key not in results:
+                continue
+            if key == 'gt_bbox':
+                instance_data = InstanceData()
                 instance_data[key] = to_tensor(results[key])
-        data_sample.gt_instances = instance_data
+                data_sample.gt_instances = instance_data
+            elif key == 'proposals':
+                instance_data = InstanceData()
+                instance_data[key] = to_tensor(results[key])
+                data_sample.proposals = instance_data
+            else:
+                raise NotImplementedError(
+                    f"Key '{key}' is not supported in `PackLocalizationInputs`"
+                )
 
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
