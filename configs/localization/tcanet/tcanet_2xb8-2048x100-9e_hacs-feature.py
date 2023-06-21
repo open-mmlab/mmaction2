@@ -29,7 +29,7 @@ train_pipeline = [
     dict(
         type='PackLocalizationInputs',
         keys=('gt_bbox', 'proposals'),
-        meta_keys=('video_name',))
+        meta_keys=('video_name', ))
 ]
 
 val_pipeline = [
@@ -38,8 +38,13 @@ val_pipeline = [
     dict(
         type='PackLocalizationInputs',
         keys=('gt_bbox', 'proposals'),
-        meta_keys=('video_name', 'duration_second', 'duration_frame',
-                   'annotations', 'feature_frame',))
+        meta_keys=(
+            'video_name',
+            'duration_second',
+            'duration_frame',
+            'annotations',
+            'feature_frame',
+        ))
 ]
 
 test_pipeline = [
@@ -47,8 +52,13 @@ test_pipeline = [
     dict(
         type='PackLocalizationInputs',
         keys=('gt_bbox', 'proposals'),
-        meta_keys=('video_name', 'duration_second', 'duration_frame',
-                   'annotations', 'feature_frame',))
+        meta_keys=(
+            'video_name',
+            'duration_second',
+            'duration_frame',
+            'annotations',
+            'feature_frame',
+        ))
 ]
 
 train_dataloader = dict(

@@ -5,15 +5,14 @@ import torch
 import torch.nn.functional as F
 from mmcv.cnn import build_norm_layer
 from mmcv.cnn.bricks.transformer import FFN, MultiheadAttention
-from mmcv.transforms import to_tensor
 from mmengine.model import BaseModel
 from torch import Tensor, nn
-from .utils import (batch_iou, bbox_se_transform_batch, bbox_se_transform_inv,
-                   bbox_xw_transform_batch, bbox_xw_transform_inv,
-                   post_processing)
 
 from mmaction.registry import MODELS
 from mmaction.utils import OptConfigType
+from .utils import (batch_iou, bbox_se_transform_batch, bbox_se_transform_inv,
+                    bbox_xw_transform_batch, bbox_xw_transform_inv,
+                    post_processing)
 
 
 class LGTE(BaseModel):
@@ -403,18 +402,20 @@ class TCANet(BaseModel):
     def loss(self, batch_inputs, batch_data_samples, **kwargs):
         features = self._forward(batch_inputs)
         proposals_ = [
-            sample.proposals['proposals'] for sample in batch_data_samples]
+            sample.proposals['proposals'] for sample in batch_data_samples
+        ]
 
         batch_size = len(proposals_)
         proposals_num = max([_.shape[0] for _ in proposals_])
 
         proposals = torch.zeros((batch_size, proposals_num, 3),
-                               device=features.device)
+                                device=features.device)
         for i, proposal in enumerate(proposals_):
             proposals[i, :proposal.shape[0]] = proposal
 
         gt_boxes_ = [
-            sample.gt_instances['gt_bbox'] for sample in batch_data_samples]
+            sample.gt_instances['gt_bbox'] for sample in batch_data_samples
+        ]
         gt_boxes = torch.zeros((batch_size, proposals_num, 2),
                                device=features.device)
         for i, gt_box in enumerate(gt_boxes_):
@@ -455,13 +456,14 @@ class TCANet(BaseModel):
     def predict(self, batch_inputs, batch_data_samples, **kwargs):
         features = self._forward(batch_inputs)
         proposals_ = [
-            sample.proposals['proposals'] for sample in batch_data_samples]
+            sample.proposals['proposals'] for sample in batch_data_samples
+        ]
 
         batch_size = len(proposals_)
         proposals_num = max([_.shape[0] for _ in proposals_])
 
         proposals = torch.zeros((batch_size, proposals_num, 3),
-                               device=features.device)
+                                device=features.device)
         for i, proposal in enumerate(proposals_):
             proposals[i, :proposal.shape[0]] = proposal
 
@@ -476,16 +478,24 @@ class TCANet(BaseModel):
 
         features = features[proposals[:, 2].long()]
 
-        preds_iou1, proposals1 = self.tbr1(proposals, features, None, 0.5, False)[:2]
-        preds_iou2, proposals2 = self.tbr2(proposals1, features, None, 0.6, False)[:2]
-        preds_iou3, proposals3 = self.tbr3(proposals2, features, None, 0.7, False)[:2]
-
+        preds_iou1, proposals1 = self.tbr1(proposals, features, None, 0.5,
+                                           False)[:2]
+        preds_iou2, proposals2 = self.tbr2(proposals1, features, None, 0.6,
+                                           False)[:2]
+        preds_iou3, proposals3 = self.tbr3(proposals2, features, None, 0.7,
+                                           False)[:2]
 
         all_proposals = []
         # all_proposals = [proposals]
-        all_proposals += [torch.cat([proposals1, (scores * preds_iou1).view(-1, 1)], dim=1)]
-        all_proposals += [torch.cat([proposals2, (scores * preds_iou2).view(-1, 1)], dim=1)]
-        all_proposals += [torch.cat([proposals3, (scores * preds_iou3).view(-1, 1)], dim=1)]
+        all_proposals += [
+            torch.cat([proposals1, (scores * preds_iou1).view(-1, 1)], dim=1)
+        ]
+        all_proposals += [
+            torch.cat([proposals2, (scores * preds_iou2).view(-1, 1)], dim=1)
+        ]
+        all_proposals += [
+            torch.cat([proposals3, (scores * preds_iou3).view(-1, 1)], dim=1)
+        ]
 
         all_proposals = torch.cat(all_proposals, dim=0).cpu().numpy()
         video_info = batch_data_samples[0].metainfo
