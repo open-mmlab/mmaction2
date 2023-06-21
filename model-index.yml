@@ -16,6 +16,11 @@ Import:
 - configs/recognition/swin/metafile.yml
 - configs/recognition/c2d/metafile.yml
 - configs/recognition/videomaev2/metafile.yml
+- configs/recognition/omnisource/metafile.yml
+- configs/recognition/mvit/metafile.yml
+- configs/recognition/uniformer/metafile.yml
+- configs/recognition/uniformerv2/metafile.yml
+- configs/recognition/videomae/metafile.yml
 - configs/detection/slowfast/metafile.yml
 - configs/detection/slowonly/metafile.yml
 - configs/detection/acrn/metafile.yml

@@ -19,7 +19,7 @@ If you use mmaction2 as a 3rd-party package, you need to download the conifg and
 
 Run 'mim download mmaction2 --config tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb --dest .' to download the required config.
 
-Run 'wget https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/demo.mp4' to download the desired demo video.
+Run 'wget https://github.com/open-mmlab/mmaction2/blob/main/demo/demo.mp4' to download the desired demo video.
 ```
 
 ```python
@@ -37,4 +37,4 @@ result = inference_recognizer(model, img_path)
 
 `result` is a dictionary containing `pred_scores`.
 
-An action recognition demo can be found in [demo/demo.py](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/demo/demo.py).
+An action recognition demo can be found in [demo/demo.py](https://github.com/open-mmlab/mmaction2/blob/main/demo/demo.py).

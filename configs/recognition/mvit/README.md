@@ -1,6 +1,6 @@
 # MViT V2
 
-> [MViTv2: Improved Multiscale Vision Transformers for Classification and Detection](http://openaccess.thecvf.com//content/CVPR2022/papers/Li_MViTv2_Improved_Multiscale_Vision_Transformers_for_Classification_and_Detection_CVPR_2022_paper.pdf)
+[MViTv2: Improved Multiscale Vision Transformers for Classification and Detection](http://openaccess.thecvf.com//content/CVPR2022/papers/Li_MViTv2_Improved_Multiscale_Vision_Transformers_for_Classification_and_Detection_CVPR_2022_paper.pdf)
 
 <!-- [ALGORITHM] -->
 
@@ -8,14 +8,7 @@
 
 <!-- [ABSTRACT] -->
 
-In this paper, we study Multiscale Vision Transformers (MViTv2) as a unified architecture for image and video
-classification, as well as object detection. We present an improved version of MViT that incorporates
-decomposed relative positional embeddings and residual pooling connections. We instantiate this architecture
-in five sizes and evaluate it for ImageNet classification, COCO detection and Kinetics video recognition where
-it outperforms prior work. We further compare MViTv2s' pooling attention to window attention mechanisms where
-it outperforms the latter in accuracy/compute. Without bells-and-whistles, MViTv2 has state-of-the-art
-performance in 3 domains: 88.8% accuracy on ImageNet classification, 58.7 boxAP on COCO object detection as
-well as 86.1% on Kinetics-400 video classification.
+In this paper, we study Multiscale Vision Transformers (MViTv2) as a unified architecture for image and video classification, as well as object detection. We present an improved version of MViT that incorporates decomposed relative positional embeddings and residual pooling connections. We instantiate this architecture in five sizes and evaluate it for ImageNet classification, COCO detection and Kinetics video recognition where it outperforms prior work. We further compare MViTv2s' pooling attention to window attention mechanisms where it outperforms the latter in accuracy/compute. Without bells-and-whistles, MViTv2 has state-of-the-art performance in 3 domains: 88.8% accuracy on ImageNet classification, 58.7 boxAP on COCO object detection as well as 86.1% on Kinetics-400 video classification.
 
 <!-- [IMAGE] -->
 
@@ -28,7 +21,7 @@ well as 86.1% on Kinetics-400 video classification.
 1. Models with * in `Inference results` are ported from the repo [SlowFast](https://github.com/facebookresearch/SlowFast/) and tested on our data, and models in `Training results` are trained in MMAction2 on our data.
 2. The values in columns named after `reference` are copied from paper, and `reference*` are results using [SlowFast](https://github.com/facebookresearch/SlowFast/) repo and trained on our data.
 3. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
-4. MaskFeat fine-tuning experiment is based on pretrain model from [MMSelfSup](https://github.com/open-mmlab/mmselfsup/tree/dev-1.x/projects/maskfeat_video), and the corresponding reference result is based on pretrain model from [SlowFast](https://github.com/facebookresearch/SlowFast/).
+4. MaskFeat fine-tuning experiment is based on pretrain model from [MMSelfSup](https://github.com/open-mmlab/mmselfsup/tree/main/projects/maskfeat_video), and the corresponding reference result is based on pretrain model from [SlowFast](https://github.com/facebookresearch/SlowFast/).
 5. Due to the different versions of Kinetics-400, our training results are different from paper.
 6. Due to the training efficiency, we currently only provide MViT-small training results, we don't ensure other config files' training accuracy and welcome you to contribute your reproduction results.
 7. We use `repeat augment` in MViT training configs following [SlowFast](https://github.com/facebookresearch/SlowFast/). [Repeat augment](https://arxiv.org/pdf/1901.09335.pdf) takes multiple times of data augment for one video, this way can improve the generalization of the model and relieve the IO stress of loading videos. And please note that the actual batch size is `num_repeats` times of `batch_size` in `train_dataloader`.
@@ -57,7 +50,7 @@ well as 86.1% on Kinetics-400 video classification.
 
 | frame sampling strategy | resolution | backbone |   pretrain    | top1 acc | top5 acc |     reference\* top1 acc      |      reference\* top5 acc      | testing protocol  | FLOPs | params |      config      |      ckpt      |      log      |
 | :---------------------: | :--------: | :------: | :-----------: | :------: | :------: | :---------------------------: | :----------------------------: | :---------------: | :---: | :----: | :--------------: | :------------: | :-----------: |
-|         16x4x1          |  224x224   | MViTv2-S | From scratch  |   80.6   |   94.7   | [80.8](https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md) | [94.6](https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md) | 5 clips x 1 crop  |  64G  | 34.5M  | [config](configs/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb_20230201-23284ff3.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb.log) |
+|         16x4x1          |  224x224   | MViTv2-S | From scratch  |   80.6   |   94.7   | [80.8](https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md) | [94.6](https://github.com/facebookresearch/SlowFast/blob/main/projects/mvitv2/README.md) | 5 clips x 1 crop  |  64G  | 34.5M  | [config](/configs/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb_20230201-23284ff3.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb/mvit-small-p244_32xb16-16x4x1-200e_kinetics400-rgb.log) |
 |         16x4x1          |  224x224   | MViTv2-S | K400 MaskFeat |   81.8   |   95.2   | [81.5](https://github.com/facebookresearch/SlowFast/blob/main/projects/maskfeat/README.md) | [94.9](https://github.com/facebookresearch/SlowFast/blob/main/projects/maskfeat/README.md) | 10 clips x 1 crop |  71G  | 36.4M  | [config](/configs/recognition/mvit/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb_20230201-5bced1d0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/mvit/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb/mvit-small-p244_k400-maskfeat-pre_8xb32-16x4x1-100e_kinetics400-rgb.log) |
 
 the corresponding result without repeat augment is as follows:

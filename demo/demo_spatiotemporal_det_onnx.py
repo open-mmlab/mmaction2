@@ -152,8 +152,8 @@ def parse_args():
     parser.add_argument('out_filename', help='output filename')
     parser.add_argument(
         '--config',
-        default=('configs/detection/ava_kinetics/slowonly_k700-pre-'
-                 'r50_8xb8-8x8x1-10e_ava-kinetics-rgb.py'),
+        default=('configs/detection/slowonly/slowonly_k700-pre'
+                 '-r50_8xb8-8x8x1-10e_ava-kinetics-rgb.py'),
         help='spatialtemporal detection model config file path')
     parser.add_argument(
         '--onnx-file', help='spatialtemporal detection onnx file path')

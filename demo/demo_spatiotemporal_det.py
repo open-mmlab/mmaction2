@@ -154,7 +154,7 @@ def parse_args():
     parser.add_argument('out_filename', help='output filename')
     parser.add_argument(
         '--config',
-        default=('configs/detection/ava/slowonly_kinetics400-pretrained-'
+        default=('configs/detection/slowonly/slowonly_kinetics400-pretrained-'
                  'r101_8xb16-8x8x1-20e_ava21-rgb.py'),
         help='spatialtemporal detection model config file path')
     parser.add_argument(

@@ -67,9 +67,13 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
                 in range [0, 1].
         """
         label = [x.gt_labels.item for x in batch_data_samples]
-        label = torch.tensor(label, dtype=torch.long).to(imgs.device)
-
-        one_hot_label = F.one_hot(label, num_classes=self.num_classes)
+        # single-label classification
+        if label[0].size(0) == 1:
+            label = torch.tensor(label, dtype=torch.long).to(imgs.device)
+            one_hot_label = F.one_hot(label, num_classes=self.num_classes)
+        # multi-label classification
+        else:
+            one_hot_label = torch.stack(label)
 
         mixed_imgs, mixed_label = self.do_blending(imgs, one_hot_label,
                                                    **kwargs)
