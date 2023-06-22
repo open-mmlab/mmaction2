@@ -28,8 +28,8 @@ def extract_frame(vid_item):
     else:
         out_full_path = args.out_dir
 
-    gpu_select = os.getpid() % num_gpu if num_gpu else ""
-    gpu_select = f"CUDA_VISIBLE_DEVICES={gpu_select}"
+    gpu_select = os.getpid() % num_gpu if num_gpu else ''
+    gpu_select = f'CUDA_VISIBLE_DEVICES={gpu_select}'
     run_success = -1
 
     if task == 'rgb':
@@ -80,7 +80,7 @@ def extract_frame(vid_item):
                 cmd = osp.join(
                     f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
                     f' -ns={args.new_short} -v')
-            cmd = f"{gpu_select} {cmd}" if num_gpu else cmd
+            cmd = f'{gpu_select} {cmd}' if num_gpu else cmd
             run_success = os.system(cmd)
     elif task == 'flow':
         if args.input_frames:
@@ -101,7 +101,7 @@ def extract_frame(vid_item):
                 cmd = osp.join(
                     f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                     f' -ns={args.new_short} -v')
-        cmd = f"{gpu_select} {cmd}" if num_gpu else cmd
+        cmd = f'{gpu_select} {cmd}' if num_gpu else cmd
         run_success = os.system(cmd)
     else:
         if args.new_short == 0:
@@ -118,8 +118,8 @@ def extract_frame(vid_item):
             cmd_flow = osp.join(
                 f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                 f' -ns={args.new_short} -v')
-        cmd_rgb = f"{gpu_select} {cmd_rgb}" if num_gpu else cmd_rgb
-        cmd_flow = f"{gpu_select} {cmd_flow}" if num_gpu else cmd_flow
+        cmd_rgb = f'{gpu_select} {cmd_rgb}' if num_gpu else cmd_rgb
+        cmd_flow = f'{gpu_select} {cmd_flow}' if num_gpu else cmd_flow
         run_success_rgb = os.system(cmd_rgb)
         run_success_flow = os.system(cmd_flow)
         if run_success_flow == 0 and run_success_rgb == 0:
@@ -226,7 +226,7 @@ if __name__ == '__main__':
     args = parse_args()
 
     if not args.use_opencv:
-        gpu_max = int(os.popen("nvidia-smi --list-gpus | wc -l").read())
+        gpu_max = int(os.popen('nvidia-smi --list-gpus | wc -l').read())
         if args.num_gpu != gpu_max:
             args.num_gpu = min(args.num_gpu, gpu_max)
             print(f'Using {args.num_gpu} GPUs')
