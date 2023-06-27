@@ -17,19 +17,19 @@
     </sup>
   </div>
 
-[![文档](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/zh_CN/latest/index.html)
-[![构建](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
-[![代码覆盖率](https://codecov.io/gh/open-mmlab/mmaction2/branch/main/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
+[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
+[![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
+[![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/main/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
 [![PyPI](https://img.shields.io/pypi/v/mmaction2)](https://pypi.org/project/mmaction2/)
-[![许可](https://img.shields.io/github/license/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/blob/main/LICENSE)
-[![问题解决平均耗时](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
-[![尚未解决问题占比](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
+[![LICENSE](https://img.shields.io/github/license/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/blob/main/LICENSE)
+[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
+[![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-[📘文档](https://mmaction2.readthedocs.io/zh_CN/latest/index.html) |
-[🛠️安装](https://mmaction2.readthedocs.io/zh_CN/latest/get_started.html#id2) |
-[👀模型库](https://mmaction2.readthedocs.io/zh_CN/latest/modelzoo.html) |
-[🆕更新日志](https://mmaction2.readthedocs.io/zh_CN/latest/notes/changelog.html) |
-[🚀正在进行的项目](https://github.com/open-mmlab/mmaction2/projects) |
+[📘中文文档](https://mmaction2.readthedocs.io/zh_CN/latest/index.html) |
+[🛠️安装指南](https://mmaction2.readthedocs.io/zh_CN/get_started/installation.html) |
+[👀模型库](https://mmaction2.readthedocs.io/zh_CN/latest/modelzoo_statistics.html) |
+[🆕更新日志](https://mmaction2.readthedocs.io/en/latest/notes/changelog.html) |
+[🚀进行中项目](https://github.com/open-mmlab/mmaction2/projects) |
 [🤔报告问题](https://github.com/open-mmlab/mmaction2/issues/new/choose)
 
 </div>
@@ -95,7 +95,7 @@ MMAction2 是一款基于 PyTorch 开发的行为识别开源工具包，是 [op
 
 <div align="center">
   <img src="https://user-images.githubusercontent.com/30782254/155710881-bb26863e-fcb4-458e-b0c4-33cd79f96901.gif" width="580px"/><br>
-    <p style="font-size:1.5vw;">Kinetics-400 中基于骨骼点的时空动作检测及识别结果</p>
+    <p style="font-size:1.5vw;">Kinetics-400 中基于骨骼点的时空行为检测及视频行为识别结果</p>
 </div>
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/main/resources/spatio-temporal-det.gif" width="800px"/><br>
@@ -106,18 +106,18 @@ MMAction2 是一款基于 PyTorch 开发的行为识别开源工具包，是 [op
 
 - **模块化设计**： 我们将视频理解框架拆分成了不同模块，用户可以很方便地通过组合不同的模块来构建出自定义化的视频理解框架。
 
-- **支持四种主要的视频理解任务**： MMAction2 为视频理解任务实现了多种多样的算法，包括行为识别，时序动作定位，时空动作检测，以及基于骨骼点的行为识别。
+- **支持五种主要的视频理解任务**： MMAction2 为视频理解任务实现了多种多样的算法，包括行为识别，时序动作定位，时空动作检测，基于骨骼点的行为识别，以及视频检索。
 
-- **严密的测试和丰富的文档**：我们提供了详尽的文档和 API 参考手册，以及单元测试。
+- **详尽的单元测试和文档**：我们提供了详尽的文档和 API 参考手册，以及单元测试。
 
 ## 🛠️ 安装 [🔝](#-table-of-contents)
 
 MMAction2依赖于 [PyTorch](https://pytorch.org/)，[MMCV](https://github.com/open-mmlab/mmcv)，[MMEngine](https://github.com/open-mmlab/mmengine)，[MMDetection](https://github.com/open-mmlab/mmdetection) （可选）和 [MMPose](https://github.com/open-mmlab/mmpose) （可选）
 
-具体步骤请参见 [安装文档](https://mmaction2.readthedocs.io/zh_cn/latest/get_started/installation.html)。
+具体步骤请参考 [安装文档](https://mmaction2.readthedocs.io/zh_cn/latest/get_started/installation.html)。
 
 <details close>
-<summary>快速入门</summary>
+<summary>快速安装</summary>
 
 ```shell
 conda create --name openmmlab python=3.8 -y
@@ -137,7 +137,7 @@ pip install -v -e .
 
 ## 👀 模型库 [🔝](#-table-of-contents)
 
-结果及模型位于[模型集](https://mmaction2.readthedocs.io/zh_cn/latest/modelzoo_statistics.html)
+结果及模型位于[模型库](https://mmaction2.readthedocs.io/zh_cn/latest/modelzoo_statistics.html)
 
 <details close>
 
@@ -203,7 +203,7 @@ pip install -v -e .
     <td></td>
   </tr>
   <tr>
-    <td colspan="5" style="font-weight:bold;">基于骨架的行为识别</td>
+    <td colspan="5" style="font-weight:bold;">基于骨骼点的行为识别</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
@@ -220,7 +220,7 @@ pip install -v -e .
     <td></td>
   </tr>
   <tr>
-    <td colspan="5" style="font-weight:bold;">Video Retrieval</td>
+    <td colspan="5" style="font-weight:bold;">视频检索</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/retrieval/clip4clip/README.md">CLIP4Clip</a> (ArXiv'2022)</td>
@@ -294,6 +294,9 @@ pip install -v -e .
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/skeleton/README.md">PoseC3D-HMDB51</a> (<a href="https://kennymckormick.github.io/posec3d/">官网</a>) (ArXiv'2021)</td>
   </tr>
   <tr>
+    <td colspan="4" style="font-weight:bold;">视频检索</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/video_retrieval/README.md">MSRVTT</a> (<a href="https://www.microsoft.com/en-us/research/publication/msr-vtt-a-large-video-description-dataset-for-bridging-video-and-language/">官网</a>) (CVPR'2016)</td>
     <td></td>
     <td></td>
@@ -305,7 +308,7 @@ pip install -v -e .
 
 ## 👨‍🏫 新手入门 [🔝](#-table-of-contents)
 
-对于基本用法，我们提供了如下用户指南：
+我们提供了一系列简明的教程，帮助新用户轻松上手使用：
 
 - [从 MMAction2 0.X 迁移](https://mmaction2.readthedocs.io/zh_cn/latest/migration.html)
 - [学习配置相关知识](https://mmaction2.readthedocs.io/zh_cn/latest/user_guides/config.html)
