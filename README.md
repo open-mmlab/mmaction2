@@ -231,8 +231,6 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
     <td></td>
   </tr>
 
-</tr>
-
 </table>
 
 </details>
@@ -321,7 +319,7 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
 For tutorials, we provide the following user guides for basic usage:
 
 - [Migration from MMAction2 0.X](https://mmaction2.readthedocs.io/en/latest/migration.html)
-- [Learn about Configs](https://mmaction2.readthedocs.io/en/latest/user_guides/config.html#)
+- [Learn about Configs](https://mmaction2.readthedocs.io/en/latest/user_guides/config.html)
 - [Prepare Datasets](https://mmaction2.readthedocs.io/en/latest/user_guides/prepare_dataset.html)
 - [Inference with Existing Models](https://mmaction2.readthedocs.io/en/latest/user_guides/inference.html)
 - [Training and Testing](https://mmaction2.readthedocs.io/en/latest/user_guides/train_test.html)
