@@ -57,19 +57,21 @@ You can switch between Chinese and English documents in the lower-left corner of
    :maxdepth: 1
    :caption: Model Zoo
 
-   model_zoo/modelzoo.md
-   model_zoo/recognition_models.md
-   model_zoo/detection_models.md
-   model_zoo/skeleton_models.md
-   model_zoo/localization_models.md
-
+   modelzoo_statistics.md
+   model_zoo/recognition.md
+   model_zoo/recognition_audio.md
+   model_zoo/skeleton.md
+   model_zoo/detection.md
+   model_zoo/retrieval.md
+   model_zoo/localization.md
 
 .. toctree::
    :maxdepth: 1
    :caption: Dataset Zoo
+   :glob:
 
-   datasetzoo_overview.md
-   datasetzoo.md
+   datasetzoo_statistics.md
+   dataset_zoo/*
 
 .. toctree::
    :maxdepth: 1

@@ -64,8 +64,16 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
+# Auto generate documentation
 docs/*/_build/
+docs/*/model_zoo/
+docs/*/dataset_zoo/
+docs/*/_model_zoo.rst
+docs/*/modelzoo_statistics.md
+docs/*/datasetzoo_statistics.md
+docs/*/projectzoo.md
+docs/*/papers/
+docs/*/api/generated/
 
 # PyBuilder
 target/

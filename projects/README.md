@@ -1,8 +1,8 @@
 # Welcome to Projects of MMAction2
 
-In this folder, we welcome all contribution of deep-learning video understanding models from community.
+In this folder, we welcome all contributions of deep-learning video understanding models from the community.
 
-Here, these requirements, e.g., code standards, are not that strict as in the core package. Thus, developers from the community can implement their algorithms much more easily and efficiently in MMAction2. We appreciate all contributions from community to make MMAction2 greater.
+Here, these requirements, e.g., code standards, are not as strict as in the core package. Thus, developers from the community can implement their algorithms much more easily and efficiently in MMAction2. We appreciate all contributions from the community to make MMAction2 greater.
 
 Here is an [example project](./example_project) about how to add your algorithms easily.
 

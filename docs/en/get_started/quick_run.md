@@ -39,7 +39,7 @@ You should be able to see a pop-up video and the inference result printed out in
 If you are running MMAction2 on a server without a GUI or via an SSH tunnel with X11 forwarding disabled, you may not see the pop-up window.
 ```
 
-A detailed description of MMAction2's inference interface can be found [here](/demo/README.md#inferencer).
+A detailed description of MMAction2's inference interface can be found [here](https://github.com/open-mmlab/mmaction2/tree/main/demo/README.md#inferencer).
 
 In addition to using our well-provided pre-trained models, you can also train models on your own datasets. In the next section, we will take you through the basic functions of MMAction2 by training TSN on the tiny [Kinetics](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) dataset as an example.
 
@@ -119,7 +119,7 @@ For a more detailed description of config, please refer to [here](../user_guides
 
 ## Browse the Dataset
 
-Before we start the training, we can also visualize the frames processed by training-time data transforms. It's quite simple: pass the config file we need to visualize into the [browse_dataset.py](/tools/analysis_tools/browse_dataset.py) script.
+Before we start the training, we can also visualize the frames processed by training-time data transforms. It's quite simple: pass the config file we need to visualize into the [browse_dataset.py](https://github.com/open-mmlab/mmaction2/tree/main/tools/analysis_tools/browse_dataset.py) script.
 
 ```Bash
 python tools/visualizations/browse_dataset.py \

@@ -1,6 +1,6 @@
 Collections:
   - Name: CLIP4Clip
-    README: configs/skeleton/stgcn/README.md
+    README: configs/retrieval/clip4clip/README.md
     Paper:
       URL: https://arxiv.org/abs/2104.08860
       Title: 'CLIP4Clip: An Empirical Study of CLIP for End to End Video Clip Retrieval'

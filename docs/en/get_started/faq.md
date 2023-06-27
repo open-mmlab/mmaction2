@@ -12,7 +12,7 @@ We list some common issues faced by many users and their corresponding solutions
   - [Testing](#testing)
 
 Feel free to enrich the list if you find any frequent issues and have ways to help others to solve them.
-If the contents here do not cover your issue, please create an issue using the [provided templates](/.github/ISSUE_TEMPLATE/error-report.md) and make sure to fill in all required information in the template.
+If the contents here do not cover your issue, please create an issue using the [provided templates](https://github.com/open-mmlab/mmaction2/tree/main/.github/ISSUE_TEMPLATE/error-report.md) and make sure to fill in all required information in the template.
 
 ## Installation
 
@@ -88,7 +88,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **How to set `load_from` value in config files to finetune models?**
 
-  In MMAction2, We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](/docs/en/user_guides/config.md),
+  In MMAction2, We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](https://github.com/open-mmlab/mmaction2/tree/main/docs/en/user_guides/config.md),
   users can directly change it by setting `load_from` in their configs.
 
 - **How to use `RawFrameDataset` for training?**

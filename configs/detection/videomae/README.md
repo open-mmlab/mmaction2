@@ -44,7 +44,7 @@ python tools/train.py configs/detection/ava_kinetics/vit-base-p16_videomae-k400-
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Test
 
@@ -61,7 +61,7 @@ python tools/test.py configs/detection/ava_kinetics/vit-base-p16_videomae-k400-p
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
 
 ## Citation
 
