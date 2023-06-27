@@ -1,53 +1,43 @@
-# Finetuning Models
+# 模型微调
 
-This tutorial provides instructions for users to use the pre-trained models
-to finetune them on other datasets, so that better performance can be achieved.
+本教程提供了使用预训练模型在其他数据集上进行微调的指导。通过微调，可以获得更好的性能。
 
-- [Finetuning Models](#finetuning-models)
-  - [Outline](#outline)
-  - [Choose Template Config](#choose-template-config)
-  - [Modify Head](#modify-head)
-  - [Modify Dataset](#modify-dataset)
-  - [Modify Training Schedule](#modify-training-schedule)
-  - [Use Pre-Trained Model](#use-pre-trained-model)
-  - [Start Training](#start-training)
+- [模型微调](#模型微调)
+  - [概述](#概述)
+  - [选择模板配置](#选择模板配置)
+  - [修改 Head](#修改-head)
+  - [修改数据集](#修改数据集)
+  - [修改训练计划](#修改训练计划)
+  - [使用预训练模型](#使用预训练模型)
+  - [开始训练](#开始训练)
 
-## Outline
+## 概述
 
-There are two steps to finetune a model on a new dataset.
+在新数据集上进行模型微调有两个步骤。
 
-1. Add support for the new dataset. See [Prepare Dataset](prepare_dataset.md) and [Customize Dataset](../advanced_guides/customize_dataset.md).
-2. Modify the configs. This will be discussed in this tutorial.
+1. 添加对新数据集的支持。请参考[准备数据集](prepare_dataset.md)和[自定义数据集](../advanced_guides/customize_dataset.md)。
+2. 修改配置文件。本教程将讨论这一部分。
 
-## Choose Template Config
+## 选择模板配置
 
-Here, we would like to take `configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py` as an example. We first copy this config file to the same folder and rename it to `tsn_ucf101.py`, then four parts in the config need attention, specifically, add new keys for non-existing keys and modify the original keys for existing keys.
+这里我们以 `configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py` 为例。我们首先将该配置文件复制到同一文件夹，并将其重命名为 `tsn_ucf101.py`，然后需要注意配置中的四个部分，具体来说，为不存在的键添加新键，并修改现有键的原始键。
 
-## Modify Head
+## 修改 Head
 
-The `num_classes` in the `cls_head` need to be changed to the class number of the new dataset.
-The weights of the pre-trained models are reused except for the final prediction layer.
-So it is safe to change the class number.
-In our case, UCF101 has 101 classes.
-So we change it from 400 (class number of Kinetics-400) to 101.
+`cls_head` 中的 `num_classes` 需要更改为新数据集的类别数。预训练模型的权重会被重用，除了最后的预测层。因此，更改类别数是安全的。在我们的例子中，UCF101 有 101 个类别。所以我们将其从 400（Kinetics-400 的类别数）改为 101。
 
 ```python
 # model settings
 model = dict(
     cls_head=dict(
         type='TSNHead',
-        num_classes=101  # change from 400 to 101
+        num_classes=101  # 将 400 修改为 101
         ))
 ```
 
-## Modify Dataset
+## 修改数据集
 
-MMAction2 supports UCF101, Kinetics-400, Moments in Time, Multi-Moments in Time, THUMOS14,
-Something-Something V1&V2, ActivityNet Dataset.
-The users may need to adapt one of the above datasets to fit their special datasets.
-You could refer to [Prepare Dataset](prepare_dataset.md) and [Customize Datast](../advanced_guides/customize_dataset.md) for more details.
-In our case, UCF101 is already supported by various dataset types, like `VideoDataset`,
-so we change the config as follows.
+MMAction2 支持 UCF101、Kinetics-400、Moments in Time、Multi-Moments in Time、THUMOS14、Something-Something V1&V2、ActivityNet 数据集。用户可能需要将上述其中一个数据集适应到他们的特殊数据集上。你可以参考[准备数据集](prepare_dataset.md)和[自定义数据集](../advanced_guides/customize_dataset.md)了解更多细节。在我们的例子中，UCF101 已经由各种数据集类型支持，例如 `VideoDataset`，因此我们将配置修改如下。
 
 ```python
 # dataset settings
@@ -58,14 +48,14 @@ ann_file_train = 'data/ucf101/ucf101_train_list.txt'
 ann_file_val = 'data/ucf101/ucf101_val_list.txt'
 ```
 
-## Modify Training Schedule
+## 修改训练计划
 
-Finetuning usually requires a smaller learning rate and fewer training epochs.
+微调通常需要较小的学习率和较少的训练周期。
 
 ```python
 train_cfg = dict(
     type='EpochBasedTrainLoop',
-    max_epochs=50,  # change from 100 to 50
+    max_epochs=50,  # 将 100 修改为 50
     val_begin=1,
     val_interval=1)
 val_cfg = dict(type='ValLoop')
@@ -76,9 +66,9 @@ param_scheduler = [
     dict(
         type='MultiStepLR',
         begin=0,
-        end=50,  # change from 100 to 50
+        end=50,  # 将 100 修改为 50
         by_epoch=True,
-        milestones=[20, 40],  # change milestones
+        milestones=[20, 40],  # 修改 milestones
         gamma=0.1)
 ]
 
@@ -86,25 +76,24 @@ param_scheduler = [
 optim_wrapper = dict(
     optimizer=dict(
         type='SGD',
-        lr=0.005, # change from 0.01 to 0.005
+        lr=0.005, # 将 0.01 修改为 0.005
         momentum=0.9,
         weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
 ```
 
-## Use Pre-Trained Model
+## 使用预训练模型
 
-To use the pre-trained model for the whole network, the new config adds the link of pre-trained models in the `load_from`.
-We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](config.md), users can directly change it by setting `load_from` in their configs.
+为了在整个网络上使用预训练模型，新配置文件在 `load_from` 中添加了预训练模型的链接。我们在 `configs/_base_/default_runtime.py` 中设置 `load_from=None` 作为默认值，并且根据[继承设计](config.md)，用户可以通过在其配置中设置 `load_from` 来直接更改它。
 
 ```python
 # use the pre-trained model for the whole TSN network
-load_from = 'https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth'  # model path can be found in model zoo
+load_from = 'https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth'  # 模型路径可以在模型库中找到
 ```
 
-## Start Training
+## 开始训练
 
-Now, we have finished the fine-tuning config file as follows:
+现在，我们已经完成了微调的配置文件，如下所示：
 
 ```python
 _base_ = [
@@ -116,7 +105,7 @@ _base_ = [
 model = dict(
     cls_head=dict(
         type='TSNHead',
-        num_classes=101  # change from 400 to 101
+        num_classes=101  # 将 400 修改为 101
         ))
 
 # dataset settings
@@ -208,7 +197,7 @@ test_dataloader = dict(
 
 train_cfg = dict(
     type='EpochBasedTrainLoop',
-    max_epochs=50,  # change from 100 to 50
+    max_epochs=50,  # 将 100 修改为 50
     val_begin=1,
     val_interval=1)
 val_cfg = dict(type='ValLoop')
@@ -219,9 +208,9 @@ param_scheduler = [
     dict(
         type='MultiStepLR',
         begin=0,
-        end=50,  # change from 100 to 50
+        end=50,  # 将 100 修改为 50
         by_epoch=True,
-        milestones=[20, 40],  # change milestones
+        milestones=[20, 40],  # 修改 milestones
         gamma=0.1)
 ]
 
@@ -229,7 +218,7 @@ param_scheduler = [
 optim_wrapper = dict(
     optimizer=dict(
         type='SGD',
-        lr=0.005, # change from 0.01 to 0.005
+        lr=0.005, # 将 0.01 修改为 0.005
         momentum=0.9,
         weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
@@ -250,18 +239,18 @@ load_from = 'https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_im
 
 ```
 
-An easier way is to inherit the kinetics400 config and only specify the modified keys. Please make sure that the custom config is in the same folder with `configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py`.
+另一种更简单的方法是继承 kinetics400 配置，并只指定修改的键。请确保自定义配置与 `configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py` 在同一个文件夹中。
 
 ```python
 _base_ = [
-    'tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py'  # inherit template config
+    'tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py'  # 继承模板配置
 ]
 
 # model settings
 model = dict(
     cls_head=dict(
         type='TSNHead',
-        num_classes=101))  # change from 400 to 101
+        num_classes=101))  # 将 400 修改为 101
 
 
 # dataset settings
@@ -286,7 +275,7 @@ test_dataloader = dict(
 
 train_cfg = dict(
     type='EpochBasedTrainLoop',
-    max_epochs=50,  # change from 100 to 50
+    max_epochs=50,  # 将 100 修改为 50
     val_begin=1,
     val_interval=1)
 val_cfg = dict(type='ValLoop')
@@ -296,16 +285,16 @@ param_scheduler = [
     dict(
         type='MultiStepLR',
         begin=0,
-        end=50,  # change from 100 to 50
+        end=50,  # 将 100 修改为 50
         by_epoch=True,
-        milestones=[20, 40],  # change milestones
+        milestones=[20, 40],  # 修改 milestones
         gamma=0.1)
 ]
 
 optim_wrapper = dict(
     optimizer=dict(
         type='SGD',
-        lr=0.005, # change from 0.01 to 0.005
+        lr=0.005, # 将 0.01 修改为 0.005
         momentum=0.9,
         weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
@@ -315,17 +304,17 @@ load_from = 'https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_im
 
 ```
 
-You can use the following command to finetune a model on your dataset.
+你可以使用以下命令在你的数据集上微调模型。
 
 ```shell
-python tools/train.py ${CONFIG_FILE} [optional arguments]
+python tools/train.py ${CONFIG_FILE} [可选参数]
 ```
 
-Example: train the TSN model on Kinetics-400 dataset in a deterministic option.
+例如：在确定性选项下，在 Kinetics-400 数据集上训练 TSN 模型。
 
 ```shell
 python tools/train.py configs/recognition/tsn/tsn_ucf101.py  \
-    --seed=0 --deterministic
+  --seed=0 --deterministic
 ```
 
-For more details, you can refer to the **Training** part in the [Training and Test Tutorial](train_test.md).
+更多细节，请参考[训练和测试教程](train_test.md)中的**训练**部分。

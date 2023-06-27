@@ -35,23 +35,7 @@ You can switch between Chinese and English documents in the lower-left corner of
    advanced_guides/customize_optimizer.md
    advanced_guides/customize_logging.md
    advanced_guides/deploy.md
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Advanced Guides
    useful_tools.md
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Migration
-
-   migration.md
-
-.. toctree::
-   :maxdepth: 1
-   :caption: API Reference
-
-   api.rst
 
 .. toctree::
    :maxdepth: 1
@@ -78,6 +62,18 @@ You can switch between Chinese and English documents in the lower-left corner of
    :caption: Projects
 
    projectzoo.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Migration
+
+   migration.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API Reference
+
+   api.rst
 
 .. toctree::
    :maxdepth: 1

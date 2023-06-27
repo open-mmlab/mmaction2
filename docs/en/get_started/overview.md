@@ -77,8 +77,8 @@ We have prepared a wealth of documents to meet your various needs:
 <details open>
 <summary><b>For supported model zoo and dataset zoo</b></summary>
 
-- [Model Zoo](../model_zoo/modelzoo.md)
-- [Dataset Zoo](../datasetzoo.md)
+- [Model Zoo](../modelzoo_statistics.md)
+- [Dataset Zoo](../datasetzoo_statistics.md)
 
 </details>
 

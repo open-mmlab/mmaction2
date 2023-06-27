@@ -72,7 +72,7 @@ python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.
 
 ## 可视化
 
-为了可视化骨架数据，用户需要准备 RGB 的视频。详情可参考 [visualize_heatmap_volume](/demo/visualize_heatmap_volume.ipynb)。这里提供一些 NTU-60 和 FineGYM 上的例子
+为了可视化骨架数据，用户需要准备 RGB 的视频。详情可参考 \[visualize_heatmap_volume\]。这里提供一些 NTU-60 和 FineGYM 上的例子
 
 <table>
 <thead>
@@ -139,4 +139,4 @@ MMAction2 提供脚本以将其他第三方项目的骨骼标注转至 MMAction2
 - [x] NTU120_XSet
 - [x] UCF101
 - [x] HMDB51
-- [ ] Kinetics
+- [x] Kinetics

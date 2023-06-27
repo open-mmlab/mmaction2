@@ -1,6 +1,142 @@
 # Changelog
 
-## 1.0.0rc1 (14/10/2022)
+## 1.0.0 (4/6/2023)
+
+**Highlights**
+
+- Support RGB-PoseC3D(CVPR'2022).
+- Support training UniFormer V2(Arxiv'2022).
+- Support MSG3D(CVPR'2020) and CTRGCN(CVPR'2021) in projects.
+- Refactor and provide more user-friendly documentation.
+
+**New Features**
+
+- Support RGB-PoseC3D ([2182](https://github.com/open-mmlab/mmaction2/pull/2182))
+- Support training UniFormer V2 ([2221](https://github.com/open-mmlab/mmaction2/pull/2221))
+- Support MSG3D and CTRGCN in projects. ([2269](https://github.com/open-mmlab/mmaction2/pull/2269), [2291](https://github.com/open-mmlab/mmaction2/pull/2291))
+
+**Improvements**
+
+- Use MMEngine to calculate FLOPs ([2300](https://github.com/open-mmlab/mmaction2/pull/2300))
+- Speed up LFB training ([2294](https://github.com/open-mmlab/mmaction2/pull/2294))
+- Support multiprocessing on AVA evaluation ([2146](https://github.com/open-mmlab/mmaction2/pull/2146))
+- Add a demo for exporting spatial-temporal detection model to ONNX ([2225](https://github.com/open-mmlab/mmaction2/pull/2225))
+- Update spatial-temporal detection related folders ([2262](https://github.com/open-mmlab/mmaction2/pull/2262))
+
+**Bug Fixes**
+
+- Fix flip config of TSM for sth v1/v2 dataset ([#2247](https://github.com/open-mmlab/mmaction2/pull/2247))
+- Fix circle ci ([2336](https://github.com/open-mmlab/mmaction2/pull/2336), [2334](https://github.com/open-mmlab/mmaction2/pull/2334))
+- Fix accepting an unexpected argument local-rank in PyTorch 2.0 ([2320](https://github.com/open-mmlab/mmaction2/pull/2320))
+- Fix TSM config link ([2315](https://github.com/open-mmlab/mmaction2/pull/2315))
+- Fix numpy version requirement in CI ([2284](https://github.com/open-mmlab/mmaction2/pull/2284))
+- Fix NTU pose extraction script ([2246](https://github.com/open-mmlab/mmaction2/pull/2246))
+- Fix TSM-MobileNet V2 ([2332](https://github.com/open-mmlab/mmaction2/pull/2332))
+- Fix command bugs in localization tasks' README ([2244](https://github.com/open-mmlab/mmaction2/pull/2244))
+- Fix duplicate name in DecordInit and SampleAVAFrame ([2251](https://github.com/open-mmlab/mmaction2/pull/2251))
+- Fix channel order when showing video ([2308](https://github.com/open-mmlab/mmaction2/pull/2308))
+- Specify map_location to cpu when using \_load_checkpoint ([2252](https://github.com/open-mmlab/mmaction2/pull/2254))
+
+**Documentation**
+
+- Refactor and provide more user-friendly documentation ([2341](https://github.com/open-mmlab/mmaction2/pull/2341), [2312](https://github.com/open-mmlab/mmaction2/pull/2312), [2325](https://github.com/open-mmlab/mmaction2/pull/2325))
+- Add README_zh-CN ([2252](https://github.com/open-mmlab/mmaction2/pull/2252))
+- Add social networking links ([2294](https://github.com/open-mmlab/mmaction2/pull/2294))
+- Fix sthv2 dataset annotations preparation document ([2248](https://github.com/open-mmlab/mmaction2/pull/2248))
+
+## 1.0.0rc3 (2/10/2023)
+
+**Highlights**
+
+- Support Action Recognition model UniFormer V1(ICLR'2022), UniFormer V2(Arxiv'2022).
+- Support training MViT V2(CVPR'2022), and MaskFeat(CVPR'2022) fine-tuning.
+
+**New Features**
+
+- Support UniFormer V1/V2 ([#2153](https://github.com/open-mmlab/mmaction2/pull/2153))
+- Support training MViT, and MaskFeat fine-tuning ([#2186](https://github.com/open-mmlab/mmaction2/pull/2186))
+- Support a unified inference interface: Inferencer ([#2164](https://github.com/open-mmlab/mmaction2/pull/2164))
+
+**Improvements**
+
+- Support load data list from multi-backends ([#2176](https://github.com/open-mmlab/mmaction2/pull/2176))
+
+**Bug Fixes**
+
+- Upgrade isort to fix CI ([#2198](https://github.com/open-mmlab/mmaction2/pull/2198))
+- Fix bug in skeleton demo ([#2214](https://github.com/open-mmlab/mmaction2/pull/2214))
+
+**Documentation**
+
+- Add Chinese documentation for config.md ([#2188](https://github.com/open-mmlab/mmaction2/pull/2188))
+- Add readme for Omnisource ([#2205](https://github.com/open-mmlab/mmaction2/pull/2205))
+
+## 1.0.0rc2 (1/10/2023)
+
+**Highlights**
+
+- Support Action Recognition model VideoMAE(NeurIPS'2022), MViT V2(CVPR'2022), C2D and skeleton-based action recognition model STGCN++
+- Support Omni-Source training on ImageNet and Kinetics datasets
+- Support exporting spatial-temporal detection models to ONNX
+
+**New Features**
+
+- Support VideoMAE ([#1942](https://github.com/open-mmlab/mmaction2/pull/1942))
+- Support MViT V2 ([#2007](https://github.com/open-mmlab/mmaction2/pull/2007))
+- Support C2D ([#2022](https://github.com/open-mmlab/mmaction2/pull/2022))
+- Support AVA-Kinetics dataset ([#2080](https://github.com/open-mmlab/mmaction2/pull/2080))
+- Support STGCN++ ([#2156](https://github.com/open-mmlab/mmaction2/pull/2156))
+- Support exporting spatial-temporal detection models to ONNX ([#2148](https://github.com/open-mmlab/mmaction2/pull/2148))
+- Support Omni-Source training on ImageNet and Kinetics datasets ([#2143](https://github.com/open-mmlab/mmaction2/pull/2143))
+
+**Improvements**
+
+- Support repeat batch data augmentation ([#2170](https://github.com/open-mmlab/mmaction2/pull/2170))
+- Support calculating FLOPs tool powered by fvcore ([#1997](https://github.com/open-mmlab/mmaction2/pull/1997))
+- Support Spatial-temporal detection demo ([#2019](https://github.com/open-mmlab/mmaction2/pull/2019))
+- Add SyncBufferHook and add randomness config in train.py ([#2044](https://github.com/open-mmlab/mmaction2/pull/2044))
+- Refactor gradcam ([#2049](https://github.com/open-mmlab/mmaction2/pull/2049))
+- Support init_cfg in Swin and ViTMAE ([#2055](https://github.com/open-mmlab/mmaction2/pull/2055))
+- Refactor STGCN and related pipelines ([#2087](https://github.com/open-mmlab/mmaction2/pull/2087))
+- Refactor visualization tools ([#2092](https://github.com/open-mmlab/mmaction2/pull/2092))
+- Update `SampleFrames` transform and improve most models' performance ([#1942](https://github.com/open-mmlab/mmaction2/pull/1942))
+- Support real-time webcam demo ([#2152](https://github.com/open-mmlab/mmaction2/pull/2152))
+- Refactor and enhance 2s-AGCN ([#2130](https://github.com/open-mmlab/mmaction2/pull/2130))
+- Support adjusting fps in `SampleFrame` ([#2157](https://github.com/open-mmlab/mmaction2/pull/2157))
+
+**Bug Fixes**
+
+- Fix CI upstream library dependency ([#2000](https://github.com/open-mmlab/mmaction2/pull/2000))
+- Fix SlowOnly readme typos and results ([#2006](https://github.com/open-mmlab/mmaction2/pull/2006))
+- Fix VideoSwin readme ([#2010](https://github.com/open-mmlab/mmaction2/pull/2010))
+- Fix tools and mim error ([#2028](https://github.com/open-mmlab/mmaction2/pull/2028))
+- Fix Imgaug wrapper ([#2024](https://github.com/open-mmlab/mmaction2/pull/2024))
+- Remove useless scripts ([#2032](https://github.com/open-mmlab/mmaction2/pull/2032))
+- Fix multi-view inference ([#2045](https://github.com/open-mmlab/mmaction2/pull/2045))
+- Update mmcv maximum version to 1.8.0 ([#2047](https://github.com/open-mmlab/mmaction2/pull/2047))
+- Fix torchserver dependency ([#2053](https://github.com/open-mmlab/mmaction2/pull/2053))
+- Fix `gen_ntu_rgbd_raw` script ([#2076](https://github.com/open-mmlab/mmaction2/pull/2076))
+- Update AVA-Kinetics experiment configs and results ([#2099](https://github.com/open-mmlab/mmaction2/pull/2099))
+- Add `joint.pkl` and `bone.pkl` used in multi-stream fusion tool ([#2106](https://github.com/open-mmlab/mmaction2/pull/2106))
+- Fix lint CI config ([#2110](https://github.com/open-mmlab/mmaction2/pull/2110))
+- Update testing accuracy for modified `SampleFrames` ([#2117](https://github.com/open-mmlab/mmaction2/pull/2117)), ([#2121](https://github.com/open-mmlab/mmaction2/pull/2121)), ([#2122](https://github.com/open-mmlab/mmaction2/pull/2122)), ([#2124](https://github.com/open-mmlab/mmaction2/pull/2124)), ([#2125](https://github.com/open-mmlab/mmaction2/pull/2125)), ([#2126](https://github.com/open-mmlab/mmaction2/pull/2126)), ([#2129](https://github.com/open-mmlab/mmaction2/pull/2129)), ([#2128](https://github.com/open-mmlab/mmaction2/pull/2128))
+- Fix timm related bug ([#1976](https://github.com/open-mmlab/mmaction2/pull/1976))
+- Fix `check_videos.py` script ([#2134](https://github.com/open-mmlab/mmaction2/pull/2134))
+- Update CI maximum torch version to 1.13.0 ([#2118](https://github.com/open-mmlab/mmaction2/pull/2118))
+
+**Documentation**
+
+- Add MMYOLO description in README ([#2011](https://github.com/open-mmlab/mmaction2/pull/2011))
+- Add v1.x introduction in README ([#2023](https://github.com/open-mmlab/mmaction2/pull/2023))
+- Fix link in README ([#2035](https://github.com/open-mmlab/mmaction2/pull/2035))
+- Refine some docs ([#2038](https://github.com/open-mmlab/mmaction2/pull/2038)), ([#2040](https://github.com/open-mmlab/mmaction2/pull/2040)), ([#2058](https://github.com/open-mmlab/mmaction2/pull/2058))
+- Update TSN/TSM Readme ([#2082](https://github.com/open-mmlab/mmaction2/pull/2082))
+- Add chinese document ([#2083](https://github.com/open-mmlab/mmaction2/pull/2083))
+- Adjust document structure ([#2088](https://github.com/open-mmlab/mmaction2/pull/2088))
+- Fix Sth-Sth and Jester dataset links ([#2103](https://github.com/open-mmlab/mmaction2/pull/2103))
+- Fix doc link ([#2131](https://github.com/open-mmlab/mmaction2/pull/2131))
+
+## 1.0.0rc1 (10/14/2022)
 
 **Highlights**
 
