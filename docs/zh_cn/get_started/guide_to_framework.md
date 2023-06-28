@@ -10,8 +10,8 @@
   - [步骤2：构建一个数据集和数据加载器](#步骤2构建一个数据集和数据加载器)
   - [步骤3：构建一个识别器](#步骤3构建一个识别器)
   - [步骤4：构建一个评估指标](#步骤4构建一个评估指标)
-  - [步骤5：使用本地PyTorch训练和测试](#步骤5使用本地pytorch训练和测试)
-  - [步骤6：使用MMEngine训练和测试（推荐）](#步骤6使用mmengine训练和测试推荐)
+  - [步骤5：使用本地 PyTorch 训练和测试](#步骤5使用本地-pytorch-训练和测试)
+  - [步骤6：使用 MMEngine 训练和测试（推荐）](#步骤6使用-mmengine-训练和测试推荐)
 
 首先，我们需要初始化注册表的 `scope` ，以确保每个模块都在 `mmaction` 范围下注册。有关注册表的更多详细信息，请参考[ MMEngine 教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html) 。
 

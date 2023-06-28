@@ -39,7 +39,7 @@ TASK_MAP = dict(
     localization='时序动作定位模型',
     recognition='行为识别模型',
     skeleton='基于骨骼点的行为识别模型',
-    retrieval='视频检测模型',
+    retrieval='视频检索模型',
     recognition_audio='基于声音的行为识别模型')
 
 model_index = load(str(MMACT_ROOT / 'model-index.yml'))

@@ -5,7 +5,7 @@
 - 修改拼写错误或代码错误
 - 新功能和组件
 - 添加文档或将文档翻译成其他语言
-- 添加关于视频理解算法的新项目（推荐），具体细节请参考[这里](https://github.com/open-mmlab/mmaction2/tree/main/projects/README.md)
+- 添加关于视频理解算法的新项目（推荐），具体细节请参考[这里](../projectzoo.md)
 
 ## 工作流程
 
