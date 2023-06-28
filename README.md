@@ -27,7 +27,7 @@
 
 [📘Documentation](https://mmaction2.readthedocs.io/en/latest/) |
 [🛠️Installation](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) |
-[👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/model_zoo/modelzoo.html) |
+[👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo_statistics.html) |
 [🆕Update News](https://mmaction2.readthedocs.io/en/latest/notes/changelog.html) |
 [🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
 [🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
@@ -106,7 +106,7 @@ It is a part of the [OpenMMLab](http://openmmlab.com/) project.
 
 - **Modular design**: We decompose a video understanding framework into different components. One can easily construct a customized video understanding framework by combining different modules.
 
-- **Support four major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, and skeleton-based action detection.
+- **Support five major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, skeleton-based action detection and video retrieval.
 
 - **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
 
@@ -231,8 +231,6 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
     <td></td>
   </tr>
 
-</tr>
-
 </table>
 
 </details>
@@ -321,7 +319,7 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
 For tutorials, we provide the following user guides for basic usage:
 
 - [Migration from MMAction2 0.X](https://mmaction2.readthedocs.io/en/latest/migration.html)
-- [Learn about Configs](https://mmaction2.readthedocs.io/en/latest/user_guides/config.html#)
+- [Learn about Configs](https://mmaction2.readthedocs.io/en/latest/user_guides/config.html)
 - [Prepare Datasets](https://mmaction2.readthedocs.io/en/latest/user_guides/prepare_dataset.html)
 - [Inference with Existing Models](https://mmaction2.readthedocs.io/en/latest/user_guides/inference.html)
 - [Training and Testing](https://mmaction2.readthedocs.io/en/latest/user_guides/train_test.html)
@@ -366,20 +364,24 @@ We wish that the toolbox and benchmark could serve the growing research communit
 
 - [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab foundational library for training deep learning models.
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
+- [MIM](https://github.com/open-mmlab/mim): MIM installs OpenMMLab packages.
+- [MMEval](https://github.com/open-mmlab/mmeval): A unified evaluation library for multiple machine learning libraries.
 - [MMPreTrain](https://github.com/open-mmlab/mmpretrain): OpenMMLab pre-training toolbox and benchmark.
-- [MMagic](https://github.com/open-mmlab/mmagic): Open**MM**Lab **A**dvanced, **G**enerative and **I**ntelligent **C**reation toolbox.
 - [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab detection toolbox and benchmark.
 - [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab's next-generation platform for general 3D object detection.
 - [MMRotate](https://github.com/open-mmlab/mmrotate): OpenMMLab rotated object detection toolbox and benchmark.
-- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab video perception toolbox and benchmark.
+- [MMYOLO](https://github.com/open-mmlab/mmyolo): OpenMMLab YOLO series toolbox and benchmark.
 - [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab semantic segmentation toolbox and benchmark.
 - [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab text detection, recognition, and understanding toolbox.
 - [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab pose estimation toolbox and benchmark.
 - [MMHuman3D](https://github.com/open-mmlab/mmhuman3d): OpenMMLab 3D human parametric model toolbox and benchmark.
+- [MMSelfSup](https://github.com/open-mmlab/mmselfsup): OpenMMLab self-supervised learning toolbox and benchmark.
+- [MMRazor](https://github.com/open-mmlab/mmrazor): OpenMMLab model compression toolbox and benchmark.
 - [MMFewShot](https://github.com/open-mmlab/mmfewshot): OpenMMLab fewshot learning toolbox and benchmark.
 - [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab's next-generation action understanding toolbox and benchmark.
+- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab video perception toolbox and benchmark.
 - [MMFlow](https://github.com/open-mmlab/mmflow): OpenMMLab optical flow toolbox and benchmark.
-- [MMDeploy](https://github.com/open-mmlab/mmdeploy): OpenMMLab Model Deployment Framework.
-- [MMRazor](https://github.com/open-mmlab/mmrazor): OpenMMLab model compression toolbox and benchmark.
-- [MIM](https://github.com/open-mmlab/mim): MIM installs OpenMMLab packages.
+- [MMagic](https://github.com/open-mmlab/mmagic): Open**MM**Lab **A**dvanced, **G**enerative and **I**ntelligent **C**reation toolbox.
+- [MMGeneration](https://github.com/open-mmlab/mmgeneration): OpenMMLab image and video generative models toolbox.
+- [MMDeploy](https://github.com/open-mmlab/mmdeploy): OpenMMLab model deployment framework.
 - [Playground](https://github.com/open-mmlab/playground): A central hub for gathering and showcasing amazing projects built upon OpenMMLab.
