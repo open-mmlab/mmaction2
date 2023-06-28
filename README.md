@@ -27,7 +27,7 @@
 
 [📘Documentation](https://mmaction2.readthedocs.io/en/latest/) |
 [🛠️Installation](https://mmaction2.readthedocs.io/en/latest/get_started/installation.html) |
-[👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/model_zoo/modelzoo.html) |
+[👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo_statistics.html) |
 [🆕Update News](https://mmaction2.readthedocs.io/en/latest/notes/changelog.html) |
 [🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
 [🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
