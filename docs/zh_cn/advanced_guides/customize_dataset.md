@@ -3,13 +3,13 @@
 在本教程中，我们将介绍如何通过在线转换来自定义你的数据集。
 
 - [自定义数据集](#自定义数据集)
-  - [MMAction2数据集概述](#MMAction2数据集概述)
+  - [MMAction2 数据集概述](#mmaction2-数据集概述)
   - [定制新的数据集](#定制新的数据集)
-  - [为PoseDataset自定义关键点格式](#为PoseDataset自定义关键点格式)
+  - [为 PoseDataset 自定义关键点格式](#为-posedataset-自定义关键点格式)
 
-## MMAction2数据集概述
+## MMAction2 数据集概述
 
-MMAction2 提供了任务特定的 `Dataset` 类，例如用于动作识别的 `VideoDataset`/`RawframeDataset`，用于时空动作检测的 `AVADataset`，用于基于骨骼的动作识别的`PoseDataset`。这些任务特定的数据集只需要实现 `load_data_list(self)` 来从注释文件生成数据列表。剩下的函数由超类（即 `BaseActionDataset` 和 `BaseDataset`）自动处理。下表显示了模块的固有关系和主要方法。
+MMAction2 提供了任务特定的 `Dataset` 类，例如用于动作识别的 `VideoDataset`/`RawframeDataset`，用于时空动作检测的 `AVADataset`，用于基于骨骼的动作识别的`PoseDataset`。这些任务特定的数据集只需要实现 `load_data_list(self)` 来从注释文件生成数据列表。剩下的函数由超类（即 `BaseActionDataset` 和 `BaseDataset`）自动处理。下表显示了模块的继承关系和主要方法。
 
 | 类名                           | 类方法                                                                                                                                                        |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -17,9 +17,9 @@ MMAction2 提供了任务特定的 `Dataset` 类，例如用于动作识别的 `
 | `MMAction2::BaseActionDataset` | `get_data_info(self, idx)` <br> 给定 `idx`，从数据列表中返回相应的数据样本。                                                                                  |
 | `MMEngine::BaseDataset`        | `__getitem__(self, idx)` <br> 给定 `idx`，调用 `get_data_info` 获取数据样本，然后调用 `pipeline` 在 `train_pipeline` 或 `val_pipeline` 中执行数据变换和增强。 |
 
-## 定制新的数据集
+## 定制新的数据集类
 
-虽然在大多数情况下，使用你自己的数据的首选方法是离线转换，但 MMAction2 提供了一个方便的过程来创建一个定制的 `Dataset` 类。如前所述，任务特定的数据集只需要实现 `load_data_list(self)` 来从注释文件生成数据列表。值得注意的是，`data_list` 中的元素是包含后续流程中必要字段的 `dict`。
+大多数情况下，把你的数据集离线转换成指定格式是首选方法，但 MMAction2 提供了一个方便的过程来创建一个定制的 `Dataset` 类。如前所述，任务特定的数据集只需要实现 `load_data_list(self)` 来从注释文件生成数据列表。请注意，`data_list` 中的元素是包含后续流程中必要字段的 `dict`。
 
 以 `VideoDataset` 为例，`train_pipeline`/`val_pipeline` 在 `DecordInit` 中需要 `'filename'`，在 `PackActionInputs` 中需要 `'label'`。因此，`data_list` 中的数据样本必须包含2个字段：`'filename'`和`'label'`。
 请参考[定制数据流水线](customize_pipeline.md)以获取有关 `pipeline` 的更多详细信息。
@@ -28,7 +28,7 @@ MMAction2 提供了任务特定的 `Dataset` 类，例如用于动作识别的 `
 data_list.append(dict(filename=filename, label=label))
 ```
 
-然而，`AVADataset` 更为复杂，`data_list` 中的数据样本包含有关视频数据的几个字段。此外，它重写了 `get_data_info(self, idx)` 以转换在时空动作检测数据流水线中不可或缺的键。
+`AVADataset` 会更加复杂，`data_list` 中的数据样本包含有关视频数据的几个字段。此外，它重写了 `get_data_info(self, idx)` 以转换在时空动作检测数据流水线中需要用的字段。
 
 ```python
 
@@ -58,11 +58,11 @@ class AVADataset(BaseActionDataset):
       return data_info
 ```
 
-## 为PoseDataset自定义关键点格式
+## 为 PoseDataset 自定义关键点格式
 
 MMAction2 目前支持三种关键点格式：`coco`，`nturgb+d` 和 `openpose`。如果你使用其中一种格式，你可以简单地在以下模块中指定相应的格式：
 
-对于图卷积网络，如AAGCN，STGCN，...
+对于图卷积网络，如 AAGCN，STGCN，...
 
 - `pipeline`：在 `JointToBone` 中的参数 `dataset`。
 - `backbone`：在图卷积网络中的参数 `graph_cfg`。
@@ -70,7 +70,7 @@ MMAction2 目前支持三种关键点格式：`coco`，`nturgb+d` 和 `openpose`
 对于 PoseC3D：
 
 - `pipeline`：在 `Flip` 中，根据关键点的对称关系指定 `left_kp` 和 `right_kp`。
-- `pipeline`：在 `GeneratePoseTarget` 中，如果 `with_limb` 为 `True`，指定`skeletons`，`left_limb`，`right_limb`，如果 `with_kp` 为`True`，指定`left_kp` 和 `right_kp`。
+- `pipeline`：在 `GeneratePoseTarget` 中，如果 `with_limb` 为 `True`，指定`skeletons`，`left_limb`，`right_limb`，如果 `with_kp` 为 `True`，指定`left_kp` 和 `right_kp`。
 
 如果使用自定义关键点格式，需要在 `backbone` 和 `pipeline` 中都包含一个新的图布局。这个布局将定义关键点及其连接关系。
 
@@ -85,7 +85,7 @@ self.inward = [(15, 13), (13, 11), (16, 14), (14, 12), (11, 5),
 self.center = 0
 ```
 
-同样，我们在 `JointToBone` 中定义了 `pairs`，添加了一个骨链 `(0, 0)` 以使骨链的数量对齐到节点。coco数据集的 `pairs` 如下所示，`JointToBone` 中的 `pairs` 的顺序无关紧要。
+同样，我们在 `JointToBone` 中定义了 `pairs`，添加了一个 bone `(0, 0)` 以使 bone 的数量对齐到 joint。coco数据集的 `pairs` 如下所示，`JointToBone` 中的 `pairs` 的顺序无关紧要。
 
 ```python
 

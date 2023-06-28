@@ -20,14 +20,6 @@ You can switch between Chinese and English documents in the lower-left corner of
 
 .. toctree::
    :maxdepth: 1
-   :caption: Advanced Guides
-
-   advanced_guides/customize_dataset.md
-   advanced_guides/customize_pipeline.md
-   advanced_guides/customize_logging.md
-
-.. toctree::
-   :maxdepth: 1
    :caption: Useful Tools
 
    user_guides/useful_tools.md

@@ -9,7 +9,7 @@ In this tutorial, we will introduce some methods about how to customize your own
 
 ## General understanding of the Dataset in MMAction2
 
-MMAction2 provides task-specific `Dataset` class, e.g. `VideoDataset`/`RawframeDataset` for action recognition, `AVADataset` for spatio-temporal action detection, `PoseDataset` for skeleton-based action recognition. These task-specific datasets only require the implementation of `load_data_list(self)` for generating a data list from the annotation file. The remaining functions are automatically handled by the superclass (i.e., `BaseActionDataset` and `BaseDataset`). The following table shows the inherent relationship and the main method of the modules.
+MMAction2 provides task-specific `Dataset` class, e.g. `VideoDataset`/`RawframeDataset` for action recognition, `AVADataset` for spatio-temporal action detection, `PoseDataset` for skeleton-based action recognition. These task-specific datasets only require the implementation of `load_data_list(self)` for generating a data list from the annotation file. The remaining functions are automatically handled by the superclass (i.e., `BaseActionDataset` and `BaseDataset`). The following table shows the inheritance relationship and the main method of the modules.
 
 | Class Name                     | Class Method                                                                                                                                                               |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -1,6 +1,6 @@
 # 自定义日志
 
-MMAction2 在运行过程中会产生大量的日志，如损失、迭代时间、学习率等。在这一部分，我们将向你介绍如何输出自定义日志。有关日志系统的更多详细信息，请参考 [MMEngine 教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/logging.html)。
+MMAction2 在运行过程中会产生大量的日志，如损失、迭代时间、学习率等。在这一部分，我们将向你介绍如何输出自定义日志。有关日志系统的更多详细信息，请参考 [MMEngine 教程](https://mmengine.readthedocs.io/zh_CN/latest/advanced_tutorials/logging.html)。
 
 - [自定义日志](#自定义日志)
   - [灵活的日志系统](#灵活的日志系统)
