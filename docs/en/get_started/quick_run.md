@@ -1,6 +1,6 @@
 # Quick Run
 
-This chapter will introduce you to the fundamental functionalities of MMAction2. We assume that you have [installed MMAction2 from source](../installation#best-practices).
+This chapter will introduce you to the fundamental functionalities of MMAction2. We assume that you have [installed MMAction2 from source](installation.md#best-practices).
 
 - [Quick Run](#quick-run)
   - [Inference](#inference)
@@ -212,7 +212,7 @@ And get the outputs like:
 03/24 17:00:59 - mmengine - INFO - Epoch(test) [10/10]  acc/top1: 1.0000  acc/top5: 1.0000  acc/mean1: 0.9000data_time: 0.0420  time: 1.0795
 ```
 
-The model achieves an hmean of 1.0000 on this dataset.
+The model achieves an top1-accuracy of 1.0000 on this dataset.
 
 ```{note}
 For advanced usage of testing, such as CPU testing, multi-GPU testing, and cluster testing, please refer to [Training and Testing](../user_guides/train_test.md).

@@ -1,19 +1,19 @@
-# 20分钟MMAction2框架指南
+# 20分钟了解 MMAction2 框架设计
 
-在本教程中，我们将通过一个视频动作识别的一步步的例子来演示我们的`MMACTION2 1.0`的整体架构。
+在本教程中，我们将通过一个视频动作识别的手把手教程来演示 `MMACTION2 1.0` 的整体架构。
 
 本教程的目录如下:
 
-- [20分钟MMAction2框架指南](#20分钟MMAction2框架指南)
-  - [步骤0：准备数据](#步骤0：准备数据)
-  - [步骤1：构建一个管道](#步骤1：构建一个管道)
-  - [步骤2：构建一个数据集和数据加载器](#步骤2：构建一个数据集和数据加载器)
-  - [步骤3：构建一个识别器](#步骤3：构建一个识别器)
-  - [步骤4：构建一个评估指标](#步骤4：构建一个评估指标)
-  - [步骤5：使用本地PyTorch训练和测试](#步骤5：使用本地PyTorch训练和测试)
-  - [步骤6：使用MMEngine训练和测试（推荐）](#步骤6：使用MMEngine训练和测试（推荐）)
+- [20分钟了解 MMAction2 框架设计](#20分钟了解-mmaction2-框架设计)
+  - [步骤0：准备数据](#步骤0准备数据)
+  - [步骤1：构建一个数据流水线](#步骤1构建一个数据流水线)
+  - [步骤2：构建一个数据集和数据加载器](#步骤2构建一个数据集和数据加载器)
+  - [步骤3：构建一个识别器](#步骤3构建一个识别器)
+  - [步骤4：构建一个评估指标](#步骤4构建一个评估指标)
+  - [步骤5：使用本地PyTorch训练和测试](#步骤5使用本地pytorch训练和测试)
+  - [步骤6：使用MMEngine训练和测试（推荐）](#步骤6使用mmengine训练和测试推荐)
 
-首先，我们需要初始化注册表的`scope` ，以确保每个模块都在`mmaction`范围下注册。有关注册表的更多详细信息，请参考[MMEngine教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html) 。
+首先，我们需要初始化注册表的 `scope` ，以确保每个模块都在 `mmaction` 范围下注册。有关注册表的更多详细信息，请参考[ MMEngine 教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/registry.html) 。
 
 ```python
 from mmaction.utils import register_all_modules
@@ -23,7 +23,7 @@ register_all_modules(init_default_scope=True)
 
 ## 步骤0：准备数据
 
-请下载我们自制的[kinetics400_tiny](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) 数据集，并将其提取到`$MMACTION2/data`目录。
+请下载我们准备的[精简版 kinetics400](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) 数据集，并将其提取到 `$MMACTION2/data` 目录。
 
 解压后的目录结构应如下所示:
 
@@ -44,7 +44,7 @@ mmaction2
 │   │       ├── ...
 ```
 
-以下是标注文件`kinetics_tiny_train_video.txt`中的一些示例:
+以下是标注文件 `kinetics_tiny_train_video.txt` 中的一些示例:
 
 ```
 D32_1gwq35E.mp4 0
@@ -54,11 +54,11 @@ oXy-e_P_cAI.mp4 0
 h2YqqUhnR34.mp4 0
 ```
 
-文件中的每一行表示每一个视频的标注，其中第一项表示视频文件名(如，`D32_1gwq35E.mp4`)，第二项表示相应的标签(如，`D32_1gwq35E.mp4`的标签是`0`)。在这个数据集中，只有`两个`类别。
+文件中的每一行表示每一个视频的标注，其中第一项表示视频文件名(如 `D32_1gwq35E.mp4` )，第二项表示相应的标签(如 `D32_1gwq35E.mp4` 的标签是 `0` )。在这个数据集中，只有 `两个` 类别。
 
-## 步骤1：构建一个管道
+## 步骤1：构建一个数据流水线
 
-为了`解码`、`采样`、`调整大小`、`裁剪`、`格式化`和`打包`输入视频和相应的注释，我们需要设计一个管道来处理这些过程。具体来说，我们设计了7个`Transform`类来构建这个视频处理管道。注意，OpenMMLab中的所有`Transform`类都必须继承自`mmcv`中的`BaseTransform`类，实现抽象方法`Transform`，并注册到`TRANSFORMS`注册表。有关数据转换的更多详细信息，请参阅[MMEngine教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/data_transform.html) 。
+为了实现 `解码`、`采样`、`调整大小`、`裁剪`、`格式化` 和 `打包` 视频数据和相应的标签，我们需要设计一个数据流水线来处理这些过程。具体来说，我们设计了7个 `Transform` 类来构建这个视频处理流水线。注意，OpenMMLab 中的所有`Transform` 类都必须继承自 `mmcv` 中的 `BaseTransform` 类，实现抽象方法 `transform`，并注册到 `TRANSFORMS` 注册表。有关数据转换的更多详细信息，请参阅[ MMEngine 教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/data_transform.html) 。
 
 ```python
 import mmcv
@@ -188,7 +188,7 @@ class VideoPack(BaseTransform):
         return packed_results
 ```
 
-下面，我们提供了一个代码片段(使用标注文件中的`D32_1gwq35E.mp4 0`)来演示如何使用管道。
+下面，我们提供了一个代码片段(使用标注文件中的 `D32_1gwq35E.mp4 0` )来演示如何使用数据流水线。
 
 ```python
 import os.path as osp
@@ -233,7 +233,7 @@ label:  tensor([0])
 
 ## 步骤2：构建一个数据集和数据加载器
 
-OpenMMLab中的所有`Dataset`类都必须继承自`mmengine`中的`BaseDataset`类。我们可以通过覆盖`load_data_list`方法来定制注释加载过程。此外，我们可以通过覆盖`get_data_info`方法，向作为输入传递给`pipeline`的`results`字典添加更多信息。有关`BaseDataset`类的更多详细信息，请参阅[MMEngine教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/basedataset.html) 。
+OpenMMLab中的所有 `Dataset` 类都必须继承自 `mmengine` 中的 `BaseDataset` 类。我们可以通过覆盖 `load_data_list` 方法来定制注释加载过程。此外，我们可以通过覆盖 `get_data_info` 方法，向 `results` 字典添加更多字段，它将作为输入传给 `pipeline` 。有关 `BaseDataset` 类的更多详细信息，请参阅[ MMEngine 教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/basedataset.html) 。
 
 ```python
 import os.path as osp
@@ -268,7 +268,7 @@ class DatasetZelda(BaseDataset):
         return data_info
 ```
 
-接下来，我们将演示如何使用dataset和dataloader来索引数据。我们将使用`Runner.build_dataloader`方法来构造数据加载器。有关dataloader的更多详细信息，请参阅[MMEngine教程](https://mmengine.readthedocs.io/en/latest/tutorials/dataset.html#details-on-dataloader) 。
+接下来，我们将演示如何使用 dataset 和 dataloader 来索引数据。我们将使用 `Runner.build_dataloader` 方法来构造 dataloader。有关 dataloader 的更多详细信息，请参阅[ MMEngine 教程](https://mmengine.readthedocs.io/en/latest/tutorials/dataset.html#details-on-dataloader) 。
 
 ```python
 from mmaction.registry import DATASETS
@@ -354,13 +354,13 @@ assert len(batched_inputs) == BATCH_SIZE
 assert len(batched_data_sample) == BATCH_SIZE
 ```
 
-终端输出应该与[步骤1：构建一个管道](#步骤1：构建一个管道)中的输出相同。
+终端输出应该与[步骤1：构建一个数据流水线](#步骤1：构建一个数据流水线)中的输出相同。
 
 ## 步骤3：构建一个识别器
 
-接下来，我们将构建`recognizer`，它主要由三部分组成：用于批处理和规范化数据的`data preprocessor`，用于特征提取的`backbone`和用于分类的`cls_head`。
+接下来，我们将构建 `recognizer`，它主要由三部分组成：用于批处理和规范化数据的 `data preprocessor`，用于特征提取的 `backbone` 和用于分类的 `cls_head` 。
 
-`data_preprocessor`的实现如下:
+`data_preprocessor` 的实现如下:
 
 ```python
 import torch
@@ -391,7 +391,7 @@ class DataPreprocessorZelda(BaseDataPreprocessor):
         return data
 ```
 
-以下是data_preprocessor的用法：将从[步骤2：构建一个数据集和数据加载器](#步骤2：构建一个数据集和数据加载器)中获得的`batched_packed_results`提供给`data_preprocessor`进行批处理和归一化。
+以下是 data_preprocessor 的用法：将从[步骤2：构建一个数据集和数据加载器](#步骤2：构建一个数据集和数据加载器)中获得的 `batched_packed_results` 提供给 `data_preprocessor` 进行批处理和归一化。
 
 ```python
 from mmaction.registry import MODELS
@@ -411,7 +411,7 @@ print(preprocessed_inputs['inputs'].shape)
 torch.Size([2, 1, 3, 16, 224, 224])
 ```
 
-`backbone`、`cls_head`和`recognizer`的实现如下:
+`backbone`、`cls_head` 和 `recognizer` 的实现如下:
 
 ```python
 import torch
@@ -554,7 +554,7 @@ class RecognizerZelda(BaseModel):
             raise RuntimeError(f'Invalid mode: {mode}')
 ```
 
-`init_cfg`用于模型权重初始化。有关模型权重初始化的更多信息，请参阅[MMEngine教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/initialize.html) 。上述模块的用法如下:
+`init_cfg` 用于模型权重初始化。有关模型权重初始化的更多信息，请参阅[ MMEngine 教程](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/initialize.html) 。上述模块的用法如下:
 
 ```python
 import torch
@@ -642,7 +642,7 @@ Scores of Sample[0] tensor([0.5240, 0.4760])
 
 ## 步骤4：构建一个评估指标
 
-请注意，`OpenMMLab`中的所有`Metric`类都必须继承自`mmengine`中的`BaseMetric`类，并实现抽象方法`process`和`compute_metrics`。有关评估的更多信息，请参阅[MMEngine教程](https://mmengine.readthedocs.io/en/latest/tutorials/evaluation.html) 。
+请注意，`OpenMMLab` 中的所有 `Metric` 类都必须继承自 `mmengine` 中的 `BaseMetric` 类，并实现抽象方法 `process` 和`compute_metrics`。有关评估的更多信息，请参阅[ MMEngine 教程](https://mmengine.readthedocs.io/en/latest/tutorials/evaluation.html) 。
 
 ```python
 import copy
@@ -696,7 +696,7 @@ print(acc)
 OrderedDict([('topk1', 0.5), ('topk5', 1.0)])
 ```
 
-## 步骤5：使用本地PyTorch训练和测试
+## 步骤5：使用本地 PyTorch 训练和测试
 
 ```python
 import torch.optim as optim
@@ -737,9 +737,9 @@ for epoch in range(max_epochs):
             print(f'{name}: ', topk)
 ```
 
-## 步骤6：使用MMEngine训练和测试（推荐）
+## 步骤6：使用 MMEngine 训练和测试（推荐）
 
-关于训练和测试的更多细节，你可以参考[MMAction2教程](https://mmaction2.readthedocs.io/en/latest/user_guides/train_test.html) 。有关`Runner`的更多信息，请参阅[MMEngine教程](https://mmengine.readthedocs.io/en/latest/tutorials/runner.html) 。
+关于训练和测试的更多细节，你可以参考[ MMAction2 教程](https://mmaction2.readthedocs.io/en/latest/user_guides/train_test.html) 。有关 `Runner` 的更多信息，请参阅[ MMEngine 教程](https://mmengine.readthedocs.io/en/latest/tutorials/runner.html) 。
 
 ```python
 from mmengine.runner import Runner
