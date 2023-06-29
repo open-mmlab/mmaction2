@@ -36,7 +36,7 @@ cd $MMACTION2/tools/data/sthv2/
 
 如果用户只想使用视频加载训练，则该部分是 **可选项**。
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs/zh_cn/get_started/installation.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。
 

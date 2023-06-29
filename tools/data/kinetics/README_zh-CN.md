@@ -79,7 +79,7 @@ python ../resize_videos.py ../../../data/${DATASET}/videos_train/ ../../../data/
 
 如果用户仅使用 video loader，则可以跳过本步。
 
-在提取之前，请参考 [安装教程](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在提取之前，请参考 [安装指南](/docs/zh_cn/get_started/installation.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果用户有足够的 SSD 空间，那么建议将视频抽取为 RGB 帧以提升 I/O 性能。用户可以使用以下脚本为抽取得到的帧文件夹建立软连接：
 
@@ -110,7 +110,7 @@ bash extract_frames.sh ${DATASET}
 ```
 
 以上的命令生成短边长度为 256 的 RGB 帧和光流帧。如果用户需要生成短边长度为 320 的帧 (320p)，或是固定分辨率为 340 x 256 的帧，可改变参数 `--new-short 256` 为 `--new-short 320` 或 `--new-width 340 --new-height 256`。
-更多细节可以参考 [数据准备](/docs_zh_CN/data_preparation.md)。
+更多细节可以参考 [数据准备](/docs/zh_cn/user_guides/prepare_dataset.md)。
 
 ## 4. 生成文件列表
 
@@ -152,4 +152,4 @@ mmaction2
 
 ```
 
-关于 Kinetics 数据集上的训练与测试，请参照 [基础教程](/docs_zh_CN/getting_started.md)。
+关于 Kinetics 数据集上的训练与测试，请参照 [训练教程](/docs/zh_cn/user_guides/train_test.md)。

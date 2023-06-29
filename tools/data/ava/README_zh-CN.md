@@ -56,7 +56,7 @@ bash cut_videos.sh
 
 ## 4. 提取 RGB 帧和光流
 
-在提取之前，请参考 [安装教程](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在提取之前，请参考 [安装指南](/docs/zh_cn/get_started/installation.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果用户有足够的 SSD 空间，那么建议将视频抽取为 RGB 帧以提升 I/O 性能。用户可以使用以下脚本为抽取得到的帧文件夹建立软连接：
 
@@ -131,4 +131,4 @@ mmaction2
 |   │   │   │   ├── ...
 ```
 
-关于 AVA 数据集上的训练与测试，请参照 [基础教程](/docs_zh_CN/getting_started.md)。
+关于 AVA 数据集上的训练与测试，请参照 [训练教程](/docs/zh_cn/user_guides/train_test.md)。

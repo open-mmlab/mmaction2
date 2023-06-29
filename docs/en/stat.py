@@ -34,6 +34,14 @@ METRIC_ALIAS = {
     'Top 5 Accuracy': 'Top-5 (%)',
 }
 
+TASK_MAP = dict(
+    detection='Spatio Temporal Action Detection Models',
+    localization='Action Localization Models',
+    recognition='Action Recognition Models',
+    skeleton='Skeleton-based Action Recognition Models',
+    retrieval='Video Retrieval Models',
+    recognition_audio='Audio-based Action Recognition Models')
+
 model_index = load(str(MMACT_ROOT / 'model-index.yml'))
 
 
@@ -101,14 +109,6 @@ def count_papers(collections):
 
 count_papers(model_index.collections)
 
-task_map = dict(
-    detection='Spatio Temporal Action Detection Models',
-    localization='Action Localization Models',
-    recognition='Action Recognition Models',
-    skeleton='Skeleton-based Action Recognition Models',
-    retrieval='Video Retrieval Models',
-    recognition_audio='Audio-based Action Recognition Models')
-
 
 def generate_paper_page(collection):
 
@@ -120,7 +120,7 @@ def generate_paper_page(collection):
     if not copy.exists():
         with open(copy, 'w') as copy_file:
             task = readme_path.parents[1].name
-            head_content = f'# {task_map[task]}\n'
+            head_content = f'# {TASK_MAP[task]}\n'
             copy_file.write(head_content)
 
     def lower_heading(match):

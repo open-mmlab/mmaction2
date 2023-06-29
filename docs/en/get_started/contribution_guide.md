@@ -5,12 +5,12 @@ All kinds of contributions are welcome, including but not limited to the followi
 - Fixes (typo, bugs)
 - New features and components
 - Add documentation or translate the documentation into other languages
-- Add new project (Recommended) about video understanding algorithm with less restriction, refer to [here](https://github.com/open-mmlab/mmaction2/tree/main/projects/README.md) for details
+- Add new project (Recommended) about video understanding algorithm with less restriction, refer to [here](../projectzoo.md) for details
 
 ## Workflow
 
 1. Fork and pull the latest mmaction2
-2. Checkout a new branch with a meaningful name (do not use master branch for PRs)
+2. Checkout a new branch with a meaningful name (do not use main branch for PRs)
 3. Commit your changes
 4. Create a PR
 

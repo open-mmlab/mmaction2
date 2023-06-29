@@ -36,7 +36,7 @@ python tools/deployment/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}
 
 E.g.,
 
-```shelltsn_r50
+```shell
 python tools/deployment/publish_model.py work_dirs/tsn_r50_8xb32-1x1x3-100e_kinetics400-rgb/latest.pth tsn_r50_1x1x3_100e_kinetics400_rgb.pth
 ```
 
@@ -85,7 +85,7 @@ Take joint-bone fusion as an example, which is a general practice in the task of
 python tools/analysis_tools/report_accuracy.py --preds demo/fuse/joint.pkl demo/fuse/bone.pkl --coefficients 1.0 1.0
 ```
 
-```{note}
+```
 Mean Class Accuracy: 0.9180
 Top 1 Accuracy: 0.9333
 Top 5 Accuracy: 0.9833
