@@ -7,7 +7,7 @@ from mmengine.runner.checkpoint import _load_checkpoint_with_prefix
 from torch import Tensor, nn
 
 from mmaction.registry import MODELS
-from mmaction.utils import ConfigType
+from mmaction.utils import ConfigType, get_str_type
 from .base import BaseHead
 
 
@@ -66,7 +66,7 @@ class UniFormerHead(BaseHead):
 
     def init_weights(self) -> None:
         """Initiate the parameters from scratch."""
-        if self.init_cfg['type'] == 'Pretrained':
+        if get_str_type(self.init_cfg['type']) == 'Pretrained':
             assert self.channel_map is not None, \
                 'load cls_head weights needs to specify the channel map file'
             logger = MMLogger.get_current_instance()

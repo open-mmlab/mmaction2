@@ -14,6 +14,7 @@ from mmengine.runner.checkpoint import _load_checkpoint_with_prefix
 from mmengine.utils import to_3tuple
 
 from mmaction.registry import MODELS
+from mmaction.utils import get_str_type
 from ..utils.embed import PatchEmbed3D
 
 
@@ -328,7 +329,7 @@ class MultiScaleAttention(BaseModule):
         super().init_weights()
 
         if (isinstance(self.init_cfg, dict)
-                and self.init_cfg['type'] == 'Pretrained'):
+                and get_str_type(self.init_cfg['type']) == 'Pretrained'):
             # Suppress rel_pos_zero_init if use pretrained model.
             return
 
@@ -854,7 +855,7 @@ class MViT(BaseModule):
             super().init_weights()
 
             if (isinstance(self.init_cfg, dict)
-                    and self.init_cfg['type'] == 'Pretrained'):
+                    and get_str_type(self.init_cfg['type']) == 'Pretrained'):
                 # Suppress default init if use pretrained model.
                 return
 

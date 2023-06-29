@@ -82,6 +82,13 @@ def test_tsn_mmcls_backbone():
     input_shape = (1, 3, 3, 32, 32)
     train_test_step(config, input_shape)
 
+    from mmcls.models import ResNeXt
+    mmcls_backbone['type'] = ResNeXt
+    config.model['backbone'] = mmcls_backbone
+
+    input_shape = (1, 3, 3, 32, 32)
+    train_test_step(config, input_shape)
+
 
 def test_tsn_timm_backbone():
     # test tsn from timm
@@ -118,6 +125,14 @@ def test_tsn_tv_backbone():
     config.model['backbone']['pretrained'] = None
     # test tv backbone
     tv_backbone = dict(type='torchvision.densenet161', pretrained=True)
+    config.model['backbone'] = tv_backbone
+    config.model['cls_head']['in_channels'] = 2208
+
+    input_shape = (1, 3, 3, 32, 32)
+    train_test_step(config, input_shape)
+
+    from torchvision.models import densenet161
+    tv_backbone = dict(type=densenet161, pretrained=True)
     config.model['backbone'] = tv_backbone
     config.model['cls_head']['in_channels'] = 2208
 

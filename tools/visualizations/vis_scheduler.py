@@ -18,6 +18,8 @@ from mmengine.visualization import Visualizer
 from rich.progress import BarColumn, MofNCompleteColumn, Progress, TextColumn
 from torch.utils.data import DataLoader
 
+from mmaction.utils import get_str_type
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -225,7 +227,8 @@ def main():
     if 'by_epoch' in cfg.train_cfg:
         by_epoch = cfg.train_cfg.get('by_epoch')
     elif 'type' in cfg.train_cfg:
-        by_epoch = cfg.train_cfg.get('type') == 'EpochBasedTrainLoop'
+        by_epoch = get_str_type(cfg.train_cfg.get('by_epoch')) \
+                    == 'EpochBasedTrainLoop'
     else:
         raise ValueError('please set `train_cfg`.')
 

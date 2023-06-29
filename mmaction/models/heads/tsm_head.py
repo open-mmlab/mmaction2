@@ -4,7 +4,7 @@ from mmengine.model.weight_init import normal_init
 from torch import Tensor, nn
 
 from mmaction.registry import MODELS
-from mmaction.utils import ConfigType
+from mmaction.utils import ConfigType, get_str_type
 from .base import AvgConsensus, BaseHead
 
 
@@ -54,7 +54,7 @@ class TSMHead(BaseHead):
         consensus_ = consensus.copy()
 
         consensus_type = consensus_.pop('type')
-        if consensus_type == 'AvgConsensus':
+        if get_str_type(consensus_type) == 'AvgConsensus':
             self.consensus = AvgConsensus(**consensus_)
         else:
             self.consensus = None
