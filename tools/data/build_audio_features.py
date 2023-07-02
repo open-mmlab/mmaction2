@@ -38,11 +38,16 @@ class AudioTools:
             <https://pypi.org/project/lws/1.2.6/>`_.
 
     Args:
-        frame_rate (int): The frame rate per second of the video. Defaults to 30.
-        sample_rate (int): The sample rate for audio sampling. Defaults to 16000.
-        num_mels (int): Number of channels of the melspectrogram. Defaults to 80.
-        fft_size (int): fft_size / sample_rate is window size. Defaults to 1280.
-        hop_size (int): hop_size / sample_rate is step size. Defaults to 320.
+        frame_rate (int): The frame rate per second of the video.
+            Defaults to 30.
+        sample_rate (int): The sample rate for audio sampling.
+            Defaults to 16000.
+        num_mels (int): Number of channels of the melspectrogram.
+            Defaults to 80.
+        fft_size (int): fft_size / sample_rate is window size.
+            Defaults to 1280.
+        hop_size (int): hop_size / sample_rate is step size.
+            Defaults to 320.
     """
 
     def __init__(self,
