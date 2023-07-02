@@ -1635,7 +1635,6 @@ class LoadAudioFeature(BaseTransform):
 
     Args:
         pad_method (str): Padding method. Defaults to ``'zero'``.
-
     """
 
     def __init__(self, pad_method: str = 'zero') -> None:

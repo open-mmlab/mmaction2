@@ -2,7 +2,7 @@
 import random
 import warnings
 from numbers import Number
-from typing import Sequence, Dict
+from typing import Sequence
 
 import cv2
 import mmcv

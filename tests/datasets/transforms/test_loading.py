@@ -10,8 +10,7 @@ import torch
 from mmengine.testing import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal
 
-from mmaction.datasets.transforms import (AudioDecode, AudioDecodeInit,
-                                          DecordDecode, DecordInit,
+from mmaction.datasets.transforms import (DecordDecode, DecordInit,
                                           GenerateLocalizationLabels,
                                           LoadAudioFeature, LoadHVULabel,
                                           LoadLocalizationFeature,

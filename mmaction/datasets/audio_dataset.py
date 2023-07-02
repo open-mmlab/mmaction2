@@ -1,8 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-from typing import Callable, List, Optional, Union, Dict
+from typing import Callable, Dict, List, Optional, Union
 
-import torch
 from mmengine.utils import check_file_exist
 
 from mmaction.registry import DATASETS
@@ -54,7 +53,7 @@ class AudioDataset(BaseActionDataset):
             **kwargs)
 
     def load_data_list(self) -> List[Dict]:
-        """Load annotation file to get audio information. """
+        """Load annotation file to get audio information."""
         check_file_exist(self.ann_file)
         data_list = []
         with open(self.ann_file, 'r') as fin:
