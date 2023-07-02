@@ -361,8 +361,17 @@ class FormatShape(BaseTransform):
 class FormatAudioShape(BaseTransform):
     """Format final audio shape to the given input_format.
 
-    Required keys are ``audios``, ``num_clips`` and ``clip_len``, added or
-    modified keys are ``audios`` and ``input_shape``.
+    Required Keys:
+
+        - audios
+
+    Modified Keys:
+
+        - audios
+
+    Added Keys:
+
+        - input_shape
 
     Args:
         input_format (str): Define the final imgs format.
@@ -374,7 +383,7 @@ class FormatAudioShape(BaseTransform):
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
-    def transform(self, results: dict) -> dict:
+    def transform(self, results: Dict) -> Dict:
         """Performs the FormatShape formatting.
 
         Args:
@@ -389,7 +398,7 @@ class FormatAudioShape(BaseTransform):
         results['input_shape'] = audios.shape
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = self.__class__.__name__
         repr_str += f"(input_format='{self.input_format}')"
         return repr_str
