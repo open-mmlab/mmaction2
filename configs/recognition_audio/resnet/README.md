@@ -20,9 +20,9 @@ We present Audiovisual SlowFast Networks, an architecture for integrated audiovi
 
 ### Kinetics-400
 
-| frame sampling strategy | n_fft | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol | FLOPs | params |              config                 |                 ckpt                 |                 log                  |
-| :---------------------: | :---: | :--: | :------: | :------: | :------: | :------: | :--------------: | :--: | :---: | :------------------------------------: | :----------------------------------: | :----------------------------------: |
-|         64x1x1          | 1024  |  8   | Resnet18 |   None   |   13.7   |  27.3  |     1 clips     | 0.37G | 11.4M |[config](/configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20230702-e4642fb0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.log) |
+| frame sampling strategy | n_fft | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol | FLOPs | params |                 config                 |                 ckpt                 |                 log                 |
+| :---------------------: | :---: | :--: | :------: | :------: | :------: | :------: | :--------------: | :---: | :----: | :------------------------------------: | :----------------------------------: | :---------------------------------: |
+|         64x1x1          | 1024  |  8   | Resnet18 |   None   |   13.7   |   27.3   |     1 clips      | 0.37G | 11.4M  | [config](/configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20230702-e4642fb0.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.log) |
 
 ## Train
 
