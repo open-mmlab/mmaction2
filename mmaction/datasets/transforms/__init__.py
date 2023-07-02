@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .formatting import (FormatAudioShape, FormatGCNInput, FormatShape,
                          PackActionInputs, PackLocalizationInputs, Transpose)
-from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
+from .loading import (ArrayDecode,
                       AudioFeatureSelector, BuildPseudoClip, DecordDecode,
                       DecordInit, DenseSampleFrames,
                       GenerateLocalizationLabels, ImageDecode,
@@ -15,22 +15,22 @@ from .pose_transforms import (GeneratePoseTarget, GenSkeFeat, JointToBone,
                               MMDecode, MMUniformSampleFrames, PadTo,
                               PoseCompact, PoseDecode, PreNormalize2D,
                               PreNormalize3D, ToMotion, UniformSampleFrames)
-from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
-                         MelSpectrogram, MultiScaleCrop, RandomCrop,
+from .processing import (CenterCrop, ColorJitter, Flip, Fuse,
+                         MultiScaleCrop, RandomCrop,
                          RandomRescale, RandomResizedCrop, Resize, TenCrop,
                          ThreeCrop)
 from .text_transforms import CLIPTokenize
 from .wrappers import ImgAug, PytorchVideoWrapper, TorchVisionWrapper
 
 __all__ = [
-    'ArrayDecode', 'AudioAmplify', 'AudioDecode', 'AudioDecodeInit',
+    'ArrayDecode',
     'AudioFeatureSelector', 'BuildPseudoClip', 'CenterCrop', 'ColorJitter',
     'DecordDecode', 'DecordInit', 'DecordInit', 'DenseSampleFrames', 'Flip',
     'FormatAudioShape', 'FormatGCNInput', 'FormatShape', 'Fuse', 'GenSkeFeat',
     'GenerateLocalizationLabels', 'GeneratePoseTarget', 'ImageDecode',
     'ImgAug', 'JointToBone', 'LoadAudioFeature', 'LoadHVULabel',
     'LoadKineticsPose', 'LoadLocalizationFeature', 'LoadProposals',
-    'LoadRGBFromFile', 'MelSpectrogram', 'MergeSkeFeat', 'MultiScaleCrop',
+    'LoadRGBFromFile', 'MergeSkeFeat', 'MultiScaleCrop',
     'OpenCVDecode', 'OpenCVInit', 'OpenCVInit', 'PIMSDecode', 'PIMSInit',
     'PackActionInputs', 'PackLocalizationInputs', 'PadTo', 'PoseCompact',
     'PoseDecode', 'PreNormalize2D', 'PreNormalize3D', 'PyAVDecode',
