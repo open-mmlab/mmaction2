@@ -4,7 +4,7 @@
 
 在本节中，我们将演示如何准备 PyTorch 相关的依赖环境。
 
-MMAction2 可以在 Linux、Windows 和 macOS 上运行。它需要 Python 3.7+、CUDA 9.2+ 和 PyTorch 1.6+。
+MMAction2 适用于 Linux、Windows 和 MacOS。它需要 Python 3.7+，CUDA 10.2+ 和 PyTorch 1.8+。
 
 ```{note}
 如果您熟悉 PyTorch 并且已经安装了它，可以跳过这部分内容，直接转到[下一节](#installation)。否则，您可以按照以下步骤进行准备工作。
