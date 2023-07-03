@@ -75,12 +75,14 @@ English | [简体中文](/README_zh-CN.md)
 
 **The default branch has been switched to `main`(previous `1.x`) from `master`(current `0.x`), and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/latest/migration.html) for more details.**
 
-**Release (2023.04.06)**: v1.0.0 with the following new features:
+**Release (2023.07.04)**: v1.1.0 with the following new features:
 
-- Support RGB-PoseC3D(CVPR'2022).
-- Support training UniFormer V2(Arxiv'2022).
-- Support MSG3D(CVPR'2020) and CTRGCN(CVPR'2021) in projects.
-- Refactor and provide more user-friendly documentation.
+- Support CLIP-based multi-modality models: ActionCLIP(Arxiv'2021) and CLIP4clip(ArXiv'2022)
+- Support rich projects: gesture recognition, spatio-temporal action detection tutorial, and knowledge distillation
+- Support HACS-segments dataset(ICCV'2019), MultiSports dataset(ICCV'2021), Kinetics-710 dataset(Arxiv'2022)
+- Support VideoMAE V2(CVPR'2023), and VideoMAE(NeurIPS'2022) on action detection
+- Support TCANet(CVPR'2021)
+- Support [Pure Python style Configuration File](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/config.html#a-pure-python-style-configuration-file-beta) and downloading datasets by MIM with one command
 
 ## 📖 Introduction [🔝](#-table-of-contents)
 
@@ -181,7 +183,6 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/uniformer/README.md">UniFormer V1</a> (ICLR'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/uniformerv2/README.md">UniFormer V2</a> (Arxiv'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/videomaev2/README.md">VideoMAE V2</a> (CVPR'2023)</td>
-    <td></td>
   </tr>
   <tr>
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
@@ -189,7 +190,7 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/bsn/README.md">BSN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/bmn/README.md">BMN</a> (ICCV'2019)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/tcanet/README.md">TCANet</a> (CVPR'2021)</td>
     <td></td>
     <td></td>
   </tr>
@@ -201,7 +202,7 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/detection/slowonly/README.md">SlowOnly+Fast R-CNN</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/detection/slowfast/README.md">SlowFast+Fast R-CNN</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/detection/lfb/README.md">LFB</a> (CVPR'2019)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/videomae/README.md">VideoMAE</a> (NeurIPS'2022)</td>
   </tr>
   <tr>
     <td colspan="5" style="font-weight:bold;">Skeleton-based Action Recognition</td>
@@ -263,7 +264,7 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/gym/README.md">FineGYM</a> (<a href="https://sdolivia.github.io/FineGym/">Homepage</a>) (CVPR'2020)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/kinetics710/README.md">Kinetics-710</a> (<a href="https://arxiv.org/pdf/2211.09552.pdf">Homepage</a>) (Arxiv'2022)</td>
     <td></td>
     <td></td>
   </tr>
@@ -273,7 +274,7 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/thumos14/README.md">THUMOS14</a> (<a href="https://www.crcv.ucf.edu/THUMOS14/download.html">Homepage</a>) (THUMOS Challenge 2014)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">Homepage</a>) (CVPR'2015)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/hacs/README.md">HACS</a> (<a href="https://github.com/hangzhaomit/HACS-dataset">Homepage</a>) (ICCV'2019)</td>
     <td></td>
   </tr>
   <tr>
