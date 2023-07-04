@@ -1,0 +1,39 @@
+kinetics400:
+  dataset: Kinetics-400
+  download_root: data
+  data_root: data/kinetics400
+  script: tools/data/kinetics/k400_preprocess.sh
+
+kinetics600:
+  dataset: Kinetics600
+  download_root: data
+  data_root: data/kinetics600
+  script: tools/data/kinetics/k600_preprocess.sh
+
+kinetics700:
+  dataset: Kinetics_700
+  download_root: data
+  data_root: data/kinetics700
+  script: tools/data/kinetics/k700_preprocess.sh
+
+sthv2:
+  dataset: sthv2
+  download_root: data
+  data_root: data/sthv2
+  script: tools/data/sthv2/preprocess.sh
+
+ucf-101:
+  dataset: UCF101
+  download_root: data
+  data_root: data/ucf101
+
+finegym:
+  dataset: FineGym
+  download_root: data
+  data_root: data/gym
+
+diving48:
+  dataset: diving48
+  download_root: data
+  data_root: data/diving48
+  script: tools/data/diving48/preprocess.sh

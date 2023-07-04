@@ -16,11 +16,27 @@
 ```
 
 用户可参考该数据集的 [官网](https://developer.qualcomm.com/software/ai-datasets/something-something)，以获取数据集相关的基本信息。
-在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/sthv2/`。
 
+`````{tabs}
+
+````{group-tab} 使用 MIM 下载
+# MIM 支持下载 Something-Something V2 数据集。用户可以通过一行命令，从 OpenDataLab 进行下载，并进行预处理。
+```Bash
+# 安装 OpenDataLab CLI 工具
+pip install -U opendatalab
+# 登录 OpenDataLab
+odl login
+# 通过 MIM 进行数据集下载，预处理。注意这将花费较长时间
+mim download mmaction2 --dataset sthv2
+```
+
+````
+
+````{group-tab} 从官方源下载
 ## 步骤 1. 下载标注文件
 
 首先，用户需要在 [官网](https://developer.qualcomm.com/software/ai-datasets/something-something) 完成注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/sthv2/annotations` 文件夹下。
+用户可以使用以下命令下载标注文件。在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/sthv2/`。
 
 ## 步骤 2. 准备视频
 
@@ -78,7 +94,10 @@ cd $MMACTION2/tools/data/sthv2/
 bash generate_{rawframes, videos}_filelist.sh
 ```
 
-## 步骤 5. 检查文件夹结构
+````
+`````
+
+### 检查文件夹结构
 
 在完成所有 Something-Something V2 数据集准备流程后，
 用户可以获得对应的 RGB + 光流文件，视频文件以及标注文件。
@@ -92,14 +111,14 @@ mmaction2
 ├── configs
 ├── data
 │   ├── sthv2
-│   │   ├── sthv2_{train,val}_list_rawframes.txt
+│   │   ├── sthv2_{train,val}_list_rawframes.txt（可选）
 │   │   ├── sthv2_{train,val}_list_videos.txt
-│   │   ├── annotations
+│   │   ├── annotations（可选）
 │   |   ├── videos
 │   |   |   ├── 1.mp4
 │   |   |   ├── 2.mp4
 │   |   |   ├──...
-│   |   ├── rawframes
+│   |   ├── rawframes（可选）
 │   |   |   ├── 1
 │   |   |   |   ├── img_00001.jpg
 │   |   |   |   ├── img_00002.jpg

@@ -28,9 +28,9 @@ pip install -U opendatalab
 # 登录 OpenDataLab
 odl login
 # 下载 Kinetics-400/600/700，注意这可能需要很长时间。
-mim download mmaction2 --dataset kinetics-400
-mim download mmaction2 --dataset kinetics-600
-mim download mmaction2 --dataset kinetics-700
+mim download mmaction2 --dataset kinetics400
+mim download mmaction2 --dataset kinetics600
+mim download mmaction2 --dataset kinetics700
 
 ```
 

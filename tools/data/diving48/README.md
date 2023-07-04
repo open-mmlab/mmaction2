@@ -15,11 +15,28 @@
 ```
 
 For basic dataset information, you can refer to the official dataset [website](http://www.svcl.ucsd.edu/projects/resound/dataset.html).
-Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/diving48/`.
+
+`````{tabs}
+
+````{group-tab} Download by MIM
+MIM supports downloading from OpenDataLab and preprocessing Diving48 dataset with one command line.
+```Bash
+# install OpenDataLab CLI tools
+pip install -U opendatalab
+# log in OpenDataLab
+odl login
+# download and preprocess by MIM
+mim download mmaction2 --dataset diving48
+```
+
+````
+
+````{group-tab} Download form Official Source
 
 ## Step 1. Prepare Annotations
 
 You can run the following script to download annotations (considering the correctness of annotation files, we only download V2 version here).
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/diving48/`.
 
 ```shell
 bash download_annotations.sh
@@ -81,7 +98,10 @@ bash generate_videos_filelist.sh
 bash generate_rawframes_filelist.sh
 ```
 
-## Step 5. Check Directory Structure
+````
+`````
+
+### Check Directory Structure
 
 After the whole data process for Diving48 preparation,
 you will get the rawframes (RGB + Flow), videos and annotation files for Diving48.
@@ -97,7 +117,7 @@ mmaction2
 │   ├── diving48
 │   │   ├── diving48_{train,val}_list_rawframes.txt
 │   │   ├── diving48_{train,val}_list_videos.txt
-│   │   ├── annotations
+│   │   ├── annotations (optinonal)
 │   |   |   ├── Diving48_V2_train.json
 │   |   |   ├── Diving48_V2_test.json
 │   |   |   ├── Diving48_vocab.json
@@ -105,7 +125,7 @@ mmaction2
 │   |   |   ├── _8Vy3dlHg2w_00000.mp4
 │   |   |   ├── _8Vy3dlHg2w_00001.mp4
 │   |   |   ├── ...
-│   |   ├── rawframes
+│   |   ├── rawframes (optional)
 │   |   |   ├── 2x00lRzlTVQ_00000
 │   |   |   |   ├── img_00001.jpg
 │   |   |   |   ├── img_00002.jpg
