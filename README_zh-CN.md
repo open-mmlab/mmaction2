@@ -76,12 +76,14 @@
 
 **默认分支已经从 `master` （当前的`0.x`） 切换到 `main`（之前的 `1.x`），我们建议用户更新至最新版本，其支持更多模型，更强的预训练权重，以及更简洁的代码实现。详情请参阅[迁移指南](https://mmaction2.readthedocs.io/zh_cn/latest/migration.html)**
 
-**Release (2023.04.06)**: v1.0.0支持以下新功能:
+**Release (2023.07.04)**: v1.1.0 支持以下新功能:
 
-- 支持 RGB-PoseC3D (CVPR'2022)。
-- 支持训练 UniFormer V2 (Arxiv'2022)
-- 支持 MSG3D(CVPR'2020) 和 CTRGCN(CVPR'2021)
-- 优化并增加更友好的文档
+- 支持基于 CLIP 的多模态模型: ActionCLIP(Arxiv'2021) 和 CLIP4clip(ArXiv'2022)
+- 支持丰富的 project: 手势识别, 时空行为检测 tutorial, 以及基于 [MMRazor](https://github.com/open-mmlab/mmrazor) 的知识蒸馏
+- 支持 HACS-segments 数据集(ICCV'2019), MultiSports 数据集(ICCV'2021), Kinetics-710 数据集(Arxiv'2022)
+- 支持 VideoMAE V2(CVPR'2023), VideoMAE(NeurIPS'2022) 支持时空行为检测任务
+- 支持 TCANet(CVPR'2021)
+- 支持 [纯 Python 风格的配置文件](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/config.html#a-pure-python-style-configuration-file-beta) 和使用 MIM 一键下载数据集
 
 ## 📖 简介 [🔝](#-table-of-contents)
 
@@ -172,16 +174,15 @@ pip install -v -e .
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition_audio/resnet/README.md">MultiModality: Audio</a> (ArXiv'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/tanet/README.md">TANet</a> (ArXiv'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/timesformer/README.md">TimeSformer</a> (ICML'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/projects/actionclip/README.md">ActionCLIP</a> (ArXiv'2021)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/swin/README.md">VideoSwin</a> (CVPR'2022)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/videomae/README.md">VideoMAE</a> (NeurIPS'2022)</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/videomae/README.md">VideoMAE</a> (NeurIPS'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/mvit/README.md">MViT V2</a> (CVPR'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/uniformer/README.md">UniFormer V1</a> (ICLR'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/uniformerv2/README.md">UniFormer V2</a> (Arxiv'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/videomaev2/README.md">VideoMAE V2</a> (CVPR'2023)</td>
-    <td></td>
-    <td></td>
   </tr>
   <tr>
     <td colspan="5" style="font-weight:bold;">时序动作定位</td>
@@ -189,6 +190,7 @@ pip install -v -e .
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/bsn/README.md">BSN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/bmn/README.md">BMN</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/localization/tcanet/README.md">TCANet</a> (CVPR'2021)</td>
     <td></td>
     <td></td>
   </tr>
@@ -200,7 +202,7 @@ pip install -v -e .
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/detection/slowonly/README.md">SlowOnly+Fast R-CNN</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/detection/slowfast/README.md">SlowFast+Fast R-CNN</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/detection/lfb/README.md">LFB</a> (CVPR'2019)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/videomae/README.md">VideoMAE</a> (NeurIPS'2022)</td>
   </tr>
   <tr>
     <td colspan="5" style="font-weight:bold;">基于骨骼点的行为识别</td>
@@ -262,7 +264,7 @@ pip install -v -e .
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/gym/README.md">FineGYM</a> (<a href="https://sdolivia.github.io/FineGym/">官网</a>) (CVPR'2020)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/kinetics710/README.md">Kinetics-710</a> (<a href="https://arxiv.org/pdf/2211.09552.pdf">官网</a>) (Arxiv'2022)</td>
     <td></td>
     <td></td>
   </tr>
@@ -272,7 +274,7 @@ pip install -v -e .
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/thumos14/README.md">THUMOS14</a> (<a href="https://www.crcv.ucf.edu/THUMOS14/download.html">官网</a>) (THUMOS Challenge 2014)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">官网</a>) (CVPR'2015)</td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/tools/data/hacs/README.md">HACS</a> (<a href="https://github.com/hangzhaomit/HACS-dataset">官网</a>) (ICCV'2019)</td>
     <td></td>
   </tr>
   <tr>
