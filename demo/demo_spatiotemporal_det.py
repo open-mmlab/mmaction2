@@ -15,7 +15,7 @@ from mmengine.structures import InstanceData
 from mmaction.apis import detection_inference
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
-from mmaction.utils import frame_extract
+from mmaction.utils import frame_extract, get_str_type
 
 try:
     import moviepy.editor as mpy
@@ -248,7 +248,9 @@ def main():
     config.merge_from_dict(args.cfg_options)
     val_pipeline = config.val_pipeline
 
-    sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
+    sampler = [
+        x for x in val_pipeline if get_str_type(x['type']) == 'SampleAVAFrames'
+    ][0]
     clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
     window_size = clip_len * frame_interval
     assert clip_len % 2 == 0, 'We would like to have an even clip_len'

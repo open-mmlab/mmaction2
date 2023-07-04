@@ -141,7 +141,6 @@ work_dirs/
 !tests/data/**/*.pth
 
 # avoid soft links created by MIM
-mmaction/configs/*
 mmaction/tools/*
 
 *.ipynb

@@ -1,10 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import ctypes
+import inspect
 import os
 import os.path as osp
 import random
 import string
-from typing import Optional
+from types import FunctionType, ModuleType
+from typing import Optional, Union
 
 import cv2
 import mmcv
@@ -110,3 +112,23 @@ class VideoWriter():
 
     def __exit__(self, type, value, trace):
         self.release()
+
+
+def get_str_type(module: Union[str, ModuleType, FunctionType]) -> str:
+    """Return the string type name of module.
+
+    Args:
+        module (str | ModuleType | FunctionType):
+            The target module class
+
+    Returns:
+        Class name of the module
+    """
+    if isinstance(module, str):
+        str_type = module
+    elif inspect.isclass(module) or inspect.isfunction(module):
+        str_type = module.__name__
+    else:
+        return None
+
+    return str_type

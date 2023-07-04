@@ -11,7 +11,7 @@ from parameterized import parameterized
 from mmaction.apis import (detection_inference, inference_recognizer,
                            init_recognizer, pose_inference)
 from mmaction.structures import ActionDataSample
-from mmaction.utils import frame_extract
+from mmaction.utils import frame_extract, get_str_type
 
 
 class TestInference(TestCase):
@@ -59,7 +59,7 @@ class TestInference(TestCase):
             model = init_recognizer(config_file, device=device)
 
             for ops in model.cfg.test_pipeline:
-                if ops['type'] in ('TenCrop', 'ThreeCrop'):
+                if get_str_type(ops['type']) in ('TenCrop', 'ThreeCrop'):
                     # Use CenterCrop to reduce memory in order to pass CI
                     ops['type'] = 'CenterCrop'
 
