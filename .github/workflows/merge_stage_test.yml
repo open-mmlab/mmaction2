@@ -211,7 +211,10 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Upgrade pip
-        run: pip install pip --upgrade
+        run: |
+            python -V
+            python -m pip install pip --upgrade
+            python -m pip install wheel
       - name: Install librosa and soundfile
         run: python -m pip install librosa soundfile
       - name: Install lmdb
@@ -233,7 +236,7 @@ jobs:
         run: python -m pip install timm
       - name: Build and install
         run: |
-          pip install -e .
+          pip install -e . -v
       - name: Run unittests and generate coverage report
         run: |
           pytest tests/
