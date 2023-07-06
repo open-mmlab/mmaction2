@@ -164,8 +164,9 @@ def main():
     keypoint_score = np.zeros((num_frame, num_person, num_keypoint),
                               dtype=np.float16)
     for i, poses in enumerate(pose_results):
-        keypoint[i] = poses['keypoints']
-        keypoint_score[i] = poses['keypoint_scores']
+        num_current_person = len(poses['keypoints'])
+        keypoint[i, :num_current_person] = poses['keypoints']
+        keypoint_score[i, :num_current_person] = poses['keypoint_scores']
 
     fake_anno['keypoint'] = keypoint.transpose((1, 0, 2, 3))
     fake_anno['keypoint_score'] = keypoint_score.transpose((1, 0, 2))
