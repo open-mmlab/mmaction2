@@ -69,9 +69,10 @@ class Recognizer3D(BaseRecognizer):
                         feat, _ = self.neck(feat)
                     feats.append(feat)
                     view_ptr += max_testing_views
-                # recursively traverse feats until it's a tensor, then concat
 
                 def recursively_cat(feats):
+                    # recursively traverse feats until it's a tensor,
+                    # then concat
                     out_feats = []
                     for e_idx, elem in enumerate(feats[0]):
                         batch_elem = [feat[e_idx] for feat in feats]

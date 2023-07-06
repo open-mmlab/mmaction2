@@ -55,7 +55,7 @@ python trim_subaction.py
 
 This part is **optional** if you only want to use the video loader for RGB model training.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+Before extracting, please refer to [install.md](/docs/en/get_started/installation.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 Run the following script to extract both rgb and flow using "tvl1" algorithm.
 
@@ -106,4 +106,4 @@ mmaction2
 |   |   └── subaction_frames
 ```
 
-For training and evaluating on GYM, please refer to [getting_started](/docs/getting_started.md).
+For training and evaluating on GYM, please refer to [Training and Test Tutorial](/docs/en/user_guides/train_test.md).

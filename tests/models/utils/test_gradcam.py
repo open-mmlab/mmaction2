@@ -138,6 +138,7 @@ def test_slowfast():
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_tsm():
     config = get_recognizer_cfg(
         'tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py')
@@ -158,6 +159,7 @@ def test_tsm():
     _do_test_2D_models(recognizer, target_layer_name, input_shape)
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_csn():
     config = get_recognizer_cfg(
         'csn/ipcsn_ig65m-pretrained-r152-bnfrozen_32x2x1-58e_kinetics400-rgb.py'  # noqa: E501

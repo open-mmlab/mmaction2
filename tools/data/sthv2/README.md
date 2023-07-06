@@ -16,12 +16,26 @@
 ```
 
 For basic dataset information, you can refer to the dataset [website](https://developer.qualcomm.com/software/ai-datasets/something-something).
-Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/sthv2/`.
+
+`````{tabs}
+
+````{group-tab} Download by MIM
+MIM supports downloading from OpenDataLab and preprocessing Something-Something V2 dataset with one command line.
+```Bash
+# install OpenDataLab CLI tools
+pip install -U opendatalab
+# log in OpenDataLab
+odl login
+# download and preprocess by MIM
+mim download mmaction2 --dataset sthv2
+```
+
+````
 
 ## Step 1. Prepare Annotations
 
 First of all, you have to sign in and download annotations to `$MMACTION2/data/sthv2/annotations` on the official [website](https://20bn.com/datasets/something-something/v2).
-
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/sthv2/`.
 ## Step 2. Prepare Videos
 
 Then, you can download all data parts to `$MMACTION2/data/sthv2/` and use the following command to uncompress.
@@ -36,7 +50,7 @@ cd $MMACTION2/tools/data/sthv2/
 
 This part is **optional** if you only want to use the video loader.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+Before extracting, please refer to [install.md](/docs/en/get_started/installation.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance.
 
@@ -78,7 +92,10 @@ cd $MMACTION2/tools/data/sthv2/
 bash generate_{rawframes, videos}_filelist.sh
 ```
 
-## Step 5. Check Directory Structure
+````
+`````
+
+### Check Directory Structure
 
 After the whole data process for Something-Something V2 preparation,
 you will get the rawframes (RGB + Flow), videos and annotation files for Something-Something V2.
@@ -92,14 +109,14 @@ mmaction2
 ├── configs
 ├── data
 │   ├── sthv2
-│   │   ├── sthv2_{train,val}_list_rawframes.txt
+│   │   ├── sthv2_{train,val}_list_rawframes.txt(Optional)
 │   │   ├── sthv2_{train,val}_list_videos.txt
-│   │   ├── annotations
+│   │   ├── annotations(Optional)
 │   |   ├── videos
 │   |   |   ├── 1.mp4
 │   |   |   ├── 2.mp4
 │   |   |   ├──...
-│   |   ├── rawframes
+│   |   ├── rawframes(Optional)
 │   |   |   ├── 1
 │   |   |   |   ├── img_00001.jpg
 │   |   |   |   ├── img_00002.jpg
@@ -115,5 +132,4 @@ mmaction2
 
 ```
 
-For training and evaluating on Something-Something V2, please refer to [getting_started.md](/docs/getting_started.md).
-s/getting_started.md).
+For training and evaluating on Something-Something V2, please refer to [Training and Test Tutorial](/docs/en/user_guides/train_test.md).

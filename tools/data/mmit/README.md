@@ -32,7 +32,7 @@ python ../resize_videos.py ../../../data/mmit/videos/ ../../../data/mmit/videos_
 
 This part is **optional** if you only want to use the video loader.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+Before extracting, please refer to [install.md](/docs/en/get_started/installation.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 First, you can run the following script to soft link SSD.
 
@@ -110,4 +110,4 @@ mmaction2/
             └── ...
 ```
 
-For training and evaluating on Multi-Moments in Time, please refer to [getting_started.md](/docs/getting_started.md).
+For training and evaluating on Multi-Moments in Time, please refer to [Training and Test Tutorial](/docs/en/user_guides/train_test.md).

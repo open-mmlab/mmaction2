@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import inspect
 import warnings
 from abc import ABCMeta, abstractmethod
 
@@ -44,10 +45,21 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         super(BaseRecognizer,
               self).__init__(data_preprocessor=data_preprocessor)
 
+        def is_from(module, pkg_name):
+            # check whether the backbone is from pkg
+            model_type = module['type']
+            if isinstance(model_type, str):
+                return model_type.startswith(pkg_name)
+            elif inspect.isclass(model_type) or inspect.isfunction(model_type):
+                module_name = model_type.__module__
+                return pkg_name in module_name
+            else:
+                raise TypeError(
+                    f'Unsupported type of module {type(module["type"])}')
+
         # Record the source of the backbone.
         self.backbone_from = 'mmaction2'
-
-        if backbone['type'].startswith('mmcls.'):
+        if is_from(backbone, 'mmcls.'):
             try:
                 # Register all mmcls models.
                 import mmcls.models  # noqa: F401
@@ -55,30 +67,51 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 raise ImportError('Please install mmcls to use this backbone.')
             self.backbone = MODELS.build(backbone)
             self.backbone_from = 'mmcls'
-        elif backbone['type'].startswith('torchvision.'):
+        elif is_from(backbone, 'mmpretrain.'):
+            try:
+                # Register all mmpretrain models.
+                import mmpretrain.models  # noqa: F401
+            except (ImportError, ModuleNotFoundError):
+                raise ImportError(
+                    'Please install mmpretrain to use this backbone.')
+            self.backbone = MODELS.build(backbone)
+            self.backbone_from = 'mmpretrain'
+        elif is_from(backbone, 'torchvision.'):
             try:
                 import torchvision.models
             except (ImportError, ModuleNotFoundError):
                 raise ImportError('Please install torchvision to use this '
                                   'backbone.')
-            backbone_type = backbone.pop('type')[12:]
-            self.backbone = torchvision.models.__dict__[backbone_type](
-                **backbone)
+            self.backbone_from = 'torchvision'
+            self.feature_shape = backbone.pop('feature_shape', None)
+            backbone_type = backbone.pop('type')
+            if isinstance(backbone_type, str):
+                backbone_type = backbone_type[12:]
+                self.backbone = torchvision.models.__dict__[backbone_type](
+                    **backbone)
+            else:
+                self.backbone = backbone_type(**backbone)
             # disable the classifier
             self.backbone.classifier = nn.Identity()
             self.backbone.fc = nn.Identity()
-            self.backbone_from = 'torchvision'
-        elif backbone['type'].startswith('timm.'):
+        elif is_from(backbone, 'timm.'):
+            # currently, only support use `str` as backbone type
             try:
                 import timm
             except (ImportError, ModuleNotFoundError):
-                raise ImportError('Please install timm to use this '
+                raise ImportError('Please install timm>=0.9.0 to use this '
                                   'backbone.')
-            backbone_type = backbone.pop('type')[5:]
+            self.backbone_from = 'timm'
+            self.feature_shape = backbone.pop('feature_shape', None)
             # disable the classifier
             backbone['num_classes'] = 0
-            self.backbone = timm.create_model(backbone_type, **backbone)
-            self.backbone_from = 'timm'
+            backbone_type = backbone.pop('type')
+            if isinstance(backbone_type, str):
+                backbone_type = backbone_type[5:]
+                self.backbone = timm.create_model(backbone_type, **backbone)
+            else:
+                raise TypeError(
+                    f'Unsupported timm backbone type: {type(backbone_type)}')
         else:
             self.backbone = MODELS.build(backbone)
 
@@ -107,12 +140,18 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
 
     def init_weights(self) -> None:
         """Initialize the model network weights."""
-        super().init_weights()
         if self.backbone_from in ['torchvision', 'timm']:
             warnings.warn('We do not initialize weights for backbones in '
                           f'{self.backbone_from}, since the weights for '
                           f'backbones in {self.backbone_from} are initialized '
                           'in their __init__ functions.')
+
+            def fake_init():
+                pass
+
+            # avoid repeated initialization
+            self.backbone.init_weights = fake_init
+        super().init_weights()
 
     def loss(self, inputs: torch.Tensor, data_samples: SampleList,
              **kwargs) -> dict:
@@ -204,7 +243,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         Args:
             inputs (torch.Tensor): The input tensor with shape
                 (N, C, ...) in general.
-            data_samples (List[``ActionDataSample`1], optional): The
+            data_samples (List[``ActionDataSample], optional): The
                 annotation data of every samples. Defaults to None.
             mode (str): Return what kind of value. Defaults to ``tensor``.
 

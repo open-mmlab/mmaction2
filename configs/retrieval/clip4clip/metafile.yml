@@ -1,0 +1,28 @@
+Collections:
+  - Name: CLIP4Clip
+    README: configs/retrieval/clip4clip/README.md
+    Paper:
+      URL: https://arxiv.org/abs/2104.08860
+      Title: 'CLIP4Clip: An Empirical Study of CLIP for End to End Video Clip Retrieval'
+
+Models:
+  - Name: clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb
+    Config: configs/retrieval/clip4clip/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb.py
+    In Collection: CLIP4Clip
+    Metadata:
+      Architecture: ViT-B/32
+      Batch Size: 16
+      Epochs: 5
+      Training Data: MSRVTT-9k
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: MSRVTT
+      Task: Video Retrieval
+      Metrics:
+        Recall@1: 43.1
+        Recall@5: 69.4
+        Recall@10: 78.9
+        MdR: 2.0
+        MnR: 16.8
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/retrieval/clip4clip/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/retrieval/clip4clip/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb/clip4clip_vit-base-p32-res224-clip-pre_8xb16-u12-5e_msrvtt-9k-rgb_20230612-b9706e54.pth

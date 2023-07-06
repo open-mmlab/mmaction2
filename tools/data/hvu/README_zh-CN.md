@@ -43,7 +43,7 @@ bash download_videos.sh
 
 如果用户仅使用 video loader，则可以跳过本步。
 
-在提取之前，请参考 [安装教程](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在提取之前，请参考 [安装指南](/docs/zh_cn/get_started/installation.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 用户可使用如下脚本同时抽取 RGB 帧和光流：
 
@@ -51,7 +51,7 @@ bash download_videos.sh
 bash extract_frames.sh
 ```
 
-该脚本默认生成短边长度为 256 的帧，可参考 [数据准备](/docs_zh_CN/data_preparation.md) 获得更多细节。
+该脚本默认生成短边长度为 256 的帧，可参考 [数据准备](/docs/zh_cn/user_guides/prepare_dataset.md) 获得更多细节。
 
 ## 4. 生成文件列表
 
@@ -107,4 +107,4 @@ mmaction2
 
 ```
 
-关于 HVU 数据集上的训练与测试，请参照 [基础教程](/docs_zh_CN/getting_started.md)。
+关于 HVU 数据集上的训练与测试，请参照 [训练教程](/docs/zh_cn/user_guides/train_test.md)。

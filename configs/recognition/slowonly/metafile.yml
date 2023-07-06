@@ -214,3 +214,26 @@ Models:
           Top 5 Accuracy: 87.47
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics700-rgb/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb_20220901-4098e1eb.pth
+
+  - Name: slowonly_imagenet-pretrained-r50_32xb8-8x8x1-steplr-150e_kinetics710-rgb
+    Config: configs/recognition/slowonly/slowonly_imagenet-pretrained-r50_32xb8-8x8x1-steplr-150e_kinetics710-rgb.py
+    In Collection: SlowOnly
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 8
+      Epochs: 150
+      FLOPs: 54.75G
+      Parameters: 32.45M
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-710
+      Training Resources: 32 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: Kinetics-710
+        Task: Action Recognition
+        Metrics:
+          Top 1 Accuracy: 72.39
+          Top 5 Accuracy: 90.60
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_32xb8-8x8x1-steplr-150e_kinetics710-rgb/slowonly_imagenet-pretrained-r50_32xb8-8x8x1-steplr-150e_kinetics710-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_32xb8-8x8x1-steplr-150e_kinetics710-rgb/slowonly_imagenet-pretrained-r50_32xb8-8x8x1-steplr-150e_kinetics710-rgb_20230612-12ce977c.pth

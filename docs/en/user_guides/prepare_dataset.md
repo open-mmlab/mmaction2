@@ -24,7 +24,7 @@ To make video decoding faster, we support several efficient video loading librar
 
 ## Use built-in datasets
 
-MMAction2 already supports many datasets, we provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`, please refer to [supported datasets](../supported_datasets.md) for details to prepare specific datasets.
+MMAction2 already supports many datasets, we provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`, please refer to [supported datasets](../datasetzoo_satatistics.md) for details to prepare specific datasets.
 
 ## Use a custom dataset
 
@@ -112,7 +112,7 @@ The task recognizes the action class based on the skeleton sequence (time sequen
 
 - Build from RGB video data
 
-  You need to extract keypoints data from video and convert it to a supported format, we provide a [tutorial](/configs/skeleton/posec3d/custom_dataset_training.md) with detailed instructions.
+  You need to extract keypoints data from video and convert it to a supported format, we provide a [tutorial](https://github.com/open-mmlab/mmaction2/tree/main/configs/skeleton/posec3d/custom_dataset_training.md) with detailed instructions.
 
 - Build from existing keypoint data
 

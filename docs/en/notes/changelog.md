@@ -1,5 +1,73 @@
 # Changelog
 
+## 1.1.0 (7/3/2023)
+
+**Highlights**
+
+- Support HACS-segments dataset(ICCV'2019), MultiSports dataset(ICCV'2021), Kinetics-710 dataset(Arxiv'2022)
+- Support rich projects: gesture recognition, spatio-temporal action detection tutorial, and knowledge distillation
+- Support TCANet(CVPR'2021)
+- Support VideoMAE V2(CVPR'2023), and VideoMAE(NeurIPS'2022) on action detection
+- Support CLIP-based multi-modality models: ActionCLIP(Arxiv'2021) and CLIP4clip(ArXiv'2022)
+- Support [Pure Python style Configuration File](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/config.html#a-pure-python-style-configuration-file-beta) and downloading datasets by MIM
+
+**New Features**
+
+- Support HACS-segments dataset ([2224](https://github.com/open-mmlab/mmaction2/pull/2224))
+- Support TCANet ([2271](https://github.com/open-mmlab/mmaction2/pull/2271))
+- Support MultiSports dataset ([2280](https://github.com/open-mmlab/mmaction2/pull/2280))
+- Support spatio-temporal action detection tutorial ([2428](https://github.com/open-mmlab/mmaction2/pull/2428))
+- Support knowledge distillation based on MMRazor ([2458](https://github.com/open-mmlab/mmaction2/pull/2458))
+- Support VideoMAE V2 ([2460](https://github.com/open-mmlab/mmaction2/pull/2460))
+- Support ActionCLIP ([2470](https://github.com/open-mmlab/mmaction2/pull/2470))
+- Support CLIP4clip ([2489](https://github.com/open-mmlab/mmaction2/pull/2489))
+- Support Kinetics-710 dataset ([2534](https://github.com/open-mmlab/mmaction2/pull/2534))
+- Support gesture recognition project ([2539](https://github.com/open-mmlab/mmaction2/pull/2539))
+- Support VideoMAE on action detection ([2547](https://github.com/open-mmlab/mmaction2/pull/2547))
+- Support downloading datasets by MIM ([2465](https://github.com/open-mmlab/mmaction2/pull/1465))
+- Support new config ([2542](https://github.com/open-mmlab/mmaction2/pull/2542))
+
+**Improvements**
+
+- Refactor TSM init_weights ([2396](https://github.com/open-mmlab/mmaction2/pull/2396))
+- Add unit test for Recognizer 2D ([2432](https://github.com/open-mmlab/mmaction2/pull/2432))
+- Enhance inference APIs ([2472](https://github.com/open-mmlab/mmaction2/pull/2472))
+- Support converting ST-GCN and PoseC3D to ONNX ([2543](https://github.com/open-mmlab/mmaction2/pull/2543))
+- Support feature extraction head ([2525](https://github.com/open-mmlab/mmaction2/pull/2525))
+
+**Bug Fixes**
+
+- Fix CircleCI ([2351](https://github.com/open-mmlab/mmaction2/pull/2351))
+- Fix demo skeleton script ([2380](https://github.com/open-mmlab/mmaction2/pull/2380))
+- Fix docker file branch ([2397](https://github.com/open-mmlab/mmaction2/pull/2397))
+- Fix NTU pose extraction script ([2402](https://github.com/open-mmlab/mmaction2/pull/2402))
+- Rename typing and enhance collect_env script ([2420](https://github.com/open-mmlab/mmaction2/pull/2420))
+- Fix multi-label classification ([2425](https://github.com/open-mmlab/mmaction2/pull/2425), [2466](https://github.com/open-mmlab/mmaction2/pull/2466), [2532](https://github.com/open-mmlab/mmaction2/pull/2532))
+- Fix lfb configs ([2426](https://github.com/open-mmlab/mmaction2/pull/2426))
+- Fix a warning caused by `torch.div` ([2449](https://github.com/open-mmlab/mmaction2/pull/2449))
+- Fix incompatibility of ImgAug and latest Numpy ([2451](https://github.com/open-mmlab/mmaction2/pull/2451))
+- Fix MViT with_cls_token argument ([2480](https://github.com/open-mmlab/mmaction2/pull/2480))
+- Fix timm BC-breaking for TSN ([2497](https://github.com/open-mmlab/mmaction2/pull/2497))
+- Close FileHandler in Windows to make the temporary directory can be deleted  ([2565](https://github.com/open-mmlab/mmaction2/pull/2565))
+- Update minimum PyTorch version to 1.8.1 ([2568](https://github.com/open-mmlab/mmaction2/pull/2568))
+
+**Documentation**
+
+- Fix document links in README ([2358](https://github.com/open-mmlab/mmaction2/pull/2358), [2372](https://github.com/open-mmlab/mmaction2/pull/2372), [2376](https://github.com/open-mmlab/mmaction2/pull/2376), [2382](https://github.com/open-mmlab/mmaction2/pull/2382))
+- Update installation document ([2362](https://github.com/open-mmlab/mmaction2/pull/2362))
+- Update upstream library version requirement ([2383](https://github.com/open-mmlab/mmaction2/pull/2383))
+- Fix Colab tutorial ([2384](https://github.com/open-mmlab/mmaction2/pull/2384), [2391](https://github.com/open-mmlab/mmaction2/pull/2391), [2475](https://github.com/open-mmlab/mmaction2/pull/2475))
+- Refine documents ([2404](https://github.com/open-mmlab/mmaction2/pull/2404))
+- Update outdated config in readme ([2419](https://github.com/open-mmlab/mmaction2/pull/2419))
+- Update OpenMMLab related repo list ([2429](https://github.com/open-mmlab/mmaction2/pull/2429))
+- Fix UniFormer README and metafile ([2450](https://github.com/open-mmlab/mmaction2/pull/2450))
+- Add finetune document ([2457](https://github.com/open-mmlab/mmaction2/pull/2457))
+- Update FAQ document ([2476](https://github.com/open-mmlab/mmaction2/pull/2476), [2482](https://github.com/open-mmlab/mmaction2/pull/2482)
+- Update download datasets document ([2495](https://github.com/open-mmlab/mmaction2/pull/2495))
+- Translate Chinese document ([2516](https://github.com/open-mmlab/mmaction2/pull/2516), [2506](https://github.com/open-mmlab/mmaction2/pull/2506), [2499](https://github.com/open-mmlab/mmaction2/pull/2499))
+- Refactor model zoo and dataset zoo ([2552](https://github.com/open-mmlab/mmaction2/pull/2552))
+- Refactor Chinese document ([2567](https://github.com/open-mmlab/mmaction2/pull/2567))
+
 ## 1.0.0 (4/6/2023)
 
 **Highlights**

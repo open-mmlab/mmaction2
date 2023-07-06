@@ -1,29 +1,36 @@
 Import:
-- configs/recognition/csn/metafile.yml
-- configs/recognition/i3d/metafile.yml
-- configs/recognition/r2plus1d/metafile.yml
-- configs/recognition/slowfast/metafile.yml
-- configs/recognition/slowonly/metafile.yml
-- configs/recognition/timesformer/metafile.yml
-- configs/recognition/tin/metafile.yml
-- configs/recognition/tpn/metafile.yml
-- configs/recognition/tsm/metafile.yml
-- configs/recognition/tsn/metafile.yml
-- configs/recognition/c3d/metafile.yml
-- configs/recognition/tanet/metafile.yml
-- configs/recognition/x3d/metafile.yml
-- configs/recognition/trn/metafile.yml
-- configs/recognition/swin/metafile.yml
-- configs/recognition/c2d/metafile.yml
-- configs/recognition/omnisource/metafile.yml
-- configs/recognition/mvit/metafile.yml
-- configs/recognition/uniformer/metafile.yml
-- configs/recognition/uniformerv2/metafile.yml
-- configs/recognition/videomae/metafile.yml
-- configs/detection/slowfast/metafile.yml
-- configs/detection/slowonly/metafile.yml
-- configs/detection/acrn/metafile.yml
-- configs/skeleton/stgcn/metafile.yml
-- configs/skeleton/2s-agcn/metafile.yml
-- configs/skeleton/stgcnpp/metafile.yml
-- configs/skeleton/posec3d/metafile.yml
+  - configs/detection/acrn/metafile.yml
+  - configs/detection/lfb/metafile.yml
+  - configs/detection/slowfast/metafile.yml
+  - configs/detection/slowonly/metafile.yml
+  - configs/detection/videomae/metafile.yml
+  - configs/recognition/c2d/metafile.yml
+  - configs/recognition/c3d/metafile.yml
+  - configs/recognition/csn/metafile.yml
+  - configs/recognition/i3d/metafile.yml
+  - configs/recognition/mvit/metafile.yml
+  - configs/recognition/omnisource/metafile.yml
+  - configs/recognition/r2plus1d/metafile.yml
+  - configs/recognition/slowfast/metafile.yml
+  - configs/recognition/slowonly/metafile.yml
+  - configs/recognition/swin/metafile.yml
+  - configs/recognition/tanet/metafile.yml
+  - configs/recognition/timesformer/metafile.yml
+  - configs/recognition/tin/metafile.yml
+  - configs/recognition/tpn/metafile.yml
+  - configs/recognition/trn/metafile.yml
+  - configs/recognition/tsm/metafile.yml
+  - configs/recognition/tsn/metafile.yml
+  - configs/recognition/uniformer/metafile.yml
+  - configs/recognition/uniformerv2/metafile.yml
+  - configs/recognition/videomae/metafile.yml
+  - configs/recognition/videomaev2/metafile.yml
+  - configs/recognition/x3d/metafile.yml
+  - configs/recognition_audio/resnet/metafile.yml
+  - configs/localization/bmn/metafile.yml
+  - configs/localization/bsn/metafile.yml
+  - configs/retrieval/clip4clip/metafile.yml
+  - configs/skeleton/2s-agcn/metafile.yml
+  - configs/skeleton/posec3d/metafile.yml
+  - configs/skeleton/stgcn/metafile.yml
+  - configs/skeleton/stgcnpp/metafile.yml

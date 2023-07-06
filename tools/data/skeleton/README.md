@@ -58,7 +58,7 @@ Each pickle file corresponds to an action recognition dataset. The content of a 
 
 ## Visualization
 
-For skeleton data visualization, you need also to prepare the RGB videos. Please refer to [visualize_heatmap_volume](/demo/visualize_heatmap_volume.ipynb) for detailed process. Here we provide some visualization examples from NTU-60 and FineGYM.
+For skeleton data visualization, you need also to prepare the RGB videos. Please refer to \[visualize_heatmap_volume\] for detailed process. Here we provide some visualization examples from NTU-60 and FineGYM.
 
 <table>
 <thead>

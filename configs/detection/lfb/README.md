@@ -73,7 +73,7 @@ Example: train LFB model on AVA with half-precision long-term feature bank.
 
 ```shell
 python tools/train.py configs/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.py \
-  --validate --seed 0 --deterministic
+  --seed 0 --deterministic
 ```
 
 For more details and optional arguments infos, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).

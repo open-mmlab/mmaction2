@@ -35,11 +35,33 @@ You can switch between Chinese and English documents in the lower-left corner of
    advanced_guides/customize_optimizer.md
    advanced_guides/customize_logging.md
    advanced_guides/deploy.md
+   useful_tools.md
 
 .. toctree::
    :maxdepth: 1
-   :caption: Advanced Guides
-   useful_tools.md
+   :caption: Model Zoo
+
+   modelzoo_statistics.md
+   model_zoo/recognition.md
+   model_zoo/recognition_audio.md
+   model_zoo/skeleton.md
+   model_zoo/detection.md
+   model_zoo/retrieval.md
+   model_zoo/localization.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Dataset Zoo
+   :glob:
+
+   datasetzoo_statistics.md
+   dataset_zoo/*
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Projects
+
+   projectzoo.md
 
 .. toctree::
    :maxdepth: 1
@@ -52,30 +74,6 @@ You can switch between Chinese and English documents in the lower-left corner of
    :caption: API Reference
 
    api.rst
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Model Zoo
-
-   model_zoo/modelzoo.md
-   model_zoo/recognition_models.md
-   model_zoo/detection_models.md
-   model_zoo/skeleton_models.md
-   model_zoo/localization_models.md
-
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Dataset Zoo
-
-   datasetzoo_overview.md
-   datasetzoo.md
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Projects
-
-   projectzoo.md
 
 .. toctree::
    :maxdepth: 1

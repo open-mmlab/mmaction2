@@ -9,7 +9,7 @@ MMAction2 produces a lot of logs during the running process, such as loss, itera
 
 ## Flexible Logging System
 
-The MMAction2 logging system is configured by the `LogProcessor` in [default_runtime](/configs/_base_/default_runtime.py) by default, which is equivalent to:
+The MMAction2 logging system is configured by the `LogProcessor` in [default_runtime](https://github.com/open-mmlab/mmaction2/tree/main/configs/_base_/default_runtime.py) by default, which is equivalent to:
 
 ```python
 log_processor = dict(type='LogProcessor', window_size=20, by_epoch=True)

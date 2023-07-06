@@ -1,5 +1,5 @@
 Collections:
-- Name: BMN
+- Name: BSN
   README: configs/localization/bsn/README.md
   Paper:
     URL: https://arxiv.org/abs/1806.02964

@@ -2,230 +2,264 @@
 import argparse
 import os
 import os.path as osp
-import warnings
-from datetime import datetime
 
-import mmcv
-import numpy as np
-import torch
-import torch.distributed as dist
-from mmcv import Config, DictAction
-from mmcv.cnn import fuse_conv_bn
-from mmcv.fileio.io import file_handlers
-from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
-from mmcv.runner import get_dist_info, init_dist, load_checkpoint
-from mmcv.runner.fp16_utils import wrap_fp16_model
-
-from mmaction.apis import multi_gpu_test, single_gpu_test
-from mmaction.datasets import build_dataloader, build_dataset
-from mmaction.models import build_model
-from mmaction.utils import register_module_hooks
+from mmengine import dump, list_from_file, load
+from mmengine.config import Config, DictAction
+from mmengine.runner import Runner
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='MMAction2 clip-level feature extraction')
+        description='MMAction2 feature extraction')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
-    parser.add_argument('--video-list', help='video file list')
-    parser.add_argument('--video-root', help='video root directory')
+    parser.add_argument('output_prefix', type=str, help='output prefix')
     parser.add_argument(
-        '--out',
+        '--video-list', type=str, default=None, help='video file list')
+    parser.add_argument(
+        '--video-root', type=str, default=None, help='video root directory')
+    parser.add_argument(
+        '--spatial-type',
+        type=str,
+        default='avg',
+        choices=['avg', 'max', 'keep'],
+        help='Pooling type in spatial dimension')
+    parser.add_argument(
+        '--temporal-type',
+        type=str,
+        default='avg',
+        choices=['avg', 'max', 'keep'],
+        help='Pooling type in temporal dimension')
+    parser.add_argument(
+        '--long-video-mode',
+        action='store_true',
+        help='Perform long video inference to get a feature list from a video')
+    parser.add_argument(
+        '--clip-interval',
+        type=int,
         default=None,
-        help='output result file in pkl/yaml/json format')
+        help='Clip interval for Clip interval of adjacent center of sampled '
+        'clips, used for long video inference')
     parser.add_argument(
-        '--fuse-conv-bn',
+        '--frame-interval',
+        type=int,
+        default=None,
+        help='Temporal interval of adjacent sampled frames, used for long '
+        'video long video inference')
+    parser.add_argument(
+        '--multi-view',
         action='store_true',
-        help='Whether to fuse conv and bn, this will slightly increase'
-        'the inference speed')
+        help='Perform multi view inference')
     parser.add_argument(
-        '--gpu-collect',
+        '--dump-score',
         action='store_true',
-        help='whether to use gpu to collect results')
-    parser.add_argument(
-        '--tmpdir',
-        help='tmp directory used for collecting results from multiple '
-        'workers, available when gpu-collect is not specified')
+        help='Dump predict scores rather than features')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
         action=DictAction,
-        default={},
         help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file. For example, '
-        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
+        'in xxx=yyy format will be merged into config file. If the value to '
+        'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
+        'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
+        'Note that the quotation marks are necessary and that no white space '
+        'is allowed.')
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
         default='none',
         help='job launcher')
-    # When using PyTorch version >= 2.0.0, the `torch.distributed.launch`
-    # will pass the `--local-rank` parameter to `tools/train.py` instead
-    # of `--local_rank`.
     parser.add_argument('--local_rank', '--local-rank', type=int, default=0)
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
-
     return args
 
 
-def turn_off_pretrained(cfg):
-    # recursively find all pretrained in the model config,
-    # and set them None to avoid redundant pretrain steps for testing
-    if 'pretrained' in cfg:
-        cfg.pretrained = None
+def merge_args(cfg, args):
+    """Merge CLI arguments to config."""
+    test_pipeline = cfg.test_dataloader.dataset.pipeline
+    # -------------------- Feature Head --------------------
+    if not args.dump_score:
+        backbone_type2name = dict(
+            ResNet3dSlowFast='slowfast',
+            MobileNetV2TSM='tsm',
+            ResNetTSM='tsm',
+        )
 
-    # recursively turn off pretrained value
-    for sub_cfg in cfg.values():
-        if isinstance(sub_cfg, dict):
-            turn_off_pretrained(sub_cfg)
+        if cfg.model.type == 'RecognizerGCN':
+            backbone_name = 'gcn'
+        else:
+            backbone_name = backbone_type2name.get(cfg.model.backbone.type)
+        num_segments = None
+        if backbone_name == 'tsm':
+            for idx, transform in enumerate(test_pipeline):
+                if transform.type == 'UntrimmedSampleFrames':
+                    clip_len = transform['clip_len']
+                    continue
+                elif transform.type == 'SampleFrames':
+                    clip_len = transform['num_clips']
+            num_segments = cfg.model.backbone.get('num_segments', 8)
+            assert num_segments == clip_len, \
+                f'num_segments and clip length must same for TSM, but got ' \
+                f'num_segments {num_segments} clip_len {clip_len}'
+            if cfg.model.test_cfg is not None:
+                max_testing_views = cfg.model.test_cfg.get(
+                    'max_testing_views', num_segments)
+                assert max_testing_views % num_segments == 0, \
+                    'tsm needs to infer with batchsize of multiple ' \
+                    'of num_segments.'
+
+        spatial_type = None if args.spatial_type == 'keep' else \
+            args.spatial_type
+        temporal_type = None if args.temporal_type == 'keep' else \
+            args.temporal_type
+        feature_head = dict(
+            type='FeatureHead',
+            spatial_type=spatial_type,
+            temporal_type=temporal_type,
+            backbone_name=backbone_name,
+            num_segments=num_segments)
+        cfg.model.cls_head = feature_head
+
+    # ---------------------- multiple view ----------------------
+    if not args.multi_view:
+        # average features among multiple views
+        cfg.model.cls_head['average_clips'] = 'score'
+        if cfg.model.type == 'Recognizer3D':
+            for idx, transform in enumerate(test_pipeline):
+                if transform.type == 'SampleFrames':
+                    test_pipeline[idx]['num_clips'] = 1
+        for idx, transform in enumerate(test_pipeline):
+            if transform.type == 'SampleFrames':
+                test_pipeline[idx]['twice_sample'] = False
+            # if transform.type in ['ThreeCrop', 'TenCrop']:
+            if transform.type == 'TenCrop':
+                test_pipeline[idx].type = 'CenterCrop'
+
+    # -------------------- pipeline settings  --------------------
+    # assign video list and video root
+    if args.video_list is not None:
+        cfg.test_dataloader.dataset.ann_file = args.video_list
+    if args.video_root is not None:
+        if cfg.test_dataloader.dataset.type == 'VideoDataset':
+            cfg.test_dataloader.dataset.data_prefix = dict(
+                video=args.video_root)
+        elif cfg.test_dataloader.dataset.type == 'RawframeDataset':
+            cfg.test_dataloader.dataset.data_prefix = dict(img=args.video_root)
+    args.video_list = cfg.test_dataloader.dataset.ann_file
+    args.video_root = cfg.test_dataloader.dataset.data_prefix
+    # use UntrimmedSampleFrames for long video inference
+    if args.long_video_mode:
+        # preserve features of multiple clips
+        cfg.model.cls_head['average_clips'] = None
+        cfg.test_dataloader.batch_size = 1
+        is_recognizer2d = (cfg.model.type == 'Recognizer2D')
+
+        frame_interval = args.frame_interval
+        for idx, transform in enumerate(test_pipeline):
+            if transform.type == 'UntrimmedSampleFrames':
+                clip_len = transform['clip_len']
+                continue
+            # replace SampleFrame by UntrimmedSampleFrames
+            elif transform.type in ['SampleFrames', 'UniformSample']:
+                assert args.clip_interval is not None, \
+                    'please specify clip interval for long video inference'
+                if is_recognizer2d:
+                    # clip_len of UntrimmedSampleFrames is same as
+                    # num_clips for 2D Recognizer.
+                    clip_len = transform['num_clips']
+                else:
+                    clip_len = transform['clip_len']
+                    if frame_interval is None:
+                        # take frame_interval of SampleFrames as default
+                        frame_interval = transform.get('frame_interval')
+                assert frame_interval is not None, \
+                    'please specify frame interval for long video ' \
+                    'inference when use UniformSample or 2D Recognizer'
+
+                sample_cfgs = dict(
+                    type='UntrimmedSampleFrames',
+                    clip_len=clip_len,
+                    clip_interval=args.clip_interval,
+                    frame_interval=frame_interval)
+                test_pipeline[idx] = sample_cfgs
+                continue
+        # flow input will stack all frames
+        if cfg.test_dataloader.dataset.get('modality') == 'Flow':
+            clip_len = 1
+
+        if is_recognizer2d:
+            from mmaction.models import ActionDataPreprocessor
+            from mmaction.registry import MODELS
+
+            @MODELS.register_module()
+            class LongVideoDataPreprocessor(ActionDataPreprocessor):
+                """DataPreprocessor for 2D recognizer to infer on long video.
+
+                Which would stack the num_clips to batch dimension, to preserve
+                feature of each clip (no average among clips)
+                """
+
+                def __init__(self, num_frames=8, **kwargs) -> None:
+                    super().__init__(**kwargs)
+                    self.num_frames = num_frames
+
+                def preprocess(self, inputs, data_samples, training=False):
+                    batch_inputs, data_samples = super().preprocess(
+                        inputs, data_samples, training)
+                    # [N*M, T, C, H, W]
+                    nclip_batch_inputs = batch_inputs.view(
+                        (-1, self.num_frames) + batch_inputs.shape[2:])
+                    # data_samples = data_samples * \
+                    #     nclip_batch_inputs.shape[0]
+                    return nclip_batch_inputs, data_samples
+
+            preprocessor_cfg = cfg.model.data_preprocessor
+            preprocessor_cfg.type = 'LongVideoDataPreprocessor'
+            preprocessor_cfg['num_frames'] = clip_len
+
+    # -------------------- Dump predictions --------------------
+    args.dump = osp.join(args.output_prefix, 'total_feats.pkl')
+    dump_metric = dict(type='DumpResults', out_file_path=args.dump)
+    cfg.test_evaluator = [dump_metric]
+    cfg.work_dir = osp.join(args.output_prefix, 'work_dir')
+
+    return cfg
 
 
-def text2tensor(text, size=256):
-    nums = [ord(x) for x in text]
-    assert len(nums) < size
-    nums.extend([0] * (size - len(nums)))
-    nums = np.array(nums, dtype=np.uint8)
-    return torch.from_numpy(nums)
+def split_feats(args):
+    total_feats = load(args.dump)
+    if args.dump_score:
+        total_feats = [sample['pred_scores']['item'] for sample in total_feats]
 
+    video_list = list_from_file(args.video_list)
+    video_list = [line.split(' ')[0] for line in video_list]
 
-def tensor2text(tensor):
-    # 0 may not occur in a string
-    chars = [chr(x) for x in tensor if x != 0]
-    return ''.join(chars)
-
-
-def inference_pytorch(args, cfg, distributed, data_loader):
-    """Get predictions by pytorch models."""
-    # remove redundant pretrain steps for testing
-    turn_off_pretrained(cfg.model)
-
-    # build the model and load checkpoint
-    model = build_model(
-        cfg.model, train_cfg=None, test_cfg=cfg.get('test_cfg'))
-
-    if len(cfg.module_hooks) > 0:
-        register_module_hooks(model, cfg.module_hooks)
-
-    fp16_cfg = cfg.get('fp16', None)
-    if fp16_cfg is not None:
-        wrap_fp16_model(model)
-    load_checkpoint(model, args.checkpoint, map_location='cpu')
-
-    if args.fuse_conv_bn:
-        model = fuse_conv_bn(model)
-
-    if not distributed:
-        model = MMDataParallel(model, device_ids=[0])
-        outputs = single_gpu_test(model, data_loader)
-    else:
-        model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
-            broadcast_buffers=False)
-        outputs = multi_gpu_test(model, data_loader, args.tmpdir,
-                                 args.gpu_collect)
-
-    return outputs
+    for video_name, feature in zip(video_list, total_feats):
+        dump(feature, osp.join(args.output_prefix, video_name + '.pkl'))
+    os.remove(args.dump)
 
 
 def main():
     args = parse_args()
 
+    # load config
     cfg = Config.fromfile(args.config)
+    if args.cfg_options is not None:
+        cfg.merge_from_dict(args.cfg_options)
+    cfg = merge_args(cfg, args)
+    cfg.launcher = args.launcher
 
-    cfg.merge_from_dict(args.cfg_options)
+    cfg.load_from = args.checkpoint
 
-    if cfg.model['test_cfg'] is None:
-        cfg.model['test_cfg'] = dict(feature_extraction=True)
-    else:
-        cfg.model['test_cfg']['feature_extraction'] = True
+    # build the runner from config
+    runner = Runner.from_cfg(cfg)
 
-    # Load output_config from cfg
-    output_config = cfg.get('output_config', {})
-    if args.out:
-        # Overwrite output_config from args.out
-        output_config = Config._merge_a_into_b(
-            dict(out=args.out), output_config)
+    # start testing
+    runner.test()
 
-    assert output_config, 'Please specify output filename with --out.'
-
-    dataset_type = cfg.data.test.type
-    if output_config.get('out', None):
-        if 'output_format' in output_config:
-            # ugly workround to make recognition and localization the same
-            warnings.warn(
-                'Skip checking `output_format` in localization task.')
-        else:
-            out = output_config['out']
-            # make sure the dirname of the output path exists
-            mmcv.mkdir_or_exist(osp.dirname(out))
-            _, suffix = osp.splitext(out)
-            assert dataset_type == 'VideoDataset'
-
-            assert suffix[1:] in file_handlers, (
-                'The format of the output '
-                'file should be json, pickle or yaml')
-
-    # set cudnn benchmark
-    if cfg.get('cudnn_benchmark', False):
-        torch.backends.cudnn.benchmark = True
-    cfg.data.test.test_mode = True
-    cfg.data.test.data_prefix = args.video_root
-
-    # init distributed env first, since logger depends on the dist info.
-    if args.launcher == 'none':
-        distributed = False
-    else:
-        distributed = True
-        init_dist(args.launcher, **cfg.dist_params)
-
-    rank, _ = get_dist_info()
-
-    size = 256
-    fname_tensor = torch.zeros(size, dtype=torch.uint8).cuda()
-    if rank == 0:
-        videos = open(args.video_list).readlines()
-        videos = [x.strip() for x in videos]
-
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        fake_anno = f'fake_anno_{timestamp}.txt'
-        with open(fake_anno, 'w') as fout:
-            lines = [x + ' 0' for x in videos]
-            fout.write('\n'.join(lines))
-        fname_tensor = text2tensor(fake_anno, size).cuda()
-
-    if distributed:
-        dist.broadcast(fname_tensor.cuda(), src=0)
-
-    fname = tensor2text(fname_tensor)
-    cfg.data.test.ann_file = fname
-
-    # The flag is used to register module's hooks
-    cfg.setdefault('module_hooks', [])
-
-    # build the dataloader
-    dataset = build_dataset(cfg.data.test, dict(test_mode=True))
-    dataloader_setting = dict(
-        videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
-        workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
-        dist=distributed,
-        shuffle=False)
-
-    dataloader_setting = dict(dataloader_setting,
-                              **cfg.data.get('test_dataloader', {}))
-    data_loader = build_dataloader(dataset, **dataloader_setting)
-
-    outputs = inference_pytorch(args, cfg, distributed, data_loader)
-
-    if rank == 0:
-        if output_config.get('out', None):
-            out = output_config['out']
-            print(f'\nwriting results to {out}')
-            dataset.dump_results(outputs, **output_config)
-        # remove the temporary file
-        os.remove(fake_anno)
+    split_feats(args)
 
 
 if __name__ == '__main__':

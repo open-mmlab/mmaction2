@@ -1,6 +1,6 @@
 # Quick Run
 
-This chapter will introduce you to the fundamental functionalities of MMAction2. We assume that you have [installed MMAction2 from source](../installation#best-practices).
+This chapter will introduce you to the fundamental functionalities of MMAction2. We assume that you have [installed MMAction2 from source](installation.md#best-practices).
 
 - [Quick Run](#quick-run)
   - [Inference](#inference)
@@ -39,7 +39,7 @@ You should be able to see a pop-up video and the inference result printed out in
 If you are running MMAction2 on a server without a GUI or via an SSH tunnel with X11 forwarding disabled, you may not see the pop-up window.
 ```
 
-A detailed description of MMAction2's inference interface can be found [here](/demo/README.md#inferencer).
+A detailed description of MMAction2's inference interface can be found [here](https://github.com/open-mmlab/mmaction2/tree/main/demo/README.md#inferencer).
 
 In addition to using our well-provided pre-trained models, you can also train models on your own datasets. In the next section, we will take you through the basic functions of MMAction2 by training TSN on the tiny [Kinetics](https://download.openmmlab.com/mmaction/kinetics400_tiny.zip) dataset as an example.
 
@@ -119,7 +119,7 @@ For a more detailed description of config, please refer to [here](../user_guides
 
 ## Browse the Dataset
 
-Before we start the training, we can also visualize the frames processed by training-time data transforms. It's quite simple: pass the config file we need to visualize into the [browse_dataset.py](/tools/analysis_tools/browse_dataset.py) script.
+Before we start the training, we can also visualize the frames processed by training-time data transforms. It's quite simple: pass the config file we need to visualize into the [browse_dataset.py](https://github.com/open-mmlab/mmaction2/tree/main/tools/analysis_tools/browse_dataset.py) script.
 
 ```Bash
 python tools/visualizations/browse_dataset.py \
@@ -212,7 +212,7 @@ And get the outputs like:
 03/24 17:00:59 - mmengine - INFO - Epoch(test) [10/10]  acc/top1: 1.0000  acc/top5: 1.0000  acc/mean1: 0.9000data_time: 0.0420  time: 1.0795
 ```
 
-The model achieves an hmean of 1.0000 on this dataset.
+The model achieves an top1-accuracy of 1.0000 on this dataset.
 
 ```{note}
 For advanced usage of testing, such as CPU testing, multi-GPU testing, and cluster testing, please refer to [Training and Testing](../user_guides/train_test.md).

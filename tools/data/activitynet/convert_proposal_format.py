@@ -4,16 +4,16 @@ into the input proposal file of action classifier (Currently supports SSN and
 P-GCN, not including TSN, I3D etc.)."""
 import argparse
 
-import mmcv
+import mmengine
 import numpy as np
 
-from mmaction.core import pairwise_temporal_iou
+from mmaction.evaluation import pairwise_temporal_iou
 
 
 def load_annotations(ann_file):
     """Load the annotation according to ann_file into video_infos."""
     video_infos = []
-    anno_database = mmcv.load(ann_file)
+    anno_database = mmengine.load(ann_file)
     for video_name in anno_database:
         video_info = anno_database[video_name]
         video_info['video_name'] = video_name
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     video_infos = load_annotations(args.ann_file)
     ground_truth = import_ground_truth(video_infos, activity_index)
     proposal, num_proposals = import_proposals(
-        mmcv.load(args.proposal_file)['results'])
+        mmengine.load(args.proposal_file)['results'])
     video_idx = 0
 
     for video_info in video_infos:

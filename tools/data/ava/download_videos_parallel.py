@@ -3,7 +3,7 @@ import argparse
 import os.path as osp
 import subprocess
 
-import mmcv
+import mmengine
 from joblib import Parallel, delayed
 
 URL_PREFIX = 'https://s3.amazonaws.com/ava-dataset/trainval/'
@@ -36,7 +36,7 @@ def download_video(video_url, output_dir, num_attempts=5):
 
 
 def main(source_file, output_dir, num_jobs=24, num_attempts=5):
-    mmcv.mkdir_or_exist(output_dir)
+    mmengine.mkdir_or_exist(output_dir)
     video_list = open(source_file).read().strip().split('\n')
     video_list = [osp.join(URL_PREFIX, video) for video in video_list]
 
@@ -49,7 +49,7 @@ def main(source_file, output_dir, num_jobs=24, num_attempts=5):
             delayed(download_video)(video, output_dir, num_attempts)
             for video in video_list)
 
-    mmcv.dump(status_list, 'download_report.json')
+    mmengine.dump(status_list, 'download_report.json')
 
 
 if __name__ == '__main__':

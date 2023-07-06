@@ -119,3 +119,23 @@ Models:
               mAP: 26.65
     Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-dd59e26f.pth
+
+  - Name: slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb
+    Config: configs/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb.py
+    In Collection: SlowFast
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 8
+      Pretrained: Kinetics-400
+      Resolution: short-side 320
+      Training Data: MultiSports
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: MultiSports
+        Task: Action Detection
+        Metrics:
+              f-mAP: 36.88
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb_20230320-af666368.pth

@@ -1,9 +1,9 @@
-# Tutorial 2: Finetuning Models
+# Finetuning Models
 
 This tutorial provides instructions for users to use the pre-trained models
 to finetune them on other datasets, so that better performance can be achieved.
 
-- [Tutorial 2: Finetuning Models](#tutorial-2-finetuning-models)
+- [Finetuning Models](#finetuning-models)
   - [Outline](#outline)
   - [Choose Template Config](#choose-template-config)
   - [Modify Head](#modify-head)
@@ -325,6 +325,7 @@ Example: train the TSN model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
 python tools/train.py configs/recognition/tsn/tsn_ucf101.py  \
+    --seed=0 --deterministic
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](train_test.md).

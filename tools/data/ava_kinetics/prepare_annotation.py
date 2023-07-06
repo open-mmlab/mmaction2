@@ -60,7 +60,7 @@ if __name__ == '__main__':
         '--avakinetics_anotation',
         type=str,
         default='./ava_kinetics_v1_0',
-        help='the directory to ava-kinetics anotations')
+        help='the directory to ava-kinetics annotations')
     p.add_argument(
         '--num_workers',
         type=int,

@@ -72,10 +72,14 @@ class PackActionInputs(BaseTransform):
             elif 'audios' in results:
                 audios = results['audios']
                 packed_results['inputs'] = to_tensor(audios)
+            elif 'text' in results:
+                text = results['text']
+                packed_results['inputs'] = to_tensor(text)
             else:
                 raise ValueError(
-                    'Cannot get `imgs`, `keypoint`, `heatmap_imgs` '
-                    'or `audios` in the input dict of `PackActionInputs`.')
+                    'Cannot get `imgs`, `keypoint`, `heatmap_imgs`, '
+                    '`audios` or `text` in the input dict of '
+                    '`PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
@@ -89,7 +93,8 @@ class PackActionInputs(BaseTransform):
             if 'proposals' in results:
                 data_sample.proposals = InstanceData(
                     bboxes=to_tensor(results['proposals']))
-        else:
+
+        if 'label' in results:
             label_data = LabelData()
             label_data.item = to_tensor(results['label'])
             data_sample.gt_labels = label_data
@@ -138,11 +143,21 @@ class PackLocalizationInputs(BaseTransform):
                 'dict of `PackActionInputs`.')
 
         data_sample = ActionDataSample()
-        instance_data = InstanceData()
         for key in self.keys:
-            if key in results:
+            if key not in results:
+                continue
+            if key == 'gt_bbox':
+                instance_data = InstanceData()
                 instance_data[key] = to_tensor(results[key])
-        data_sample.gt_instances = instance_data
+                data_sample.gt_instances = instance_data
+            elif key == 'proposals':
+                instance_data = InstanceData()
+                instance_data[key] = to_tensor(results[key])
+                data_sample.proposals = instance_data
+            else:
+                raise NotImplementedError(
+                    f"Key '{key}' is not supported in `PackLocalizationInputs`"
+                )
 
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)

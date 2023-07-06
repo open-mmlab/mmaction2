@@ -53,7 +53,8 @@ class TPNHead(TSNHead):
                 x = self.avg_pool3d(x)
             if self.new_cls is None:
                 self._init_new_cls()
-            cls_score_feat_map = self.new_cls(x)
+            x = self.new_cls(x)
+            cls_score_feat_map = x.view(x.size(0), -1)
             return cls_score_feat_map
 
         if self.avg_pool2d is None:

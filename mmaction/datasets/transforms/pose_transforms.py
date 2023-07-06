@@ -121,7 +121,10 @@ class LoadKineticsPose(BaseTransform):
             kps[:, :, 1] *= h
 
         num_kp = kps.shape[1]
-        num_person = mode(frame_inds)[-1][0]
+        num_person = mode(frame_inds)[-1]
+        # Ensure compatibility with lower version of scipy
+        if isinstance(num_person, np.ndarray):
+            num_person = num_person[0]
 
         new_kp = np.zeros([num_person, total_frames, num_kp, 2],
                           dtype=np.float16)

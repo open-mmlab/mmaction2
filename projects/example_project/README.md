@@ -66,9 +66,9 @@ mim test mmaction configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-r
 
 ## Results
 
-| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc |  testing protocol  |                                     config                                      |              ckpt |             log |
-| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :----------------: | :-----------------------------------------------------------------------------: | ----------------: | --------------: |
-|          1x1x3          |  224x224   |  8   | ResNet50 | ImageNet |  72.83   |  90.65   | 25 clips x 10 crop | [config](./configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py) | [ckpt](CKPT-LINK) | [log](LOG-LINK) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc |  testing protocol  |                    config                     |                                   ckpt |                            log |
+| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :----------------: | :-------------------------------------------: | -------------------------------------: | -----------------------------: |
+|          1x1x3          |  224x224   |  8   | ResNet50 | ImageNet |  72.83   |  90.65   | 25 clips x 10 crop | [config](./configs/examplenet_r50-in1k-pre_8xb32-1x1x3-100e_kinetics400-rgb.py) | [ckpt](https://example/checkpoint/url) | [log](https://example/log/url) |
 
 ## Citation
 

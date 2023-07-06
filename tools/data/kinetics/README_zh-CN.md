@@ -15,8 +15,7 @@
 }
 ```
 
-请参照 [官方网站](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) 以获取数据集基本信息。此脚本用于准备数据集 kinetics400，kinetics600，kinetics700。为准备 kinetics 数据集的不同版本，用户需将脚本中的 `${DATASET}` 赋值为数据集对应版本名称，可选项为 `kinetics400`，`kinetics600`， `kinetics700`。
-在开始之前，用户需确保当前目录为 `$MMACTION2/tools/data/${DATASET}/`。
+请参照 [官方网站](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) 以获取数据集基本信息。
 
 :::{note}
 由于部分 YouTube 链接失效，爬取的 Kinetics 数据集大小可能与原版不同。以下是我们所使用 Kinetics 数据集的大小：
@@ -26,9 +25,36 @@
 | Kinetics400 |  240436  |   19796    |
 | Kinetics600 |  383393  |   27910    |
 | Kinetics700 |  542357  |   34824    |
+|     :::     |          |            |
 
+`````{tabs}
+
+````{group-tab} 使用 MIM 下载
+:::{note}
+MMAction2 代码仓库中提供的 Kinetics 实验性能，都是基于这个版本的数据得到的。我们建议用户使用这个版本的 Kinetics 数据集进行实验。
+:::
+
+# MIM 支持下载 Kinetics-400/600/700 数据集。用户可以通过一行命令，从 OpenDataLab 进行下载，并进行预处理。
+```Bash
+# 安装 OpenDataLab CLI 工具
+pip install -U opendatalab
+# 登录 OpenDataLab
+odl login
+# 通过 MIM 进行 Kinetics-400 数据集下载，预处理。注意这将花费较长时间
+mim download mmaction2 --dataset kinetics400
+# 通过 MIM 进行 Kinetics-600 数据集下载，预处理。注意这将花费较长时间
+mim download mmaction2 --dataset kinetics600
+# 通过 MIM 进行 Kinetics-700 数据集下载，预处理。注意这将花费较长时间
+mim download mmaction2 --dataset kinetics700
+```
+
+````
+
+````{group-tab} 从官方源下载
 ## 1. 准备标注文件
 
+此脚本用于准备数据集 kinetics400，kinetics600，kinetics700。为准备 kinetics 数据集的不同版本，用户需将脚本中的 `${DATASET}` 赋值为数据集对应版本名称，可选项为 `kinetics400`，`kinetics600`， `kinetics700`。
+在开始之前，用户需确保当前目录为 `$MMACTION2/tools/data/${DATASET}/`。
 首先，用户可以使用如下脚本从 [Kinetics 数据集官网](https://deepmind.com/research/open-source/open-source-datasets/kinetics/)下载标注文件并进行预处理：
 
 ```shell
@@ -44,15 +70,6 @@ bash download_backup_annotations.sh ${DATASET}
 ```
 
 ## 2. 准备视频
-
-### 选项 1: 从 OpenDataLab 下载
-
-**推荐**：[OpenDataLab](https://opendatalab.com/) 提供了 Kinetics 数据集 ([Kinetics400](https://opendatalab.com/Kinetics-400), [Kinetics600](https://opendatalab.com/Kinetics600), [Kinetics700](https://opendatalab.com/Kinetics_700)), 用户可以从这里下载短边长度为 320 的 Kinetics 数据集。
-
-:::{note}
-MMAction2 代码仓库中提供的 Kinetics 实验性能，都是基于这个版本的数据得到的。我们建议用户使用这个版本的 Kinetics 数据集进行实验。
-
-### 选项 2：从其他数据源下载
 
 用户可以使用以下脚本准备视频，视频准备代码修改自 [官方爬虫](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics)。注意这一步骤将花费较长时间。
 
@@ -78,7 +95,7 @@ python ../resize_videos.py ../../../data/${DATASET}/videos_train/ ../../../data/
 
 如果用户仅使用 video loader，则可以跳过本步。
 
-在提取之前，请参考 [安装教程](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在提取之前，请参考 [安装指南](/docs/zh_cn/get_started/installation.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果用户有足够的 SSD 空间，那么建议将视频抽取为 RGB 帧以提升 I/O 性能。用户可以使用以下脚本为抽取得到的帧文件夹建立软连接：
 
@@ -109,7 +126,7 @@ bash extract_frames.sh ${DATASET}
 ```
 
 以上的命令生成短边长度为 256 的 RGB 帧和光流帧。如果用户需要生成短边长度为 320 的帧 (320p)，或是固定分辨率为 340 x 256 的帧，可改变参数 `--new-short 256` 为 `--new-short 320` 或 `--new-width 340 --new-height 256`。
-更多细节可以参考 [数据准备](/docs_zh_CN/data_preparation.md)。
+更多细节可以参考 [数据准备](/docs/zh_cn/user_guides/prepare_dataset.md)。
 
 ## 4. 生成文件列表
 
@@ -121,7 +138,10 @@ bash generate_videos_filelist.sh ${DATASET}
 bash generate_rawframes_filelist.sh ${DATASET}
 ```
 
-## 5. 目录结构
+````
+`````
+
+### 目录结构
 
 在完整完成 Kinetics 的数据处理后，将得到帧文件夹（RGB 帧和光流帧），视频以及标注文件。
 
@@ -136,7 +156,7 @@ mmaction2
 │   ├── ${DATASET}
 │   │   ├── ${DATASET}_train_list_videos.txt
 │   │   ├── ${DATASET}_val_list_videos.txt
-│   │   ├── annotations
+│   │   ├── annotations（可选）
 │   │   ├── videos_train
 │   │   ├── videos_val
 │   │   │   ├── abseiling
@@ -146,9 +166,9 @@ mmaction2
 │   │   │   ├── wrapping_present
 │   │   │   ├── ...
 │   │   │   ├── zumba
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
+│   │   ├── rawframes_train（可选）
+│   │   ├── rawframes_val（可选）
 
 ```
 
-关于 Kinetics 数据集上的训练与测试，请参照 [基础教程](/docs_zh_CN/getting_started.md)。
+关于 Kinetics 数据集上的训练与测试，请参照 [训练教程](/docs/zh_cn/user_guides/train_test.md)。

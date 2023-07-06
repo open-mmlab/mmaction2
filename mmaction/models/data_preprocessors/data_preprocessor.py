@@ -5,7 +5,7 @@ import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
 
 from mmaction.registry import MODELS
-from mmaction.utils.typing import SampleList
+from mmaction.utils import SampleList
 
 
 @MODELS.register_module()
@@ -19,6 +19,8 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             of channels of images or stacked optical flow. Defaults to None.
         to_rgb (bool): Whether to convert image from BGR to RGB.
             Defaults to False.
+        to_float32 (bool): Whether to convert data to float32.
+            Defaults to True.
         blending (dict, optional): Config for batch blending.
             Defaults to None.
         format_shape (str): Format shape of input data.
@@ -29,10 +31,12 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
                  mean: Optional[Sequence[Union[float, int]]] = None,
                  std: Optional[Sequence[Union[float, int]]] = None,
                  to_rgb: bool = False,
+                 to_float32: bool = True,
                  blending: Optional[dict] = None,
                  format_shape: str = 'NCHW') -> None:
         super().__init__()
         self.to_rgb = to_rgb
+        self.to_float32 = to_float32
         self.format_shape = format_shape
 
         if mean is not None:
@@ -98,8 +102,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             training (bool): Whether to enable training time augmentation.
 
         Returns:
-            dict: Data in the same format as the model
-                input.
+            dict: Data in the same format as the model input.
         """
         inputs, data_samples = data['inputs'], data['data_samples']
         inputs, data_samples = self.preprocess(inputs, data_samples, training)
@@ -139,7 +142,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
                 mean = self.mean.view(view_shape)
                 std = self.std.view(view_shape)
                 batch_inputs = (batch_inputs - mean) / std
-        else:
+        elif self.to_float32:
             batch_inputs = batch_inputs.to(torch.float32)
 
         # ----- Blending -----

@@ -78,7 +78,7 @@ bash download_bsn_videos.sh
 
 ### 步骤 3. 抽取 RGB 帧和光流
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs/zh_cn/get_started/installation.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 可使用以下命令抽取视频帧和光流。
 
@@ -87,7 +87,7 @@ bash extract_frames.sh
 ```
 
 以上脚本将会生成短边 256 分辨率的视频。如果用户想生成短边 320 分辨率的视频（即 320p），或者 340x256 的固定分辨率，用户可以通过改变参数由 `--new-short 256` 至 `--new-short 320`，或者 `--new-width 340 --new-height 256` 进行设置
-更多细节可参考 [数据准备指南](/docs_zh_CN/data_preparation.md)
+更多细节可参考 [数据准备指南](/docs/zh_cn/user_guides/prepare_dataset.md)
 
 ### 步骤 4. 生成用于 ActivityNet 微调的文件列表
 
@@ -107,13 +107,29 @@ python generate_rawframes_filelist.py
 在 ActivityNet 上微调 TSN 模型之后，用户可以使用该模型进行 RGB 特征和光流特征的提取。
 
 ```shell
-python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_train_video.txt --output-prefix ../../../data/ActivityNet/rgb_feat --modality RGB --ckpt /path/to/rgb_checkpoint.pth
+python ../../misc/clip_feature_extraction.py tsn_extract_rgb_feat_config.py \
+  /path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_tarin_feat.pkl \
+  --video-list ../../../data/ActivityNet/anet_train_video.txt \
+  --video-root ../../../data/ActivityNet/rawframes \
+  --dump-score
 
-python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_val_video.txt --output-prefix ../../../data/ActivityNet/rgb_feat --modality RGB --ckpt /path/to/rgb_checkpoint.pth
+python ../../misc/clip_feature_extraction.py tsn_extract_rgb_feat_config.py \
+  path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_val_feat.pkl \
+  --video-list ../../../data/ActivityNet/anet_val_video.txt \
+  --video-root ../../../data/ActivityNet/rawframes \
+  --dump-score
 
-python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_train_video.txt --output-prefix ../../../data/ActivityNet/flow_feat --modality Flow --ckpt /path/to/flow_checkpoint.pth
+python ../../misc/clip_feature_extraction.py tsn_extract_flow_feat_config.py \
+  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_tarin_feat.pkl \
+  --video-list ../../../data/ActivityNet/anet_train_video.txt \
+  --video-root ../../../data/ActivityNet/rawframes \
+  --dump-score
 
-python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_val_video.txt --output-prefix ../../../data/ActivityNet/flow_feat --modality Flow --ckpt /path/to/flow_checkpoint.pth
+python ../../misc/clip_feature_extraction.py tsn_extract_flow_feat_config.py \
+  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_val_feat.pkl \
+  --video-list ../../../data/ActivityNet/anet_val_video.txt \
+  --video-root ../../../data/ActivityNet/rawframes \
+  --dump-score
 ```
 
 在提取完特征后，用户可以使用后处理脚本整合 RGB 特征和光流特征，生成 `100-t X 400-d` 维度的特征用于时序动作检测。
@@ -166,4 +182,4 @@ mmaction2
 
 ```
 
-关于对 ActivityNet 进行训练和验证，可以参考 [基础教程](/docs_zh_CN/getting_started.md).
+关于对 ActivityNet 进行训练和验证，可以参考 [训练教程](/docs/zh_cn/user_guides/train_test.md).

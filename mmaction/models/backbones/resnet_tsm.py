@@ -1,7 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
-from mmcv.cnn import NonLocal3d
+from mmcv.cnn import ConvModule, NonLocal3d
+from mmengine.logging import MMLogger
+from mmengine.runner.checkpoint import _load_checkpoint
 from torch.nn.modules.utils import _ntuple
 
 from mmaction.registry import MODELS
@@ -128,21 +130,26 @@ class ResNetTSM(ResNet):
     """ResNet backbone for TSM.
 
     Args:
-        num_segments (int): Number of frame segments. Default: 8.
+        num_segments (int): Number of frame segments. Defaults to 8.
         is_shift (bool): Whether to make temporal shift in reset layers.
-            Default: True.
+            Defaults to True.
         non_local (Sequence[int]): Determine whether to apply non-local module
-            in the corresponding block of each stages. Default: (0, 0, 0, 0).
-        non_local_cfg (dict): Config for non-local module. Default: ``dict()``.
-        shift_div (int): Number of div for shift. Default: 8.
+            in the corresponding block of each stages.
+            Defaults to (0, 0, 0, 0).
+        non_local_cfg (dict): Config for non-local module.
+            Defaults to ``dict()``.
+        shift_div (int): Number of div for shift. Defaults to 8.
         shift_place (str): Places in resnet layers for shift, which is chosen
             from ['block', 'blockres'].
             If set to 'block', it will apply temporal shift to all child blocks
             in each resnet layer.
             If set to 'blockres', it will apply temporal shift to each `conv1`
             layer of all child blocks in each resnet layer.
-            Default: 'blockres'.
-        temporal_pool (bool): Whether to add temporal pooling. Default: False.
+            Defaults to 'blockres'.
+        temporal_pool (bool): Whether to add temporal pooling.
+            Defaults to False.
+        pretrained2d (bool): Whether to load pretrained 2D model.
+            Defaults to True.
         **kwargs (keyword arguments, optional): Arguments for ResNet.
     """
 
@@ -155,6 +162,7 @@ class ResNetTSM(ResNet):
                  shift_div=8,
                  shift_place='blockres',
                  temporal_pool=False,
+                 pretrained2d=True,
                  **kwargs):
         super().__init__(depth, **kwargs)
         self.num_segments = num_segments
@@ -165,8 +173,7 @@ class ResNetTSM(ResNet):
         self.non_local = non_local
         self.non_local_stages = _ntuple(self.num_stages)(non_local)
         self.non_local_cfg = non_local_cfg
-        # TODO use convert key to load weights
-        super().init_weights()
+        self.pretrained2d = pretrained2d
         self.init_structure()
 
     def init_structure(self):
@@ -298,6 +305,67 @@ class ResNetTSM(ResNet):
                                                  self.num_segments,
                                                  self.non_local_cfg)
 
+    def load_original_weights(self, logger):
+        """Load weights from original checkpoint, which required converting
+        keys."""
+        state_dict_torchvision = _load_checkpoint(
+            self.pretrained, map_location='cpu')
+        if 'state_dict' in state_dict_torchvision:
+            state_dict_torchvision = state_dict_torchvision['state_dict']
+
+        wrapped_layers_map = dict()
+        for name, module in self.named_modules():
+            # convert torchvision keys
+            ori_name = name
+            for wrap_prefix in ['.net', '.block']:
+                if wrap_prefix in ori_name:
+                    ori_name = ori_name.replace(wrap_prefix, '')
+                    wrapped_layers_map[ori_name] = name
+
+            if isinstance(module, ConvModule):
+                if 'downsample' in ori_name:
+                    # layer{X}.{Y}.downsample.conv->layer{X}.{Y}.downsample.0
+                    tv_conv_name = ori_name + '.0'
+                    # layer{X}.{Y}.downsample.bn->layer{X}.{Y}.downsample.1
+                    tv_bn_name = ori_name + '.1'
+                else:
+                    # layer{X}.{Y}.conv{n}.conv->layer{X}.{Y}.conv{n}
+                    tv_conv_name = ori_name
+                    # layer{X}.{Y}.conv{n}.bn->layer{X}.{Y}.bn{n}
+                    tv_bn_name = ori_name.replace('conv', 'bn')
+
+                for conv_param in ['.weight', '.bias']:
+                    if tv_conv_name + conv_param in state_dict_torchvision:
+                        state_dict_torchvision[ori_name+'.conv'+conv_param] = \
+                            state_dict_torchvision.pop(tv_conv_name+conv_param)
+
+                for bn_param in [
+                        '.weight', '.bias', '.running_mean', '.running_var'
+                ]:
+                    if tv_bn_name + bn_param in state_dict_torchvision:
+                        state_dict_torchvision[ori_name+'.bn'+bn_param] = \
+                            state_dict_torchvision.pop(tv_bn_name+bn_param)
+
+        # convert wrapped keys
+        for param_name in list(state_dict_torchvision.keys()):
+            layer_name = '.'.join(param_name.split('.')[:-1])
+            if layer_name in wrapped_layers_map:
+                wrapped_name = param_name.replace(
+                    layer_name, wrapped_layers_map[layer_name])
+                state_dict_torchvision[
+                    wrapped_name] = state_dict_torchvision.pop(param_name)
+
+        msg = self.load_state_dict(state_dict_torchvision, strict=False)
+        logger.info(msg)
+
     def init_weights(self):
-        """Initialize weights."""
-        pass
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
+        if self.pretrained2d:
+            logger = MMLogger.get_current_instance()
+            self.load_original_weights(logger)
+        else:
+            if self.pretrained:
+                self.init_cfg = dict(
+                    type='Pretrained', checkpoint=self.pretrained)
+            super().init_weights()

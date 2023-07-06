@@ -7,7 +7,7 @@ import os
 import ssl
 import subprocess
 
-import mmcv
+import mmengine
 from joblib import Parallel, delayed
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -101,7 +101,7 @@ def parse_activitynet_annotations(input_csv, is_bsn_case=False):
         # YoutubeIDs do not have prefix `v_`
         youtube_ids = [x.split(',')[0][2:] for x in lines]
     else:
-        data = mmcv.load(anno_file)['database']
+        data = mmengine.load(anno_file)['database']
         youtube_ids = list(data.keys())
 
     return youtube_ids
@@ -125,15 +125,15 @@ def main(input_csv, output_dir, anno_file, num_jobs=24, is_bsn_case=False):
             for index in youtube_ids)
 
     # Save download report.
-    mmcv.dump(status_list, 'download_report.json')
-    annotation = mmcv.load(anno_file)
+    mmengine.dump(status_list, 'download_report.json')
+    annotation = mmengine.load(anno_file)
     downloaded = {status[0]: status[1] for status in status_list}
     annotation = {k: v for k, v in annotation.items() if downloaded[k]}
 
     if is_bsn_case:
         anno_file_bak = anno_file.replace('.json', '_bak.json')
         os.rename(anno_file, anno_file_bak)
-        mmcv.dump(annotation, anno_file)
+        mmengine.dump(annotation, anno_file)
 
 
 if __name__ == '__main__':

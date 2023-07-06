@@ -2,7 +2,7 @@
 import argparse
 import os.path as osp
 
-import mmcv
+import mmengine
 
 
 def main(annotation_file, category):
@@ -10,7 +10,7 @@ def main(annotation_file, category):
         'action', 'attribute', 'concept', 'event', 'object', 'scene'
     ]
 
-    data = mmcv.load(annotation_file)
+    data = mmengine.load(annotation_file)
     basename = osp.basename(annotation_file)
     dirname = osp.dirname(annotation_file)
     basename = basename.replace('hvu', f'hvu_{category}')
@@ -24,7 +24,7 @@ def main(annotation_file, category):
             item['label'] = label[category]
             result.append(item)
 
-    mmcv.dump(data, target_file)
+    mmengine.dump(data, target_file)
 
 
 if __name__ == '__main__':

@@ -64,8 +64,16 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
+# Auto generate documentation
 docs/*/_build/
+docs/*/model_zoo/
+docs/*/dataset_zoo/
+docs/*/_model_zoo.rst
+docs/*/modelzoo_statistics.md
+docs/*/datasetzoo_statistics.md
+docs/*/projectzoo.md
+docs/*/papers/
+docs/*/api/generated/
 
 # PyBuilder
 target/
@@ -133,11 +141,11 @@ work_dirs/
 !tests/data/**/*.pth
 
 # avoid soft links created by MIM
-mmaction/configs/*
 mmaction/tools/*
 
 *.ipynb
 
 # unignore ipython notebook files in demo
 !demo/*.ipynb
+!projects/stad_tutorial/*.ipynb
 mmaction/.mim

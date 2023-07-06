@@ -372,7 +372,8 @@ Models:
     Converted From:
       Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
       Code: https://github.com/OpenGVLab/UniFormerV2
-    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb_20221219-77d34f81.pth
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-pre_u8_kinetics710-rgb_20230612-63cdbad9.pth
 
   - Name: uniformerv2-large-p14-res224_clip-pre_u8_kinetics710-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-pre_u8_kinetics710-rgb.py
@@ -386,7 +387,7 @@ Models:
     Converted From:
       Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
       Code: https://github.com/OpenGVLab/UniFormerV2
-    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-large-p14-res224_clip-pre_u8_kinetics710-rgb_20221219-bfaae587.pth
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-large-p14-res224_clip-pre_u8_kinetics710-rgb_20230612-d002a407.pth
 
   - Name: uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb.py
@@ -400,7 +401,7 @@ Models:
     Converted From:
       Weights: https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md
       Code: https://github.com/OpenGVLab/UniFormerV2
-    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb_20221219-55878cdc.pth
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb_20230612-d723ddc1.pth
 
   - Name: uniformerv2-base-p16-res224_clip-kinetics710-kinetics-k400-pre_16xb32-u8_mitv1-rgb
     Config: configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-kinetics-k400-pre_16xb32-u8_mitv1-rgb.py

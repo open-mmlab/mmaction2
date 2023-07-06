@@ -100,3 +100,23 @@ Models:
               mAP: 24.83
     Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowonly/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowonly/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb_20220906-43f16877.pth
+
+  - Name: slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb
+    Config: configs/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb.py
+    In Collection: SlowOnly
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 8
+      Pretrained: Kinetics-400
+      Resolution: short-side 320
+      Training Data: MultiSports
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: MultiSports
+        Task: Action Detection
+        Metrics:
+              f-mAP: 26.40
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/slowonly/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-8e_multisports-rgb_20230320-a1ca5e76.pth

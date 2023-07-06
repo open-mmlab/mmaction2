@@ -133,7 +133,9 @@ class RawframeDataset(BaseActionDataset):
                 idx += 1
             # idx for label[s]
             label = [int(x) for x in line_split[idx:]]
-            assert label, f'missing label in line: {line}'
+            # add fake label for inference datalist without label
+            if not label:
+                label = [-1]
             if self.multi_class:
                 assert self.num_classes is not None
                 video_info['label'] = label

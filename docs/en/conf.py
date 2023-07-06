@@ -42,8 +42,17 @@ release = get_version()
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode',
-    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser'
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'myst_parser',
+    'sphinx_markdown_tables',
+    'sphinx_copybutton',
+    'sphinx_tabs.tabs',
+    'notfound.extension',
+    'sphinxcontrib.jquery',
 ]
 
 # numpy and torch are required
@@ -90,26 +99,35 @@ html_theme_options = {
         {
             'name':
             'Upstream',
-            'children': [
-                {
-                    'name': 'MMCV',
-                    'url': 'https://github.com/open-mmlab/mmcv',
-                    'description': 'Foundational library for computer vision'
-                },
-                {
-                    'name':
-                    'MMClassification',
-                    'url':
-                    'https://github.com/open-mmlab/mmclassification',
-                    'description':
-                    'Open source image classification toolbox based on PyTorch'
-                },
-                {
-                    'name': 'MMDetection',
-                    'url': 'https://github.com/open-mmlab/mmdetection',
-                    'description': 'Object detection toolbox and benchmark'
-                },
-            ]
+            'children': [{
+                'name':
+                'MMCV',
+                'url':
+                'https://github.com/open-mmlab/mmcv',
+                'description':
+                'Foundational library for computer vision'
+            }, {
+                'name':
+                'MMPreTrain',
+                'url':
+                'https://github.com/open-mmlab/mmpretrain',
+                'description':
+                'Open source pre-training toolbox based on PyTorch'
+            }, {
+                'name':
+                'MMDetection',
+                'url':
+                'https://github.com/open-mmlab/mmdetection',
+                'description':
+                'Object detection toolbox and benchmark'
+            }, {
+                'name':
+                'MMPose',
+                'url':
+                'https://github.com/open-mmlab/mmpose',
+                'description':
+                'Open-source toolbox for pose estimation based on PyTorch.'
+            }]
         },
     ],
     # Specify the language of shared menu
@@ -121,15 +139,29 @@ language = 'en'
 master_doc = 'index'
 
 html_static_path = ['_static']
-html_css_files = ['css/readthedocs.css']
+html_css_files = [
+    'https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.css',
+    'css/readthedocs.css'
+]
+html_js_files = [
+    'https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.js',
+    'js/custom.js'
+]
 
 myst_enable_extensions = ['colon_fence']
 myst_heading_anchors = 3
 
+# The not found page
+notfound_template = '404.html'
+
 
 def builder_inited_handler(app):
-    subprocess.run(['bash', './merge_docs.sh'])
-    subprocess.run(['python', './stat.py'])
+    if subprocess.run(['python', './stat.py']).returncode != 0:
+        raise RuntimeError('Failed to run the script `stat.py`.')
+    if subprocess.run(['python', './project_zoo.py']).returncode != 0:
+        raise RuntimeError('Failed to run the script `project_zoo.py`.')
+    if subprocess.run(['python', './dataset_zoo.py']).returncode != 0:
+        raise RuntimeError('Failed to run the script `dataset_zoo.py`.')
 
 
 def setup(app):

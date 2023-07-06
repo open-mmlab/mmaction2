@@ -64,19 +64,14 @@ jobs:
             pip install git+ssh://git@github.com/open-mmlab/mmengine.git@main
             pip install -U openmim
             mim install 'mmcv >= 2.0.0'
-            pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-3.x
+            pip install git+https://git@github.com/open-mmlab/mmdetection.git@dev-3.x
             pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+            pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
             pip install -r requirements.txt
-      - when:
-          condition:
-            equal: [ "1.13.0", << parameters.torch >> ]
-          steps:
-            - run: pip install timm
-      - when:
-          condition:
-            equal: [ "1.6.0", << parameters.torch >> ]
-          steps:
-            - run: pip install timm==0.6.7
+      - run:
+          name: Install timm
+          command: |
+            pip install timm
       - when:
           condition:
             equal: [ "0.10.0", << parameters.torchvision >> ]
@@ -98,7 +93,7 @@ jobs:
         type: string
       cuda:
         type: enum
-        enum: ["11.0"]
+        enum: ["11.1"]
       cudnn:
         type: integer
         default: 8
@@ -129,6 +124,7 @@ jobs:
             docker exec mmaction pip install -U openmim
             docker exec mmaction mim install 'mmcv >= 2.0.0'
             docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmdetection.git@dev-3.x
+            docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmpose.git@dev-1.x
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
             docker exec mmaction pip install -r requirements.txt
       - run:
@@ -141,7 +137,6 @@ jobs:
             docker exec mmaction pytest tests/
 workflows:
   pr_stage_lint:
-    when: << pipeline.parameters.lint_only >>
     jobs:
       - lint:
           name: lint
@@ -164,8 +159,8 @@ workflows:
                 - main
       - build_cpu:
           name: minimum_version_cpu
-          torch: 1.6.0
-          torchvision: 0.7.0
+          torch: 1.8.1
+          torchvision: 0.9.1
           python: 3.7.4
           requires:
             - lint
@@ -185,7 +180,7 @@ workflows:
           torch: 1.8.1
           # Use double quotation mark to explicitly specify its type
           # as string instead of number
-          cuda: "11.0"
+          cuda: "11.1"
           requires:
             - hold
   merge_stage_test:
@@ -195,10 +190,10 @@ workflows:
     jobs:
       - build_cuda:
           name: minimum_version_gpu
-          torch: 1.7.1
+          torch: 1.8.1
           # Use double quotation mark to explicitly specify its type
           # as string instead of number
-          cuda: "11.0"
+          cuda: "11.1"
           filters:
             branches:
               only:

@@ -411,32 +411,32 @@ class SampleFrames(BaseTransform):
 
 @TRANSFORMS.register_module()
 class UniformSample(BaseTransform):
-    """Uniformly sample frames from the video. Currently used for Something-
-    Something V2 dataset. Modified from
-    https://github.com/facebookresearch/SlowFast/blob/64a
+    """Uniformly sample frames from the video.
+
+    Modified from https://github.com/facebookresearch/SlowFast/blob/64a
     bcc90ccfdcbb11cf91d6e525bed60e92a8796/slowfast/datasets/ssv2.py#L159.
 
-    To sample an n-frame clip from the video. UniformSampleFrames basically
+    To sample an n-frame clip from the video. UniformSample basically
     divides the video into n segments of equal length and randomly samples one
     frame from each segment.
 
     Required keys:
 
-    - total_frames
-    - start_index
+        - total_frames
+        - start_index
 
     Added keys:
 
-    - frame_inds
-    - clip_len
-    - frame_interval
-    - num_clips
+        - frame_inds
+        - clip_len
+        - frame_interval
+        - num_clips
 
     Args:
         clip_len (int): Frames of each sampled output clip.
-        num_clips (int): Number of clips to be sampled. Default: 1.
+        num_clips (int): Number of clips to be sampled. Defaults to 1.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
+            Defaults to False.
     """
 
     def __init__(self,
@@ -448,17 +448,24 @@ class UniformSample(BaseTransform):
         self.num_clips = num_clips
         self.test_mode = test_mode
 
-    def _get_sample_clips(self, num_frames: int) -> np.array:
-        """When video frames is shorter than target clip len, this strategy
-        would repeat sample frame, rather than loop sample in 'loop' mode. In
-        test mode, this strategy would sample the middle frame of each segment,
-        rather than set a random seed, and therefore only support sample 1
-        clip.
+    def _get_sample_clips(self, num_frames: int) -> np.ndarray:
+        """To sample an n-frame clip from the video. UniformSample basically
+        divides the video into n segments of equal length and randomly samples
+        one frame from each segment. When the duration of video frames is
+        shorter than the desired length of the target clip, this approach will
+        duplicate the sampled frame instead of looping the sample in "loop"
+        mode. In the test mode, when we need to sample multiple clips,
+        specifically 'n' clips, this method will further divide the segments
+        based on the number of clips to be sampled. The 'i-th' clip will.
+
+        sample the frame located at the position 'i * len(segment) / n'
+        within the segment.
 
         Args:
             num_frames (int): Total number of frame in the video.
+
         Returns:
-            seq (list): the indexes of frames of sampled from the video.
+            seq (np.ndarray): the indexes of frames of sampled from the video.
         """
         seg_size = float(num_frames - 1) / self.clip_len
         inds = []
@@ -477,7 +484,15 @@ class UniformSample(BaseTransform):
 
         return np.array(inds)
 
-    def transform(self, results: dict):
+    def transform(self, results: Dict) -> Dict:
+        """Perform the Uniform Sampling.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
         num_frames = results['total_frames']
 
         inds = self._get_sample_clips(num_frames)
@@ -490,7 +505,7 @@ class UniformSample(BaseTransform):
         results['num_clips'] = self.num_clips
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'clip_len={self.clip_len}, '
                     f'num_clips={self.num_clips}, '
@@ -503,16 +518,19 @@ class UntrimmedSampleFrames(BaseTransform):
     """Sample frames from the untrimmed video.
 
     Required keys are "filename", "total_frames", added or modified keys are
-    "frame_inds", "frame_interval" and "num_clips".
+    "frame_inds", "clip_interval" and "num_clips".
 
     Args:
-        clip_len (int): The length of sampled clips. Default: 1.
+        clip_len (int): The length of sampled clips. Defaults to  1.
+        clip_interval (int): Clip interval of adjacent center of sampled
+            clips. Defaults to 16.
         frame_interval (int): Temporal interval of adjacent sampled frames.
-            Default: 16.
+            Defaults to 1.
     """
 
-    def __init__(self, clip_len=1, frame_interval=16):
+    def __init__(self, clip_len=1, clip_interval=16, frame_interval=1):
         self.clip_len = clip_len
+        self.clip_interval = clip_interval
         self.frame_interval = frame_interval
 
     def transform(self, results):
@@ -525,18 +543,21 @@ class UntrimmedSampleFrames(BaseTransform):
         total_frames = results['total_frames']
         start_index = results['start_index']
 
-        clip_centers = np.arange(self.frame_interval // 2, total_frames,
-                                 self.frame_interval)
+        clip_centers = np.arange(self.clip_interval // 2, total_frames,
+                                 self.clip_interval)
         num_clips = clip_centers.shape[0]
         frame_inds = clip_centers[:, None] + np.arange(
-            -(self.clip_len // 2), self.clip_len -
-            (self.clip_len // 2))[None, :]
+            -(self.clip_len // 2 * self.frame_interval),
+            self.frame_interval *
+            (self.clip_len -
+             (self.clip_len // 2)), self.frame_interval)[None, :]
         # clip frame_inds to legal range
         frame_inds = np.clip(frame_inds, 0, total_frames - 1)
 
         frame_inds = np.concatenate(frame_inds) + start_index
         results['frame_inds'] = frame_inds.astype(np.int32)
         results['clip_len'] = self.clip_len
+        results['clip_interval'] = self.clip_interval
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = num_clips
         return results
@@ -544,6 +565,7 @@ class UntrimmedSampleFrames(BaseTransform):
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
                     f'clip_len={self.clip_len}, '
+                    f'clip_interval={self.clip_interval}, '
                     f'frame_interval={self.frame_interval})')
         return repr_str
 
@@ -731,15 +753,18 @@ class SampleAVAFrames(SampleFrames):
         fps = results['fps']
         timestamp = results['timestamp']
         timestamp_start = results['timestamp_start']
-        shot_info = results['shot_info']
+        start_index = results.get('start_index', 0)
+        if results.get('total_frames') is not None:
+            shot_info = (0, results['total_frames'])
+        else:
+            shot_info = results['shot_info']
 
-        center_index = fps * (timestamp - timestamp_start) + 1
+        center_index = fps * (timestamp - timestamp_start) + start_index
 
         skip_offsets = np.random.randint(
             -self.frame_interval // 2, (self.frame_interval + 1) // 2,
             size=self.clip_len)
         frame_inds = self._get_clips(center_index, skip_offsets, shot_info)
-        start_index = results.get('start_index', 0)
 
         frame_inds = np.array(frame_inds, dtype=np.int32) + start_index
         results['frame_inds'] = frame_inds
@@ -1209,6 +1234,18 @@ class DecordDecode(BaseTransform):
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
         results['img_shape'] = imgs[0].shape[:2]
+
+        # we resize the gt_bboxes and proposals to their real scale
+        if 'gt_bboxes' in results:
+            h, w = results['img_shape']
+            scale_factor = np.array([w, h, w, h])
+            gt_bboxes = results['gt_bboxes']
+            gt_bboxes = (gt_bboxes * scale_factor).astype(np.float32)
+            results['gt_bboxes'] = gt_bboxes
+            if 'proposals' in results and results['proposals'] is not None:
+                proposals = results['proposals']
+                proposals = (proposals * scale_factor).astype(np.float32)
+                results['proposals'] = proposals
 
         return results
 

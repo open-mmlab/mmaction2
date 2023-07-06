@@ -30,7 +30,7 @@ jobs:
         with:
            python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
-        run: pip install pip --upgrade  && pip install wheel
+        run: pip install pip --upgrade && pip install wheel
       - name: Install soundfile lib
         run: sudo apt-get install -y libsndfile1
       - name: Install librosa and soundfile
@@ -51,6 +51,8 @@ jobs:
         run: pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
       - name: Install MMCls
         run: pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+      - name: Install MMPose
+        run: pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
       - name: Install unittest dependencies
         run: pip install -r requirements.txt
       - name: Install PytorchVideo
@@ -95,7 +97,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
-        run: pip install pip --upgrade  && pip install wheel
+        run: pip install pip --upgrade && pip install wheel
       - name: Fetch GPG keys
         run: |
           apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
@@ -117,6 +119,7 @@ jobs:
           mim install 'mmcv >= 2.0.0'
           pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
           pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+          pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
           pip install -r requirements.txt
       - name: Install PytorchVideo
         run: pip install pytorchvideo
@@ -165,6 +168,7 @@ jobs:
           mim install 'mmcv >= 2.0.0'
           pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
           pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+          pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
           pip install -r requirements.txt
       - name: Install PytorchVideo
         run: python -m pip install pytorchvideo

@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import torch
 import torch.nn as nn
-from torch import Tensor
 
 from mmaction.registry import MODELS
 from mmaction.utils import SampleList
@@ -12,7 +12,7 @@ class Recognizer2D(BaseRecognizer):
     """2D recognizer model framework."""
 
     def extract_feat(self,
-                     inputs: Tensor,
+                     inputs: torch.Tensor,
                      stage: str = 'neck',
                      data_samples: SampleList = None,
                      test_mode: bool = False) -> tuple:
@@ -48,6 +48,42 @@ class Recognizer2D(BaseRecognizer):
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
         inputs = inputs.view((-1, ) + inputs.shape[2:])
 
+        def forward_once(batch_imgs):
+            # Extract features through backbone.
+            if (hasattr(self.backbone, 'features')
+                    and self.backbone_from == 'torchvision'):
+                x = self.backbone.features(batch_imgs)
+            elif self.backbone_from == 'timm':
+                x = self.backbone.forward_features(batch_imgs)
+            elif self.backbone_from in ['mmcls', 'mmpretrain']:
+                x = self.backbone(batch_imgs)
+                if isinstance(x, tuple):
+                    assert len(x) == 1
+                    x = x[0]
+            else:
+                x = self.backbone(batch_imgs)
+
+            if self.backbone_from in ['torchvision', 'timm']:
+                if not self.feature_shape:
+                    # Transformer-based feature shape: B x L x C.
+                    if len(x.shape) == 3:
+                        self.feature_shape = 'NLC'
+                    # Resnet-based feature shape: B x C x Hs x Ws.
+                    elif len(x.shape) == 4:
+                        self.feature_shape = 'NCHW'
+
+                if self.feature_shape == 'NHWC':
+                    x = nn.AdaptiveAvgPool2d(1)(x.permute(0, 3, 1,
+                                                          2))  # B x C x 1 x 1
+                elif self.feature_shape == 'NCHW':
+                    x = nn.AdaptiveAvgPool2d(1)(x)  # B x C x 1 x 1
+                elif self.feature_shape == 'NLC':
+                    x = nn.AdaptiveAvgPool1d(1)(x.transpose(1, 2))  # B x C x 1
+
+                x = x.reshape((x.shape[0], -1))  # B x C
+                x = x.reshape(x.shape + (1, 1))  # B x C x 1 x 1
+            return x
+
         # Check settings of `fcn_test`.
         fcn_test = False
         if test_mode:
@@ -58,29 +94,52 @@ class Recognizer2D(BaseRecognizer):
                                              self.backbone.num_segments)
             loss_predict_kwargs['fcn_test'] = fcn_test
 
-        # Extract features through backbone.
-        if (hasattr(self.backbone, 'features')
-                and self.backbone_from == 'torchvision'):
-            x = self.backbone.features(inputs)
-        elif self.backbone_from == 'timm':
-            x = self.backbone.forward_features(inputs)
-        elif self.backbone_from == 'mmcls':
-            x = self.backbone(inputs)
-            if isinstance(x, tuple):
-                assert len(x) == 1
-                x = x[0]
-        else:
-            x = self.backbone(inputs)
+            # inference with batch size of `max_testing_views` if set
+            if self.test_cfg is not None and self.test_cfg.get(
+                    'max_testing_views', False):
+                max_testing_views = self.test_cfg.get('max_testing_views')
+                assert isinstance(max_testing_views, int)
+                # backbone specify num_segments
+                num_segments = self.backbone.get('num_segments')
+                if num_segments is not None:
+                    assert max_testing_views % num_segments == 0, \
+                        'make sure that max_testing_views is a multiple of ' \
+                        'num_segments, but got {max_testing_views} and '\
+                        '{num_segments}'
 
-        if self.backbone_from in ['torchvision', 'timm']:
-            # Transformer-based feature shape: B x L x C.
-            if len(x.shape) == 3 and x.shape[2] > 1:
-                x = nn.AdaptiveAvgPool1d(1)(x.transpose(1, 2))  # B x C x 1
-            # Resnet-based feature shape: B x C x Hs x Ws。
-            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
-                x = nn.AdaptiveAvgPool2d(1)(x)  # B x C x 1 x 1
-            x = x.reshape((x.shape[0], -1))  # B x C
-            x = x.reshape(x.shape + (1, 1))  # B x C x 1 x 1
+                total_views = inputs.shape[0]
+                view_ptr = 0
+                feats = []
+                while view_ptr < total_views:
+                    batch_imgs = inputs[view_ptr:view_ptr + max_testing_views]
+                    feat = forward_once(batch_imgs)
+                    if self.with_neck:
+                        feat, _ = self.neck(feat)
+                    feats.append(feat)
+                    view_ptr += max_testing_views
+
+                def recursively_cat(feats):
+                    # recursively traverse feats until it's a tensor,
+                    # then concat
+                    out_feats = []
+                    for e_idx, elem in enumerate(feats[0]):
+                        batch_elem = [feat[e_idx] for feat in feats]
+                        if not isinstance(elem, torch.Tensor):
+                            batch_elem = recursively_cat(batch_elem)
+                        else:
+                            batch_elem = torch.cat(batch_elem)
+                        out_feats.append(batch_elem)
+
+                    return tuple(out_feats)
+
+                if isinstance(feats[0], tuple):
+                    x = recursively_cat(feats)
+                else:
+                    x = torch.cat(feats)
+            else:
+                x = forward_once(inputs)
+        else:
+            x = forward_once(inputs)
 
         # Return features extracted through backbone.
         if stage == 'backbone':

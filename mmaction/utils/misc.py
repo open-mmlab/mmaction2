@@ -1,10 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import ctypes
+import inspect
 import os
 import os.path as osp
 import random
 import string
-from typing import Optional
+from types import FunctionType, ModuleType
+from typing import Optional, Union
 
 import cv2
 import mmcv
@@ -73,3 +75,60 @@ def frame_extract(video_path: str,
         flag, frame = vid.read()
 
     return frame_paths, frames
+
+
+class VideoWriter():
+
+    def __init__(self, video_file, fps):
+        self.video_file = video_file
+        self.fps = fps
+        if video_file.endswith('.mp4'):
+            self.fourcc = 'mp4v'
+        elif video_file.endswith('.avi'):
+            self.fourcc = 'XVID'
+
+        out_dir = osp.dirname(osp.abspath(self.video_file))
+        if not osp.exists(out_dir):
+            os.makedirs(out_dir, exist_ok=True)
+
+    def _init_cv2_writer(self, frame):
+        from cv2 import VideoWriter, VideoWriter_fourcc
+        height, width = frame.shape[:2]
+        resolution = (width, height)
+        self.writer = VideoWriter(self.video_file,
+                                  VideoWriter_fourcc(*self.fourcc), self.fps,
+                                  resolution)
+
+    def write_frame(self, frame):
+        if not getattr(self, 'writer', None):
+            self._init_cv2_writer(frame)
+        self.writer.write(frame)
+
+    def release(self):
+        self.writer.release()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, trace):
+        self.release()
+
+
+def get_str_type(module: Union[str, ModuleType, FunctionType]) -> str:
+    """Return the string type name of module.
+
+    Args:
+        module (str | ModuleType | FunctionType):
+            The target module class
+
+    Returns:
+        Class name of the module
+    """
+    if isinstance(module, str):
+        str_type = module
+    elif inspect.isclass(module) or inspect.isfunction(module):
+        str_type = module.__name__
+    else:
+        return None
+
+    return str_type
