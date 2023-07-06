@@ -365,6 +365,3 @@ class ResNetTIN(ResNetTSM):
                                            self.shift_div)
         self.layer4 = make_block_interlace(self.layer4, num_segment_list[3],
                                            self.shift_div)
-
-    def init_weights(self):
-        pass
