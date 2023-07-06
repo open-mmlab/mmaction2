@@ -44,6 +44,8 @@ class BBoxHeadAVA(nn.Module):
     """Simplest RoI head, with only one fc layer for classification.
 
     Args:
+        background_class (bool): Whether set class 0 as background class and
+            ignore it when calculate loss.
         temporal_pool_type (str): The temporal pool type. Choices are ``avg``
             or ``max``. Defaults to ``avg``.
         spatial_pool_type (str): The spatial pool type. Choices are ``avg`` or
@@ -70,6 +72,7 @@ class BBoxHeadAVA(nn.Module):
 
     def __init__(
             self,
+            background_class: bool,
             temporal_pool_type: str = 'avg',
             spatial_pool_type: str = 'max',
             in_channels: int = 2048,
@@ -97,6 +100,8 @@ class BBoxHeadAVA(nn.Module):
 
         self.focal_gamma = focal_gamma
         self.focal_alpha = focal_alpha
+
+        self.background_class = background_class
 
         if topk is None:
             self.topk = ()
@@ -251,9 +256,11 @@ class BBoxHeadAVA(nn.Module):
         losses = dict()
         # Only use the cls_score
         if cls_score is not None:
-            labels = labels[:, 1:]  # Get valid labels (ignore first one)
+            if self.background_class:
+                labels = labels[:, 1:]  # Get valid labels (ignore first one)
+                cls_score = cls_score[:, 1:]
             pos_inds = torch.sum(labels, dim=-1) > 0
-            cls_score = cls_score[pos_inds, 1:]
+            cls_score = cls_score[pos_inds]
             labels = labels[pos_inds]
 
             # Compute First Recall/Precisions
@@ -268,7 +275,7 @@ class BBoxHeadAVA(nn.Module):
 
             # If Single-label, need to ensure that target labels sum to 1: ie
             #   that they are valid probabilities.
-            if not self.multilabel:
+            if not self.multilabel and self.background_class:
                 labels = labels / labels.sum(dim=1, keepdim=True)
 
             # Select Loss function based on single/multi-label
