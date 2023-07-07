@@ -5,25 +5,17 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mmdet.models.task_modules.samplers import SamplingResult
 from mmengine.config import ConfigDict
 from mmengine.structures import InstanceData
-from torch import Tensor
-
-from mmaction.structures.bbox import bbox_target
-from mmaction.utils import InstanceList
-
-try:
-    from mmdet.models.task_modules.samplers import SamplingResult
-    from mmdet.registry import MODELS as MMDET_MODELS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    from mmaction.utils import SamplingResult
-    mmdet_imported = False
-
 # Resolve cross-entropy function to support multi-target in Torch < 1.10
 #   This is a very basic 'hack', with minimal functionality to support the
 #   procedure under prior torch versions
 from packaging import version as pv
+from torch import Tensor
+
+from mmaction.structures.bbox import bbox_target
+from mmaction.utils import InstanceList
 
 if pv.parse(torch.__version__) < pv.parse('1.10'):
 
@@ -421,7 +413,3 @@ class BBoxHeadAVA(nn.Module):
         results.scores = scores
 
         return results
-
-
-if mmdet_imported:
-    MMDET_MODELS.register_module()(BBoxHeadAVA)

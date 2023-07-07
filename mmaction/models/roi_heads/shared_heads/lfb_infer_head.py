@@ -6,18 +6,9 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 
-from mmaction.registry import MODELS
-
-try:
-    from mmdet.registry import MODELS as MMDET_MODELS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
-
 # Note: All these heads take 5D Tensors as input (N, C, T, H, W)
 
 
-@MODELS.register_module()
 class LFBInferHead(nn.Module):
     """Long-Term Feature Bank Infer Head.
 
@@ -155,7 +146,3 @@ class LFBInferHead(nn.Module):
             osp.join(self.lfb_prefix_path, f'lfb_{self.dataset_mode}.pkl'))
         torch.save(lfb, lfb_file_path)
         print(f'LFB has been constructed in {lfb_file_path}!')
-
-
-if mmdet_imported:
-    MMDET_MODELS.register_module()(LFBInferHead)
