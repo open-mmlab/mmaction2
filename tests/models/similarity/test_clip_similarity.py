@@ -1,6 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import platform
 from unittest.mock import MagicMock
 
+import pytest
 import torch
 
 from mmaction.registry import MODELS
@@ -9,6 +11,7 @@ from mmaction.testing import get_similarity_cfg
 from mmaction.utils import register_all_modules
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_clip_similarity():
     register_all_modules()
     cfg = get_similarity_cfg(
