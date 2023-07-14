@@ -305,6 +305,9 @@ class ResNetTSM(ResNet):
                                                  self.num_segments,
                                                  self.non_local_cfg)
 
+    def _get_wrap_prefix(self):
+        return ['.net', '.block']
+
     def load_original_weights(self, logger):
         """Load weights from original checkpoint, which required converting
         keys."""
@@ -317,7 +320,7 @@ class ResNetTSM(ResNet):
         for name, module in self.named_modules():
             # convert torchvision keys
             ori_name = name
-            for wrap_prefix in ['.net', '.block']:
+            for wrap_prefix in self._get_wrap_prefix():
                 if wrap_prefix in ori_name:
                     ori_name = ori_name.replace(wrap_prefix, '')
                     wrapped_layers_map[ori_name] = name
@@ -352,6 +355,7 @@ class ResNetTSM(ResNet):
             if layer_name in wrapped_layers_map:
                 wrapped_name = param_name.replace(
                     layer_name, wrapped_layers_map[layer_name])
+                print(f'wrapped_name {wrapped_name}')
                 state_dict_torchvision[
                     wrapped_name] = state_dict_torchvision.pop(param_name)
 
