@@ -10,7 +10,7 @@ from .loading import (ArrayDecode, AudioFeatureSelector, BuildPseudoClip,
                       PyAVInit, RawFrameDecode, SampleAVAFrames, SampleFrames,
                       UniformSample, UntrimmedSampleFrames)
 from .pose_transforms import (GeneratePoseTarget, GenSkeFeat, JointToBone,
-                              LoadKineticsPose, MergeSkeFeat, MMCompact,
+                              DecompressPose, MergeSkeFeat, MMCompact,
                               MMDecode, MMUniformSampleFrames, PadTo,
                               PoseCompact, PoseDecode, PreNormalize2D,
                               PreNormalize3D, ToMotion, UniformSampleFrames)
@@ -26,7 +26,7 @@ __all__ = [
     'DenseSampleFrames', 'Flip', 'FormatAudioShape', 'FormatGCNInput',
     'FormatShape', 'Fuse', 'GenSkeFeat', 'GenerateLocalizationLabels',
     'GeneratePoseTarget', 'ImageDecode', 'ImgAug', 'JointToBone',
-    'LoadAudioFeature', 'LoadHVULabel', 'LoadKineticsPose',
+    'LoadAudioFeature', 'LoadHVULabel', 'DecompressPose',
     'LoadLocalizationFeature', 'LoadProposals', 'LoadRGBFromFile',
     'MergeSkeFeat', 'MultiScaleCrop', 'OpenCVDecode', 'OpenCVInit',
     'OpenCVInit', 'PIMSDecode', 'PIMSInit', 'PackActionInputs',
