@@ -39,9 +39,7 @@ class DecompressPose(BaseTransform):
         max_person (int): The max number of persons in a frame. Defaults to 10.
     """
 
-    def __init__(self,
-                 squeeze: bool = True,
-                 max_person: int = 10) -> None:
+    def __init__(self, squeeze: bool = True, max_person: int = 10) -> None:
         self.squeeze = squeeze
         self.max_person = max_person
 
@@ -82,8 +80,10 @@ class DecompressPose(BaseTransform):
         num_joints = keypoint.shape[1]
         num_person = mode(frame_inds)[-1][0]
 
-        new_kp = np.zeros([num_person, total_frames, num_joints, 2], dtype=np.float16)
-        new_kpscore = np.zeros([num_person, total_frames, num_joints], dtype=np.float16)
+        new_kp = np.zeros([num_person, total_frames, num_joints, 2],
+                          dtype=np.float16)
+        new_kpscore = np.zeros([num_person, total_frames, num_joints],
+                               dtype=np.float16)
         nperson_per_frame = np.zeros([total_frames], dtype=np.int16)
 
         for frame_ind, kp in zip(frame_inds, keypoint):

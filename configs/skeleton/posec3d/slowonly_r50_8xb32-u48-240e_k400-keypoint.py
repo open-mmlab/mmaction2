@@ -9,7 +9,7 @@ model = dict(
         in_channels=17,
         base_channels=32,
         num_stages=3,
-        out_indices=(2,),
+        out_indices=(2, ),
         stage_blocks=(3, 4, 6),
         conv1_stride_s=1,
         pool1_stride_s=1,
@@ -59,11 +59,18 @@ val_pipeline = [
 ]
 test_pipeline = [
     dict(type='DecompressPose', squeeze=True),
-    dict(type='UniformSampleFrames', clip_len=48, num_clips=10, test_mode=True),
+    dict(
+        type='UniformSampleFrames', clip_len=48, num_clips=10, test_mode=True),
     dict(type='PoseDecode'),
     dict(type='PoseCompact', hw_ratio=1., allow_imgpad=True),
     dict(type='Resize', scale=(64, 64), keep_ratio=False),
-    dict(type='GeneratePoseTarget', with_kp=True, with_limb=False, double=True, left_kp=left_kp, right_kp=right_kp),
+    dict(
+        type='GeneratePoseTarget',
+        with_kp=True,
+        with_limb=False,
+        double=True,
+        left_kp=left_kp,
+        right_kp=right_kp),
     dict(type='FormatShape', input_format='NCTHW_Heatmap'),
     dict(type='PackActionInputs')
 ]

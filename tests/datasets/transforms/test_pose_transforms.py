@@ -2,17 +2,15 @@
 import copy
 import copy as cp
 import os.path as osp
-import tempfile
 from collections import defaultdict
 
 import numpy as np
 import pytest
-from mmengine import dump
 from mmengine.testing import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from mmaction.datasets.transforms import (GeneratePoseTarget, GenSkeFeat,
-                                          JointToBone, DecompressPose,
+from mmaction.datasets.transforms import (DecompressPose, GeneratePoseTarget,
+                                          GenSkeFeat, JointToBone,
                                           MergeSkeFeat, MMCompact, MMDecode,
                                           MMUniformSampleFrames, PadTo,
                                           PoseCompact, PoseDecode,

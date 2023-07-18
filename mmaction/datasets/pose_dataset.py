@@ -1,9 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-from typing import Callable, Dict, List, Optional, Union, Tuple
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import mmengine
 from mmengine.logging import MMLogger
+
 from mmaction.registry import DATASETS
 from .base import BaseActionDataset
 
@@ -29,16 +30,20 @@ class PoseDataset(BaseActionDataset):
             For NTURGB+D 120, allowed choices are 'xsub_train',
             'xsub_val', 'xset_train', 'xset_val'. For FineGYM,
             allowed choices are 'train', 'val'. Defaults to None.
-        valid_ratio (float, optional): The valid_ratio for videos in KineticsPose. For a video with n frames, it is a
-            valid training sample only if n * valid_ratio frames have human pose. None means not applicable (only
-            applicable to Kinetics Pose). Default: None.
-        box_thr (float): The threshold for human proposals. Only boxes with confidence score larger than `box_thr` is
-            kept. None means not applicable (only applicable to Kinetics). Allowed choices are 0.5, 0.6, 0.7, 0.8, 0.9.
-            Defaults to 0.5.
-        memcached (bool): Whether keypoint is cached in memcached. If set as True, will use 'frame_dir' as the key to
+        valid_ratio (float, optional): The valid_ratio for videos in
+            KineticsPose. For a video with n frames, it is a valid
+            training sample only if n * valid_ratio frames have human
+            pose. None means not applicable (only applicable to Kinetics
+            Pose).Defaults to None.
+        box_thr (float): The threshold for human proposals. Only boxes
+            with confidence score larger than `box_thr` is kept. None
+            means not applicable (only applicable to Kinetics). Allowed
+            choices are 0.5, 0.6, 0.7, 0.8, 0.9. Defaults to 0.5.
+        memcached (bool): Whether keypoint is cached in memcached.
+            If set as True, will use 'frame_dir' as the key to
             fetch 'keypoint' from memcached. Defaults to False.
-        mc_cfg (tuple): The config for memcached client, only applicable if `memcached==True`.
-            Defaults to  ``('localhost', 22077)``.
+        mc_cfg (tuple): The config for memcached client, only applicable
+            if `memcached==True`. Defaults to  ``('localhost', 22077)``.
     """
 
     def __init__(self,
@@ -86,13 +91,16 @@ class PoseDataset(BaseActionDataset):
 
     def filter_data(self) -> List[Dict]:
         """Filter out invalid samples."""
-        if self.valid_ratio is not None and isinstance(self.valid_ratio, float) and self.valid_ratio > 0:
+        if self.valid_ratio is not None and isinstance(
+                self.valid_ratio, float) and self.valid_ratio > 0:
             self.data_list = [
-                x for x in self.data_list
-                if x['valid'][self.box_thr] / x['total_frames'] >= self.valid_ratio
+                x for x in self.data_list if x['valid'][self.box_thr] /
+                x['total_frames'] >= self.valid_ratio
             ]
             for item in self.data_list:
-                assert 'box_score' in item, 'if valid_ratio is a positive number, item should have field `box_score`'
+                assert 'box_score' in item,\
+                    'if valid_ratio is a positive number,' \
+                    'item should have field `box_score`'
                 anno_inds = (item['box_score'] >= self.box_thr)
                 item['anno_inds'] = anno_inds
 
@@ -103,7 +111,8 @@ class PoseDataset(BaseActionDataset):
                 item['key'] = item['frame_dir']
 
         logger = MMLogger.get_current_instance()
-        logger.info(f'{len(self.data_list)} videos remain after valid thresholding')
+        logger.info(
+            f'{len(self.data_list)} videos remain after valid thresholding')
 
         return self.data_list
 
@@ -120,7 +129,7 @@ class PoseDataset(BaseActionDataset):
             key = data_info.pop('key')
             try:
                 pack = self.cli.get(key)
-            except:
+            except:  # noqa: E722
                 self.cli = Client(self.mc_cfg, serde=serde.pickle_serde)
                 pack = self.cli.get(key)
             if not isinstance(pack, dict):
@@ -130,8 +139,9 @@ class PoseDataset(BaseActionDataset):
                 for k in data:
                     try:
                         self.cli.set(k, data[k])
-                    except:
-                        self.cli = Client(self.mc_cfg, serde=serde.pickle_serde)
+                    except:  # noqa: E722
+                        self.cli = Client(
+                            self.mc_cfg, serde=serde.pickle_serde)
                         self.cli.set(k, data[k])
             for k in pack:
                 data_info[k] = pack[k]
