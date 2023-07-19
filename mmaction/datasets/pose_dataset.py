@@ -125,7 +125,7 @@ class PoseDataset(BaseActionDataset):
             identifier = 'filename' if 'filename' in data_info \
                 else 'frame_dir'
             ske_path = osp.join(self.data_prefix['skeleton'],
-                                identifier+'.pkl')
+                                identifier + '.pkl')
             ske = mmengine.load(ske_path)
             for k in ske:
                 data_info[k] = ske[k]
