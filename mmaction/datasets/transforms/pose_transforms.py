@@ -78,7 +78,7 @@ class DecompressPose(BaseTransform):
         results['total_frames'] = total_frames
 
         num_joints = keypoint.shape[1]
-        num_person = mode(frame_inds)[-1][0]
+        num_person = mode(frame_inds, keepdims=False)[-1]
 
         new_kp = np.zeros([num_person, total_frames, num_joints, 2],
                           dtype=np.float16)
