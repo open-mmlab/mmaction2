@@ -116,34 +116,18 @@ class PoseDataset(BaseActionDataset):
 
         return self.data_list
 
-    def get_data_info(self, idx: int) -> dict:
+    def get_data_info(self, idx: int) -> Dict:
         """Get annotation by index."""
         data_info = super().get_data_info(idx)
 
-        if self.memcached and 'key' in data_info:
-            from pymemcache import serde
-            from pymemcache.client.base import Client
-
-            if self.cli is None:
-                self.cli = Client(self.mc_cfg, serde=serde.pickle_serde)
-            key = data_info.pop('key')
-            try:
-                pack = self.cli.get(key)
-            except:  # noqa: E722
-                self.cli = Client(self.mc_cfg, serde=serde.pickle_serde)
-                pack = self.cli.get(key)
-            if not isinstance(pack, dict):
-                raw_file = data_info['raw_file']
-                data = mmengine.load(raw_file)
-                pack = data[key]
-                for k in data:
-                    try:
-                        self.cli.set(k, data[k])
-                    except:  # noqa: E722
-                        self.cli = Client(
-                            self.mc_cfg, serde=serde.pickle_serde)
-                        self.cli.set(k, data[k])
-            for k in pack:
-                data_info[k] = pack[k]
+        # Sometimes we may need to load skeleton from the file
+        if 'skeleton' in self.data_prefix:
+            identifier = 'filename' if 'filename' in data_info \
+                else 'frame_dir'
+            ske_path = osp.join(self.data_prefix['skeleton'],
+                                identifier+'.pkl')
+            ske = mmengine.load(ske_path)
+            for k in ske:
+                data_info[k] = ske[k]
 
         return data_info

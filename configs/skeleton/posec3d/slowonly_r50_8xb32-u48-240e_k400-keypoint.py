@@ -25,9 +25,8 @@ model = dict(
         dropout_ratio=0.5,
         average_clips='prob'))
 
-memcached = True
-mc_cfg = ('localhost', 22077)
 dataset_type = 'PoseDataset'
+data_root = 'data/skeleton/kpfiles'
 ann_file = 'data/skeleton/k400_2d.pkl'
 left_kp = [1, 3, 5, 7, 9, 11, 13, 15]
 right_kp = [2, 4, 6, 8, 10, 12, 14, 16]
@@ -89,8 +88,7 @@ train_dataloader = dict(
             split='train',
             pipeline=train_pipeline,
             box_thr=box_thr,
-            memcached=memcached,
-            mc_cfg=mc_cfg)))
+            data_prefix=dict(skeleton=data_root))))
 val_dataloader = dict(
     batch_size=32,
     num_workers=8,
@@ -102,8 +100,7 @@ val_dataloader = dict(
         split='val',
         pipeline=val_pipeline,
         box_thr=box_thr,
-        memcached=memcached,
-        mc_cfg=mc_cfg,
+        data_prefix=dict(skeleton=data_root),
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
@@ -116,8 +113,7 @@ test_dataloader = dict(
         split='val',
         pipeline=test_pipeline,
         box_thr=box_thr,
-        memcached=memcached,
-        mc_cfg=mc_cfg,
+        data_prefix=dict(skeleton=data_root),
         test_mode=True))
 
 val_evaluator = dict(type='AccMetric')
