@@ -11,16 +11,20 @@ Models:
     In Collection: Audio
     Metadata:
       Architecture: ResNet18
+      Batch Size: 320
+      Epochs: 100
+      FLOPs: 0.37G
+      Parameters: 11.4M
       Pretrained: None
+      n_fft: 1024
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
-      n_fft: 1024
     Modality: Audio
     Results:
       - Dataset: Kinetics-400
         Task: Action Recognition
         Metrics:
-          Top 1 Accuracy: 19.7
-          Top 5 Accuracy: 35.75
+          Top 1 Accuracy: 13.7
+          Top 5 Accuracy: 27.3
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.log
-    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20201012-bf34df6c.pth
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20230702-e4642fb0.pth

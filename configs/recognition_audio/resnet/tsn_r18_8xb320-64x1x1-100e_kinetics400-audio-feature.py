@@ -1,14 +1,24 @@
-_base_ = [
-    '../../_base_/models/tsn_r18_audio.py', '../../_base_/default_runtime.py'
-]
+_base_ = '../../_base_/default_runtime.py'
+
+# model settings
+model = dict(
+    type='RecognizerAudio',
+    backbone=dict(type='ResNet', depth=18, in_channels=1, norm_eval=False),
+    cls_head=dict(
+        type='TSNAudioHead',
+        num_classes=400,
+        in_channels=512,
+        dropout_ratio=0.5,
+        init_std=0.01,
+        average_clips='prob'))
 
 # dataset settings
 dataset_type = 'AudioDataset'
-data_root = 'data/kinetics400/audio_features_train'
-data_root_val = 'data/kinetics400/audio_features_val'
-ann_file_train = 'data/kinetics400/kinetics400_val_list_audio_features.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_audio_features.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_audio_features.txt'
+data_root = 'data/kinetics400'
+ann_file_train = 'kinetics400_train_list_audio_features.txt'
+ann_file_val = 'kinetics400_val_list_audio_features.txt'
+ann_file_test = 'kinetics400_val_list_audio_features.txt'
+
 train_pipeline = [
     dict(type='LoadAudioFeature'),
     dict(type='SampleFrames', clip_len=64, frame_interval=1, num_clips=1),
@@ -28,53 +38,42 @@ val_pipeline = [
     dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='PackActionInputs')
 ]
-test_pipeline = [
-    dict(type='LoadAudioFeature'),
-    dict(
-        type='SampleFrames',
-        clip_len=64,
-        frame_interval=1,
-        num_clips=10,
-        test_mode=True),
-    dict(type='AudioFeatureSelector'),
-    dict(type='FormatAudioShape', input_format='NCTF'),
-    dict(type='PackActionInputs')
-]
+test_pipeline = val_pipeline
 
 train_dataloader = dict(
     batch_size=320,
-    num_workers=2,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
-        data_prefix=dict(audio=data_root_val),
-        suffix='.npy',
-        pipeline=train_pipeline))
+        pipeline=train_pipeline,
+        data_root=data_root,
+        data_prefix=dict(audio='audio_features_train')))
 val_dataloader = dict(
     batch_size=320,
-    num_workers=2,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
         pipeline=val_pipeline,
-        data_prefix=dict(audio=data_root_val),
-        suffix='.npy',
+        data_root=data_root,
+        data_prefix=dict(audio='audio_features_val'),
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=2,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_test,
         pipeline=test_pipeline,
-        data_prefix=dict(audio=data_root_val),
-        suffix='.npy',
+        data_root=data_root,
+        data_prefix=dict(audio='audio_features_val'),
         test_mode=True))
 
 val_evaluator = dict(type='AccMetric')
@@ -90,8 +89,7 @@ param_scheduler = [
 ]
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001),
+    optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
 
-default_hooks = dict(
-    checkpoint=dict(max_keep_ckpts=3, interval=5), logger=dict(interval=20))
+default_hooks = dict(checkpoint=dict(max_keep_ckpts=3, interval=5))
