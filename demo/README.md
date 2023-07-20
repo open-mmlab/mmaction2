@@ -440,7 +440,6 @@ Assume that you are located at `$MMACTION2`.
        --label-file tools/data/kinetics/label_map_k400.txt
    ```
 
-
 ## Audio Demo
 
 Demo script to predict the audio-based action recognition using a single audio feature.
@@ -462,9 +461,9 @@ or use checkpoint url from `configs/` to directly load the corresponding checkpo
 
 1. Recognize an audio file as input by using a tsn model on cuda by default.
 
-    ```shell
-    python demo/demo_audio.py \
-        configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py \
-        https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20230702-e4642fb0.pth \
-        audio_feature.npy tools/data/kinetics/label_map_k400.txt
-    ```
+   ```shell
+   python demo/demo_audio.py \
+       configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py \
+       https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20230702-e4642fb0.pth \
+       audio_feature.npy tools/data/kinetics/label_map_k400.txt
+   ```

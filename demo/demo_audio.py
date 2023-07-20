@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+from operator import itemgetter
 
 import torch
-from operator import itemgetter
 from mmengine import Config, DictAction
 
 from mmaction.apis import inference_recognizer, init_recognizer
