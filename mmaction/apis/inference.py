@@ -98,6 +98,7 @@ def inference_recognizer(model: nn.Module,
         data = dict(
             audio_path=video,
             total_frames=len(np.load(video)),
+            start_index=0,
             label=-1)
 
     data = test_pipeline(data)
