@@ -5,12 +5,11 @@ import tempfile
 import cv2
 import mmcv
 import mmengine
-import numpy as np
 import torch
 from mmengine import DictAction
 from mmengine.utils import track_iter_progress
 
-from mmaction.apis import (detection_inference, inference_recognizer,
+from mmaction.apis import (detection_inference, inference_skeleton,
                            init_recognizer, pose_inference)
 from mmaction.registry import VISUALIZERS
 from mmaction.utils import frame_extract
@@ -132,7 +131,6 @@ def main():
     frame_paths, frames = frame_extract(args.video, args.short_side,
                                         tmp_dir.name)
 
-    num_frame = len(frame_paths)
     h, w, _ = frames[0].shape
 
     # Get Human detection results.
@@ -148,33 +146,11 @@ def main():
                                                      args.device)
     torch.cuda.empty_cache()
 
-    fake_anno = dict(
-        frame_dir='',
-        label=-1,
-        img_shape=(h, w),
-        original_shape=(h, w),
-        start_index=0,
-        modality='Pose',
-        total_frames=num_frame)
-    num_person = max([len(x['keypoints']) for x in pose_results])
-
-    num_keypoint = 17
-    keypoint = np.zeros((num_frame, num_person, num_keypoint, 2),
-                        dtype=np.float16)
-    keypoint_score = np.zeros((num_frame, num_person, num_keypoint),
-                              dtype=np.float16)
-    for i, poses in enumerate(pose_results):
-        keypoint[i] = poses['keypoints']
-        keypoint_score[i] = poses['keypoint_scores']
-
-    fake_anno['keypoint'] = keypoint.transpose((1, 0, 2, 3))
-    fake_anno['keypoint_score'] = keypoint_score.transpose((1, 0, 2))
-
     config = mmengine.Config.fromfile(args.config)
     config.merge_from_dict(args.cfg_options)
 
     model = init_recognizer(config, args.checkpoint, args.device)
-    result = inference_recognizer(model, fake_anno)
+    result = inference_skeleton(model, pose_results, (h, w))
 
     max_pred_index = result.pred_scores.item.argmax().item()
     label_map = [x.strip() for x in open(args.label_map).readlines()]
