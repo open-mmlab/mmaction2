@@ -2,16 +2,16 @@ _base_ = ['../tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py']
 
 # dataset settings
 checkpoint = ('https://download.openmmlab.com/mmclassification/'
-              'v0/mobileone/mobileone-s0_8xb32_in1k_20221110-0bc94952.pth')
+              'v0/mobileone/mobileone-s4_8xb32_in1k_20221110-28d888cb.pth')
 model = dict(
     backbone=dict(
         type='mmpretrain.MobileOne',
-        arch='s0',
+        arch='s4',
         out_indices=(3, ),
         init_cfg=dict(
             type='Pretrained', checkpoint=checkpoint, prefix='backbone'),
         _delete_=True),
-    cls_head=dict(in_channels=1024))
+    cls_head=dict(in_channels=2048))
 
 dataset_type = 'VideoDataset'
 data_root = 'data/kinetics400/videos_train'
@@ -53,7 +53,7 @@ val_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=32,
+    batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -63,7 +63,7 @@ train_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
 val_dataloader = dict(
-    batch_size=32,
+    batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
