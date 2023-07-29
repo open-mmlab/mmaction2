@@ -28,7 +28,7 @@ class GatherLayer(torch.autograd.Function):
         return grad_out
 
 
-def text_prompt(labels_or_label_file, template=None):
+def text_prompt(labels_or_label_file, templates_or_template_file=None):
     if isinstance(labels_or_label_file, str):
         labels = mmengine.list_from_file(labels_or_label_file)
     elif isinstance(labels_or_label_file, list):
@@ -37,8 +37,8 @@ def text_prompt(labels_or_label_file, template=None):
         raise ValueError(f'`labels_or_label_file` must be `list` or `str`, '
                          f'but got {type(labels_or_label_file)}')
 
-    if template is None:
-        template = [
+    if templates_or_template_file is None:
+        templates = [
             'a photo of action {}', 'a picture of action {}',
             'Human action of {}', '{}, an action', '{} this is an action',
             '{}, a video of action', 'Playing action of {}', '{}',
@@ -47,15 +47,15 @@ def text_prompt(labels_or_label_file, template=None):
             'Video classification of {}', 'A video of {}', 'The man is {}',
             'The woman is {}'
         ]
-    elif isinstance(template, str):
-        template = [template]
-    elif not mmengine.is_seq_of(template, str):
+    elif isinstance(templates_or_template_file, str):
+        templates = mmengine.list_from_file(templates_or_template_file)
+    elif not mmengine.is_seq_of(templates_or_template_file, str):
         raise ValueError(f'`template` must be list of `str`, `str` or `None`, '
-                         f'but got {type(template)}')
+                         f'but got {type(templates_or_template_file)}')
 
-    num_prompt = len(template)
+    num_prompt = len(templates)
     prompt = torch.cat(
-        [clip.tokenize(t.format(c)) for t in template for c in labels])
+        [clip.tokenize(t.format(c)) for t in templates for c in labels])
     return prompt, num_prompt
 
 
@@ -68,7 +68,7 @@ class ActionClip(BaseModel):
                  num_adapter_layers: int = 6,
                  to_float32: bool = False,
                  labels_or_label_file: Optional[Union[List[str], str]] = None,
-                 template: Optional[Union[List[str], str]] = None,
+                 templates_or_template_file: Optional[Union[List[str], str]] = None,
                  data_preprocessor: Optional[Dict] = None,
                  loss: Dict = dict(type='CrossEntropyLoss', loss_weight=0.5)):
         super(ActionClip, self).__init__(data_preprocessor=data_preprocessor)
@@ -83,7 +83,7 @@ class ActionClip(BaseModel):
 
         if labels_or_label_file is not None:
             self.prompt, self.num_prompt = text_prompt(labels_or_label_file,
-                                                       template)
+                                                       templates_or_template_file)
 
     def encode_video(self, video):
         b, n, c, h, w = video.shape
