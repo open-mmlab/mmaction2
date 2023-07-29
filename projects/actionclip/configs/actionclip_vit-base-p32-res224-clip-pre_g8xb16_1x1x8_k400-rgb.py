@@ -109,7 +109,7 @@ test_cfg = dict(type='TestLoop')
 optim_wrapper = dict(
     optimizer=dict(
         type='AdamW', lr=5e-6, betas=(0.9, 0.98), eps=1e-08, weight_decay=0.2),
-    paramwise_cfg=dict(adapter=dict(lr_mult=10)))
+    paramwise_cfg=dict(custom_keys=dict(adapter=dict(lr_mult=10))))
 
 param_scheduler = [
     dict(
