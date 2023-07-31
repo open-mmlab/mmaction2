@@ -1,5 +1,3 @@
-_base_ = 'mmaction::_base_/default_runtime.py'
-
 custom_imports = dict(imports='models')
 
 num_segs = 8
@@ -25,11 +23,15 @@ ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
 file_client_args = dict(io_backend='disk')
-file_client_args = dict(io_backend='petrel', path_mapping=dict({'data/kinetics400/': 's3://openmmlab/datasets/action/Kinetics400/'}))
+file_client_args = dict(
+    io_backend='petrel',
+    path_mapping=dict(
+        {'data/kinetics400/': 's3://openmmlab/datasets/action/Kinetics400/'}))
 
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=num_segs),
+    dict(
+        type='SampleFrames', clip_len=1, frame_interval=1, num_clips=num_segs),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='RandomResizedCrop'),
@@ -106,12 +108,8 @@ test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(
     optimizer=dict(
-        type='AdamW',
-        lr=5e-6,
-        betas=(0.9, 0.98),
-        eps=1e-08,
-        weight_decay=0.2),
-    paramwise_cfg=dict(adapater=dict(lr_mult=10)))
+        type='AdamW', lr=5e-6, betas=(0.9, 0.98), eps=1e-08, weight_decay=0.2),
+    paramwise_cfg=dict(custom_keys=dict(adapter=dict(lr_mult=10))))
 
 param_scheduler = [
     dict(
@@ -131,11 +129,34 @@ param_scheduler = [
         convert_to_iter_based=True)
 ]
 
-default_hooks = dict(
-    checkpoint=dict(interval=3, max_keep_ckpts=5), logger=dict(interval=100))
-
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically
 #       or not by default.
 #   - `base_batch_size` = (8 GPUs) x (16 samples per GPU).
 auto_scale_lr = dict(enable=False, base_batch_size=128)
+
+default_scope = 'mmaction'
+
+default_hooks = dict(
+    runtime_info=dict(type='RuntimeInfoHook'),
+    timer=dict(type='IterTimerHook'),
+    logger=dict(type='LoggerHook', interval=100, ignore_last=False),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    checkpoint=dict(
+        type='CheckpointHook', interval=1, save_best='auto', max_keep_ckpts=5),
+    sampler_seed=dict(type='DistSamplerSeedHook'),
+    sync_buffers=dict(type='SyncBuffersHook'))
+
+env_cfg = dict(
+    cudnn_benchmark=False,
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0),
+    dist_cfg=dict(backend='nccl'))
+
+log_processor = dict(type='LogProcessor', window_size=20, by_epoch=True)
+
+vis_backends = [dict(type='LocalVisBackend')]
+visualizer = dict(type='ActionVisualizer', vis_backends=vis_backends)
+
+log_level = 'INFO'
+load_from = None
+resume = False
