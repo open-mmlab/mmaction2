@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple, Union
 import numpy as np
 from mmcv.transforms import BaseTransform, KeyMapper
 from mmengine.dataset import Compose
-from scipy.stats import mode
+from scipy.stats import mode as get_mode
 from torch.nn.modules.utils import _pair
 
 from mmaction.registry import TRANSFORMS
@@ -78,7 +78,7 @@ class DecompressPose(BaseTransform):
         results['total_frames'] = total_frames
 
         num_joints = keypoint.shape[1]
-        num_person = mode(frame_inds, keepdims=False)[-1]
+        num_person = get_mode(frame_inds)[-1][0]
 
         new_kp = np.zeros([num_person, total_frames, num_joints, 2],
                           dtype=np.float16)
