@@ -85,7 +85,7 @@ Human skeleton, as a compact representation of human action, has received increa
 | :---------------------: | :------------: | :--: | :----------: | :------: | :--------------: | :---: | :----: | :-------------------------------------: | :-----------------------------------: | :----------------------------------: |
 |       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   47.4   |     10 clips     | 19.1G |  3.2M  | [config](/configs/skeleton/posec3d/slowonly_r50_8xb32-u48-240e_k400-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb32-u48-240e_k400-keypoint/slowonly_r50_8xb32-u48-240e_k400-keypoint_20230731-7f498b55.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb32-u48-240e_k400-keypoint/slowonly_r50_8xb32-u48-240e_k400-keypoint.log) |
 
-1. You can follow the guide in [Preparing Skeleton Dataset](/tools/data/skeleton/README.md) to obtain skeleton annotations used in the above configs.
+You can follow the guide in [Preparing Skeleton Dataset](/tools/data/skeleton/README.md) to obtain skeleton annotations used in the above configs.
 
 ## Train
 
