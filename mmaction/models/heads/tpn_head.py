@@ -2,8 +2,8 @@
 from typing import Optional
 
 import torch.nn as nn
-from torch import Tensor
 from mmengine.device import get_device
+from torch import Tensor
 
 from mmaction.registry import MODELS
 from .tsn_head import TSNHead
