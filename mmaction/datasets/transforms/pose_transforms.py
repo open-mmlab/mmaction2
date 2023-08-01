@@ -2,14 +2,21 @@
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
+import scipy
 from mmcv.transforms import BaseTransform, KeyMapper
 from mmengine.dataset import Compose
-from scipy.stats import mode as get_mode
+from packaging import version as pv
 from torch.nn.modules.utils import _pair
 
 from mmaction.registry import TRANSFORMS
 from .loading import DecordDecode, DecordInit
 from .processing import _combine_quadruple
+
+if pv.parse(scipy.__version__) < pv.parse('1.11.0'):
+    get_mode = scipy.stats.mode
+else:
+    from functools import partial
+    get_mode = partial(scipy.stats.mode, keepdims=True)
 
 
 @TRANSFORMS.register_module()
