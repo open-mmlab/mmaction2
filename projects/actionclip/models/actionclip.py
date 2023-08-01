@@ -1,11 +1,12 @@
-from typing import Any, Dict, List, Tuple, Optional, Union
-import numpy as np
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 import clip
 import mmengine
+import numpy as np
 import torch
 import torch.nn.functional as F
-from mmengine.model import BaseModel
 from mmengine.dist import all_gather, get_rank
+from mmengine.model import BaseModel
 from mmengine.structures import LabelData
 
 from mmaction.registry import MODELS
@@ -68,7 +69,8 @@ class ActionClip(BaseModel):
                  num_adapter_layers: int = 6,
                  to_float32: bool = False,
                  labels_or_label_file: Optional[Union[List[str], str]] = None,
-                 templates_or_template_file: Optional[Union[List[str], str]] = None,
+                 templates_or_template_file: Optional[Union[List[str],
+                                                            str]] = None,
                  data_preprocessor: Optional[Dict] = None,
                  loss: Dict = dict(type='CrossEntropyLoss', loss_weight=0.5)):
         super(ActionClip, self).__init__(data_preprocessor=data_preprocessor)
@@ -82,8 +84,8 @@ class ActionClip(BaseModel):
         self.loss = MODELS.build(loss)
 
         if labels_or_label_file is not None:
-            self.prompt, self.num_prompt = text_prompt(labels_or_label_file,
-                                                       templates_or_template_file)
+            self.prompt, self.num_prompt = text_prompt(
+                labels_or_label_file, templates_or_template_file)
 
     def encode_video(self, video):
         b, n, c, h, w = video.shape
@@ -139,9 +141,12 @@ class ActionClip(BaseModel):
             video_features = video_features / video_features.norm(
                 dim=-1, keepdim=True)
 
-            text_id = np.random.randint(self.num_prompt, size=len(data_samples))
+            text_id = np.random.randint(
+                self.num_prompt, size=len(data_samples))
             real_labels = [x.gt_labels.item.item() for x in data_samples]
-            selected_prompt = self.prompt.view(self.num_prompt, -1, self.prompt.shape[-1])[text_id, real_labels].to(inputs.device)
+            selected_prompt = self.prompt.view(
+                self.num_prompt, -1,
+                self.prompt.shape[-1])[text_id, real_labels].to(inputs.device)
 
             text_features = self.encode_text(selected_prompt)
             text_features = text_features / text_features.norm(
@@ -166,5 +171,6 @@ class ActionClip(BaseModel):
             return losses
 
         else:
-            raise RuntimeError(f'Invalid mode "{mode}". '
-                               'Only supports `predict`, `loss` and `tensor` mode. ')
+            raise RuntimeError(
+                f'Invalid mode "{mode}". '
+                'Only supports `predict`, `loss` and `tensor` mode. ')
