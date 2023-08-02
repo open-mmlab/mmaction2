@@ -1,11 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import logging
+from mmengine.logging import MMLogger
 
 from mmaction.registry import MODELS
 from .utils import (interpolate_pos_relative_bias_beit,
                     load_temp_embed_with_mismatch)
-
-logger = logging.getLogger(__name__)
 
 
 def interpolate_pos_embed_beit(state_dict, new_model):
@@ -27,6 +25,7 @@ def interpolate_pos_embed_beit(state_dict, new_model):
     # absolute temporal pos bias
     temporal_pe_key = 'vision_encoder.embeddings.temporal_position_embeddings'
     if temporal_pe_key in state_dict:
+        logger = MMLogger.get_current_instance()
         logger.info(
             f'interpolate temporal positional embeddings: {temporal_pe_key}')
         state_dict[temporal_pe_key] = load_temp_embed_with_mismatch(
@@ -49,6 +48,7 @@ def build_beit(vision_cfg, image_res, checkpoint):
     from .st_beit import BeitConfig as config_cls
     from .st_beit import BeitModel as model_cls
 
+    logger = MMLogger.get_current_instance()
     logger.info(
         f'Loading vit pre-trained weights from huggingface {vision_cfg.pretrained}.'
     )

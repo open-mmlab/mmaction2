@@ -4,6 +4,7 @@ import logging
 import mmengine
 import torch
 from einops import rearrange
+from mmengine.logging import MMLogger
 from mmengine.model import BaseModel
 from mmengine.runner.checkpoint import _load_checkpoint
 from torch import nn
@@ -13,8 +14,6 @@ from .bert_builder import build_bert
 from .tokenization_bert import BertTokenizer
 
 # from .criterions import MLMLoss, VTC_VTM_Loss
-
-logger = logging.getLogger(__name__)
 
 
 class VindLU(BaseModel):
@@ -61,68 +60,65 @@ class VindLU(BaseModel):
         # self.criterion_vtc_vtm = VTC_VTM_Loss(config.criterion.vtm_hard_neg)
         # self.criterion_mlm = MLMLoss(config.criterion.mlm_masking_prob, tokenizer)
 
-    # def forward(self, image, data_samples, mode: str='loss'):
+    def forward(self, inputs, data_samples, mode: str = 'loss'):
+        """forward and calculate loss.
 
-    #     """forward and calculate loss.
+        Args:
+            image (torch.Tensor): The input images. Shape: [B,T,C,H,W].
+            text (dict): TODO
+            idx (torch.Tensor): TODO
 
-    #     Args:
-    #         image (torch.Tensor): The input images. Shape: [B,T,C,H,W].
-    #         text (dict): TODO
-    #         idx (torch.Tensor): TODO
+        Returns: TODO
+        """
+        self.clip_contrastive_temperature()
 
-    #     Returns: TODO
+        vision_embeds, pooled_vision_embeds = self.encode_vision(inputs)
+        text_embeds, pooled_text_embeds = self.encode_text(text)
 
-    #     """
-    #     self.clip_contrastive_temperature()
+        # obtain vision and text representations.
+        vision_proj = self.vision_proj(pooled_vision_embeds)
+        text_proj = self.text_proj(pooled_text_embeds)
 
-    #     vision_embeds, pooled_vision_embeds = self.encode_vision(image)
-    #     text_embeds, pooled_text_embeds = self.encode_text(text)
+        # calculate loss
 
-    #     # obtain vision and text representations.
-    #     vision_proj = self.vision_proj(pooled_vision_embeds)
-    #     text_proj = self.text_proj(pooled_text_embeds)
+        ## VTC loss
+        # if self.loss_weight.vtc != 0:
+        #     loss_vtc = self.criterion_vtc_vtm.vtc_loss(
+        #         vision_proj, text_proj, idx, self.temp, all_gather=True
+        #     )
+        # else:
+        loss_vtc = torch.tensor(0)
 
-    #     # calculate loss
+        vision_embeds = rearrange(vision_embeds, 'b t l c -> b (t l) c')
 
-    #     ## VTC loss
-    #     # if self.loss_weight.vtc != 0:
-    #     #     loss_vtc = self.criterion_vtc_vtm.vtc_loss(
-    #     #         vision_proj, text_proj, idx, self.temp, all_gather=True
-    #     #     )
-    #     # else:
-    #     loss_vtc = torch.tensor(0)
+        ## VTM loss
+        # if self.loss_weight.vtm != 0:
+        #     loss_vtm = self.criterion_vtc_vtm.vtm_loss(
+        #         self.get_text_encoder(),
+        #         self.itm_head,
+        #         self.temp,
+        #         vision_embeds,
+        #         text_embeds,
+        #         vision_proj,
+        #         text_proj,
+        #         text.attention_mask,
+        #         idx,
+        #     )
+        # else:
+        loss_vtm = torch.tensor(0)
 
-    #     vision_embeds = rearrange(vision_embeds, "b t l c -> b (t l) c")
+        ## MLM loss
+        if self.text_cfg.is_pretrain and self.loss_weight.mlm != 0:
+            loss_mlm = self.criterion_mlm.mlm_loss(self.text_encoder, text,
+                                                   vision_embeds, None)
+        else:
+            loss_mlm = torch.tensor(0)
 
-    #     ## VTM loss
-    #     # if self.loss_weight.vtm != 0:
-    #     #     loss_vtm = self.criterion_vtc_vtm.vtm_loss(
-    #     #         self.get_text_encoder(),
-    #     #         self.itm_head,
-    #     #         self.temp,
-    #     #         vision_embeds,
-    #     #         text_embeds,
-    #     #         vision_proj,
-    #     #         text_proj,
-    #     #         text.attention_mask,
-    #     #         idx,
-    #     #     )
-    #     # else:
-    #     loss_vtm = torch.tensor(0)
-
-    #     ## MLM loss
-    #     if self.text_cfg.is_pretrain and self.loss_weight.mlm != 0:
-    #         loss_mlm = self.criterion_mlm.mlm_loss(
-    #             self.text_encoder, text, vision_embeds, None
-    #         )
-    #     else:
-    #         loss_mlm = torch.tensor(0)
-
-    #     return dict(
-    #         loss_vtc=loss_vtc * self.loss_weight.vtc,
-    #         loss_vtm=loss_vtm * self.loss_weight.vtm,
-    #         loss_mlm=loss_mlm * self.loss_weight.mlm,
-    #     )
+        return dict(
+            loss_vtc=loss_vtc * self.loss_weight.vtc,
+            loss_vtm=loss_vtm * self.loss_weight.vtm,
+            loss_mlm=loss_mlm * self.loss_weight.mlm,
+        )
 
     def encode_vision(self, image):
         """encode image / videos as features.
@@ -173,6 +169,7 @@ class VindLU(BaseModel):
 
         """
         encoder_name = self.vision_cfg.type
+        logger = MMLogger.get_current_instance()
         logger.info(f'Build vision_encoder: {encoder_name}')
         if 'beit' in encoder_name:
             vision_encoder = build_beit(
@@ -196,6 +193,7 @@ class VindLU(BaseModel):
         Returns: nn.Module. The text encoder
         """
         encoder_name = self.text_cfg.type
+        logger = MMLogger.get_current_instance()
         logger.info(f'Build text_encoder {encoder_name}')
 
         if 'bert' in encoder_name:

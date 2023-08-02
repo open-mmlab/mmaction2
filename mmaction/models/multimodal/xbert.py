@@ -24,6 +24,7 @@ import torch
 import torch.nn.functional as F
 import torch.utils.checkpoint
 import transformers
+from mmengine.logging import MMLogger
 from torch import Tensor, device, dtype, nn
 from torch.nn import CrossEntropyLoss, MSELoss
 from transformers.activations import ACT2FN
@@ -43,11 +44,8 @@ from transformers.modeling_utils import (PreTrainedModel,
                                          apply_chunking_to_forward,
                                          find_pruneable_heads_and_indices,
                                          prune_linear_layer)
-from transformers.utils import logging
 
 transformers.logging.set_verbosity_error()
-
-logger = logging.get_logger(__name__)
 
 _CONFIG_FOR_DOC = 'BertConfig'
 _TOKENIZER_FOR_DOC = 'BertTokenizer'
@@ -189,6 +187,7 @@ class BertConfig(PretrainedConfig):
 
 def load_tf_weights_in_bert(model, config, tf_checkpoint_path):
     """Load tf checkpoints in a pytorch model."""
+    logger = MMLogger.get_current_instance()
     try:
         import re
 
@@ -259,6 +258,7 @@ def load_tf_weights_in_bert(model, config, tf_checkpoint_path):
         except AssertionError as e:
             e.args += (pointer.shape, array.shape)
             raise
+
         logger.info('Initialize PyTorch weight {}'.format(name))
         pointer.data = torch.from_numpy(array)
     return model
@@ -697,6 +697,7 @@ class BertEncoder(nn.Module):
         self.config = config
         self.layer = nn.ModuleList(
             [BertLayer(config, i) for i in range(config.num_hidden_layers)])
+        logger = MMLogger.get_current_instance()
         logger.info(f'build bert with cross_module: {config.cross_module}')
 
     def forward(
@@ -747,6 +748,7 @@ class BertEncoder(nn.Module):
                        False) and self.training:
 
                 if use_cache:
+                    logger = MMLogger.get_current_instance()
                     logger.warn(
                         '`use_cache=True` is incompatible with `config.gradient_checkpointing=True`. Setting '
                         '`use_cache=False`...')

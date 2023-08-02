@@ -18,11 +18,9 @@ import os
 import unicodedata
 from typing import List, Optional, Tuple
 
+from mmengine.logging import MMLogger
 from transformers.tokenization_utils import (PreTrainedTokenizer, _is_control,
                                              _is_punctuation, _is_whitespace)
-from transformers.utils import logging
-
-logger = logging.get_logger(__name__)
 
 VOCAB_FILES_NAMES = {'vocab_file': 'vocab.txt'}
 
@@ -401,6 +399,7 @@ class BertTokenizer(PreTrainedTokenizer):
             for token, token_index in sorted(
                     self.vocab.items(), key=lambda kv: kv[1]):
                 if index != token_index:
+                    logger = MMLogger.get_current_instance()
                     logger.warning(
                         'Saving vocabulary to {}: vocabulary indices are not consecutive.'
                         ' Please check that the vocabulary is not corrupted!'.

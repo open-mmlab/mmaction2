@@ -4,13 +4,12 @@ import logging
 import torch
 import torch.nn.functional as F
 from einops import rearrange
+from mmengine.logging import MMLogger
 
 from mmaction.registry import MODELS
 from .bert_builder import build_bert_decoder
 from .utils import tile
 from .vindlu import VindLU
-
-logger = logging.getLogger(__name__)
 
 
 @MODELS.register_module()
@@ -29,6 +28,7 @@ class VindLU_QA(VindLU):
 
     def build_text_decoder(self):
         encoder_name = self.text_cfg.type
+        logger = MMLogger.get_current_instance()
         logger.info(f'Build text_decoder {encoder_name}')
         if 'bert' in encoder_name:
             text_decoder = build_bert_decoder(self.text_cfg,

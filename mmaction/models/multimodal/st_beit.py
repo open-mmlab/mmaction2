@@ -42,8 +42,6 @@ from .temporal_model import (X_CLIP, STAdapter, TemporalAttention, TemporalS4,
                              WindowTemporalAttention)
 from .utils import interpolate_temporal_pos_embed
 
-logger = logging.get_logger(__name__)
-
 # General docstring
 _CONFIG_FOR_DOC = 'BeitConfig'
 _FEAT_EXTRACTOR_FOR_DOC = 'BeitFeatureExtractor'
@@ -1090,8 +1088,7 @@ class BeitModel(BeitPreTrainedModel):
                                        self.config.num_hidden_layers)
 
         # pixel_values: [bsz, nframes, c, h, w]
-        assert pixel_values.ndim == 5, logger.error(
-            f'input shape to st_beit: {pixel_values.shape}')
+        assert pixel_values.ndim == 5, f'input shape to st_beit: {pixel_values.shape}'
 
         embedding_output = self.embeddings(
             pixel_values, bool_masked_pos)  # [bs, nframes, L, c]
@@ -1107,8 +1104,6 @@ class BeitModel(BeitPreTrainedModel):
         sequence_output = self.layernorm(sequence_output)
         pooled_output = self.pooler(
             sequence_output) if self.pooler is not None else None
-
-        # logger.info(f"sequence_output: {sequence_output.shape}. pooled_output: {pooled_output.shape}")
 
         if not return_dict:
             head_outputs = ((sequence_output,

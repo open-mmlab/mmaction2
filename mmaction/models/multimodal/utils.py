@@ -5,9 +5,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mmengine.logging import MMLogger
 from scipy import interpolate
-
-logger = logging.getLogger(__name__)
 
 
 def _init_transformer_weights(module, initializer_range=0.02):
@@ -43,6 +42,7 @@ def load_temp_embed_with_mismatch(temp_embed_old,
     # TODO zero pad
     num_frms_new = temp_embed_new.shape[1]
     num_frms_old = temp_embed_old.shape[1]
+    logger = MMLogger.get_current_instance()
     logger.info(
         f'Load temporal_embeddings, lengths: {num_frms_old}-->{num_frms_new}')
     if num_frms_new > num_frms_old:
@@ -105,6 +105,7 @@ def interpolate_pos_embed(pos_embed_old, pos_embed_new, num_patches_new):
             align_corners=False)
         pos_tokens = pos_tokens.permute(0, 2, 3, 1).flatten(1, 2)
         interpolated_pos_embed = torch.cat((extra_tokens, pos_tokens), dim=1)
+        logger = MMLogger.get_current_instance()
         logger.info(
             f'reshape position embedding from {orig_size}**2 to {new_size}**2')
         return interpolated_pos_embed
@@ -138,8 +139,6 @@ def interpolate_pos_relative_bias_beit(state_dict_old, state_dict_new,
             src_size = int((src_num_pos - num_extra_tokens)**0.5)
             dst_size = int((dst_num_pos - num_extra_tokens)**0.5)
             if src_size != dst_size:
-                # logger.info("Position interpolate for %s from %dx%d to %dx%d" % (
-                #     key, src_size, src_size, dst_size, dst_size))
                 extra_tokens = rel_pos_bias[-num_extra_tokens:, :]
                 rel_pos_bias = rel_pos_bias[:-num_extra_tokens, :]
 
@@ -172,9 +171,6 @@ def interpolate_pos_relative_bias_beit(state_dict_old, state_dict_new,
                 t = dst_size // 2.0
                 dx = np.arange(-t, t + 0.1, 1.0)
                 dy = np.arange(-t, t + 0.1, 1.0)
-
-                # logger.info("Original positions = %s" % str(x))
-                # logger.info("Target positions = %s" % str(dx))
 
                 all_rel_pos_bias = []
 

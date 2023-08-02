@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import logging
 import math
 
 import einops
@@ -8,8 +7,6 @@ from einops import rearrange
 from timm.models.layers import DropPath
 from torch import nn
 from torch.nn import LayerNorm, Linear, MultiheadAttention
-
-logger = logging.getLogger(__name__)
 
 
 class STAdapter(nn.Module):
@@ -130,7 +127,6 @@ class WindowTemporalAttention(nn.Module):
         self.droppath = DropPath(droppath_rate)
         self.scale = nn.parameter.Parameter(torch.zeros([]))
         self.wh, self.ww = window_size
-        # logger.info(f"WindowTemporalAttention: window_size: {window_size}")
 
     def forward(self, x: torch.Tensor):
         """forward.
