@@ -51,11 +51,3 @@ for video in val_avi:
     val_avi_list[video.strip()+SUFFIX] = video_dict[video.strip()]
 with open(val_json_path, 'w') as f:
     json.dump(val_avi_list, f)
-
-
-# F = open(data_path, 'rb')
-#
-# data = pickle.load(F)
-# savapath = osp.join(DATA_DIR, 'msvd_data/raw-captions.json')
-# with open(savapath, 'w') as f:
-#     json.dump(data, f)
