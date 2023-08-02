@@ -30,10 +30,12 @@ class PackActionInputs(BaseTransform):
     def __init__(
         self,
         collect_keys: Optional[Tuple[str]] = None,
+        algorithm_keys: Optional[Tuple[str]] = None,
         meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
                                     'timestamp')
     ) -> None:
         self.collect_keys = collect_keys
+        self.algorithm_keys = algorithm_keys
         self.meta_keys = meta_keys
 
     def transform(self, results: Dict) -> Dict:
@@ -88,6 +90,12 @@ class PackActionInputs(BaseTransform):
         if 'label' in results:
             data_sample.set_gt_label(results['label'])
 
+        # Set custom algorithm keys
+        for key in self.algorithm_keys:
+            if key in results:
+                data_sample.set_field(results[key], key)
+
+        # Set meta keys
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
         packed_results['data_samples'] = data_sample

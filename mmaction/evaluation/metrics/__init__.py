@@ -4,8 +4,9 @@ from .anet_metric import ANetMetric
 from .ava_metric import AVAMetric
 from .multisports_metric import MultiSportsMetric
 from .retrieval_metric import RetrievalMetric
+from .vqa_metric import ReportVQA, VQAAcc
 
 __all__ = [
     'AccMetric', 'AVAMetric', 'ANetMetric', 'ConfusionMatrix',
-    'MultiSportsMetric', 'RetrievalMetric'
+    'MultiSportsMetric', 'RetrievalMetric', 'VQAAcc', 'ReportVQA'
 ]

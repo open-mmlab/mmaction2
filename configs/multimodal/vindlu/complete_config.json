@@ -1,0 +1,181 @@
+{
+    "data_dir": "data/msrvtt",
+    "data_root": "data/msrvtt",
+    "anno_root_pt": "data/msrvtt/anno_pretrain",
+    "anno_root_downstream": "data/msrvtt/anno_downstream",
+    "VisionEncoders": {
+      "beit": {
+        "name": "beit_base",
+        "pretrained": "microsoft/beit-base-patch16-224-pt22k-ft22k",
+        "d_model": 768
+      },
+      "beit_large": {
+        "name": "beit_large",
+        "pretrained": "microsoft/beit-large-patch16-224-pt22k-ft22k",
+        "d_model": 1024
+      }
+    },
+    "TextEncoders": {
+      "bert": {
+        "name": "bert_base",
+        "pretrained": "bert-base-uncased",
+        "config": "configs/config_bert.json",
+        "d_model": 768,
+        "fusion_layer": 9
+      },
+      "bert_large": {
+        "name": "bert_large",
+        "pretrained": "bert-base-uncased",
+        "config": "configs/config_bert_large.json",
+        "d_model": 1024,
+        "fusion_layer": 19
+      }
+    },
+    "train_corpus": "webvid_cc3m",
+    "train_file": [
+      [
+        "data/msrvtt/anno_downstream/msrvtt_qa_train.json",
+        "data/msrvtt/msrvtt_2fps_224",
+        "video"
+      ]
+    ],
+    "test_file": {
+      "val": [
+        "data/msrvtt/anno_downstream/msrvtt_qa_val.json",
+        "data/msrvtt/msrvtt_2fps_224",
+        "video"
+      ],
+      "test": [
+        "data/msrvtt/anno_downstream/msrvtt_qa_test.json",
+        "data/msrvtt/msrvtt_2fps_224",
+        "video"
+      ]
+    },
+    "test_types": [
+      "val"
+    ],
+    "num_workers": 6,
+    "stop_key": "val",
+    "num_frames": 12,
+    "num_frames_test": 4,
+    "batch_size": 32,
+    "max_txt_l": 32,
+    "inputs": {
+      "image_res": 224,
+      "video_input": {
+        "num_frames": 12,
+        "sample_type": "rand",
+        "num_frames_test": 4,
+        "sample_type_test": "middle",
+        "random_aug": false
+      },
+      "max_txt_l": {
+        "image": 32,
+        "video": 32
+      },
+      "batch_size": {
+        "image": 32,
+        "video": 32
+      },
+      "batch_size_test": {
+        "image": 32,
+        "video": 32
+      }
+    },
+    "vision_enc": "beit",
+    "text_enc": "bert",
+    "model": {
+      "vision_encoder": {
+        "name": "beit_base",
+        "pretrained": "microsoft/beit-base-patch16-224-pt22k-ft22k",
+        "d_model": 768
+      },
+      "text_encoder": {
+        "name": "bert_base",
+        "pretrained": "bert-base-uncased",
+        "config": "configs/config_bert.json",
+        "d_model": 768,
+        "fusion_layer": 9
+      },
+      "temporal_modeling": {
+        "num_frames": 12,
+        "temporal_model_block": "timesformer",
+        "temporal_model_position": "last",
+        "temporal_model_config": {
+          "input_dim": 768
+        },
+        "use_temporal_position_embedding": true
+      },
+      "vit_add_ln": true,
+      "multimodal": {
+        "enable": true
+      },
+      "embed_dim": 256,
+      "temp": 0.07
+    },
+    "criterion": {
+      "loss_weight": {
+        "vtc": 1.0,
+        "mlm": 0.0,
+        "vtm": 1.0,
+        "mvm": 0.0
+      },
+      "vtm_hard_neg": true,
+      "mlm_masking_prob": 0.5
+    },
+    "optimizer": {
+      "opt": "adamW",
+      "lr": 1e-05,
+      "opt_betas": [
+        0.9,
+        0.999
+      ],
+      "weight_decay": 0.02,
+      "max_grad_norm": -1,
+      "different_lr": {
+        "enable": false,
+        "module_names": [],
+        "lr": 0.001
+      }
+    },
+    "scheduler": {
+      "sched": "cosine",
+      "epochs": 10,
+      "min_lr_multi": 0.01,
+      "warmup_epochs": 0.5
+    },
+    "evaluate": false,
+    "deep_fusion": false,
+    "evaluation": {
+      "eval_frame_ensemble": "concat",
+      "eval_x_only": false,
+      "k_test": 128,
+      "eval_offload": true
+    },
+    "fp16": true,
+    "gradient_checkpointing": true,
+    "wandb": {
+      "enable": false,
+      "entity": "klauscc",
+      "project": "vindlu"
+    },
+    "dist_url": "env://",
+    "device": "cuda",
+    "mode": "pt",
+    "output_dir": "work_dirs/ft_12frm-pt_webvid_cc3m_8x64-qa_msrvtt",
+    "resume": false,
+    "debug": false,
+    "log_freq": 100,
+    "seed": 42,
+    "pretrained_path": "ckpts/5M-pretrain.pth",
+    "eos": "[SEP]",
+    "max_q_len": 25,
+    "max_a_len": 5,
+    "dataset_name": "msrvtt",
+    "answer_list": "data/msrvtt/anno_downstream/msrvtt_qa_answer_list.json",
+    "rank": 0,
+    "world_size": 1,
+    "gpu": 0,
+    "distributed": true,
+    "dist_backend": "nccl"
+  }
