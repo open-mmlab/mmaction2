@@ -26,7 +26,7 @@
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
 [📘中文文档](https://mmaction2.readthedocs.io/zh_CN/latest/index.html) |
-[🛠️安装指南](https://mmaction2.readthedocs.io/zh_CN/get_started/installation.html) |
+[🛠️安装指南](https://mmaction2.readthedocs.io/zh_CN/latest/get_started/installation.html) |
 [👀模型库](https://mmaction2.readthedocs.io/zh_CN/latest/modelzoo_statistics.html) |
 [🆕更新日志](https://mmaction2.readthedocs.io/en/latest/notes/changelog.html) |
 [🚀进行中项目](https://github.com/open-mmlab/mmaction2/projects) |
