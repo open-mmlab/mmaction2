@@ -3,39 +3,37 @@ import logging
 
 import torch
 import torch.nn.functional as F
+import numpy as np
 from einops import rearrange
 from mmengine.logging import MMLogger
 
+
 from mmaction.registry import MODELS
 from .bert_builder import build_bert_decoder
-from .utils import tile
 from .vindlu import VindLU
 
 
 @MODELS.register_module()
-class VindLU_QA(VindLU):
-    """docstring for VindLU_QA."""
+class VindLUVQA(VindLU):
+    """docstring for VindLUVQA."""
 
-    def __init__(self, **kwargs):
-        super(VindLU_QA, self).__init__(**kwargs)
+    def __init__(self,
+                 max_question_len,
+                 max_answer_len, 
+                 num_ans_candidates, 
+                 **kwargs):
+        super().__init__(**kwargs)
+        
+        self.max_question_len = max_question_len
+        self.max_answer_len = max_answer_len
+        self.num_ans_candidates = num_ans_candidates
 
-        # delete extra/unnecessary modules inherited from SingularityRetrievalBase
+        # delete extra/unnecessary modules inherited from VindLU
         extra_attributes = ['vision_proj', 'text_proj', 'temp', 'itm_head']
         for attr in extra_attributes:
             delattr(self, attr)
 
-        self.text_decoder = self.build_text_decoder()
-
-    def build_text_decoder(self):
-        encoder_name = self.text_cfg.type
-        logger = MMLogger.get_current_instance()
-        logger.info(f'Build text_decoder {encoder_name}')
-        if 'bert' in encoder_name:
-            text_decoder = build_bert_decoder(self.text_cfg,
-                                              self.gradient_checkpointing)
-        else:
-            raise NotImplementedError()
-        return text_decoder
+        self.text_decoder = MODELS.build(self.text_decoder_cfg)
 
     def forward(self, inputs, data_samples, mode: str = 'loss'):
         """
@@ -95,13 +93,13 @@ class VindLU_QA(VindLU):
         questions = [d.question for d in data_samples]
         raw_answers = self.answer_list
 
-        answers = [a + ' ' + self.tokenizer_cfg.eos for a in raw_answers]
+        answers = [a + ' ' + '[SEP]' for a in raw_answers]
 
         questions = self.tokenizer(
             questions,
             padding='max_length',
             truncation=True,
-            max_length=self.tokenizer_cfg.max_question_len,
+            max_length=self.max_question_len,
             return_tensors='pt',
         ).to(inputs.device)
 
@@ -109,7 +107,7 @@ class VindLU_QA(VindLU):
             answers,
             padding='max_length',
             truncation=True,
-            max_length=self.tokenizer_cfg.max_answer_len,
+            max_length=self.max_answer_len,
             return_tensors='pt',
         ).to(inputs.device)
 
@@ -130,8 +128,7 @@ class VindLU_QA(VindLU):
             questions.attention_mask,
             answers.input_ids,
             answers.attention_mask,
-            self.k,
-        )  # (bsz, 128), (bsz, 128)
+            self.num_ans_candidates) 
 
         out_data_samples = []
         for data_sample, topk_id, topk_prob in zip(data_samples, topk_ids,
@@ -179,6 +176,16 @@ class VindLU_QA(VindLU):
 
         targets_ids = input_ids.masked_fill(
             input_ids == self.tokenizer.pad_token_id, -100)
+
+        def tile(x, dim, n_tile):
+            init_dim = x.size(dim)
+            repeat_idx = [1] * x.dim()
+            repeat_idx[dim] = n_tile
+            x = x.repeat(*repeat_idx)
+            order_index = torch.LongTensor(
+                np.concatenate(
+                    [init_dim * np.arange(n_tile) + i for i in range(init_dim)]))
+            return torch.index_select(x, dim, order_index.to(x.device))
 
         # repeat encoder's output for top-k answers
         question_states = tile(question_states, 0, k)

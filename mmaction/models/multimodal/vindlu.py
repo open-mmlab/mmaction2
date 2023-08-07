@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import imp
 import logging
 
 import mmengine
@@ -9,44 +10,54 @@ from mmengine.model import BaseModel
 from mmengine.runner.checkpoint import _load_checkpoint
 from torch import nn
 
-from .beit_builder import build_beit, interpolate_pos_embed_beit
+from .beit_builder import build_beit, build_beit3d, interpolate_pos_embed_beit
 from .bert_builder import build_bert
 from .tokenization_bert import BertTokenizer
 
+from mmaction.registry import TOKENIZER, MODELS
 # from .criterions import MLMLoss, VTC_VTM_Loss
 
 
 class VindLU(BaseModel):
     """docstring for VindLU."""
 
-    def __init__(self, tokenizer, vision_backbone, text_backbone, proj_dim,
-                 temperature, has_decoder, evaluate, gradient_checkpointing,
-                 answer_list_path, k, data_preprocessor):
+    def __init__(self, 
+                 tokenizer, 
+                 vision_encoder, 
+                 text_encoder,
+                 text_decoder,
+                 proj_dim,
+                 temperature, 
+                 evaluate, 
+                 gradient_checkpointing,
+                 answer_list_path, 
+                 data_preprocessor):
         if data_preprocessor is None:
             # This preprocessor will only stack batch data samples.
             data_preprocessor = dict(type='ActionDataPreprocessor')
         super(VindLU, self).__init__(data_preprocessor=data_preprocessor)
 
         # self.config = config
-        self.tokenizer = BertTokenizer.from_pretrained(
-            text_backbone.pretrained)
-        self.tokenizer_cfg = tokenizer
-        self.k = k
-
-        self.text_cfg = text_backbone
-        self.vision_cfg = vision_backbone
-        self.has_decoder = has_decoder
+        # self.tokenizer = BertTokenizer.from_pretrained(
+        #     text_encoder.pretrained)
+        self.tokenizer = TOKENIZER.build(tokenizer)
+        self.vision_cfg = vision_encoder
+        self.text_encoder_cfg = text_encoder
+        self.text_decoder_cfg = text_decoder
         self.evaluate = evaluate
         self.gradient_checkpointing = gradient_checkpointing
-        self.vision_width = vision_backbone.d_model
-        self.text_width = text_backbone.d_model
+        self.vision_width = vision_encoder.encoder_width
+        self.text_width = text_encoder.encoder_width
         if answer_list_path:
             self.answer_list = mmengine.load(answer_list_path)
 
         # create modules.
         self.vision_encoder, self.vision_layernorm = self.build_vision_encoder(
         )
-        self.text_encoder = self.build_text_encoder()
+
+        # self.vision_encoder = build_beit3d(self.vision_cfg, self.gradient_checkpointing)
+        # self.text_encoder = self.build_text_encoder()
+        self.text_encoder = MODELS.build(self.text_encoder_cfg)
 
         self.vision_proj = nn.Linear(self.vision_width, proj_dim)
         self.text_proj = nn.Linear(self.text_width, proj_dim)
@@ -72,7 +83,7 @@ class VindLU(BaseModel):
         """
         self.clip_contrastive_temperature()
 
-        vision_embeds, pooled_vision_embeds = self.encode_vision(inputs)
+        vision_embeds, pooled_vision_embeds = self.vision_encoder(inputs)
         text_embeds, pooled_text_embeds = self.encode_text(text)
 
         # obtain vision and text representations.
@@ -108,7 +119,7 @@ class VindLU(BaseModel):
         loss_vtm = torch.tensor(0)
 
         ## MLM loss
-        if self.text_cfg.is_pretrain and self.loss_weight.mlm != 0:
+        if self.text_encoder_cfg.is_pretrain and self.loss_weight.mlm != 0:
             loss_mlm = self.criterion_mlm.mlm_loss(self.text_encoder, text,
                                                    vision_embeds, None)
         else:
@@ -172,9 +183,8 @@ class VindLU(BaseModel):
         logger = MMLogger.get_current_instance()
         logger.info(f'Build vision_encoder: {encoder_name}')
         if 'beit' in encoder_name:
-            vision_encoder = build_beit(
+            vision_encoder = build_beit3d(
                 self.vision_cfg,
-                self.vision_cfg.image_res,
                 self.gradient_checkpointing,
             )
         else:
@@ -192,14 +202,14 @@ class VindLU(BaseModel):
 
         Returns: nn.Module. The text encoder
         """
-        encoder_name = self.text_cfg.type
+        encoder_name = self.text_encoder_cfg.type
         logger = MMLogger.get_current_instance()
         logger.info(f'Build text_encoder {encoder_name}')
 
         if 'bert' in encoder_name:
             text_encoder = build_bert(
-                self.text_cfg,
-                self.text_cfg.is_pretrain,
+                self.text_encoder_cfg,
+                self.text_encoder_cfg.is_pretrain,
                 self.gradient_checkpointing,
             )
         else:
@@ -221,16 +231,16 @@ class VindLU(BaseModel):
                 if 'bert' in key:
                     encoder_key = key.replace('bert.', '')
                     state_dict[encoder_key] = state_dict[key]
-                    if not self.has_decoder:
+                    if not self.text_decoder_cfg:
                         del state_dict[key]
 
                 # init text decoder as multimodal encoder (last 6 layers of model.text_encoder)
                 # only for generation tasks like VQA
-                if self.has_decoder and 'text_encoder' in key:
+                if self.text_decoder_cfg and 'text_encoder' in key:
                     if 'layer' in key:
                         encoder_keys = key.split('.')
                         layer_num = int(encoder_keys[4])
-                        if layer_num < self.text_cfg.fusion_layer:
+                        if layer_num < self.text_encoder_cfg.fusion_layer:
                             del state_dict[key]
                             continue
                         else:

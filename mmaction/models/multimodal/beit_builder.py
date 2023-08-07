@@ -50,11 +50,11 @@ def build_beit(vision_cfg, image_res, checkpoint):
 
     logger = MMLogger.get_current_instance()
     logger.info(
-        f'Loading vit pre-trained weights from huggingface {vision_cfg.pretrained}.'
+        f'Loading vit pre-trained weights from huggingface {vision_cfg.pretrained_model_name_or_path}.'
     )
     # BEiT uses average pooled tokens instead of [CLS] used by other models
     aux_kwargs = {'add_pooling_layer': True}
-    tmp_model = model_cls.from_pretrained(vision_cfg.pretrained, **aux_kwargs)
+    tmp_model = model_cls.from_pretrained(vision_cfg.pretrained_model_name_or_path, **aux_kwargs)
     state_dict = tmp_model.state_dict()
     del tmp_model
 
@@ -63,7 +63,7 @@ def build_beit(vision_cfg, image_res, checkpoint):
 
     other_cfg = vision_cfg.temporal_modeling
     vit_config = config_cls.from_pretrained(
-        vision_cfg.pretrained, image_size=image_res, **other_cfg)
+        vision_cfg.pretrained_model_name_or_path, image_size=image_res, **other_cfg)
     model = model_cls(config=vit_config, **aux_kwargs)
 
     if checkpoint:
@@ -84,3 +84,30 @@ def build_beit(vision_cfg, image_res, checkpoint):
     msg = model.load_state_dict(state_dict, strict=False)
     logger.info(msg)
     return model
+
+
+def build_beit3d(vision_cfg, checkpoint):
+    from transformers.models.beit.modeling_beit import BeitModel
+    from .beit3d import BeitModel3D
+    beit2d = BeitModel.from_pretrained(vision_cfg.pretrained_model_name_or_path)
+    ori_state_dict = beit2d.state_dict()
+    del beit2d 
+
+    beit3d = BeitModel3D(vision_cfg.pretrained_model_name_or_path, vision_cfg.tem_config)
+    if checkpoint:
+        beit3d.gradient_checkpointing_enable()
+
+    # interpolate relative pos bias
+    state_dict = interpolate_pos_relative_bias_beit(
+        state_dict_old=ori_state_dict,
+        state_dict_new=beit3d.state_dict(),
+        patch_shape_new=beit3d.embeddings.patch_embeddings.patch_shape,
+    )
+
+    # del prompt_bias_table
+    for k in list(state_dict.keys()):
+        if 'prompt_bias_table' in k:
+            del state_dict[k]
+
+    msg = beit3d.load_state_dict(state_dict, strict=False)
+    return beit3d

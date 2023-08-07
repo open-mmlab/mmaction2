@@ -132,3 +132,9 @@ INFERENCERS = Registry(
 # manage function
 FUNCTION = Registry(
     'function', parent=MMENGINE_FUNCTION, locations=['mmaction.mmengine'])
+
+# Tokenizer to encode sequence
+TOKENIZER = Registry(
+    'tokenizer',
+    locations=['mmaction.models'],
+)

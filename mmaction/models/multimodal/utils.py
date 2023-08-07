@@ -190,16 +190,6 @@ def interpolate_pos_relative_bias_beit(state_dict_old, state_dict_new,
     return state_dict_old
 
 
-def tile(x, dim, n_tile):
-    init_dim = x.size(dim)
-    repeat_idx = [1] * x.dim()
-    repeat_idx[dim] = n_tile
-    x = x.repeat(*repeat_idx)
-    order_index = torch.LongTensor(
-        np.concatenate(
-            [init_dim * np.arange(n_tile) + i for i in range(init_dim)]))
-    return torch.index_select(x, dim, order_index.to(x.device))
-
 
 def mask_logits(target, mask):
     return target * mask + (1 - mask) * (-1e10)
