@@ -120,6 +120,7 @@ print("Label probs:", probs)  # [[9.995e-01 5.364e-07 6.666e-04]]
 
 ```python
 import mmengine
+import torch
 from mmaction.utils import register_all_modules
 from mmaction.apis import inference_recognizer, init_recognizer
 
