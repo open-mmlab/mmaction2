@@ -1,7 +1,6 @@
 _base_ = ['../../_base_/default_runtime.py']
 
 video_root = 'data/msrvtt/msrvtt_2fps_224'
-# video_root = '/dev/shm/msrvtt/msrvtt_2fps_224'
 anno_file_test = 'data/msrvtt/anno_downstream/msrvtt_qa_test.json'
 answer_list_file = 'data/msrvtt/anno_downstream/msrvtt_qa_answer_list.json'
 # vision_encoder_name = 'microsoft/beit-base-patch16-224-pt22k-ft22k'
@@ -17,7 +16,7 @@ model = dict(
         format_shape='NCTHW'),
     tokenizer=dict(
         type='BertTokenizer',
-        pretrained_model_name_or_path='bert-base-uncased',),
+        pretrained_model_name_or_path='bert-base-uncased'),
     vision_encoder=dict(
         type='beit',
         tem_config=dict(
@@ -26,7 +25,8 @@ model = dict(
             temporal_model_position='last',
             temporal_model_config=dict(input_dim=768),
             use_temporal_position_embedding=True),
-        pretrained_model_name_or_path='microsoft/beit-base-patch16-224-pt22k-ft22k',
+        pretrained_model_name_or_path=
+        'microsoft/beit-base-patch16-224-pt22k-ft22k',
         encoder_width=768,
         add_ln=True),
     text_encoder=dict(
@@ -47,8 +47,8 @@ model = dict(
     evaluate=True,
     max_question_len=25,
     max_answer_len=5,
-    gradient_checkpointing=True,
     num_ans_candidates=128,
+    gradient_checkpointing=True,
     answer_list_path=answer_list_file)
 
 file_client_args = dict(io_backend='disk')
@@ -70,6 +70,7 @@ test_pipeline = [
             'question',
             'gt_answer',
             'question_id',
+
         ))
 ]
 
@@ -84,8 +85,6 @@ test_dataloader = dict(
         type=dataset_type,
         ann_file=anno_file_test,
         pipeline=test_pipeline,
-        k=128,
-        test_mode=True,
         data_prefix=dict(video=video_root),
     ))
 
@@ -93,4 +92,4 @@ test_evaluator = dict(type='VQAAcc')
 test_cfg = dict(type='TestLoop')
 
 default_hooks = dict(
-    logger=dict(type='LoggerHook', interval=1, ignore_last=False),)
+    logger=dict(type='LoggerHook', interval=20, ignore_last=False), )

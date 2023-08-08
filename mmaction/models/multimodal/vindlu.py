@@ -9,6 +9,7 @@ from mmengine.logging import MMLogger
 from mmengine.model import BaseModel
 from mmengine.runner.checkpoint import _load_checkpoint
 from torch import nn
+from zmq import device
 
 from .beit_builder import build_beit, build_beit3d, interpolate_pos_embed_beit
 from .bert_builder import build_bert
@@ -31,7 +32,8 @@ class VindLU(BaseModel):
                  evaluate, 
                  gradient_checkpointing,
                  answer_list_path, 
-                 data_preprocessor):
+                 pretrained_ckpt=None,
+                 data_preprocessor=None,):
         if data_preprocessor is None:
             # This preprocessor will only stack batch data samples.
             data_preprocessor = dict(type='ActionDataPreprocessor')
@@ -39,7 +41,8 @@ class VindLU(BaseModel):
 
         # self.config = config
         # self.tokenizer = BertTokenizer.from_pretrained(
-        #     text_encoder.pretrained)
+        #     tokenizer.pretrained_model_name_or_path)
+        # cant align with vindlu's BertTokenizer, hf's BertTokenizer will add a sep token
         self.tokenizer = TOKENIZER.build(tokenizer)
         self.vision_cfg = vision_encoder
         self.text_encoder_cfg = text_encoder
@@ -48,6 +51,8 @@ class VindLU(BaseModel):
         self.gradient_checkpointing = gradient_checkpointing
         self.vision_width = vision_encoder.encoder_width
         self.text_width = text_encoder.encoder_width
+        self.pretrained_ckpt = pretrained_ckpt
+
         if answer_list_path:
             self.answer_list = mmengine.load(answer_list_path)
 
@@ -187,6 +192,12 @@ class VindLU(BaseModel):
                 self.vision_cfg,
                 self.gradient_checkpointing,
             )
+            # vision_encoder = build_beit(
+            #     self.vision_cfg,
+            #     224,
+            #     self.gradient_checkpointing,
+            # )
+
         else:
             raise ValueError(f'not implemented: {encoder_name}')
 
@@ -223,33 +234,35 @@ class VindLU(BaseModel):
         return encoder.bert if hasattr(encoder, 'bert') else encoder
 
     def init_weights(self):
-        checkpoint = _load_checkpoint(self.vision_cfg.pretrained_path)
+        checkpoint = _load_checkpoint(self.pretrained_ckpt, map_location='cpu')
         state_dict = checkpoint['model']
         state_dict = interpolate_pos_embed_beit(state_dict, self)
-        if not self.evaluate:  # finetuning from a pretarined weights.
-            for key in list(state_dict.keys()):
-                if 'bert' in key:
-                    encoder_key = key.replace('bert.', '')
-                    state_dict[encoder_key] = state_dict[key]
-                    if not self.text_decoder_cfg:
-                        del state_dict[key]
-
-                # init text decoder as multimodal encoder (last 6 layers of model.text_encoder)
-                # only for generation tasks like VQA
-                if self.text_decoder_cfg and 'text_encoder' in key:
-                    if 'layer' in key:
-                        encoder_keys = key.split('.')
-                        layer_num = int(encoder_keys[4])
-                        if layer_num < self.text_encoder_cfg.fusion_layer:
-                            del state_dict[key]
-                            continue
-                        else:
-                            decoder_layer_num = layer_num - 9
-                            encoder_keys[4] = str(decoder_layer_num)
-                            encoder_key = '.'.join(encoder_keys)
-                    else:
-                        encoder_key = key
-                    decoder_key = encoder_key.replace('text_encoder',
-                                                      'text_decoder')
-                    state_dict[decoder_key] = state_dict[key]
+        for key in list(state_dict.keys()):
+            if 'bert' in key:
+                encoder_key = key.replace('bert.', '')
+                state_dict[encoder_key] = state_dict[key]
+                if not self.text_decoder_cfg:
                     del state_dict[key]
+
+            # init text decoder as multimodal encoder (last 6 layers of model.text_encoder)
+            # only for generation tasks like VQA
+            if self.text_decoder_cfg and 'text_encoder' in key:
+                if 'layer' in key:
+                    encoder_keys = key.split('.')
+                    layer_num = int(encoder_keys[4])
+                    if layer_num < self.text_encoder_cfg.fusion_layer:
+                        del state_dict[key]
+                        continue
+                    else:
+                        decoder_layer_num = layer_num - 9
+                        encoder_keys[4] = str(decoder_layer_num)
+                        encoder_key = '.'.join(encoder_keys)
+                else:
+                    encoder_key = key
+                decoder_key = encoder_key.replace('text_encoder',
+                                                    'text_decoder')
+                state_dict[decoder_key] = state_dict[key]
+                del state_dict[key]
+        msg = self.load_state_dict(state_dict, strict=False)
+        logger = MMLogger.get_current_instance()
+        logger.info(msg)

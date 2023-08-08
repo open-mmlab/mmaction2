@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from transformers import BertTokenizer
 from mmaction.registry import TOKENIZER
 

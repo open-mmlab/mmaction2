@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import importlib
 from turtle import forward
 from typing import List, Optional, Tuple, Union, Dict
@@ -310,12 +311,13 @@ class BeitConfig3D(BeitConfig):
 
 @MODELS.register_module()
 class BeitModel3D(BeitModel):
-    def __init__(self, config: BeitConfig, tem_config: Dict, add_pooling_layer: bool = True, add_ln=True) -> None:
+    def __init__(self, config: BeitConfig, tem_config: Dict, add_pooling_layer: bool = True) -> None:
         # hack to replace original 2D modules with 3D modules
         beit_package = importlib.import_module('transformers.models.beit.modeling_beit')
         beit_package.BeitEmbeddings = BeitEmbeddings3D
         beit_package.BeitPooler = BeitPooler3D
         beit_package.BeitLayer = BeitLayer3D
+        beit_package.BeitRelativePositionBias = BeitRelativePositionBias3D
         
         config = BeitConfig3D.from_pretrained(config, **tem_config)
         super().__init__(config, add_pooling_layer)

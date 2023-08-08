@@ -1,12 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import logging
 
+import numpy as np
 import torch
 import torch.nn.functional as F
-import numpy as np
 from einops import rearrange
 from mmengine.logging import MMLogger
-
 
 from mmaction.registry import MODELS
 from .bert_builder import build_bert_decoder
@@ -17,13 +16,10 @@ from .vindlu import VindLU
 class VindLUVQA(VindLU):
     """docstring for VindLUVQA."""
 
-    def __init__(self,
-                 max_question_len,
-                 max_answer_len, 
-                 num_ans_candidates, 
+    def __init__(self, max_question_len, max_answer_len, num_ans_candidates,
                  **kwargs):
         super().__init__(**kwargs)
-        
+
         self.max_question_len = max_question_len
         self.max_answer_len = max_answer_len
         self.num_ans_candidates = num_ans_candidates
@@ -49,34 +45,65 @@ class VindLUVQA(VindLU):
         else:
             raise RuntimeError(f'Invalid mode "{mode}".')
 
-    def loss(self, image, question, answer=None, k=None, weights=None):
-        image_embeds, _ = self.encode_vision(image)
+    def forward_encoder(self, inputs, data_samples):
+        # forward vision encoder
+        image_embeds, _ = self.encode_vision(inputs)
         image_embeds = rearrange(image_embeds, 'b t l c -> b (t l) c')
         image_atts = torch.ones(
-            image_embeds.size()[:-1], dtype=torch.long).to(image.device)
+            image_embeds.size()[:-1], dtype=torch.long).to(inputs.device)
 
-        answer_targets = answer.input_ids.masked_fill(
-            answer.input_ids == self.tokenizer.pad_token_id, -100)
+        # forward text encoder
+        questions = [sample.question for sample in data_samples]
+        questions = self.tokenizer(
+            questions,
+            padding='max_length',
+            truncation=True,
+            max_length=self.max_question_len,
+            return_tensors='pt').to(inputs.device)
 
         question_output = self.text_encoder(
-            question.input_ids,
-            attention_mask=question.attention_mask,
+            questions.input_ids,
+            attention_mask=questions.attention_mask,
             encoder_hidden_states=image_embeds,
             encoder_attention_mask=image_atts,
-            return_dict=True,
-        )
+            return_dict=True)
+
+        return questions, question_output
+
+    def loss(self, inputs, data_samples):
+
+        questions, question_output = self.forward_encoder(inputs, data_samples)
+
+        weights = torch.cat([torch.tensor(sample.gt_answer_weight) for sample in data_samples],
+                            dim=0).to(inputs.device)
+        # answers = [sample.gt_answer for sample in data_samples]
+        raw_answers = []
+        for sample in data_samples:
+            raw_answers.extend(sample.gt_answer)
+        answer_count = torch.tensor(
+            [len(sample.gt_answer) for sample in data_samples]).to(inputs.device)
+        answers = [a + ' ' + '[SEP]' for a in raw_answers]
+        answers = self.tokenizer(
+            answers,
+            padding='max_length',
+            truncation=True,
+            max_length=self.max_answer_len,
+            return_tensors='pt').to(inputs.device)
+
+        answer_targets = answers.input_ids.masked_fill(
+            answers.input_ids == self.tokenizer.pad_token_id, -100)
 
         question_states = []
         question_atts = []
-        for b, n in enumerate(k):
+        for b, n in enumerate(answer_count):
             question_states += [question_output.last_hidden_state[b]] * n
-            question_atts += [question.attention_mask[b]] * n
-        question_states = torch.stack(question_states, 0)
-        question_atts = torch.stack(question_atts, 0)
+            question_atts += [questions.attention_mask[b]] * n
+        question_states = torch.stack(question_states, 0).to(inputs.device)
+        question_atts = torch.stack(question_atts, 0).to(inputs.device)
 
         answer_output = self.text_decoder(
-            answer.input_ids,
-            attention_mask=answer.attention_mask,
+            answers.input_ids,
+            attention_mask=answers.attention_mask,
             encoder_hidden_states=question_states,
             encoder_attention_mask=question_atts,
             labels=answer_targets,
@@ -84,25 +111,16 @@ class VindLUVQA(VindLU):
             reduction='none',
         )
         loss = weights * answer_output.loss
-        loss = loss.sum() / image.size(0)
+        loss = loss.sum() / inputs.size(0)
 
-        return loss
+        return dict(loss=loss)
 
     def predict(self, inputs, data_samples, **kwargs):
 
-        questions = [d.question for d in data_samples]
+        questions, question_output = self.forward_encoder(inputs, data_samples)
+
         raw_answers = self.answer_list
-
         answers = [a + ' ' + '[SEP]' for a in raw_answers]
-
-        questions = self.tokenizer(
-            questions,
-            padding='max_length',
-            truncation=True,
-            max_length=self.max_question_len,
-            return_tensors='pt',
-        ).to(inputs.device)
-
         answers = self.tokenizer(
             answers,
             padding='max_length',
@@ -111,24 +129,9 @@ class VindLUVQA(VindLU):
             return_tensors='pt',
         ).to(inputs.device)
 
-        image_embeds, _ = self.encode_vision(inputs)
-        image_embeds = rearrange(image_embeds, 'b t l c -> b (t l) c')
-        image_atts = torch.ones(
-            image_embeds.size()[:-1], dtype=torch.long).to(inputs.device)
-        # inference
-        question_output = self.text_encoder(
-            questions.input_ids,
-            attention_mask=questions.attention_mask,
-            encoder_hidden_states=image_embeds,
-            encoder_attention_mask=image_atts,
-            return_dict=True,
-        )
         topk_ids, topk_probs = self.rank_answer(
-            question_output.last_hidden_state,
-            questions.attention_mask,
-            answers.input_ids,
-            answers.attention_mask,
-            self.num_ans_candidates) 
+            question_output.last_hidden_state, questions.attention_mask,
+            answers.input_ids, answers.attention_mask, self.num_ans_candidates)
 
         out_data_samples = []
         for data_sample, topk_id, topk_prob in zip(data_samples, topk_ids,
@@ -183,8 +186,9 @@ class VindLUVQA(VindLU):
             repeat_idx[dim] = n_tile
             x = x.repeat(*repeat_idx)
             order_index = torch.LongTensor(
-                np.concatenate(
-                    [init_dim * np.arange(n_tile) + i for i in range(init_dim)]))
+                np.concatenate([
+                    init_dim * np.arange(n_tile) + i for i in range(init_dim)
+                ]))
             return torch.index_select(x, dim, order_index.to(x.device))
 
         # repeat encoder's output for top-k answers

@@ -61,7 +61,7 @@ def build_beit(vision_cfg, image_res, checkpoint):
     logger.info(
         f'Init new model with new image size {image_res}, and load weights.')
 
-    other_cfg = vision_cfg.temporal_modeling
+    other_cfg = vision_cfg.tem_config
     vit_config = config_cls.from_pretrained(
         vision_cfg.pretrained_model_name_or_path, image_size=image_res, **other_cfg)
     model = model_cls(config=vit_config, **aux_kwargs)
