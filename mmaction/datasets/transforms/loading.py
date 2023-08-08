@@ -1443,7 +1443,7 @@ class RawFrameDecode(BaseTransform):
                 x_frame = mmcv.imfrombytes(x_img_bytes, flag='grayscale')
                 y_img_bytes = self.file_client.get(y_filepath)
                 y_frame = mmcv.imfrombytes(y_img_bytes, flag='grayscale')
-                imgs.extend([x_frame, y_frame])
+                imgs.append(np.stack([x_frame, y_frame], axis=-1))
             else:
                 raise NotImplementedError
 
