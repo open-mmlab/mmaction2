@@ -23,10 +23,10 @@
 Kinetics-710 是基于 Kinetics-400/600/700 的视频数据集，它合并了这些 Kinetics 数据集的训练集，并根据 Youtube ID 删除了重复的视频。MMAction2 提供了一个基于 Kinetics-400/600/700 的 OpenDataLab 版本的标注文件，你可以通过 [MIM](https://github.com/open-mmlab/mim) 从 OpenDataLab 下载。
 
 ```shell
-# 安装 OpenDataLab CLI 工具
-pip install -U opendatalab
-# 登录 OpenDataLab
-odl login
+# 安装 OpenXLab CLI 工具
+pip install -U openxlab
+# 登录 OpenXLab
+openxlab login
 # 下载 Kinetics-400/600/700，注意这可能需要很长时间。
 mim download mmaction2 --dataset kinetics400
 mim download mmaction2 --dataset kinetics600
