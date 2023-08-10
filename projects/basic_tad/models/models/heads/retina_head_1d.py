@@ -9,17 +9,7 @@ import torch
 import torch.nn as nn
 from mmaction.registry import MODELS
 from mmdet.models.dense_heads import RetinaHead
-from mmdet.models.utils import images_to_levels, multi_apply, unmap, filter_scores_and_topk, select_single_mlvl, \
-    unpack_gt_instances
-from mmdet.structures import SampleList
-from mmdet.structures.bbox import BaseBoxes, cat_boxes, get_box_tensor, scale_boxes
-from mmdet.utils import (InstanceList, OptInstanceList)
-from mmengine.config import ConfigDict
-from mmengine.structures import InstanceData
-from torch import Tensor
-
-from ..task_modules.segments_ops import anchor_inside_flags
-from ..task_modules.segments_ops import batched_nms1d
+import warnings
 
 
 @MODELS.register_module()
@@ -40,11 +30,23 @@ class RetinaHead1D(RetinaHead):
 
     def forward_single(self, x):
         cls_score, bbox_pred = super().forward_single(x)
+        # add pseudo H dimension
+        cls_score, bbox_pred = cls_score.unsqueeze(-2), bbox_pred.unsqueeze(-2)
         # bbox_pred = [N, 2], where 2 is the x, w. Now adding pseudo y, h
-        y = torch.zeros_like(bbox_pred[..., :1])
-        h = torch.ones_like(bbox_pred[..., :1])
-        bbox_pred = torch.cat((bbox_pred[..., :1], y, bbox_pred[..., 1:], h), dim=-1)
+        bbox_pred = bbox_pred.unflatten(1, (self.num_base_priors, -1))
+        y, h = torch.split(torch.zeros_like(bbox_pred), 1, dim=2)
+        bbox_pred = torch.cat((bbox_pred[:, :, :1, :, :], y, bbox_pred[:, :, 1:, :, :], h), dim=2)
+        bbox_pred = bbox_pred.flatten(start_dim=1, end_dim=2)
         return cls_score, bbox_pred
+
+    def predict_by_feat(self, *args, **kwargs):
+        # As we predict sliding windows of untrimmed videos, we do not perform NMS inside each window but
+        # leave the NMS performed globally on the whole video.
+        if kwargs.get('with_nms', False):
+            warnings.warn("with_nms is True, which is unexpected as we should perform NMS in Metric rather than in model")
+        else:
+            kwargs['with_nms'] = False
+        return super().predict_by_feat(*args, **kwargs)
 
 #     def get_anchors(self,
 #                     featmap_sizes: List[tuple],

@@ -1,9 +1,11 @@
 # adapted from basicTAD
 import re
+import warnings
 from pathlib import Path
 
 import mmengine
 import numpy as np
+
 from mmaction.datasets import BaseActionDataset
 from mmaction.registry import DATASETS
 
@@ -75,6 +77,9 @@ class Thumos14ValDataset(BaseActionDataset):
 
             # Meta information
             frame_dir = Path(self.data_prefix['imgs']).joinpath(video_name)
+            if not frame_dir.exists():
+                warnings.warn(f'{frame_dir} does not exist.')
+                continue
             pattern = make_regex_pattern(self.filename_tmpl)
             imgfiles = [img for img in frame_dir.iterdir() if re.fullmatch(pattern, img.name)]
             num_imgs = len(imgfiles)
@@ -86,14 +91,15 @@ class Thumos14ValDataset(BaseActionDataset):
                 if offset < total_frames - 1:
                     clip = offset + np.arange(self.clip_len) * self.frame_interval
                     clip = clip[clip < total_frames]
-                    data_info = dict(video_name=f'{video_name}.{idx}th_clip',
+                    fps = round(num_imgs / video_info['duration'])
+                    data_info = dict(video_name=f'{video_name}',
                                      frame_dir=str(frame_dir),
                                      duration=float(video_info['duration']),
                                      total_frames=num_imgs,
                                      filename_tmpl=self.filename_tmpl,
-                                     fps=int(round(num_imgs / video_info['duration'])),
+                                     fps=fps,
                                      frame_inds=clip,
-                                     tshift=offset,
+                                     offset_sec=offset / fps,
                                      tsize=len(clip),
                                      num_clips=1,
                                      clip_len=self.clip_len,

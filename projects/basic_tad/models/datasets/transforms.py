@@ -2,46 +2,19 @@
 # https://github.com/open-mmlab/mmcv or
 # https://github.com/open-mmlab/mmdetection
 
-from typing import Dict, Sequence
+from typing import Sequence
 
 import mmcv
 import numpy as np
-from mmaction.registry import TRANSFORMS
-from mmcv.transforms import BaseTransform, to_tensor
-from mmengine.structures import BaseDataElement, InstanceData
+from mmcv.transforms import to_tensor
+from mmcv.transforms.base import BaseTransform
+from mmdet.structures import DetDataSample
+from mmengine.structures import InstanceData
 from numpy import random
 
+from mmaction.registry import TRANSFORMS
 from ..models.task_modules.segments_ops import segment_overlaps
-from mmengine.logging import print_log
 
-# from mmcv.parallel import DataContainer as DC
-
-@TRANSFORMS.register_module()
-class ReFormat(BaseTransform):
-
-    def transform(self,
-                  results: Dict) -> Optional[Union[Dict, Tuple[List, List]]]:
-        # [x1 x2] to [x1 y1 x2 y2]
-        gt_bboxes = np.insert(results['segments'], 2, 0.9, axis=-1)
-        gt_bboxes = np.insert(gt_bboxes, 1, 0.1, axis=-1)
-        results['gt_bboxes'] = gt_bboxes
-        if 'overlap' in results and results['overlap'].size > 0:
-            overlap = np.insert(results['overlap'], 2, 0.9, axis=-1)
-            overlap = np.insert(overlap, 1, 0.1, axis=-1)
-            results['overlap'] = overlap
-
-        results.update({'gt_bboxes_labels': results.pop('labels')})
-        results.update({"img_id": results.pop("video_name")})
-        results.update({'img': results.pop('feat')[None]})
-        results.update({'ori_shape': (1, results.pop('feat_len'))})
-        # results.update({'img_shape': results['ori_shape']})
-        results.update({'img_shape': (1, results['img'].shape[1])})
-
-        results['img_path'] = ''
-        results['scale_factor'] = [1.0, 1.0]
-        results['flip'] = False
-        results['flip_direction'] = None
-        return results
 
 @TRANSFORMS.register_module()
 class Time2Frame(BaseTransform):
@@ -443,51 +416,92 @@ class Pad(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class MyPackInputs(BaseTransform):
-    mapping_table = {'segments': 'bboxes',
-                     'labels': 'labels'}
+class PackTadInputs(BaseTransform):
+    """Pack the inputs data for the detection / semantic segmentation /
+    panoptic segmentation.
 
-    def __init__(
-            self,
-            meta_keys: Sequence[str] = ('video_name', 'duration', 'total_frames', 'fps',
-                                        'tsize', 'pad_tsize', 'tshift', 'tscale_factor')
-    ) -> None:
+    The ``img_meta`` item is always populated.  The contents of the
+    ``img_meta`` dictionary depends on ``meta_keys``. By default this includes:
+
+        - ``img_id``: id of the image
+
+        - ``img_path``: path to the image file
+
+        - ``ori_shape``: original shape of the image as a tuple (h, w)
+
+        - ``img_shape``: shape of the image input to the network as a tuple \
+            (h, w).  Note that images may be zero padded on the \
+            bottom/right if the batch tensor is larger than this shape.
+
+        - ``scale_factor``: a float indicating the preprocessing scale
+
+        - ``flip``: a boolean indicating if image flip transform was used
+
+        - ``flip_direction``: the flipping direction
+
+    Args:
+        meta_keys (Sequence[str], optional): Meta keys to be converted to
+            ``mmcv.DataContainer`` and collected in ``data[img_metas]``.
+            Default: ``('img_id', 'img_path', 'ori_shape', 'img_shape',
+            'scale_factor', 'flip', 'flip_direction')``
+    """
+
+    def __init__(self,
+                 meta_keys=('img_id', 'img_shape', 'scale_factor')):
         self.meta_keys = meta_keys
 
-    def transform(self, results: Dict) -> Dict:
-        """The transform function of :class:`PackActionInputs`.
+    @staticmethod
+    def mmdet_mapping(results: dict) -> dict:
+        # Modify the meta keys/values to be consistent with mmdet
+        results['img'] = results['imgs']
+        results['img_shape'] = (1, results.pop('tsize'))
+        results['pad_shape'] = (1, results.pop('pad_tsize'))
+        if 'tscale_factor' in results:
+            results['scale_factor'] = (results.pop('tscale_factor'), 1)  # (w, h)
+        results['img_id'] = (1, results.pop('video_name'))
+
+        gt_bboxes = np.insert(results['segments'], 2, 0.9, axis=-1)
+        gt_bboxes = np.insert(gt_bboxes, 1, 0.1, axis=-1)
+        results['bboxes'] = gt_bboxes
+        results['labels'] = results.pop('labels')
+
+        return results
+
+    def transform(self, results: dict) -> dict:
+        """Method to pack the input data.
+
         Args:
-            results (dict): The result dict.
+            results (dict): Result dict from the data pipeline.
+
         Returns:
-            dict: The result dict.
+            dict:
+
+            - 'inputs' (obj:`torch.Tensor`): The forward data of models.
+            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+                sample.
         """
-
-        # Pack images
+        results = self.mmdet_mapping(results)
         packed_results = dict()
-        packed_results['inputs'] = to_tensor(results['imgs']).squeeze(dim=0)  # squeeze the `num_crops` dimension
 
-        data_sample = BaseDataElement()
+        img = results['img']
+        if not img.flags.c_contiguous:
+            img = to_tensor(np.ascontiguousarray(img))
+        else:
+            img = to_tensor(img).contiguous()
 
-        # Pack gt_segments and gt_labels
-        instance_data = InstanceData()
-        ignore_instance_data = InstanceData()
-        assert len(results['ignore_flags']) == len(results['segments']), \
-            f"There are {len(results['segments'])} segments, but {len(results['ignore_flags'])} flags"
-        valid_idx = np.where(results['ignore_flags'] == 0)[0]
-        ignore_idx = np.where(results['ignore_flags'] == 1)[0]
+        packed_results['inputs'] = img
 
-        for key in self.mapping_table.keys():
-            instance_data[self.mapping_table[key]] = to_tensor(results[key][valid_idx])
-            ignore_instance_data[self.mapping_table[key]] = to_tensor(results[key][ignore_idx])
+        data_sample = DetDataSample(gt_instances=InstanceData(bboxes=to_tensor(results['bboxes']),
+                                                              labels=to_tensor(results['labels'])))
+        img_meta = {}
+        for key in self.meta_keys:
+            assert key in results, f'`{key}` is not found in `results`, ' \
+                                   f'the valid keys are {list(results)}.'
+            img_meta[key] = results[key]
 
-        data_sample.gt_instances = instance_data
-        # The ignored ground truth currently are not used at all. Input it to the model just for consistency with mmdet.
-        data_sample.ignored_instances = ignore_instance_data
-
-        # Pack meta
-        img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
         packed_results['data_samples'] = data_sample
+
         return packed_results
 
     def __repr__(self) -> str:

@@ -24,17 +24,18 @@ model = dict(type='mmdet.SingleStageDetector',
                  type='RetinaHead1D',
                  num_classes=20,
                  in_channels=256,
-                 conv_cfg=dict(type='Conv2d'),
+                 conv_cfg=dict(type='Conv1d'),
                  norm_cfg=dict(type='SyncBN'),
                  anchor_generator=dict(
                      type='mmdet.AnchorGenerator',
                      octave_base_scale=2,
                      scales_per_octave=5,
+                     ratios=[1.0],
                      strides=[1, 2, 4, 8, 16]),
                  bbox_coder=dict(
                      type='mmdet.DeltaXYWHBBoxCoder',
-                     target_means=[.0, .0],
-                     target_stds=[1.0, 1.0]),
+                     target_means=[.0, .0, .0, .0],
+                     target_stds=[1.0, 1.0, 1.0, 1.0]),
                  reg_decoded_bbox=True,
                  loss_cls=dict(type='mmdet.FocalLoss', use_sigmoid=True, gamma=2.0, alpha=0.25, loss_weight=1.0),
                  loss_bbox=dict(type='DIoU1DLoss', loss_weight=1.0),
@@ -60,11 +61,11 @@ model = dict(type='mmdet.SingleStageDetector',
                      min_pos_iou=0,
                      ignore_iof_thr=-1,
                      ignore_wrt_candidates=True,
-                     iou_calculator=dict(type='mmdet.BboxOverlaps2D')),
+                     iou_calculator=dict(type='BboxOverlaps1D')),
                  allowed_border=-1,
                  pos_weight=-1,
                  debug=False),
-             test_cfg=dict(nms_pre=300, score_thr=0.005))
+             test_cfg=dict(nms_pre=300, score_thr=0.005))  # we perform NMS in Metric rather than in the model
 
 # dataset settings
 data_root = 'data/thumos14'  # Root path to data for training
@@ -74,8 +75,8 @@ ann_file_train = 'annotations/basicTAD/val.json'  # Path to the annotation file 
 ann_file_val = 'annotations/basicTAD/test.json'  # Path to the annotation file for validation
 ann_file_test = ann_file_val
 
-clip_len = 96
-frame_interval = 10
+clip_len = 16
+frame_interval = 60
 img_shape = (112, 112)
 img_shape_test = (128, 128)
 overlap_ratio = 0.25
@@ -102,7 +103,9 @@ train_pipeline = [
          p=0.5),
     dict(type='Pad', size=(clip_len, *img_shape)),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='MyPackInputs')]
+    dict(type='PackTadInputs',
+         meta_keys=('img_id', 'img_shape', 'pad_shape', 'scale_factor',))
+]
 val_pipeline = [
     dict(type='Time2Frame'),
     dict(type='RawFrameDecode'),
@@ -110,7 +113,8 @@ val_pipeline = [
     dict(type='SpatialCenterCrop', crop_size=img_shape_test),
     dict(type='Pad', size=(clip_len, *img_shape_test)),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='MyPackInputs')
+    dict(type='PackTadInputs',
+         meta_keys=('img_id', 'img_shape', 'scale_factor', 'offset_sec'))
 ]
 # test_pipeline = val_pipeline
 
@@ -145,7 +149,11 @@ val_dataloader = dict(  # Config of validation dataloader
 test_dataloader = val_dataloader
 
 # evaluation settings
-val_evaluator = dict(type='mAP')  # My customized evaluator for mean average precision
+val_evaluator = dict(  # My customized evaluator for mean average precision
+    type='TADmAPMetric',
+    metric='mAP',
+    iou_thrs=[0.3, 0.4, 0.5, 0.6, 0.7],
+    nms_cfg=dict(type='nms', iou_thr=0.6))
 test_evaluator = val_evaluator  # Config of testing evaluator
 
 train_cfg = dict(  # Config of training loop

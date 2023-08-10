@@ -38,6 +38,9 @@ class Thumos14Dataset(BaseActionDataset):
         for video_name, video_info in data['database'].items():
             # Meta information
             frame_dir = Path(self.data_prefix['imgs']).joinpath(video_name)
+            if not frame_dir.exists():
+                warnings.warn(f'{frame_dir} does not exist.')
+                continue
             pattern = make_regex_pattern(self.filename_tmpl)
             imgfiles = [img for img in frame_dir.iterdir() if re.fullmatch(pattern, img.name)]
             num_imgs = len(imgfiles)
