@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os.path as osp
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -80,8 +81,11 @@ def inference_recognizer(model: nn.Module,
     input_flag = None
     if isinstance(video, dict):
         input_flag = 'dict'
-    elif isinstance(video, str):
-        input_flag = 'video'
+    elif isinstance(video, str) and osp.exists(video):
+        if video.endswith('.npy'):
+            input_flag = 'audio'
+        else:
+            input_flag = 'video'
     else:
         raise RuntimeError(f'The type of argument `video` is not supported: '
                            f'{type(video)}')
@@ -90,6 +94,12 @@ def inference_recognizer(model: nn.Module,
         data = video
     if input_flag == 'video':
         data = dict(filename=video, label=-1, start_index=0, modality='RGB')
+    if input_flag == 'audio':
+        data = dict(
+            audio_path=video,
+            total_frames=len(np.load(video)),
+            start_index=0,
+            label=-1)
 
     data = test_pipeline(data)
     data = pseudo_collate([data])
