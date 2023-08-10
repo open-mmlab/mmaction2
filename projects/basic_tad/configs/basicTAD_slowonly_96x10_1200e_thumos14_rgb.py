@@ -75,8 +75,8 @@ ann_file_train = 'annotations/basicTAD/val.json'  # Path to the annotation file 
 ann_file_val = 'annotations/basicTAD/test.json'  # Path to the annotation file for validation
 ann_file_test = ann_file_val
 
-clip_len = 16
-frame_interval = 60
+clip_len = 96
+frame_interval = 10
 img_shape = (112, 112)
 img_shape_test = (128, 128)
 overlap_ratio = 0.25
