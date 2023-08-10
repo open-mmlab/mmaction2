@@ -104,7 +104,7 @@ class Thumos14ValDataset(BaseActionDataset):
                                      num_clips=1,
                                      clip_len=self.clip_len,
                                      frame_interval=self.frame_interval,
-                                     tscale_factor=1 / self.frame_interval,
+                                     tscale_factor=fps / self.frame_interval,
                                      segments=segments.astype(np.float32),
                                      labels=labels.astype(np.int64),
                                      ignore_flags=ignore_flags.astype(np.float32))

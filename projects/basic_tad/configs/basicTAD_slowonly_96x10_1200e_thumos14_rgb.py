@@ -107,7 +107,6 @@ train_pipeline = [
          meta_keys=('img_id', 'img_shape', 'pad_shape', 'scale_factor',))
 ]
 val_pipeline = [
-    dict(type='Time2Frame'),
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(128, -1), keep_ratio=True),
     dict(type='SpatialCenterCrop', crop_size=img_shape_test),
@@ -132,7 +131,7 @@ train_dataloader = dict(  # Config of train dataloader
         data_prefix=dict(imgs=data_prefix_train),  # Prefix of specific data, e.g., frames and ann_file
         pipeline=train_pipeline))
 val_dataloader = dict(  # Config of validation dataloader
-    batch_size=2,  # Batch size of each single GPU during validation
+    batch_size=1,  # Batch size of each single GPU during validation
     num_workers=6,  # Workers to pre-fetch data for each single GPU during validation
     persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end
     sampler=dict(type='DefaultSampler', shuffle=False),  # Not shuffle during validation and testing

@@ -458,7 +458,7 @@ class PackTadInputs(BaseTransform):
         results['pad_shape'] = (1, results.pop('pad_tsize'))
         if 'tscale_factor' in results:
             results['scale_factor'] = (results.pop('tscale_factor'), 1)  # (w, h)
-        results['img_id'] = (1, results.pop('video_name'))
+        results['img_id'] = results.pop('video_name')
 
         gt_bboxes = np.insert(results['segments'], 2, 0.9, axis=-1)
         gt_bboxes = np.insert(gt_bboxes, 1, 0.1, axis=-1)
