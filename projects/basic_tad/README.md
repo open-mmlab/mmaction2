@@ -66,11 +66,18 @@ mim test mmaction configs/basicTAD_slowonly_96x10_1200e_thumos14_rgb.py --checkp
 > Replace the $CHECKPOINT with the trained model path, e.g., work_dirs/basicTAD_slowonly_96x10_1200e_thumos14_rgb/latest.pth.
 
 ## Results
-
-| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc |  testing protocol  |                    config                     |                                   ckpt |                            log |
+### THMOS14
+| frame sampling strategy | resolution | gpus | backbone | pretrain | mAP@0.5 | avg. mAP |  testing protocol  |                    config                     |                                   ckpt |                            log |
 | :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :----------------: | :-------------------------------------------: | -------------------------------------: | -----------------------------: |
-|          1x96x10          |  112x112   |  2   | SlowOnly | Kinetics |  72.83   |  90.65   | 1 clips x 1 crop | [config](./configs/basicTAD_slowonly_96x10_1200e_thumos14_rgb.py) | todo | todo |
+|          1x96x10          |  112x112   |  2   | SlowOnly | Kinetics |  50.0   |  47.7   | 1 clips x 1 crop | [config](./configs/basicTAD_slowonly_96x10_1200e_thumos14_rgb.py) | todo | todo |
 
+> Due to the limit of the computing resources, we only train the model in a simple setting (in terms of spatial-temporal resolution, testing augmentation, etc.). To reproduce the results in the paper, please refer to [setting](https://github.com/MCG-NJU/BasicTAD/blob/main/configs/trainval/basictad/thumos14/basictad_slowonly_e700_thumos14_rgb_192win_anchor_based.py) used the official repo.
+
+> In fact, the main idea of [BasicTAD](https://arxiv.org/abs/2205.02717) lies on its modular design rather than innovating some sophisticated architecture/modules.
+
+> Currently we only support anchor-based basicTAD model on THUMOS14. The anchor-free version is in the plan.
+
+> `avg. mAP` refer to the averaged mAP over IoU=(0.3, 0.4, 0.5, 0.6, 0.7).
 ## Citation
 
 <!-- Replace to the citation of the paper your project refers to. -->
