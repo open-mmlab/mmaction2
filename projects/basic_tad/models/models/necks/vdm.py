@@ -4,7 +4,9 @@ from mmcv.cnn import ConvModule
 from mmengine.model import kaiming_init, constant_init
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.nn.modules.conv import _ConvNd
+from torch.nn import MaxPool3d
 
+MODELS.register_module(name='MaxPool3d', module=MaxPool3d)
 
 # x: b,c,t,h,w
 

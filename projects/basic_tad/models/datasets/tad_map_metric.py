@@ -4,13 +4,15 @@ from typing import Sequence
 
 import numpy as np
 import torch
+from mmcv.ops import batched_nms
 from mmdet.evaluation.functional import eval_map, eval_recalls
 from mmdet.evaluation.metrics import VOCMetric
-from mmaction.registry import METRICS
 from mmdet.structures.bbox import bbox_overlaps
 from mmengine.logging import MMLogger
 from mmengine.structures import InstanceData
-from mmcv.ops import batched_nms
+
+from mmaction.registry import METRICS
+from ..models.task_modules.segments_ops import batched_nmw
 
 
 @METRICS.register_module()
@@ -30,6 +32,12 @@ class TADmAPMetric(VOCMetric):
         self.score_thr = score_thr
         self.duration_thr = duration_thr
         self.nms_in_overlap = nms_in_overlap
+        if nms_cfg.get('type') in ['nms', 'soft_nms']:
+            self.nms = batched_nms
+        elif nms_cfg.get('type') == 'nmw':
+            self.nms = batched_nmw
+        else:
+            NotImplementedError(f'NMS type {nms_cfg.get("type")} is not implemented.')
 
     def process(self, data_batch: dict, data_samples: Sequence[dict]) -> None:
         """Process one batch of data samples and predictions. The processed
@@ -180,19 +188,19 @@ class TADmAPMetric(VOCMetric):
                             pred_in_overlap = pred_v[pred_v.in_overlap[:, i]]
                             if len(pred_in_overlap) == 0:
                                 continue
-                            bboxes, keep_idxs = batched_nms(pred_in_overlap.bboxes,
-                                                            pred_in_overlap.scores,
-                                                            pred_in_overlap.labels,
-                                                            nms_cfg=self.nms_cfg)
+                            bboxes, keep_idxs = self.nms(pred_in_overlap.bboxes,
+                                                         pred_in_overlap.scores,
+                                                         pred_in_overlap.labels,
+                                                         nms_cfg=self.nms_cfg)
                             pred_in_overlap = pred_in_overlap[keep_idxs]
                             pred_in_overlap.scores = bboxes[:, -1]
                             pred_in_overlaps.append(pred_in_overlap)
                         pred_v = InstanceData.cat(pred_in_overlaps + [pred_not_in_overlaps])
                 else:
-                    bboxes, keep_idxs = batched_nms(pred_v.bboxes,
-                                                    pred_v.scores,
-                                                    pred_v.labels,
-                                                    nms_cfg=self.nms_cfg)
+                    bboxes, keep_idxs = self.nms(pred_v.bboxes,
+                                                 pred_v.scores,
+                                                 pred_v.labels,
+                                                 nms_cfg=self.nms_cfg)
                     pred_v = pred_v[keep_idxs]
                     pred_v.scores = bboxes[:, -1]
             sort_idxs = pred_v.scores.argsort(descending=True)
