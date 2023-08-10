@@ -39,10 +39,10 @@
 
 1. 这里的 **GPU数量** 指的是得到模型权重文件对应的 GPU 个数。当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要在运行 `tools/train.py` 时设置 `--auto-scale-lr` ，该参数将根据批大小等比例地调节学习率。
 2. 参考代码的准确率列中的结果是通过使用相同的模型配置在原来的代码库上训练得到的。 `*` 代表数据来源于论文。
-3. 我们使用的 Kinetics400 验证集包含 19796 个视频。 用户可以从 [验证集视频](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB)下载这些视频。 同时也提供了对应的 [数据列表](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (每行格式为：视频 ID，视频帧数目，类别序号) 以及 [映射标签](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) 。
+3. 我们使用的 Kinetics400 验证集包含 19796 个视频。 用户可以从[验证集视频](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB)下载这些视频。 同时也提供了对应的[数据列表](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (每行格式为：视频 ID，视频帧数目，类别序号) 以及[映射标签](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) 。
 4. 预训练模型可以从 [Swin Transformer for ImageNet Classification](https://github.com/microsoft/Swin-Transformer#main-results-on-imagenet-with-pretrained-models)下载。
 
-关于数据处理的更多细节，用户可以参照 [Kinetics](/tools/data/kinetics/README.md)。
+关于数据处理的更多细节，用户可以参照 [Kinetics](/tools/data/kinetics/README_zh-CN.md)。
 
 ## 如何训练
 
@@ -59,7 +59,7 @@ python tools/train.py configs/recognition/swin/swin-tiny-p244-w877_in1k-pre_8xb8
     --seed=0 --deterministic
 ```
 
-更多训练细节，可参考 [训练和测试教程](/docs/en/user_guides/train_test.md) 中的 **训练** 部分。
+更多训练细节，可参考 [训练和测试教程](/docs/zh_cn/user_guides/train_test.md) 中的 **训练** 部分。
 
 ## 如何测试
 
@@ -76,4 +76,4 @@ python tools/test.py configs/recognition/swin/swin-tiny-p244-w877_in1k-pre_8xb8-
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-更多测试细节，可参考 [训练和测试教程](/docs/en/user_guides/train_test.md) 中的 **测试** 部分。
+更多测试细节，可参考 [训练和测试教程](/docs/zh_cn/user_guides/train_test.md) 中的 **测试** 部分。

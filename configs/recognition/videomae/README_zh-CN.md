@@ -27,7 +27,7 @@
 1. 参考代码的准确率数据来源于原始仓库。
 2. 我们使用的 Kinetics400 验证集包含 19796 个视频。 用户可以从 [验证集视频](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB)下载这些视频。 同时也提供了对应的 [数据列表](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (每行格式为：视频 ID，视频帧数目，类别序号) 以及 [映射标签](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) 。
 
-关于数据处理的更多细节，用户可以参照  [preparing_kinetics](/tools/data/kinetics/README.md).
+关于数据处理的更多细节，用户可以参照 [preparing_kinetics](/tools/data/kinetics/README_zh-CN.md).
 
 ## 如何测试
 
@@ -44,4 +44,4 @@ python tools/test.py configs/recognition/videomae/vit-base-p16_videomae-k400-pre
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-更多测试细节，可参考 [训练和测试教程](/docs/en/user_guides/train_test.md) 中的 **测试** 部分。
+更多测试细节，可参考 [训练和测试教程](/docs/zh_cn/user_guides/train_test.md) 中的 **测试** 部分。
