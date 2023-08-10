@@ -205,7 +205,7 @@ default_hooks = dict(  # Hooks to execute default actions like updating model pa
     timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
     logger=dict(
         type='LoggerHook',  # The logger used to record logs during training/validation/testing phase
-        interval=1,  # Interval to print the log
+        interval=20,  # Interval to print the log
         ignore_last=False,
         interval_exp_name=1000),  # Ignore the log of last iterations in each epoch
     param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
