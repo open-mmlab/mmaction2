@@ -53,4 +53,3 @@ for video in val_avi:
 
 with open(val_json_path, 'w') as f:
     json.dump(val_avi_list, f)
-
