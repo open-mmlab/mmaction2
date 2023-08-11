@@ -152,7 +152,7 @@ val_evaluator = dict(  # My customized evaluator for mean average precision
     type='TADmAPMetric',
     metric='mAP',
     iou_thrs=[0.3, 0.4, 0.5, 0.6, 0.7],
-    nms_cfg=dict(type='nms', iou_thr=0.6))
+    nms_cfg=dict(type='nmw', iou_thr=0.6))
 test_evaluator = val_evaluator  # Config of testing evaluator
 
 train_cfg = dict(  # Config of training loop
@@ -212,7 +212,7 @@ default_hooks = dict(  # Hooks to execute default actions like updating model pa
         type='CheckpointHook',  # The hook to save checkpoints periodically
         interval=100,  # The saving period
         save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
-        max_keep_ckpts=10),  # The maximum checkpoints to keep
+        max_keep_ckpts=12),  # The maximum checkpoints to keep
     sampler_seed=dict(type='DistSamplerSeedHook'),  # Data-loading sampler for distributed training
     sync_buffers=dict(type='SyncBuffersHook'))  # Synchronize model buffers at the end of each epoch
 env_cfg = dict(  # Dict for setting environment

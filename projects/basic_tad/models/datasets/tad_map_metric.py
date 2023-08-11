@@ -1,4 +1,5 @@
 import copy
+import warnings
 from collections import OrderedDict
 from typing import Sequence
 
@@ -35,6 +36,7 @@ class TADmAPMetric(VOCMetric):
         if nms_cfg.get('type') in ['nms', 'soft_nms']:
             self.nms = batched_nms
         elif nms_cfg.get('type') == 'nmw':
+            warnings.warn(f'NMW is used, which is slow compared to NMS as it is not optimized, implemented by Python.')
             self.nms = batched_nmw
         else:
             NotImplementedError(f'NMS type {nms_cfg.get("type")} is not implemented.')
@@ -193,6 +195,7 @@ class TADmAPMetric(VOCMetric):
                                                          pred_in_overlap.labels,
                                                          nms_cfg=self.nms_cfg)
                             pred_in_overlap = pred_in_overlap[keep_idxs]
+                            pred_in_overlap.bboxes = bboxes[:, :-1]
                             pred_in_overlap.scores = bboxes[:, -1]
                             pred_in_overlaps.append(pred_in_overlap)
                         pred_v = InstanceData.cat(pred_in_overlaps + [pred_not_in_overlaps])
@@ -202,6 +205,8 @@ class TADmAPMetric(VOCMetric):
                                                  pred_v.labels,
                                                  nms_cfg=self.nms_cfg)
                     pred_v = pred_v[keep_idxs]
+                    # Some NMS operations will change the value of scores and bboxes, we track it.
+                    pred_v.bboxes = bboxes[:, :-1]
                     pred_v.scores = bboxes[:, -1]
             sort_idxs = pred_v.scores.argsort(descending=True)
             pred_v = pred_v[sort_idxs]
