@@ -1,7 +1,7 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import json
 import os.path as osp
 import pickle
-
 
 DATA_DIR = '../../../data/video_retrieval/msvd'
 SUFFIX = '.avi'
