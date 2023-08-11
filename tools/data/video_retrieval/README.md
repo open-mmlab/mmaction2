@@ -15,6 +15,8 @@
 
 ```
 
+<!-- [DATASET] -->
+
 ```BibTeX
 @inproceedings{chen:acl11,
  title = {Collecting Highly Parallel Data for Paraphrase Evaluation},
@@ -25,8 +27,6 @@
  year = {2011}
 }
 ```
-
-
 
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/video_retrieval/`.
 
