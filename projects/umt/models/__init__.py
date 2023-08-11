@@ -1,4 +1,3 @@
-from .actionclip import ActionClip
-from .load import init_actionclip
+from .vit import UMTViT
 
-__all__ = ['ActionClip', 'init_actionclip']
+__all__ = ['UMTViT']
