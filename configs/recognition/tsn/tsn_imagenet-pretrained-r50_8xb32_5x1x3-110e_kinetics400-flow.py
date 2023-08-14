@@ -34,7 +34,8 @@ ann_file_val = 'data/kinetics400/kinetics400_val_list_flow.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_flow.txt'
 file_client_args = dict(io_backend='disk')
 train_pipeline = [
-    dict(type='SampleFrames', clip_len=clip_len, frame_interval=1, num_clips=3),
+    dict(
+        type='SampleFrames', clip_len=clip_len, frame_interval=1, num_clips=3),
     dict(type='RawFrameDecode', **file_client_args),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='RandomResizedCrop'),

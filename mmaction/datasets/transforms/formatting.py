@@ -306,7 +306,8 @@ class FormatShape(BaseTransform):
             imgs = np.transpose(imgs, (0, 3, 1, 2))
             if results['modality'] == 'Flow':
                 clip_len = results['clip_len']
-                imgs = imgs.reshape((-1, clip_len * imgs.shape[1]) + imgs.shape[2:])
+                imgs = imgs.reshape((-1, clip_len * imgs.shape[1]) +
+                                    imgs.shape[2:])
             # M x C x H x W
             results['imgs'] = imgs
             results['input_shape'] = imgs.shape
