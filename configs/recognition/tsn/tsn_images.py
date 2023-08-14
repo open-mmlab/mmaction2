@@ -137,63 +137,45 @@ test_dataloader = dict(  # Config of test dataloader
 val_evaluator = dict(type='AccMetric')  # Config of validation evaluator
 test_evaluator = val_evaluator  # Config of testing evaluator
 
-train_cfg = dict(  # Config of training loop
-    type='EpochBasedTrainLoop',  # Name of training loop
-    max_epochs=100,  # Total training epochs
-    val_begin=1,  # The epoch that begins validating
-    val_interval=1)  # Validation interval
-val_cfg = dict(  # Config of validation loop
-    type='ValLoop')  # Name of validation loop
-test_cfg = dict( # Config of testing loop
-    type='TestLoop')  # Name of testing loop
+train_cfg = dict(
+    type='EpochBasedTrainLoop',
+    max_epochs=50,  # change from 100 to 50
+    val_begin=1,
+    val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 
 # learning policy
-param_scheduler = [  # Parameter scheduler for updating optimizer parameters, support dict or list
-    dict(type='MultiStepLR',  # Decays the learning rate once the number of epoch reaches one of the milestones
-        begin=0,  # Step at which to start updating the learning rate
-        end=100,  # Step at which to stop updating the learning rate
-        by_epoch=True,  # Whether the scheduled learning rate is updated by epochs
-        milestones=[40, 80],  # Steps to decay the learning rate
-        gamma=0.1)]  # Multiplicative factor of learning rate decay
+param_scheduler = [
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=50,  # change from 100 to 50
+        by_epoch=True,
+        milestones=[20, 40],  # change milestones
+        gamma=0.1)
+]
 
 # optimizer
-optim_wrapper = dict(  # Config of optimizer wrapper
-    type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training
-    optimizer=dict(  # Config of optimizer. Support all kinds of optimizers in PyTorch. Refer to https://pytorch.org/docs/stable/optim.html#algorithms
-        type='SGD',  # Name of optimizer
-        lr=0.01,  # Learning rate
-        momentum=0.9,  # Momentum factor
-        weight_decay=0.0001),  # Weight decay
-    clip_grad=dict(max_norm=40, norm_type=2))  # Config of gradient clip
+optim_wrapper = dict(
+    optimizer=dict(
+        type='SGD',
+        lr=0.005, # change from 0.01 to 0.005
+        momentum=0.9,
+        weight_decay=0.0001),
+    clip_grad=dict(max_norm=40, norm_type=2))
 
-# runtime settings
-default_scope = 'mmaction'  # The default registry scope to find modules. Refer to https://mmengine.readthedocs.io/en/latest/tutorials/registry.html
-default_hooks = dict(  # Hooks to execute default actions like updating model parameters and saving checkpoints.
-    runtime_info=dict(type='RuntimeInfoHook'),  # The hook to updates runtime information into message hub
-    timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
-    logger=dict(
-        type='LoggerHook',  # The logger used to record logs during training/validation/testing phase
-        interval=20,  # Interval to print the log
-        ignore_last=False), # Ignore the log of last iterations in each epoch
-    param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
-    checkpoint=dict(
-        type='CheckpointHook',  # The hook to save checkpoints periodically
-        interval=3,  # The saving period
-        save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
-        max_keep_ckpts=3),  # The maximum checkpoints to keep
-    sampler_seed=dict(type='DistSamplerSeedHook'),  # Data-loading sampler for distributed training
-    sync_buffers=dict(type='SyncBuffersHook'))  # Synchronize model buffers at the end of each epoch
-env_cfg = dict(  # Dict for setting environment
-    cudnn_benchmark=False,  # Whether to enable cudnn benchmark
-    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
-    dist_cfg=dict(backend='nccl')) # Parameters to setup distributed environment, the port can also be set
+# val_evaluator = dict(type='AccMetric')
+# test_evaluator = val_evaluator
 
-log_processor = dict(
-    type='LogProcessor',  # Log processor used to format log information
-    window_size=20,  # Default smooth interval
-    by_epoch=True)  # Whether to format logs with epoch type
+default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (32 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=256)
+
+# use the pre-trained model for the whole TSN network
+load_from = 'https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth'
 visualizer=dict(type='Visualizer', vis_backends=[dict(type='WandbVisBackend')])
-
-log_level = 'INFO'  # The level of logging
-load_from = None  # Load model checkpoint as a pre-trained model from a given path. This will not resume training.
-resume = False  # Whether to resume from the checkpoint defined in `load_from`. If `load_from` is None, it will resume the latest checkpoint in the `work_dir`.
