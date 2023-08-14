@@ -1,11 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .formatting import (FormatAudioShape, FormatGCNInput, FormatShape,
-                         PackActionInputs, PackLocalizationInputs, Transpose)
+                         PackActionInputs, PackLocalizationInputs,
+                         PackSegmentationInputs, Transpose)
 from .loading import (ArrayDecode, AudioFeatureSelector, BuildPseudoClip,
                       DecordDecode, DecordInit, DenseSampleFrames,
-                      GenerateLocalizationLabels, ImageDecode,
-                      LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
-                      LoadProposals, LoadRGBFromFile, OpenCVDecode, OpenCVInit,
+                      GenerateLocalizationLabels, GenerateSegmentationLabels,
+                      ImageDecode, LoadAudioFeature, LoadHVULabel,
+                      LoadLocalizationFeature, LoadProposals, LoadRGBFromFile,
+                      LoadSegmentationFeature, OpenCVDecode, OpenCVInit,
                       PIMSDecode, PIMSInit, PyAVDecode, PyAVDecodeMotionVector,
                       PyAVInit, RawFrameDecode, SampleAVAFrames, SampleFrames,
                       UniformSample, UntrimmedSampleFrames)
@@ -37,5 +39,6 @@ __all__ = [
     'SampleAVAFrames', 'SampleFrames', 'TenCrop', 'ThreeCrop', 'ToMotion',
     'TorchVisionWrapper', 'Transpose', 'UniformSample', 'UniformSampleFrames',
     'UntrimmedSampleFrames', 'MMUniformSampleFrames', 'MMDecode', 'MMCompact',
-    'CLIPTokenize'
+    'CLIPTokenize', 'LoadSegmentationFeature', 'GenerateSegmentationLabels',
+    'PackSegmentationInputs'
 ]
