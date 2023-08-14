@@ -66,19 +66,19 @@
 |      8       |  Raw   |   UniFormerV2-L/14\*   |  clip  |      -      |      -      | [config](/configs/recognition/uniformerv2/uniformerv2-large-p14-res224_clip-pre_u8_kinetics710-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-large-p14-res224_clip-pre_u8_kinetics710-rgb_20230612-d002a407.pth) |                      -                      |
 |      8       |  Raw   | UniFormerV2-L/14@336\* |  clip  |      -      |      -      | [config](/configs/recognition/uniformerv2/uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/uniformerv2/kinetics710/uniformerv2-large-p14-res336_clip-pre_u8_kinetics710-rgb_20230612-d723ddc1.pth) |                      -                      |
 
-以上带有 * 的模型是迁移自[UniFormerV2仓库](https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md)，并在我们的数据上进行了测试。由于算力限制，我们仅支持基础模型（即UniFormerV2-B/16）训练配置的可靠性。
+以上带有 * 的模型是迁移自[UniFormerV2仓库](https://github.com/OpenGVLab/UniFormerV2/blob/main/MODEL_ZOO.md)，并在我们的数据上进行了测试。由于算力限制，我们仅支持基础模型（即 UniFormerV2-B/16）训练配置的可靠性。
 
 1. "参考文献"列中的数值是原始仓库的结果。
-2. `top1/5准确率`中的数值是在与原始仓库相同的数据上进行测试得到的，并且分类器-标签映射与[UniFormerV2](https://drive.google.com/drive/folders/17VB-XdF3Kfr9ORmnGyXCxTMs86n0L4QL)一致。
-3. "mm-Kinetics"列中的数值是在MMAction2持有的Kinetics数据集上进行的测试结果，其他MMAction2模型也使用了该数据集。由于各个版本的Kinetics数据集之间存在差异，`top1/5准确率`和`mm-Kinetics top1/5准确率`之间存在一些差异。为了与其他模型进行公平比较，我们在这里报告了两个结果。请注意，我们只报告推断结果，因为UniFormer和其他模型的训练集不同，所以该结果低于在作者版本上测试的结果。
-4. 由于Kinetics-400/600/700的原始模型采用了不同的[标签文件](https://drive.google.com/drive/folders/17VB-XdF3Kfr9ORmnGyXCxTMs86n0L4QL)，我们根据标签名称简单映射权重。Kinetics-400/600/700的新标签映射可以在[这里](/tools/data/kinetics)找到。
-5. 由于[SlowFast](https://github.com/facebookresearch/SlowFast)和MMAction2之间存在一些差异，它们的性能之间存在一些差距。
-6. 我们使用Kinetics-710进行预训练，这有助于提高其他数据集的性能。你可以在[论文](https://arxiv.org/abs/2211.09552)中找到更多细节。我们还根据Kinetics-710的检查点进行了权重映射，你可以在[这里](/tools/data/kinetics710/label_map_k710.txt)找到标签映射。
+2. `top1/5准确率` 中的数值是在与原始仓库相同的数据上进行测试得到的，并且分类器-标签映射与 [UniFormerV2](https://drive.google.com/drive/folders/17VB-XdF3Kfr9ORmnGyXCxTMs86n0L4QL)一致。
+3. "mm-Kinetics" 列中的数值是在 MMAction2 持有的 Kinetics 数据集上进行的测试结果，其他 MMAction2 模型也使用了该数据集。由于各个版本的 Kinetics 数据集之间存在差异，`top1/5准确率` 和 `mm-Kinetics top1/5准确率` 之间存在一些差异。为了与其他模型进行公平比较，我们在这里报告了两个结果。请注意，我们只报告推断结果，因为 UniFormer 和其他模型的训练集不同，所以该结果低于在作者版本上测试的结果。
+4. 由于 Kinetics-400/600/700 的原始模型采用了不同的[标签文件](https://drive.google.com/drive/folders/17VB-XdF3Kfr9ORmnGyXCxTMs86n0L4QL)，我们根据标签名称简单映射权重。Kinetics-400/600/700的新标签映射可以在[这里](/tools/data/kinetics)找到。
+5. 由于 [SlowFast](https://github.com/facebookresearch/SlowFast)和 MMAction2 之间存在一些差异，它们的性能之间存在一些差距。
+6. 我们使用Kinetics-710进行预训练，这有助于提高其他数据集的性能。你可以在[论文](https://arxiv.org/abs/2211.09552)中找到更多细节。我们还根据 Kinetics-710 的模型权重进行了权重映射，你可以在[这里](/tools/data/kinetics710/label_map_k710.txt)找到标签映射。
 
 有关数据准备的更多详细信息，可以参考以下链接：
 
-- [准备Kinetics数据集](/tools/data/kinetics/README_zh-CN.md)
-- [准备MIT数据集](/tools/data/mit/README_zh-CN.md)
+- [准备 Kinetics 数据集](/tools/data/kinetics/README_zh-CN.md)
+- [准备 MIT 数据集](/tools/data/mit/README_zh-CN.md)
 
 ## 如何测试
 
@@ -88,7 +88,7 @@
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-示例：在Kinetics-400数据集上测试UniFormerV2-B/16模型，并将结果转储到一个pkl文件中。
+示例：在 Kinetics-400 数据集上测试 UniFormerV2-B/16 模型，并将结果转储到一个pkl文件中。
 
 ```shell
 python tools/test.py configs/recognition/uniformerv2/uniformerv2-base-p16-res224_clip-kinetics710-pre_u8_kinetics400-rgb.py \
