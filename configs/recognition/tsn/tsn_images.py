@@ -1,28 +1,14 @@
+_base_ = [
+    '../../_base_/models/tsn_r50.py', '../../_base_/schedules/sgd_100e.py',
+    '../../_base_/default_runtime.py'
+]
+
 # model settings
-model = dict(  # Config of the model
-    type='Recognizer2D',  # Class name of the recognizer
-    backbone=dict(  # Dict for backbone
-        type='ResNet',  # Name of the backbone
-        pretrained='torchvision://resnet50',  # The url/site of the pretrained model
-        depth=50,  # Depth of ResNet model
-        norm_eval=False),  # Whether to set BN layers to eval mode when training
-    cls_head=dict(  # Dict for classification head
-        type='TSNHead',  # Name of classification head
-        num_classes=400,  # Number of classes to be classified.
-        in_channels=2048,  # The input channels of classification head.
-        spatial_type='avg',  # Type of pooling in spatial dimension
-        consensus=dict(type='AvgConsensus', dim=1),  # Config of consensus module
-        dropout_ratio=0.4,  # Probability in dropout layer
-        init_std=0.01, # Std value for linear layer initiation
-        average_clips='prob'),  # Method to average multiple clip results
-    data_preprocessor=dict(  # Dict for data preprocessor
-        type='ActionDataPreprocessor',  # Name of data preprocessor
-        mean=[123.675, 116.28, 103.53],  # Mean values of different channels to normalize
-        std=[58.395, 57.12, 57.375],  # Std values of different channels to normalize
-        format_shape='NCHW'),  # Final image shape format
-    # model training and testing settings
-    train_cfg=None,  # Config of training hyperparameters for TSN
-    test_cfg=None)  # Config for testing hyperparameters for TSN.
+model = dict(
+    cls_head=dict(
+        type='TSNHead',
+        num_classes=6  # change from 400 to 101
+        ))
 
 # dataset settings
 dataset_type = 'RawframeDataset'  # Type of dataset for training, validation and testing
@@ -206,11 +192,8 @@ log_processor = dict(
     type='LogProcessor',  # Log processor used to format log information
     window_size=20,  # Default smooth interval
     by_epoch=True)  # Whether to format logs with epoch type
-vis_backends = [  # List of visualization backends
-    dict(type='LocalVisBackend')]  # Local visualization backend
-visualizer = dict(  # Config of visualizer
-    type='ActionVisualizer',  # Name of visualizer
-    vis_backends=vis_backends)
+visualizer=dict(type='Visualizer', vis_backends=[dict(type='WandbVisBackend')])
+
 log_level = 'INFO'  # The level of logging
 load_from = None  # Load model checkpoint as a pre-trained model from a given path. This will not resume training.
 resume = False  # Whether to resume from the checkpoint defined in `load_from`. If `load_from` is None, it will resume the latest checkpoint in the `work_dir`.
