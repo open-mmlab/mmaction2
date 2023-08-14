@@ -204,15 +204,18 @@ class FormatShape(BaseTransform):
     """Format final imgs shape to the given input_format.
 
     Required keys:
+
         - imgs (optional)
         - heatmap_imgs (optional)
         - num_clips
         - clip_len
 
     Modified Keys:
+
         - imgs
 
     Added Keys:
+
         - input_shape
         - heatmap_input_shape (optional)
 
