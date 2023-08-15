@@ -3,35 +3,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from timm.models.layers import drop_path, to_2tuple, trunc_normal_
-from timm.models.registry import register_model
+from mmcv.cnn.bricks import DropPath
+from mmengine import to_2tuple
 import torch.utils.checkpoint as checkpoint
 from mmaction.registry import MODELS
-
-
-def _cfg(url='', **kwargs):
-    return {
-        'url': url,
-        'num_classes': 400, 'input_size': (3, 224, 224), 'pool_size': None,
-        'crop_pct': .9, 'interpolation': 'bicubic',
-        'mean': (0.5, 0.5, 0.5), 'std': (0.5, 0.5, 0.5),
-        **kwargs
-    }
-
-
-class DropPath(nn.Module):
-    """Drop paths (Stochastic Depth) per sample  (when applied in main path of residual blocks).
-    """
-
-    def __init__(self, drop_prob=None):
-        super(DropPath, self).__init__()
-        self.drop_prob = drop_prob
-
-    def forward(self, x):
-        return drop_path(x, self.drop_prob, self.training)
-
-    def extra_repr(self) -> str:
-        return 'p={}'.format(self.drop_prob)
 
 
 class Mlp(nn.Module):
@@ -216,21 +191,18 @@ class UMTViT(nn.Module):
                  img_size=224,
                  patch_size=16,
                  in_chans=3,
-                 num_classes=1000,
                  embed_dim=768,
                  depth=12,
                  num_heads=12,
                  mlp_ratio=4.,
                  qkv_bias=False,
                  qk_scale=None,
-                 fc_drop_rate=0.,
                  drop_rate=0.,
                  attn_drop_rate=0.,
                  drop_path_rate=0.,
-                 norm_layer=nn.LayerNorm,
+                 norm_layer=partial(nn.LayerNorm, eps=1e-6),
                  init_values=0.,
                  use_learnable_pos_emb=False,
-                 init_scale=0.,
                  all_frames=16,
                  tubelet_size=1,
                  use_checkpoint=False,
@@ -272,40 +244,6 @@ class UMTViT(nn.Module):
             for i in range(depth)])
         self.norm = nn.Identity() if use_mean_pooling else norm_layer(embed_dim)
         self.fc_norm = norm_layer(embed_dim) if use_mean_pooling else None
-        self.fc_dropout = nn.Dropout(p=fc_drop_rate) if fc_drop_rate > 0 else nn.Identity()
-        self.head = nn.Linear(embed_dim, num_classes) if num_classes > 0 else nn.Identity()
-
-        if use_learnable_pos_emb:
-            trunc_normal_(self.pos_embed, std=.02)
-
-        trunc_normal_(self.head.weight, std=.02)
-        self.apply(self._init_weights)
-
-        self.head.weight.data.mul_(init_scale)
-        self.head.bias.data.mul_(init_scale)
-
-    def _init_weights(self, m):
-        if isinstance(m, nn.Linear):
-            trunc_normal_(m.weight, std=.02)
-            if isinstance(m, nn.Linear) and m.bias is not None:
-                nn.init.constant_(m.bias, 0)
-        elif isinstance(m, nn.LayerNorm):
-            nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.weight, 1.0)
-
-    def get_num_layers(self):
-        return len(self.blocks)
-
-    @torch.jit.ignore
-    def no_weight_decay(self):
-        return {'pos_embed', 'cls_token'}
-
-    def get_classifier(self):
-        return self.head
-
-    def reset_classifier(self, num_classes, global_pool=''):
-        self.num_classes = num_classes
-        self.head = nn.Linear(self.embed_dim, num_classes) if num_classes > 0 else nn.Identity()
 
     def forward_features(self, x):
         x = self.patch_embed(x)
@@ -329,5 +267,4 @@ class UMTViT(nn.Module):
 
     def forward(self, x):
         x = self.forward_features(x)
-        x = self.fc_dropout(x)
         return x
