@@ -198,7 +198,11 @@ def test_format_shape():
     assert format_shape(results)['input_shape'] == (3, 3, 224, 224)
 
     # `NCHW` input format (Flow Modality)
-    results = dict(imgs=np.random.randn(3, 224, 224, 2), num_clips=1, clip_len=3, modality='Flow')
+    results = dict(
+        imgs=np.random.randn(3, 224, 224, 2),
+        num_clips=1,
+        clip_len=3,
+        modality='Flow')
     format_shape = FormatShape('NCHW')
     assert format_shape(results)['input_shape'] == (1, 6, 224, 224)
 
