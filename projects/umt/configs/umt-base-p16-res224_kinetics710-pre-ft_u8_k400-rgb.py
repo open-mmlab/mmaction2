@@ -36,10 +36,10 @@ file_client_args = dict(
 
 test_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(type='UniformSample', clip_len=8, num_clips=1, test_mode=True),
+    dict(type='UniformSample', clip_len=8, num_clips=4, test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 224)),
-    dict(type='CenterCrop', crop_size=224),
+    dict(type='ThreeCrop', crop_size=224),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
 ]
@@ -64,7 +64,7 @@ default_scope = 'mmaction'
 default_hooks = dict(
     runtime_info=dict(type='RuntimeInfoHook'),
     timer=dict(type='IterTimerHook'),
-    logger=dict(type='LoggerHook', interval=100, ignore_last=False),
+    logger=dict(type='LoggerHook', interval=20, ignore_last=False),
     param_scheduler=dict(type='ParamSchedulerHook'),
     checkpoint=dict(
         type='CheckpointHook', interval=1, save_best='auto', max_keep_ckpts=5),
