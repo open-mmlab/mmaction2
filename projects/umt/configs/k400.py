@@ -5,9 +5,9 @@ model = dict(
     type='Recognizer3D',
     backbone=dict(
         type='UMTViT',
-        patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True),
+        patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, all_frames=8, qkv_bias=True),
     cls_head=dict(
-        type='I3DHead',
+        type='TimeSformerHead',
         num_classes=400,
         in_channels=768,
         average_clips='prob'),
@@ -28,11 +28,11 @@ file_client_args = dict(io_backend='petrel', path_mapping=dict({'data/kinetics40
 test_pipeline = [
     dict(type='DecordInit', **file_client_args),
     dict(
-        type='UniformSample', clip_len=8, num_clips=4,
+        type='UniformSample', clip_len=8, num_clips=1,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 224)),
-    dict(type='ThreeCrop', crop_size=224),
+    dict(type='CenterCrop', crop_size=224),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
 ]
