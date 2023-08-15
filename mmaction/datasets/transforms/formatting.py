@@ -304,7 +304,7 @@ class FormatShape(BaseTransform):
         elif self.input_format == 'NCHW':
             imgs = results['imgs']
             imgs = np.transpose(imgs, (0, 3, 1, 2))
-            if results['modality'] == 'Flow':
+            if 'modality' in results and results['modality'] == 'Flow':
                 clip_len = results['clip_len']
                 imgs = imgs.reshape((-1, clip_len * imgs.shape[1]) +
                                     imgs.shape[2:])
