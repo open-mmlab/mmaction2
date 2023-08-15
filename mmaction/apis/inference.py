@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Tuple, Union
 
 import mmengine
 import numpy as np
@@ -10,6 +10,7 @@ import torch.nn as nn
 from mmengine.dataset import Compose, pseudo_collate
 from mmengine.registry import init_default_scope
 from mmengine.runner import load_checkpoint
+from mmengine.structures import InstanceData
 from mmengine.utils import track_iter_progress
 
 from mmaction.registry import MODELS
@@ -109,6 +110,62 @@ def inference_recognizer(model: nn.Module,
         result = model.test_step(data)[0]
 
     return result
+
+
+def inference_skeleton(model: nn.Module,
+                       pose_results: List[dict],
+                       img_shape: Tuple[int],
+                       test_pipeline: Optional[Compose] = None
+                       ) -> ActionDataSample:
+    """Inference a pose results with the skeleton recognizer.
+
+    Args:
+        model (nn.Module): The loaded recognizer.
+        pose_results (List[dict]): The pose estimation results dictionary
+            (the results of `pose_inference`)
+        img_shape (Tuple[int]): The original image shape used for inference
+            skeleton recognizer.
+        test_pipeline (:obj:`Compose`, optional): The test pipeline.
+            If not specified, the test pipeline in the config will be
+            used. Defaults to None.
+
+    Returns:
+        :obj:`ActionDataSample`: The inference results. Specifically, the
+        predicted scores are saved at ``result.pred_scores.item``.
+    """
+    if test_pipeline is None:
+        cfg = model.cfg
+        init_default_scope(cfg.get('default_scope', 'mmaction'))
+        test_pipeline_cfg = cfg.test_pipeline
+        test_pipeline = Compose(test_pipeline_cfg)
+
+    h, w = img_shape
+    num_keypoint = pose_results[0]['keypoints'].shape[1]
+    num_frame = len(pose_results)
+    num_person = max([len(x['keypoints']) for x in pose_results])
+    fake_anno = dict(
+        frame_dict='',
+        label=-1,
+        img_shape=(h, w),
+        origin_shape=(h, w),
+        start_index=0,
+        modality='Pose',
+        total_frames=num_frame)
+
+    keypoint = np.zeros((num_frame, num_person, num_keypoint, 2),
+                        dtype=np.float16)
+    keypoint_score = np.zeros((num_frame, num_person, num_keypoint),
+                              dtype=np.float16)
+
+    for f_idx, frm_pose in enumerate(pose_results):
+        frm_num_persons = frm_pose['keypoints'].shape[0]
+        for p_idx in range(frm_num_persons):
+            keypoint[f_idx, p_idx] = frm_pose['keypoints'][p_idx]
+            keypoint_score[f_idx, p_idx] = frm_pose['keypoint_scores'][p_idx]
+
+    fake_anno['keypoint'] = keypoint.transpose((1, 0, 2, 3))
+    fake_anno['keypoint_score'] = keypoint_score.transpose((1, 0, 2))
+    return inference_recognizer(model, fake_anno, test_pipeline)
 
 
 def detection_inference(det_config: Union[str, Path, mmengine.Config,
@@ -220,6 +277,17 @@ def pose_inference(pose_config: Union[str, Path, mmengine.Config, nn.Module],
             = inference_topdown(model, f, d[..., :4], bbox_format='xyxy')
         pose_data_sample = merge_data_samples(pose_data_samples)
         pose_data_sample.dataset_meta = model.dataset_meta
+        # make fake pred_instances
+        if not hasattr(pose_data_sample, 'pred_instances'):
+            num_keypoints = model.dataset_meta['num_keypoints']
+            pred_instances_data = dict(
+                keypoints=np.empty(shape=(0, num_keypoints, 2)),
+                keypoints_scores=np.empty(shape=(0, 17), dtype=np.float32),
+                bboxes=np.empty(shape=(0, 4), dtype=np.float32),
+                bbox_scores=np.empty(shape=(0), dtype=np.float32))
+            pose_data_sample.pred_instances = InstanceData(
+                **pred_instances_data)
+
         poses = pose_data_sample.pred_instances.to_dict()
         results.append(poses)
         data_samples.append(pose_data_sample)
