@@ -8,9 +8,9 @@ Collections:
 Models:
   - Name: bsn_400x100_1xb16_20e_activitynet_feature (cuhk_mean_100)
     Config:
-        - configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py
-        - configs/localization/bsn/bsn_pgm_400x100_activitynet-feature.py
-        - configs/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.py
+      - configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py
+      - configs/localization/bsn/bsn_pgm_400x100_activitynet-feature.py
+      - configs/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.py
     In Collection: BSN
     Metadata:
       Batch Size: 16
