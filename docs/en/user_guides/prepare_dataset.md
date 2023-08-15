@@ -24,7 +24,7 @@ To make video decoding faster, we support several efficient video loading librar
 
 ## Use built-in datasets
 
-MMAction2 already supports many datasets, we provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`, please refer to [supported datasets](../datasetzoo_satatistics.md) for details to prepare specific datasets.
+MMAction2 already supports many datasets, we provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`, please refer to [supported datasets](https://mmaction2.readthedocs.io/en/latest/datasetzoo_statistics.html) for details to prepare specific datasets.
 
 ## Use a custom dataset
 
@@ -32,6 +32,7 @@ The simplest way is to convert your dataset to existing dataset formats:
 
 - `RawFrameDataset` and `VideoDataset` for [Action Recognition](#action-recognition)
 - `PoseDataset` for [Skeleton-based Action Recognition](#skeleton-based-action-recognition)
+- `AudioDataset` for [Audio-based Action Recognition](#Audio-based-action-recognition)
 - `AVADataset` for [Spatio-temporal Action Detection](#spatio-temporal-action-detection)
 - `ActivityNetDataset` for [Temporal Action Localization](#temporal-action-localization)
 
@@ -171,6 +172,44 @@ The task recognizes the action class based on the skeleton sequence (time sequen
   ```
 
   Support other keypoint formats needs further modification, please refer to [customize dataset](../advanced_guides/customize_dataset.md).
+
+### Audio-based Action Recognition
+
+MMAction2 supports audio action recognition tasks based on `AudioDataset`. The audio task uses Mel spectrum features. If the directory structure of the audio file is consistent with the frame folder, the user can directly use the annotation file used by the frame data as the annotation file of the audio data, and the user can directly copy dataset\_\[train/val\]_list_rawframes.txt and rename it to dataset_\[train/val\]\_list_audio_feature.txt.
+
+- Generate an `audio file` from a video file
+
+  ```
+  cd $MMACTION2
+  python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-workers ${N_WORKERS}] \
+      [--level ${LEVEL}]
+  ```
+
+- `ROOT`: The root directory of the videos.
+
+- `DST_ROOT`: The destination root directory of the audios.
+
+- `EXT`: Extension of the video files. e.g., `mp4`.
+
+- `N_WORKERS`: Number of processes to be used.
+
+- Generating `VideoDataset` Mel spectral features from audio files
+
+  After successfully extracting the audio, users can refer to [configuration file](/configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py) to decode and generate mel spectrum online. If the directory structure of the audio file is consistent with that of the frame folder, the user can directly use the annotation file used by the frame data as the annotation file of the audio data. The disadvantage of online decoding is that it is slow. Therefore, MMAction2 also provides the following script for offline generation of mel spectrum.
+
+  Here is an example.
+
+  ```shell
+  cd $MMACTION2
+  python tools/data/build_audio_features.py ${AUDIO_HOME_PATH} ${SPECTROGRAM_SAVE_PATH} [--level ${LEVEL}] \
+      [--ext $EXT] [--num-workers $N_WORKERS] [--part $PART]
+  ```
+
+  - `AUDIO_HOME_PATH`: The root directory of the audio files.
+  - `SPECTROGRAM_SAVE_PATH`: The destination root directory of the audio features.
+  - `EXT`: Extension of the audio files. e.g., `m4a`.
+  - `N_WORKERS`: Number of processes to be used.
+  - `PART`: Determines how many parts to be splited and which part to run. e.g., `2/5` means splitting all files into 5-fold and executing the 2nd part. This is useful if you have several machines.
 
 ### Spatio-temporal Action Detection
 
