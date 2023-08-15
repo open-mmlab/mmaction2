@@ -30,7 +30,7 @@ with open(train_txt_path, 'r') as f:
 
 train_avi_list = {}
 for video in train_avi:
-    train_avi_list[video.strip()+SUFFIX] = video_dict[video.strip()]
+    train_avi_list[video.strip() + SUFFIX] = video_dict[video.strip()]
 
 with open(train_json_path, 'w') as f:
     json.dump(train_avi_list, f)
@@ -40,7 +40,7 @@ with open(test_txt_path, 'r') as f:
 
 test_avi_list = {}
 for video in test_avi:
-    test_avi_list[video.strip()+SUFFIX] = video_dict[video.strip()]
+    test_avi_list[video.strip() + SUFFIX] = video_dict[video.strip()]
 with open(test_json_path, 'w') as f:
     json.dump(test_avi_list, f)
 
@@ -49,7 +49,7 @@ with open(val_txt_path, 'r') as f:
 
 val_avi_list = {}
 for video in val_avi:
-    val_avi_list[video.strip()+SUFFIX] = video_dict[video.strip()]
+    val_avi_list[video.strip() + SUFFIX] = video_dict[video.strip()]
 
 with open(val_json_path, 'w') as f:
     json.dump(val_avi_list, f)
