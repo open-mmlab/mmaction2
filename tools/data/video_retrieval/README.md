@@ -12,19 +12,15 @@
       pages={5288--5296},
       year={2016}
 }
-
 ```
 
-<!-- [DATASET] -->
-
 ```BibTeX
-@inproceedings{chen:acl11,
- title = {Collecting Highly Parallel Data for Paraphrase Evaluation},
- author = {David L. Chen and William B. Dolan},
- booktitle = {Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics (ACL-2011)},
- address = {Portland, OR},
- month = {June},
- year = {2011}
+@inproceedings{chen2011collecting,
+  title={Collecting highly parallel data for paraphrase evaluation},
+  author={Chen, David and Dolan, William B},
+  booktitle={ACL},
+  pages={190--200},
+  year={2011}
 }
 ```
 
