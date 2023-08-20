@@ -45,7 +45,7 @@ model = dict(
 MMAction2 supports UCF101, Kinetics-400, Moments in Time, Multi-Moments in Time, THUMOS14,
 Something-Something V1&V2, ActivityNet Dataset.
 The users may need to adapt one of the above datasets to fit their special datasets.
-You could refer to [Prepare Dataset](prepare_dataset.md) and [Customize Datast](../advanced_guides/customize_dataset.md) for more details.
+You could refer to [Prepare Dataset](prepare_dataset.md) and [Customize Dataset](../advanced_guides/customize_dataset.md) for more details.
 In our case, UCF101 is already supported by various dataset types, like `VideoDataset`,
 so we change the config as follows.
 

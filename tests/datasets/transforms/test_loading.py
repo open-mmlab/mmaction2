@@ -486,8 +486,8 @@ class TestDecode(BaseTestLoading):
         frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert assert_dict_has_keys(results, target_keys)
-        assert np.shape(results['imgs']) == (len(inputs['frame_inds']) * 2,
-                                             240, 320)
+        assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
+                                             320, 2)
         assert results['original_shape'] == (240, 320)
 
         # test frame selector with 1 dim input for flow images
@@ -496,8 +496,8 @@ class TestDecode(BaseTestLoading):
         frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert assert_dict_has_keys(results, target_keys)
-        assert np.shape(results['imgs']) == (len(inputs['frame_inds']) * 2,
-                                             240, 320)
+        assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
+                                             320, 2)
         assert results['original_shape'] == (240, 320)
 
         return

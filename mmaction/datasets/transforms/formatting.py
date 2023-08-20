@@ -204,16 +204,20 @@ class FormatShape(BaseTransform):
     """Format final imgs shape to the given input_format.
 
     Required keys:
+
         - imgs (optional)
         - heatmap_imgs (optional)
+        - modality (optional)
         - num_clips
         - clip_len
 
     Modified Keys:
-        - imgs (optional)
-        - input_shape (optional)
+
+        - imgs
 
     Added Keys:
+
+        - input_shape
         - heatmap_input_shape (optional)
 
     Args:
@@ -227,7 +231,7 @@ class FormatShape(BaseTransform):
         self.input_format = input_format
         self.collapse = collapse
         if self.input_format not in [
-                'NCTHW', 'NCHW', 'NCHW_Flow', 'NCTHW_Heatmap', 'NPTCHW'
+                'NCTHW', 'NCHW', 'NCTHW_Heatmap', 'NPTCHW'
         ]:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
@@ -300,33 +304,11 @@ class FormatShape(BaseTransform):
         elif self.input_format == 'NCHW':
             imgs = results['imgs']
             imgs = np.transpose(imgs, (0, 3, 1, 2))
+            if 'modality' in results and results['modality'] == 'Flow':
+                clip_len = results['clip_len']
+                imgs = imgs.reshape((-1, clip_len * imgs.shape[1]) +
+                                    imgs.shape[2:])
             # M x C x H x W
-            results['imgs'] = imgs
-            results['input_shape'] = imgs.shape
-
-        elif self.input_format == 'NCHW_Flow':
-            num_imgs = len(results['imgs'])
-            assert num_imgs % 2 == 0
-            n = num_imgs // 2
-            h, w = results['imgs'][0].shape
-            x_flow = np.empty((n, h, w), dtype=np.float32)
-            y_flow = np.empty((n, h, w), dtype=np.float32)
-            for i in range(n):
-                x_flow[i] = results['imgs'][2 * i]
-                y_flow[i] = results['imgs'][2 * i + 1]
-            imgs = np.stack([x_flow, y_flow], axis=-1)
-
-            num_clips = results['num_clips']
-            clip_len = results['clip_len']
-            imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
-            # N_crops x N_clips x T x H x W x C
-            imgs = np.transpose(imgs, (0, 1, 2, 5, 3, 4))
-            # N_crops x N_clips x T x C x H x W
-            imgs = imgs.reshape((-1, imgs.shape[2] * imgs.shape[3]) +
-                                imgs.shape[4:])
-            # M' x C' x H x W
-            # M' = N_crops x N_clips
-            # C' = T x C
             results['imgs'] = imgs
             results['input_shape'] = imgs.shape
 
