@@ -8,6 +8,7 @@ MMAction2 supports many existing datasets. In this chapter, we will lead you to 
   - [Use a custom dataset](#use-a-custom-dataset)
     - [Action Recognition](#action-recognition)
     - [Skeleton-based Action Recognition](#skeleton-based-action-recognition)
+    - [Audio-based Action Recognition](#audio-based-action-recognition)
     - [Spatio-temporal Action Detection](#spatio-temporal-action-detection)
     - [Temporal Action Localization](#temporal-action-localization)
   - [Use mixed datasets for training](#use-mixed-datasets-for-training)
@@ -175,41 +176,43 @@ The task recognizes the action class based on the skeleton sequence (time sequen
 
 ### Audio-based Action Recognition
 
-MMAction2 supports audio action recognition tasks based on `AudioDataset`. The audio task uses Mel spectrum features. If the directory structure of the audio file is consistent with the frame folder, the user can directly use the annotation file used by the frame data as the annotation file of the audio data, and the user can directly copy dataset\_\[train/val\]_list_rawframes.txt and rename it to dataset_\[train/val\]\_list_audio_feature.txt.
+MMAction2 provides support for audio-based action recognition tasks utilizing the `AudioDataset`. This task employs mel spectrogram features as input. An example annotation file format is as follows:
 
-- Generate an `audio file` from a video file
+```
+ihWykL5mYRI.npy 300 153
+lumzQD42AN8.npy 240 321
+sWFRmD9Of4s.npy 250 250
+w_IpfgRsBVA.npy 300 356
+```
 
-  ```
-  cd $MMACTION2
-  python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-workers ${N_WORKERS}] \
-      [--level ${LEVEL}]
-  ```
+Each line represents a training sample. Taking the first line as an example, `ihWykL5mYRI.npy` corresponds to the filename of the mel spectrogram feature. The value `300` represents the total number of frames of the original video corresponding to this mel spectrogram feature, and `153` denotes the class label. We take the following two steps to perpare the mel spectrogram feature data:
+
+First, extract `audios` from videos:
+
+```shell
+cd $MMACTION2
+python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-workers ${N_WORKERS}] \
+    [--level ${LEVEL}]
+```
 
 - `ROOT`: The root directory of the videos.
-
 - `DST_ROOT`: The destination root directory of the audios.
-
 - `EXT`: Extension of the video files. e.g., `mp4`.
-
 - `N_WORKERS`: Number of processes to be used.
 
-- Generating `VideoDataset` Mel spectral features from audio files
+Next, offline generate the `mel spectrogram features` from the audios:
 
-  After successfully extracting the audio, users can refer to [configuration file](/configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py) to decode and generate mel spectrum online. If the directory structure of the audio file is consistent with that of the frame folder, the user can directly use the annotation file used by the frame data as the annotation file of the audio data. The disadvantage of online decoding is that it is slow. Therefore, MMAction2 also provides the following script for offline generation of mel spectrum.
+```shell
+cd $MMACTION2
+python tools/data/build_audio_features.py ${AUDIO_HOME_PATH} ${SPECTROGRAM_SAVE_PATH} [--level ${LEVEL}] \
+    [--ext $EXT] [--num-workers $N_WORKERS] [--part $PART]
+```
 
-  Here is an example.
-
-  ```shell
-  cd $MMACTION2
-  python tools/data/build_audio_features.py ${AUDIO_HOME_PATH} ${SPECTROGRAM_SAVE_PATH} [--level ${LEVEL}] \
-      [--ext $EXT] [--num-workers $N_WORKERS] [--part $PART]
-  ```
-
-  - `AUDIO_HOME_PATH`: The root directory of the audio files.
-  - `SPECTROGRAM_SAVE_PATH`: The destination root directory of the audio features.
-  - `EXT`: Extension of the audio files. e.g., `m4a`.
-  - `N_WORKERS`: Number of processes to be used.
-  - `PART`: Determines how many parts to be splited and which part to run. e.g., `2/5` means splitting all files into 5-fold and executing the 2nd part. This is useful if you have several machines.
+- `AUDIO_HOME_PATH`: The root directory of the audio files.
+- `SPECTROGRAM_SAVE_PATH`: The destination root directory of the audio features.
+- `EXT`: Extension of the audio files. e.g., `m4a`.
+- `N_WORKERS`: Number of processes to be used.
+- `PART`: Determines how many parts to be splited and which part to run. e.g., `2/5` means splitting all files into 5-fold and executing the 2nd part. This is useful if you have several machines.
 
 ### Spatio-temporal Action Detection
 

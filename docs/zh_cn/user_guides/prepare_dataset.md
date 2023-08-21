@@ -8,6 +8,7 @@ MMAction2 支持许多现有的数据集。在本章中，我们将引导您准�
   - [使用自定义数据集](#使用自定义数据集)
     - [动作识别](#动作识别)
     - [基于骨骼的动作识别](#基于骨骼的动作识别)
+    - [基于音频的动作识别](#基于音频的动作识别)
     - [时空动作检测](#时空动作检测)
     - [时序动作定位](#时序动作定位)
   - [使用混合数据集进行训练](#使用混合数据集进行训练)
@@ -164,43 +165,45 @@ data = dict(
 
   支持其他关键点格式需要进行进一步修改，请参考[自定义数据集](../advanced_guides/customize_dataset.md)。
 
-### 基于音频动作识别
+### 基于音频的动作识别
 
-MMAction2 支持基于 `AudioDataset` 的音频动作识别任务。音频任务使用梅尔频谱特征，如果音频文件的目录结构与帧文件夹一致，用户可以直接使用帧数据所用的标注文件作为音频数据的标注文件，用户可以直接复制 dataset\_\[train/val\]_list_rawframes.txt 并将其重命名为 dataset_\[train/val\]\_list_audio_feature.txt。
+MMAction2 支持基于 `AudioDataset` 的音频动作识别任务。该任务使用梅尔频谱特征作为输入, 注释文件格式示例如下：
 
-- 通过视频文件生成`音频文件`
+```
+ihWykL5mYRI.npy 300 153
+lumzQD42AN8.npy 240 321
+sWFRmD9Of4s.npy 250 250
+w_IpfgRsBVA.npy 300 356
+```
 
-  ```
-  cd $MMACTION2
-  python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-workers ${N_WORKERS}] \
-      [--level ${LEVEL}]
-  ```
+每一行代表一个训练样本，以第一行为例，`ihWykL5mYRI.npy` 为梅尔频谱特征的文件名，`300` 为该梅尔频谱特征文件对应的原视频文件的总帧数，`153` 为类别标签。我们分以下两阶段生成所需要的梅尔频谱特征文件数据：
+
+首先，通过视频文件提取`音频文件`:
+
+```
+cd $MMACTION2
+python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-workers ${N_WORKERS}] \
+    [--level ${LEVEL}]
+```
 
 - `ROOT`: 视频的根目录。
-
 - `DST_ROOT`: 存放生成音频的根目录。
-
 - `EXT`: 视频的后缀名，如 `mp4`。
-
 - `N_WORKERS`: 使用的进程数量。
 
-- 通过音频文件生成`VideoDataset` 梅尔频谱特征
+下一步，从音频文件生成`梅尔频谱特征`:
 
-  成功提取出音频后，用户可参照 [配置文件](/configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py) 在线解码并生成梅尔频谱。如果音频文件的目录结构与帧文件夹一致，用户可以直接使用帧数据所用的标注文件作为音频数据的标注文件。在线解码的缺陷在于速度较慢，因此，MMAction2 也提供如下脚本用于离线地生成梅尔频谱。
+```
+cd $MMACTION2
+python tools/data/build_audio_features.py ${AUDIO_HOME_PATH} ${SPECTROGRAM_SAVE_PATH} [--level ${LEVEL}] \
+    [--ext $EXT] [--num-workers $N_WORKERS] [--part $PART]
+```
 
-  以下是一个示例。
-
-  ```
-  cd $MMACTION2
-  python tools/data/build_audio_features.py ${AUDIO_HOME_PATH} ${SPECTROGRAM_SAVE_PATH} [--level ${LEVEL}] \
-      [--ext $EXT] [--num-workers $N_WORKERS] [--part $PART]
-  ```
-
-  - `AUDIO_HOME_PATH`: 音频文件的根目录。
-  - `SPECTROGRAM_SAVE_PATH`: 存放生成音频特征的根目录。
-  - `EXT`: 音频的后缀名，如 `m4a`。
-  - `N_WORKERS`: 使用的进程数量。
-  - `PART`: 将完整的解码任务分为几部分并执行其中一份。如 `2/5` 表示将所有待解码数据分成 5 份，并对其中的第 2 份进行解码。这一选项在用户有多台机器时发挥作用。
+- `AUDIO_HOME_PATH`: 音频文件的根目录。
+- `SPECTROGRAM_SAVE_PATH`: 存放生成音频特征的根目录。
+- `EXT`: 音频的后缀名，如 `m4a`。
+- `N_WORKERS`: 使用的进程数量。
+- `PART`: 将完整的解码任务分为几部分并执行其中一份。如 `2/5` 表示将所有待解码数据分成 5 份，并对其中的第 2 份进行解码。这一选项在用户有多台机器时发挥作用。
 
 ### 时空动作检测
 
