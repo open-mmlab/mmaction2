@@ -2,7 +2,7 @@
 from mmengine.config import read_base
 
 with read_base():
-    from .swin_small_p244_w877_in1k_pre_8xb8_amp_32x2x1_30e_kinetics400_rgb import *
+    from .swin_small_p244_w877_in1k_pre_8xb8_amp_32x2x1_30e_kinetics400_rgb import *  # noqa: E501
 
 from torch.utils.data import ConcatDataset
 
