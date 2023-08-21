@@ -54,7 +54,7 @@ DATASETS = Registry(
 DATA_SAMPLERS = Registry(
     'data sampler',
     parent=MMENGINE_DATA_SAMPLERS,
-    locations=['mmaction.engine'])
+    locations=['mmaction.datasets'])
 TRANSFORMS = Registry(
     'transform',
     parent=MMENGINE_TRANSFORMS,

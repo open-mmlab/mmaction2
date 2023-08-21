@@ -9,7 +9,9 @@ from .repeat_aug_dataset import RepeatAugDataset, repeat_pseudo_collate
 from .transforms import *  # noqa: F401, F403
 from .video_dataset import VideoDataset
 from .video_qa_dataset import MSRVTT_VQA
+from .video_ret_mc_dataset import MSRVTT_RetMC
 from .video_text_dataset import VideoTextDataset
+from .samplers import SequentialSampler
 
 __all__ = [
     'AVADataset',
@@ -24,4 +26,6 @@ __all__ = [
     'repeat_pseudo_collate',
     'VideoTextDataset',
     'MSRVTT_VQA',
+    'MSRVTT_RetMC',
+    'SequentialSampler'
 ]

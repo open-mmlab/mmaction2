@@ -4,6 +4,7 @@ import logging
 import numpy as np
 import torch
 import torch.nn.functional as F
+import mmengine
 from einops import rearrange
 from mmengine.logging import MMLogger
 
@@ -16,13 +17,17 @@ from .vindlu import VindLU
 class VindLUVQA(VindLU):
     """docstring for VindLUVQA."""
 
-    def __init__(self, max_question_len, max_answer_len, num_ans_candidates,
+    def __init__(self, max_question_len, max_answer_len, num_ans_candidates, answer_list_path,
                  **kwargs):
         super().__init__(**kwargs)
 
         self.max_question_len = max_question_len
         self.max_answer_len = max_answer_len
         self.num_ans_candidates = num_ans_candidates
+        self.answer_list_path =  answer_list_path
+
+        if answer_list_path:
+            self.answer_list = mmengine.load(answer_list_path)
 
         # delete extra/unnecessary modules inherited from VindLU
         extra_attributes = ['vision_proj', 'text_proj', 'temp', 'itm_head']

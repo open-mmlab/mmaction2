@@ -9,7 +9,6 @@ from mmengine.logging import MMLogger
 from mmengine.model import BaseModel
 from mmengine.runner.checkpoint import _load_checkpoint
 from torch import nn
-from zmq import device
 
 from .beit_builder import build_beit, build_beit3d, interpolate_pos_embed_beit
 from .bert_builder import build_bert
@@ -31,7 +30,6 @@ class VindLU(BaseModel):
                  temperature, 
                  evaluate, 
                  gradient_checkpointing,
-                 answer_list_path, 
                  pretrained_ckpt=None,
                  data_preprocessor=None,):
         if data_preprocessor is None:
@@ -40,10 +38,10 @@ class VindLU(BaseModel):
         super(VindLU, self).__init__(data_preprocessor=data_preprocessor)
 
         # self.config = config
-        # self.tokenizer = BertTokenizer.from_pretrained(
-        #     tokenizer.pretrained_model_name_or_path)
+        self.tokenizer = BertTokenizer.from_pretrained(
+            tokenizer.pretrained_model_name_or_path)
         # cant align with vindlu's BertTokenizer, hf's BertTokenizer will add a sep token
-        self.tokenizer = TOKENIZER.build(tokenizer)
+        # self.tokenizer = TOKENIZER.build(tokenizer)
         self.vision_cfg = vision_encoder
         self.text_encoder_cfg = text_encoder
         self.text_decoder_cfg = text_decoder
@@ -52,9 +50,6 @@ class VindLU(BaseModel):
         self.vision_width = vision_encoder.encoder_width
         self.text_width = text_encoder.encoder_width
         self.pretrained_ckpt = pretrained_ckpt
-
-        if answer_list_path:
-            self.answer_list = mmengine.load(answer_list_path)
 
         # create modules.
         self.vision_encoder, self.vision_layernorm = self.build_vision_encoder(
@@ -178,6 +173,10 @@ class VindLU(BaseModel):
     def clip_contrastive_temperature(self, min_val=0.001, max_val=0.5):
         """Seems only used during pre-training."""
         self.temp.clamp_(min_val, max_val)
+
+    @property
+    def device(self):
+        return next(self.parameters()).device
 
     def build_vision_encoder(self):
         """build vision encoder
