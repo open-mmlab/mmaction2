@@ -67,19 +67,17 @@ mim test mmaction configs/umt-base-p16-res224_kinetics710-pre-ft_u8_k400-rgb.py 
 
 ### Kinetics400
 
-| frame sampling strategy | resolution |backbone |   pretrain   | top1 acc | testing protocol |       config      |      ckpt      | 
-| :---------------------: | :--------: | :--------------------------: | :--------------: | :---: | :----: | :--------------: | :------------: |
-|         uniform 8          |  224x224   |  UMT-B  |  Kinetics710 |  87.33   |  4 clips x 3 crop | [config](./configs/umt-base-p16-res224_kinetics710-pre-ft_u8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/umt/umt-base-p16-res224_kinetics710-pre-ft_u8_k400-rgb/umt-base-p16-res224_kinetics710-pre-ft_u8_k400-rgb.pth) |
-|         uniform 8          |  224x224   |  UMT-L  |  Kinetics710 |  90.21   |  4 clips x 3 crop | [config](./configs/umt-large-p16-res224_kinetics710-pre-ft_u8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/umt/umt-large-p16-res224_kinetics710-pre-ft_u8_k400-rgb/umt-large-p16-res224_kinetics710-pre-ft_u8_k400-rgb.pth) |
-
+| frame sampling strategy | resolution | backbone |  pretrain   | top1 acc | testing protocol |                             config                              |                             ckpt                              |
+| :---------------------: | :--------: | :------: | :---------: | :------: | :--------------: | :-------------------------------------------------------------: | :-----------------------------------------------------------: |
+|        uniform 8        |  224x224   |  UMT-B   | Kinetics710 |  87.33   | 4 clips x 3 crop | [config](./configs/umt-base-p16-res224_kinetics710-pre-ft_u8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/umt/umt-base-p16-res224_kinetics710-pre-ft_u8_k400-rgb/umt-base-p16-res224_kinetics710-pre-ft_u8_k400-rgb.pth) |
+|        uniform 8        |  224x224   |  UMT-L   | Kinetics710 |  90.21   | 4 clips x 3 crop | [config](./configs/umt-large-p16-res224_kinetics710-pre-ft_u8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/umt/umt-large-p16-res224_kinetics710-pre-ft_u8_k400-rgb/umt-large-p16-res224_kinetics710-pre-ft_u8_k400-rgb.pth) |
 
 ### Kinetics700
 
-| frame sampling strategy | resolution |backbone |   pretrain   | top1 acc | testing protocol |       config      |      ckpt      | 
-| :---------------------: | :--------: | :--------------------------: | :--------------: | :---: | :----: | :--------------: | :------------: |
-|         uniform 8          |  224x224   |  UMT-B  |  Kinetics710 |  77.95   |  4 clips x 3 crop | [config](./configs/umt-base-p16-res224_kinetics710-pre-ft_u8_k700-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/umt/umt-base-p16-res224_kinetics710-pre-ft_u8_k700-rgb/umt-base-p16-res224_kinetics710-pre-ft_u8_k700-rgb.pth) |
-|         uniform 8          |  224x224   |  UMT-L  |  Kinetics710 |  82.79   |  4 clips x 3 crop | [config](./configs/umt-large-p16-res224_kinetics710-pre-ft_u8_k700-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/umt/umt-large-p16-res224_kinetics710-pre-ft_u8_k700-rgb/umt-large-p16-res224_kinetics710-pre-ft_u8_k700-rgb.pth) |
-
+| frame sampling strategy | resolution | backbone |  pretrain   | top1 acc | testing protocol |                             config                              |                             ckpt                              |
+| :---------------------: | :--------: | :------: | :---------: | :------: | :--------------: | :-------------------------------------------------------------: | :-----------------------------------------------------------: |
+|        uniform 8        |  224x224   |  UMT-B   | Kinetics710 |  77.95   | 4 clips x 3 crop | [config](./configs/umt-base-p16-res224_kinetics710-pre-ft_u8_k700-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/umt/umt-base-p16-res224_kinetics710-pre-ft_u8_k700-rgb/umt-base-p16-res224_kinetics710-pre-ft_u8_k700-rgb.pth) |
+|        uniform 8        |  224x224   |  UMT-L   | Kinetics710 |  82.79   | 4 clips x 3 crop | [config](./configs/umt-large-p16-res224_kinetics710-pre-ft_u8_k700-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/umt/umt-large-p16-res224_kinetics710-pre-ft_u8_k700-rgb/umt-large-p16-res224_kinetics710-pre-ft_u8_k700-rgb.pth) |
 
 ## Citation
 
