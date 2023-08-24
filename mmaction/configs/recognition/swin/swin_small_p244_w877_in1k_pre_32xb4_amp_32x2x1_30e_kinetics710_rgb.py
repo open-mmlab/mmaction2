@@ -4,6 +4,7 @@ from mmengine.config import read_base
 with read_base():
     from .swin_small_p244_w877_in1k_pre_8xb8_amp_32x2x1_30e_kinetics400_rgb import *  # noqa: E501
 
+from mmengine.dataset import DefaultSampler
 from torch.utils.data import ConcatDataset
 
 model.update(dict(cls_head=dict(num_classes=710)))
@@ -83,19 +84,19 @@ train_dataloader = dict(
     batch_size=4,
     num_workers=8,
     persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=True),
+    sampler=dict(type=DefaultSampler, shuffle=True),
     dataset=k710_trainset)
 val_dataloader = dict(
     batch_size=4,
     num_workers=8,
     persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=False),
+    sampler=dict(type=DefaultSampler, shuffle=False),
     dataset=k710_valset)
 test_dataloader = dict(
     batch_size=1,
     num_workers=8,
     persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=False),
+    sampler=dict(type=DefaultSampler, shuffle=False),
     dataset=k710_testset)
 
 optim_wrapper.update(dict(optimizer=dict(lr=2e-3)))
