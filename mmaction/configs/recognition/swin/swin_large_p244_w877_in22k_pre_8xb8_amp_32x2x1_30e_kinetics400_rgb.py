@@ -20,12 +20,12 @@ from mmaction.evaluation import AccMetric
 model.update(
     dict(
         backbone=dict(
-            arch='base',
-            drop_path_rate=0.3,
+            arch='large',
+            drop_path_rate=0.4,
             pretrained=  # noqa: E251
-            'https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin_base_patch4_window7_224.pth'  # noqa: E501
+            'https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin_large_patch4_window7_224_22k.pth'  # noqa: E501
         ),
-        cls_head=dict(in_channels=1024)))
+        cls_head=dict(in_channels=1536)))
 
 # dataset settings
 dataset_type = VideoDataset
@@ -82,7 +82,7 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type=DefaultSampler, shuffle=True),
     dataset=dict(
-        type=VideoDataset,
+        type=dataset_type,
         ann_file=ann_file_train,
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
@@ -92,7 +92,7 @@ val_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type=DefaultSampler, shuffle=False),
     dataset=dict(
-        type=VideoDataset,
+        type=dataset_type,
         ann_file=ann_file_val,
         data_prefix=dict(video=data_root_val),
         pipeline=val_pipeline,
@@ -103,7 +103,7 @@ test_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type=DefaultSampler, shuffle=False),
     dataset=dict(
-        type=VideoDataset,
+        type=dataset_type,
         ann_file=ann_file_test,
         data_prefix=dict(video=data_root_val),
         pipeline=test_pipeline,

@@ -20,12 +20,9 @@ from mmaction.evaluation import AccMetric
 model.update(
     dict(
         backbone=dict(
-            arch='base',
-            drop_path_rate=0.3,
             pretrained=  # noqa: E251
-            'https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin_base_patch4_window7_224.pth'  # noqa: E501
-        ),
-        cls_head=dict(in_channels=1024)))
+            'https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin_tiny_patch4_window7_224.pth'  # noqa: E501
+        )))
 
 # dataset settings
 dataset_type = VideoDataset
@@ -82,7 +79,7 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type=DefaultSampler, shuffle=True),
     dataset=dict(
-        type=VideoDataset,
+        type=dataset_type,
         ann_file=ann_file_train,
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
@@ -92,7 +89,7 @@ val_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type=DefaultSampler, shuffle=False),
     dataset=dict(
-        type=VideoDataset,
+        type=dataset_type,
         ann_file=ann_file_val,
         data_prefix=dict(video=data_root_val),
         pipeline=val_pipeline,
@@ -103,7 +100,7 @@ test_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type=DefaultSampler, shuffle=False),
     dataset=dict(
-        type=VideoDataset,
+        type=dataset_type,
         ann_file=ann_file_test,
         data_prefix=dict(video=data_root_val),
         pipeline=test_pipeline,
@@ -119,7 +116,7 @@ test_cfg = dict(type=TestLoop)
 
 optim_wrapper = dict(
     type=AmpOptimWrapper,
-    optimizer=dict(type=AdamW, lr=1e-3, betas=(0.9, 0.999), weight_decay=0.05),
+    optimizer=dict(type=AdamW, lr=1e-3, betas=(0.9, 0.999), weight_decay=0.02),
     constructor=SwinOptimWrapperConstructor,
     paramwise_cfg=dict(
         absolute_pos_embed=dict(decay_mult=0.),
