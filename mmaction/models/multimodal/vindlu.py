@@ -25,11 +25,11 @@ class VindLU(BaseModel):
                  tokenizer, 
                  vision_encoder, 
                  text_encoder,
-                 text_decoder,
                  proj_dim,
                  temperature, 
                  evaluate, 
                  gradient_checkpointing,
+                 text_decoder=None,
                  pretrained_ckpt=None,
                  data_preprocessor=None,):
         if data_preprocessor is None:

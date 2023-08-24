@@ -28,7 +28,7 @@ class RetrievalValLoop(ValLoop):
 
         feats_local = []
         data_samples_local = []
-
+        
         for idx, data_batch in enumerate(self.dataloader):
             with torch.no_grad():
                 self.runner.call_hook(
@@ -64,25 +64,27 @@ class RetrievalValLoop(ValLoop):
         else:
             predict_all_fn = self.runner.model.predict_all
 
-        img_size = self.dataloader.dataset.img_size
-        text_size = self.dataloader.dataset.text_size
+        num_videos = self.dataloader.dataset.num_videos
+        num_texts = self.dataloader.dataset.num_texts
+        # print(f'mem usage before sim: {torch.cuda.memory_allocated() /1024/1024}')
         with torch.no_grad():
-            i2t_data_samples, t2i_data_samples = predict_all_fn(
-                feats_local,
-                data_samples_local,
-                num_images=img_size,
-                num_texts=text_size,
-            )
-
+            with autocast(enabled=self.fp16):
+                i2t_data_samples, t2i_data_samples = predict_all_fn(
+                    feats_local,
+                    data_samples_local,
+                    num_images=num_videos,
+                    num_texts=num_texts,
+                )
+        # print(f'mem usage after sim: {torch.cuda.memory_allocated() /1024/1024}')
         # process in evaluator and compute metrics
         self.evaluator.process(i2t_data_samples, None)
-        i2t_metrics = self.evaluator.evaluate(img_size)
+        i2t_metrics = self.evaluator.evaluate(num_videos)
         i2t_metrics = {f'i2t/{k}': v for k, v in i2t_metrics.items()}
         self.evaluator.process(t2i_data_samples, None)
-        t2i_metrics = self.evaluator.evaluate(text_size)
+        t2i_metrics = self.evaluator.evaluate(num_texts)
         t2i_metrics = {f't2i/{k}': v for k, v in t2i_metrics.items()}
         metrics = {**i2t_metrics, **t2i_metrics}
-
+        # print(f'mem usage after evaluate: {torch.cuda.memory_allocated() /1024/1024}')
         self.runner.call_hook('after_val_epoch', metrics=metrics)
         self.runner.call_hook('after_val')
         return metrics
@@ -147,12 +149,13 @@ class RetrievalTestLoop(TestLoop):
         num_videos = self.dataloader.dataset.num_videos
         num_texts = self.dataloader.dataset.num_texts
         with torch.no_grad():
-            i2t_data_samples, t2i_data_samples = predict_all_fn(
-                feats_local,
-                data_samples_local,
-                num_images=num_videos,
-                num_texts=num_texts,
-            )
+            with autocast(enabled=self.fp16):
+                i2t_data_samples, t2i_data_samples = predict_all_fn(
+                    feats_local,
+                    data_samples_local,
+                    num_images=num_videos,
+                    num_texts=num_texts,
+                )
 
         # process in evaluator and compute metrics
         self.evaluator.process(i2t_data_samples, None)

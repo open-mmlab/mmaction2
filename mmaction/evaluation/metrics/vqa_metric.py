@@ -464,7 +464,7 @@ class RetrievalRecall(BaseMetric):
             predictions (Sequence[dict]): A batch of outputs from the model.
         """
         for data_sample in data_samples:
-            pred_score = data_sample['pred_scores']['item'].clone()
+            pred_score = data_sample['pred_scores']['item'].cpu()
             gt_label = format_label(data_sample['gt_label'])
 
             if 'gt_score' in data_sample:

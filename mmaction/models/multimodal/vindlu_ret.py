@@ -1,12 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List
+from typing import Dict, List, Optional
 
-import numpy as np
 import torch
 import torch.nn.functional as F
 from einops import rearrange
 import mmengine.dist as dist
-from mmengine.logging import MMLogger
+from torch.distributed.nn import all_gather as all_gather_with_grad
+
 
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
@@ -60,12 +60,14 @@ class VindLURet(VindLU):
                  max_txt_len,
                  topk=128,
                  eval_frame_ensemble=None,
+                 negative_all_rank=False,
                  **kwargs):
         super().__init__(**kwargs)
 
         self.max_txt_len = max_txt_len
         self.topk = topk
         self.eval_frame_ensemble = eval_frame_ensemble
+        self.negative_all_rank = negative_all_rank
 
     def forward(self, inputs, data_samples, mode: str = 'loss'):
         """
@@ -82,6 +84,142 @@ class VindLURet(VindLU):
             return self.predict(inputs, data_samples)
         else:
             raise RuntimeError(f'Invalid mode "{mode}".')
+
+    def loss(
+        self,
+        inputs: torch.Tensor,
+        data_samples: Optional[List[ActionDataSample]] = None,
+    ) -> Dict[str, torch.tensor]:
+        """Calculate losses from a batch of inputs and data samples.
+
+        Args:
+            inputs (dict): A batch of inputs. The input tensor with of
+                at least one modality. For image, the value is a tensor
+                of shape (N, C, ...) in general.
+                For text, the value is a dict of tokenized text inputs.
+            data_samples (Optional[List[DataSample]]):
+                The annotation data of every samples. Defaults to None.
+
+        Returns:
+            Dict[str, torch.tensor]: a dictionary of loss components of
+        """
+        output = self.extract_feat(inputs, data_samples)
+
+        text_embeds = output['text_embeds']
+        text_attn_mask = output['text_attn_mask']
+        image_embeds = output['image_embeds']
+        image_feat = output['image_feat']
+        text_feat = output['text_feat']
+
+        image_atts = torch.ones(
+            image_embeds.size()[:-1], dtype=torch.long).to(self.device)
+
+        # ITC Loss
+        # B*world_size, D
+        image_feat_all = torch.cat(dist.all_gather(image_feat))
+        # B*world_size, D
+        text_feat_all = torch.cat(dist.all_gather(text_feat))
+
+        # image to text similarity
+        # B, B*world_size
+        sim_i2t = image_feat @ text_feat_all.t()
+        sim_i2t = sim_i2t / self.temp
+
+
+        # text-image similarity
+        # B, B*world_size
+        sim_t2i = text_feat @ image_feat_all.t()
+        sim_t2i = sim_t2i / self.temp
+
+
+        rank = dist.get_rank()
+        bs = inputs.size(0)
+        itc_targets = torch.linspace(
+            rank * bs, rank * bs + bs - 1, bs, dtype=int).to(self.device)
+
+        itc_loss = (F.cross_entropy(sim_i2t, itc_targets) +
+                    F.cross_entropy(sim_t2i, itc_targets)) / 2
+
+        # prepare for itm
+        output_pos = self.text_encoder(
+            encoder_embeds=text_embeds,
+            attention_mask=text_attn_mask,
+            encoder_hidden_states=image_embeds,
+            encoder_attention_mask=image_atts,
+            return_dict=True,
+            mode="fusion",
+        )
+
+        idx = torch.tensor([i.gt_video_id for i in data_samples]).view(-1, 1)
+        bs = idx.size(0)
+        if self.negative_all_rank:
+            idxs = torch.cat(dist.all_gather(idx))
+            image_feat_world = torch.cat(dist.all_gather(image_feat))
+            text_feat_world = torch.cat(dist.all_gather(text_feat))
+            att_mask_world = torch.cat(dist.all_gather(text_attn_mask))
+            text_embeds_world = torch.cat(all_gather_with_grad(text_embeds))
+            image_embeds_world = torch.cat(all_gather_with_grad(image_embeds))
+        else:
+            idxs = idx
+            image_feat_world = image_feat.detach()
+            text_feat_world = text_feat.detach()
+            image_embeds_world = image_embeds
+            text_embeds_world = text_embeds
+            att_mask_world = text_attn_mask
+
+        with torch.no_grad():
+            # compute sample similarity
+            sim_i2t = image_feat @ text_feat_world.t() / self.temp
+            sim_t2i = text_feat @ image_feat_world.t() / self.temp
+
+            mask = torch.eq(idx, idxs.t()).to(self.device)
+            weights_i2t = F.softmax(sim_i2t, dim=1)
+            weights_i2t.masked_fill_(mask, 0)
+
+            weights_t2i = F.softmax(sim_t2i, dim=1)
+            weights_t2i.masked_fill_(mask, 0)
+
+        # select a negative image (from all ranks) for each text
+        neg_idx = torch.multinomial(weights_t2i, 1).squeeze()
+        image_embeds_neg = image_embeds_world[neg_idx]
+
+        # select a negative text (from all ranks) for each image
+        neg_idx = torch.multinomial(weights_i2t, 1).squeeze()
+        text_embeds_neg = text_embeds_world[neg_idx]
+        text_atts_neg = att_mask_world[neg_idx]
+
+
+        text_embeds_all = torch.cat([text_embeds, text_embeds_neg], dim=0)
+        text_atts_all = torch.cat([text_attn_mask, text_atts_neg], dim=0)
+
+        image_embeds_all = torch.cat([image_embeds_neg, image_embeds], dim=0)
+        image_atts_all = torch.cat([image_atts, image_atts], dim=0)
+
+        output_neg = self.text_encoder(
+            encoder_embeds=text_embeds_all,
+            attention_mask=text_atts_all,
+            encoder_hidden_states=image_embeds_all,
+            encoder_attention_mask=image_atts_all,
+            return_dict=True,
+            mode="fusion",
+        )
+
+        vl_embeddings = torch.cat(
+            [
+                output_pos.last_hidden_state[:, 0, :],
+                output_neg.last_hidden_state[:, 0, :],
+            ],
+            dim=0,
+        )
+
+        itm_targets = torch.ones((3 * bs, ), dtype=torch.long, 
+                                 device=inputs.device)
+        itm_targets[bs:] = 0
+        itm_logit = self.itm_head(vl_embeddings)
+        itm_loss = F.cross_entropy(itm_logit, itm_targets)
+
+        return dict(itc_loss=itc_loss, itm_loss=itm_loss)
+
 
     def preprocess_text(self, data_samples):
         sample_item = data_samples[0]
@@ -241,11 +379,12 @@ class VindLURet(VindLU):
         """
         use_sim = False
         # compute i2t sim matrix
+        # print(f'mem 0 {torch.cuda.memory_allocated()// (1024*1024)}')
         sim_matrix_i2t = img_feats @ text_feats.t()
-        # sim_matrix_i2t = sim_matrix_i2t.mean(1)
 
         score_matrix_i2t = torch.full((img_feats.size(0), text_feats.size(0)),
                                       -100.0).to(self.device)
+        # print(f'mem 1 {torch.cuda.memory_allocated()// (1024*1024)}')
         for i in track_on_main_process(
                 range(img_feats.size(0)), 'Compute I2T scores...'):
             sims = sim_matrix_i2t[i]
@@ -253,20 +392,24 @@ class VindLURet(VindLU):
             if use_sim:
                 score_matrix_i2t[i, topk_idx] = topk_sim
             else:
-                encoder_output = img_embeds[i].repeat(self.topk, 1, 1)
+                topk_bz = 32
+                encoder_output = img_embeds[i].repeat(topk_bz, 1, 1)
                 encoder_att = torch.ones(
                     encoder_output.size()[:-1], dtype=torch.long).to(self.device)
-                output = self.text_encoder(
-                    encoder_embeds=text_embeds[topk_idx],
-                    attention_mask=text_atts[topk_idx],
-                    encoder_hidden_states=encoder_output,
-                    encoder_attention_mask=encoder_att,
-                    return_dict=True,
-                    mode='fusion'
-                )
-                score = self.itm_head(output.last_hidden_state[:, 0, :])[:, 1]
-                score_matrix_i2t[i, topk_idx] = score
-
+                for j in range(0, self.topk // topk_bz):
+                    batch_topk = topk_idx[j*topk_bz: (j+1)*topk_bz]
+                    output = self.text_encoder(
+                        encoder_embeds=text_embeds[batch_topk],
+                        attention_mask=text_atts[batch_topk],
+                        encoder_hidden_states=encoder_output,
+                        encoder_attention_mask=encoder_att,
+                        return_dict=True,
+                        mode='fusion'
+                    )
+                    score = self.itm_head(output.last_hidden_state[:, 0, :])[:, 1]
+                    score_matrix_i2t[i, batch_topk] = score
+        #             print(f'mem 2 {torch.cuda.memory_allocated()// (1024*1024)}')
+        # print(f'mem 3 {torch.cuda.memory_allocated()// (1024*1024)}')
         return score_matrix_i2t
 
     def compute_score_matrix_t2i(self, img_feats, img_embeds, text_feats,
@@ -290,7 +433,6 @@ class VindLURet(VindLU):
         use_sim = False
         # compute t2i sim matrix
         sim_matrix_t2i = text_feats @ img_feats.t()
-        # sim_matrix_i2t = sim_matrix_i2t.mean(1)
 
         score_matrix_t2i = torch.full((text_feats.size(0), img_feats.size(0)),
                                       -100.0).to(self.device)
@@ -301,20 +443,22 @@ class VindLURet(VindLU):
             if use_sim:
                 score_matrix_t2i[i, topk_idx] = topk_sim
             else:
-                encoder_output = img_embeds[topk_idx]
-                encoder_att = torch.ones(
-                    encoder_output.size()[:-1], dtype=torch.long).to(self.device)
-                output = self.text_encoder(
-                    encoder_embeds=text_embeds[i].repeat(self.topk, 1, 1),
-                    attention_mask=text_atts[i].repeat(self.topk, 1),
-                    encoder_hidden_states=encoder_output,
-                    encoder_attention_mask=encoder_att,
-                    return_dict=True,
-                    mode='fusion'
-                )
-                score = self.itm_head(output.last_hidden_state[:, 0, :])[:, 1]
-                score_matrix_t2i[i, topk_idx] = score
-
+                topk_bz = 32
+                for j in range(0, self.topk // topk_bz):
+                    batch_topk = topk_idx[j*topk_bz: (j+1)*topk_bz]
+                    encoder_output = img_embeds[batch_topk]
+                    encoder_att = torch.ones(
+                        encoder_output.size()[:-1], dtype=torch.long).to(self.device)
+                    output = self.text_encoder(
+                        encoder_embeds=text_embeds[i].repeat(topk_bz, 1, 1),
+                        attention_mask=text_atts[i].repeat(topk_bz, 1),
+                        encoder_hidden_states=encoder_output,
+                        encoder_attention_mask=encoder_att,
+                        return_dict=True,
+                        mode='fusion'
+                    )
+                    score = self.itm_head(output.last_hidden_state[:, 0, :])[:, 1]
+                    score_matrix_t2i[i, batch_topk] = score
         return score_matrix_t2i
 
     def _get_predictions(self,

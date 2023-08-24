@@ -99,6 +99,11 @@ class MSRVTT_Ret(BaseActionDataset):
                 data_list.append(data_item)
         self.num_videos = video_idx
         self.num_texts = text_idx
+
+        # debug_len = 1000
+        # data_list = data_list[:debug_len]
+        # self.num_videos = debug_len
+        # self.num_texts = debug_len
         return data_list
 
 
