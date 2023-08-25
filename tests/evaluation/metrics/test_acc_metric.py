@@ -26,8 +26,7 @@ def generate_data(num_classes=5, random_label=False, multi_label=False):
             label = torch.randint(num_classes, size=[1])
         else:
             label = torch.LongTensor([scores.argmax().item()])
-        data_sample = dict(
-            pred_scores=dict(item=scores), gt_labels=dict(item=label))
+        data_sample = dict(pred_score=scores, gt_label=label)
         data_samples.append(data_sample)
     return data_batch, data_samples
 

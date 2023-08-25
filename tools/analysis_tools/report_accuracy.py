@@ -40,17 +40,17 @@ def main():
     score_list = []
     for data_samples in data_sample_list:
         scores = [
-            sample['pred_scores']['item'].numpy() for sample in data_samples
+            sample['pred_score'].numpy() for sample in data_samples
         ]
         score_list.append(scores)
 
     if args.multi_label:
         labels = [
-            sample['gt_labels']['item'] for sample in data_sample_list[0]
+            sample['gt_label'] for sample in data_sample_list[0]
         ]
     else:
         labels = [
-            sample['gt_labels']['item'].item()
+            sample['gt_label'].item()
             for sample in data_sample_list[0]
         ]
 

@@ -179,7 +179,8 @@ class VideoPack(BaseTransform):
     def transform(self, results):
         packed_results = dict()
         inputs = to_tensor(results['imgs'])
-        data_sample = ActionDataSample().set_gt_labels(results['label'])
+        data_sample = ActionDataSample()
+        data_sample.set_gt_label(results['label'])
         metainfo = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(metainfo)
         packed_results['inputs'] = inputs
@@ -219,7 +220,7 @@ print('num_clips: ', data_sample.num_clips)
 print('clip_len: ', data_sample.clip_len)
 
 # Get label of the inputs
-print('label: ', data_sample.gt_labels.item)
+print('label: ', data_sample.gt_label)
 ```
 
 ```
@@ -321,7 +322,7 @@ print('num_clips: ', data_sample.num_clips)
 print('clip_len: ', data_sample.clip_len)
 
 # Get label of the inputs
-print('label: ', data_sample.gt_labels.item)
+print('label: ', data_sample.gt_label)
 
 from mmengine.runner import Runner
 
@@ -481,7 +482,7 @@ class ClsHeadZelda(BaseModule):
 
     def loss(self, feats, data_samples):
         cls_scores = self(feats)
-        labels = torch.stack([x.gt_labels.item for x in data_samples])
+        labels = torch.stack([x.gt_label for x in data_samples])
         labels = labels.squeeze()
 
         if labels.shape == torch.Size([]):
