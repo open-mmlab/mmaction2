@@ -1,7 +1,7 @@
 _base_ = ['../../_base_/default_runtime.py']
 
 video_root = 'data/msrvtt/msrvtt_2fps_224'
-anno_file_train = 'data/msrvtt/anno_downstream/msrvtt_ret_train7k.json'
+anno_file_train = 'data/msrvtt/anno_downstream/msrvtt_ret_train9k.json'
 anno_file_test = 'data/msrvtt/anno_downstream/msrvtt_ret_test1k.json'
 pretrained_ckpt_path = 'checkpoints/5M-pretrain.pth'
 
@@ -106,7 +106,7 @@ test_pipeline = [
 dataset_type = 'MSRVTT_Ret'
 
 train_dataloader = dict(
-    batch_size=16,
+    batch_size=32,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -177,3 +177,5 @@ default_hooks = dict(
 auto_scale_lr = dict(enable=True, base_batch_size=128)
 
 find_unused_parameters=True
+
+custom_hooks = [dict(type='EmptyCacheHook', after_epoch=True)]

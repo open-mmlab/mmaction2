@@ -379,12 +379,10 @@ class VindLURet(VindLU):
         """
         use_sim = False
         # compute i2t sim matrix
-        # print(f'mem 0 {torch.cuda.memory_allocated()// (1024*1024)}')
         sim_matrix_i2t = img_feats @ text_feats.t()
 
         score_matrix_i2t = torch.full((img_feats.size(0), text_feats.size(0)),
                                       -100.0).to(self.device)
-        # print(f'mem 1 {torch.cuda.memory_allocated()// (1024*1024)}')
         for i in track_on_main_process(
                 range(img_feats.size(0)), 'Compute I2T scores...'):
             sims = sim_matrix_i2t[i]
@@ -408,8 +406,6 @@ class VindLURet(VindLU):
                     )
                     score = self.itm_head(output.last_hidden_state[:, 0, :])[:, 1]
                     score_matrix_i2t[i, batch_topk] = score
-        #             print(f'mem 2 {torch.cuda.memory_allocated()// (1024*1024)}')
-        # print(f'mem 3 {torch.cuda.memory_allocated()// (1024*1024)}')
         return score_matrix_i2t
 
     def compute_score_matrix_t2i(self, img_feats, img_embeds, text_feats,
