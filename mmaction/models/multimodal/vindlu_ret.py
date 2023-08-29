@@ -1,17 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Dict, List, Optional
 
+import mmengine.dist as dist
 import torch
 import torch.nn.functional as F
 from einops import rearrange
-import mmengine.dist as dist
 from torch.distributed.nn import all_gather as all_gather_with_grad
-
 
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
 from mmaction.utils import track_on_main_process
 from .vindlu import VindLU
+
 
 def all_gather_concat(data: torch.Tensor) -> torch.Tensor:
     """Gather tensors with different first-dimension size and concat to one
@@ -42,7 +42,7 @@ def all_gather_concat(data: torch.Tensor) -> torch.Tensor:
 
     gather_list = dist.all_gather(data)
 
-    # gather all data according to the default DDP sampler. For instance, 
+    # gather all data according to the default DDP sampler. For instance,
     # 8 samples on 2 GPUs, GPU0: [0,2,4,8], GPU1: [1,3,5,7], will be gathered
     # as [0,1,2,3,4,5,6,7]
     all_data = []
@@ -56,7 +56,7 @@ def all_gather_concat(data: torch.Tensor) -> torch.Tensor:
 class VindLURet(VindLU):
     """docstring for VindLU retrieval."""
 
-    def __init__(self, 
+    def __init__(self,
                  max_txt_len,
                  topk=128,
                  eval_frame_ensemble=None,
@@ -122,15 +122,11 @@ class VindLURet(VindLU):
 
         # image to text similarity
         # B, B*world_size
-        sim_i2t = image_feat @ text_feat_all.t()
-        sim_i2t = sim_i2t / self.temp
-
+        sim_i2t = image_feat @ text_feat_all.t() / self.temp
 
         # text-image similarity
         # B, B*world_size
-        sim_t2i = text_feat @ image_feat_all.t()
-        sim_t2i = sim_t2i / self.temp
-
+        sim_t2i = text_feat @ image_feat_all.t() / self.temp
 
         rank = dist.get_rank()
         bs = inputs.size(0)
@@ -147,7 +143,7 @@ class VindLURet(VindLU):
             encoder_hidden_states=image_embeds,
             encoder_attention_mask=image_atts,
             return_dict=True,
-            mode="fusion",
+            mode='fusion',
         )
 
         idx = torch.tensor([i.gt_video_id for i in data_samples]).view(-1, 1)
@@ -173,21 +169,20 @@ class VindLURet(VindLU):
             sim_t2i = text_feat @ image_feat_world.t() / self.temp
 
             mask = torch.eq(idx, idxs.t()).to(self.device)
-            weights_i2t = F.softmax(sim_i2t, dim=1)
+            weights_i2t = F.softmax(sim_i2t + 1e-4, dim=1)
             weights_i2t.masked_fill_(mask, 0)
 
-            weights_t2i = F.softmax(sim_t2i, dim=1)
+            weights_t2i = F.softmax(sim_t2i + 1e-4, dim=1)
             weights_t2i.masked_fill_(mask, 0)
 
-        # select a negative image (from all ranks) for each text
+        # select a negative image for each text
         neg_idx = torch.multinomial(weights_t2i, 1).squeeze()
         image_embeds_neg = image_embeds_world[neg_idx]
 
-        # select a negative text (from all ranks) for each image
+        # select a negative text for each image
         neg_idx = torch.multinomial(weights_i2t, 1).squeeze()
         text_embeds_neg = text_embeds_world[neg_idx]
         text_atts_neg = att_mask_world[neg_idx]
-
 
         text_embeds_all = torch.cat([text_embeds, text_embeds_neg], dim=0)
         text_atts_all = torch.cat([text_attn_mask, text_atts_neg], dim=0)
@@ -201,7 +196,7 @@ class VindLURet(VindLU):
             encoder_hidden_states=image_embeds_all,
             encoder_attention_mask=image_atts_all,
             return_dict=True,
-            mode="fusion",
+            mode='fusion',
         )
 
         vl_embeddings = torch.cat(
@@ -212,14 +207,14 @@ class VindLURet(VindLU):
             dim=0,
         )
 
-        itm_targets = torch.ones((3 * bs, ), dtype=torch.long, 
+        itm_targets = torch.ones((3 * bs, ),
+                                 dtype=torch.long,
                                  device=inputs.device)
         itm_targets[bs:] = 0
         itm_logit = self.itm_head(vl_embeddings)
         itm_loss = F.cross_entropy(itm_logit, itm_targets)
 
         return dict(itc_loss=itc_loss, itm_loss=itm_loss)
-
 
     def preprocess_text(self, data_samples):
         sample_item = data_samples[0]
@@ -287,11 +282,13 @@ class VindLURet(VindLU):
         if images is not None:
             # images = torch.ones_like(images)
             image_embeds, pooled_image_embeds = self.encode_vision(images)
-            # concat temporal embeds 
-            image_embeds = rearrange(image_embeds, "b t l c -> b (t l) c").contiguous()
+            # concat temporal embeds
+            image_embeds = rearrange(image_embeds,
+                                     'b t l c -> b (t l) c').contiguous()
             # image_embeds = image_embeds.unsqueeze(1)  # (bsz, 1, #frm*L, d)
             results['image_embeds'] = image_embeds
-            results['image_feat'] = F.normalize(self.vision_proj(pooled_image_embeds).mean(1), dim=-1)
+            results['image_feat'] = F.normalize(
+                self.vision_proj(pooled_image_embeds), dim=-1).mean(1)
 
         # extract text features
         if texts is not None:
@@ -304,7 +301,8 @@ class VindLURet(VindLU):
             text_embeds = texts_output.last_hidden_state
             pooled_text_feat = text_embeds[:, 0]
             results['text_embeds'] = text_embeds
-            results['text_feat'] = F.normalize(self.text_proj(pooled_text_feat), dim=-1)
+            results['text_feat'] = F.normalize(
+                self.text_proj(pooled_text_feat), dim=-1)
 
         return results
 
@@ -393,18 +391,19 @@ class VindLURet(VindLU):
                 topk_bz = 32
                 encoder_output = img_embeds[i].repeat(topk_bz, 1, 1)
                 encoder_att = torch.ones(
-                    encoder_output.size()[:-1], dtype=torch.long).to(self.device)
+                    encoder_output.size()[:-1],
+                    dtype=torch.long).to(self.device)
                 for j in range(0, self.topk // topk_bz):
-                    batch_topk = topk_idx[j*topk_bz: (j+1)*topk_bz]
+                    batch_topk = topk_idx[j * topk_bz:(j + 1) * topk_bz]
                     output = self.text_encoder(
                         encoder_embeds=text_embeds[batch_topk],
                         attention_mask=text_atts[batch_topk],
                         encoder_hidden_states=encoder_output,
                         encoder_attention_mask=encoder_att,
                         return_dict=True,
-                        mode='fusion'
-                    )
-                    score = self.itm_head(output.last_hidden_state[:, 0, :])[:, 1]
+                        mode='fusion')
+                    score = self.itm_head(output.last_hidden_state[:, 0, :])[:,
+                                                                             1]
                     score_matrix_i2t[i, batch_topk] = score
         return score_matrix_i2t
 
@@ -441,19 +440,20 @@ class VindLURet(VindLU):
             else:
                 topk_bz = 32
                 for j in range(0, self.topk // topk_bz):
-                    batch_topk = topk_idx[j*topk_bz: (j+1)*topk_bz]
+                    batch_topk = topk_idx[j * topk_bz:(j + 1) * topk_bz]
                     encoder_output = img_embeds[batch_topk]
                     encoder_att = torch.ones(
-                        encoder_output.size()[:-1], dtype=torch.long).to(self.device)
+                        encoder_output.size()[:-1],
+                        dtype=torch.long).to(self.device)
                     output = self.text_encoder(
                         encoder_embeds=text_embeds[i].repeat(topk_bz, 1, 1),
                         attention_mask=text_atts[i].repeat(topk_bz, 1),
                         encoder_hidden_states=encoder_output,
                         encoder_attention_mask=encoder_att,
                         return_dict=True,
-                        mode='fusion'
-                    )
-                    score = self.itm_head(output.last_hidden_state[:, 0, :])[:, 1]
+                        mode='fusion')
+                    score = self.itm_head(output.last_hidden_state[:, 0, :])[:,
+                                                                             1]
                     score_matrix_t2i[i, batch_topk] = score
         return score_matrix_t2i
 
