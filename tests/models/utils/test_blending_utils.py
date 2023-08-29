@@ -4,7 +4,6 @@ import pytest
 import torch
 import torch.nn.functional as F
 from mmcv.transforms import to_tensor
-from mmengine.structures import LabelData
 
 from mmaction.models import CutmixBlending, MixupBlending, RandomBatchAugment
 from mmaction.structures import ActionDataSample

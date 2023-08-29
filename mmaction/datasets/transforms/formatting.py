@@ -4,7 +4,7 @@ from typing import Dict, Optional, Sequence, Tuple
 import numpy as np
 import torch
 from mmcv.transforms import BaseTransform, to_tensor
-from mmengine.structures import InstanceData, LabelData
+from mmengine.structures import InstanceData
 
 from mmaction.registry import TRANSFORMS
 from mmaction.structures import ActionDataSample

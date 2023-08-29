@@ -5,7 +5,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.model.weight_init import normal_init
-from mmengine.structures import LabelData
 
 from mmaction.evaluation import top_k_accuracy
 from mmaction.registry import MODELS
