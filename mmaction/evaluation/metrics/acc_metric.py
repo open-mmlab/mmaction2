@@ -246,13 +246,13 @@ class ConfusionMatrix(BaseMetric):
 
     def process(self, data_batch, data_samples: Sequence[dict]) -> None:
         for data_sample in data_samples:
-            pred_scores = data_sample.get('pred_scores')
-            gt_label = data_sample['gt_labels']['item']
+            pred_scores = data_sample.get('pred_score')
+            gt_label = data_sample['gt_label']
             if pred_scores is not None:
-                pred_label = pred_scores['item'].argmax(dim=0, keepdim=True)
-                self.num_classes = pred_scores['item'].size(0)
+                pred_label = pred_scores.argmax(dim=0, keepdim=True)
+                self.num_classes = pred_scores.size(0)
             else:
-                pred_label = data_sample['pred_labels']['item']
+                pred_label = data_sample['pred_label']
 
             self.results.append({
                 'pred_label': pred_label,

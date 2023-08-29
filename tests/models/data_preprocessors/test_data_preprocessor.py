@@ -53,8 +53,8 @@ def test_data_preprocessor():
         format_shape='NCTHW',
         blending=dict(type='MixupBlending', num_classes=5))
     data = psr(deepcopy(raw_data), training=True)
-    assert data['data_samples'][0].gt_labels.item.shape == (5, )
-    assert data['data_samples'][1].gt_labels.item.shape == (5, )
+    assert data['data_samples'][0].gt_label.shape == (5, )
+    assert data['data_samples'][1].gt_label.shape == (5, )
 
     raw_data = generate_dummy_data(2, (1, 3, 224, 224))
     psr = ActionDataPreprocessor(

@@ -87,10 +87,7 @@ class OmniHead(BaseHead):
         Returns:
             dict: A dictionary of loss components.
         """
-        if hasattr(data_samples[0], 'gt_labels'):
-            labels = [x.gt_labels.item for x in data_samples]
-        else:
-            labels = [x.gt_label.label for x in data_samples]
+        labels = [x.gt_label for x in data_samples]
         labels = torch.stack(labels).to(cls_scores.device)
         labels = labels.squeeze()
 

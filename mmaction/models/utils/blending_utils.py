@@ -55,18 +55,18 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
                 shape of (B, N, C, H, W) or (B, N, C, T, H, W).
             batch_data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples. It usually includes information such
-                as `gt_labels`.
+                as `gt_label`.
 
         Returns:
             mixed_imgs (torch.Tensor): Blending images, float tensor with the
                 same shape of the input imgs.
             batch_data_samples (List[:obj:`ActionDataSample`]): The modified
-                batch data samples. ``gt_labels`` in each data sample are
+                batch data samples. ``gt_label`` in each data sample are
                 converted from a hard label to a blended soft label, float
                 tensor with the shape of (num_classes, ) and all elements are
                 in range [0, 1].
         """
-        label = [x.gt_labels.item for x in batch_data_samples]
+        label = [x.gt_label for x in batch_data_samples]
         # single-label classification
         if label[0].size(0) == 1:
             label = torch.tensor(label, dtype=torch.long).to(imgs.device)
@@ -79,7 +79,7 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
                                                    **kwargs)
 
         for label_item, sample in zip(mixed_label, batch_data_samples):
-            sample.gt_labels.item = label_item
+            sample.set_gt_label(label_item)
 
         return mixed_imgs, batch_data_samples
 
