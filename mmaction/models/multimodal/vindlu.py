@@ -10,42 +10,37 @@ from mmengine.model import BaseModel
 from mmengine.runner.checkpoint import _load_checkpoint
 from torch import nn
 
+from mmaction.registry import MODELS, TOKENIZER
 from .beit_builder import build_beit, build_beit3d, interpolate_pos_embed_beit
 from .bert_builder import build_bert
 from .tokenization_bert import BertTokenizer
 
-from mmaction.registry import TOKENIZER, MODELS
-# from .criterions import MLMLoss, VTC_VTM_Loss
 
+class VindLUBase(BaseModel):
+    """VindLU base Model."""
 
-class VindLU(BaseModel):
-    """docstring for VindLU."""
-
-    def __init__(self, 
-                 tokenizer, 
-                 vision_encoder, 
-                 text_encoder,
-                 proj_dim,
-                 temperature, 
-                 evaluate, 
-                 gradient_checkpointing,
-                 text_decoder=None,
-                 pretrained_ckpt=None,
-                 data_preprocessor=None,):
+    def __init__(
+        self,
+        tokenizer: dict,
+        vision_encoder: dict,
+        text_encoder: dict,
+        proj_dim: int = 256,
+        temperature: float = 0.07,
+        gradient_checkpointing: bool = False,
+        pretrained_ckpt=None,
+        data_preprocessor=None,
+    ):
         if data_preprocessor is None:
-            # This preprocessor will only stack batch data samples.
             data_preprocessor = dict(type='ActionDataPreprocessor')
-        super(VindLU, self).__init__(data_preprocessor=data_preprocessor)
+        super(VindLUBase, self).__init__(data_preprocessor=data_preprocessor)
 
-        # self.config = config
         self.tokenizer = BertTokenizer.from_pretrained(
             tokenizer.pretrained_model_name_or_path)
-        # cant align with vindlu's BertTokenizer, hf's BertTokenizer will add a sep token
+        # can't align with vindlu's BertTokenizer, hf's BertTokenizer will add a sep token
         # self.tokenizer = TOKENIZER.build(tokenizer)
         self.vision_cfg = vision_encoder
         self.text_encoder_cfg = text_encoder
-        self.text_decoder_cfg = text_decoder
-        self.evaluate = evaluate
+        # TODO support gradient_checkpointing
         self.gradient_checkpointing = gradient_checkpointing
         self.vision_width = vision_encoder.encoder_width
         self.text_width = text_encoder.encoder_width
@@ -56,7 +51,6 @@ class VindLU(BaseModel):
         )
 
         # self.vision_encoder = build_beit3d(self.vision_cfg, self.gradient_checkpointing)
-        # self.text_encoder = self.build_text_encoder()
         self.text_encoder = MODELS.build(self.text_encoder_cfg)
 
         self.vision_proj = nn.Linear(self.vision_width, proj_dim)
@@ -65,71 +59,44 @@ class VindLU(BaseModel):
         self.temp = nn.parameter.Parameter(torch.ones([]) * temperature)
         self.itm_head = nn.Linear(self.text_width, 2)
 
-        # criterions
-        # self.loss_weight = config.criterion.loss_weight
-        self.loss_weight = None
-        # self.criterion_vtc_vtm = VTC_VTM_Loss(config.criterion.vtm_hard_neg)
-        # self.criterion_mlm = MLMLoss(config.criterion.mlm_masking_prob, tokenizer)
-
     def forward(self, inputs, data_samples, mode: str = 'loss'):
-        """forward and calculate loss.
+        """The unified entry for a forward process in both training and test.
+
+        The method should accept three modes:
+
+        - ``tensor``: Forward the whole network and return tensor or tuple of
+        tensor without any post-processing, same as a common nn.Module.
+        - ``predict``: Forward and return the predictions, which are fully
+        processed to a list of :obj:`ActionDataSample`.
+        - ``loss``: Forward and return a dict of losses according to the given
+        inputs and data samples.
+
+        Note that this method doesn't handle neither back propagation nor
+        optimizer updating, which are done in the :meth:`train_step`.
 
         Args:
-            image (torch.Tensor): The input images. Shape: [B,T,C,H,W].
-            text (dict): TODO
-            idx (torch.Tensor): TODO
+            inputs (torch.Tensor): The input tensor with shape
+                (N, C, ...) in general.
+            data_samples (List[``ActionDataSample], optional): The
+                annotation data of every samples. Defaults to None.
+            mode (str): Return what kind of value. Defaults to ``tensor``.
 
-        Returns: TODO
+        Returns:
+            The return type depends on ``mode``.
+
+            - If ``mode="tensor"``, return a tensor or a tuple of tensor.
+            - If ``mode="predict"``, return a list of ``ActionDataSample``.
+            - If ``mode="loss"``, return a dict of tensor.
         """
-        self.clip_contrastive_temperature()
 
-        vision_embeds, pooled_vision_embeds = self.vision_encoder(inputs)
-        text_embeds, pooled_text_embeds = self.encode_text(text)
-
-        # obtain vision and text representations.
-        vision_proj = self.vision_proj(pooled_vision_embeds)
-        text_proj = self.text_proj(pooled_text_embeds)
-
-        # calculate loss
-
-        ## VTC loss
-        # if self.loss_weight.vtc != 0:
-        #     loss_vtc = self.criterion_vtc_vtm.vtc_loss(
-        #         vision_proj, text_proj, idx, self.temp, all_gather=True
-        #     )
-        # else:
-        loss_vtc = torch.tensor(0)
-
-        vision_embeds = rearrange(vision_embeds, 'b t l c -> b (t l) c')
-
-        ## VTM loss
-        # if self.loss_weight.vtm != 0:
-        #     loss_vtm = self.criterion_vtc_vtm.vtm_loss(
-        #         self.get_text_encoder(),
-        #         self.itm_head,
-        #         self.temp,
-        #         vision_embeds,
-        #         text_embeds,
-        #         vision_proj,
-        #         text_proj,
-        #         text.attention_mask,
-        #         idx,
-        #     )
-        # else:
-        loss_vtm = torch.tensor(0)
-
-        ## MLM loss
-        if self.text_encoder_cfg.is_pretrain and self.loss_weight.mlm != 0:
-            loss_mlm = self.criterion_mlm.mlm_loss(self.text_encoder, text,
-                                                   vision_embeds, None)
+        if mode == 'tensor':
+            return self.extract_feat(inputs, data_samples)
+        elif mode == 'loss':
+            return self.loss(inputs, data_samples)
+        elif mode == 'predict':
+            return self.predict(inputs, data_samples)
         else:
-            loss_mlm = torch.tensor(0)
-
-        return dict(
-            loss_vtc=loss_vtc * self.loss_weight.vtc,
-            loss_vtm=loss_vtm * self.loss_weight.vtm,
-            loss_mlm=loss_mlm * self.loss_weight.mlm,
-        )
+            raise RuntimeError(f'Invalid mode "{mode}".')
 
     def encode_vision(self, image):
         """encode image / videos as features.
@@ -232,36 +199,20 @@ class VindLU(BaseModel):
         encoder = self.text_encoder
         return encoder.bert if hasattr(encoder, 'bert') else encoder
 
-    def init_weights(self):
-        checkpoint = _load_checkpoint(self.pretrained_ckpt, map_location='cpu')
-        state_dict = checkpoint['model']
-        state_dict = interpolate_pos_embed_beit(state_dict, self)
+    def preprocess_state_dict(self, state_dict):
         for key in list(state_dict.keys()):
             if 'bert' in key:
                 encoder_key = key.replace('bert.', '')
                 state_dict[encoder_key] = state_dict[key]
                 if not self.text_decoder_cfg:
                     del state_dict[key]
+        return state_dict
 
-            # init text decoder as multimodal encoder (last 6 layers of model.text_encoder)
-            # only for generation tasks like VQA
-            if self.text_decoder_cfg and 'text_encoder' in key:
-                if 'layer' in key:
-                    encoder_keys = key.split('.')
-                    layer_num = int(encoder_keys[4])
-                    if layer_num < self.text_encoder_cfg.fusion_layer:
-                        del state_dict[key]
-                        continue
-                    else:
-                        decoder_layer_num = layer_num - 9
-                        encoder_keys[4] = str(decoder_layer_num)
-                        encoder_key = '.'.join(encoder_keys)
-                else:
-                    encoder_key = key
-                decoder_key = encoder_key.replace('text_encoder',
-                                                    'text_decoder')
-                state_dict[decoder_key] = state_dict[key]
-                del state_dict[key]
+    def init_weights(self):
+        checkpoint = _load_checkpoint(self.pretrained_ckpt, map_location='cpu')
+        state_dict = checkpoint['model']
+        state_dict = interpolate_pos_embed_beit(state_dict, self)
+        state_dict = self.preprocess_state_dict(state_dict)
         msg = self.load_state_dict(state_dict, strict=False)
         logger = MMLogger.get_current_instance()
         logger.info(msg)

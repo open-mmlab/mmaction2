@@ -2,8 +2,6 @@ _base_ = ['../../_base_/default_runtime.py']
 
 video_root = 'data/msrvtt/msrvtt_2fps_224'
 anno_file_test = 'data/msrvtt/anno_downstream/msrvtt_mc_test.json'
-# vision_encoder_name = 'microsoft/beit-base-patch16-224-pt22k-ft22k'
-# text_encoder_config = 'configs/multimodal/vindlu/config_bert.json'
 
 # model settings
 model = dict(
@@ -43,7 +41,6 @@ model = dict(
         add_pooling_layer=True),
     proj_dim=256,
     temperature=0.07,
-    evaluate=True,
     max_txt_len=32,
     gradient_checkpointing=True)
 
@@ -60,11 +57,7 @@ test_pipeline = [
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(
-        type='PackActionInputs',
-        algorithm_keys=(
-            'caption_options',
-        ))
+    dict(type='PackActionInputs', algorithm_keys=('caption_options', ))
 ]
 
 dataset_type = 'MSRVTT_RetMC'

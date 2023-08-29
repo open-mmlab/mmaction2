@@ -3,8 +3,6 @@ _base_ = ['../../_base_/default_runtime.py']
 video_root = 'data/msrvtt/msrvtt_2fps_224'
 anno_file_test = 'data/msrvtt/anno_downstream/msrvtt_qa_test.json'
 answer_list_file = 'data/msrvtt/anno_downstream/msrvtt_qa_answer_list.json'
-# vision_encoder_name = 'microsoft/beit-base-patch16-224-pt22k-ft22k'
-# text_encoder_config = 'configs/multimodal/vindlu/config_bert.json'
 
 # model settings
 model = dict(
@@ -44,7 +42,6 @@ model = dict(
         add_pooling_layer=True),
     proj_dim=256,
     temperature=0.07,
-    evaluate=True,
     max_question_len=25,
     max_answer_len=5,
     num_ans_candidates=128,
@@ -70,7 +67,6 @@ test_pipeline = [
             'question',
             'gt_answer',
             'question_id',
-
         ))
 ]
 
@@ -78,7 +74,7 @@ dataset_type = 'MSRVTT_VQA'
 
 test_dataloader = dict(
     batch_size=32,
-    num_workers=16,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(

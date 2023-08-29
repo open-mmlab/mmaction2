@@ -37,7 +37,6 @@ model = dict(
         add_pooling_layer=False),
     proj_dim=256,
     temperature=0.07,
-    evaluate=True,
     max_txt_len=32,
     topk=128,
     gradient_checkpointing=True)
@@ -45,11 +44,7 @@ model = dict(
 file_client_args = dict(io_backend='disk')
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(
-        type='SampleFrames',
-        clip_len=1,
-        frame_interval=1,
-        num_clips=12),
+    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=12),
     dict(type='DecordDecode'),
     dict(type='RandomResizedCrop', area_range=(0.5, 1.0)),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
@@ -60,7 +55,8 @@ train_pipeline = [
         algorithm_keys=(
             'text',
             'gt_video_id',
-            'gt_text_id',))
+            'gt_text_id',
+        ))
 ]
 
 val_pipeline = [
@@ -146,8 +142,8 @@ train_cfg = dict(
 val_cfg = dict(type='RetrievalValLoop')
 test_cfg = dict(type='RetrievalTestLoop')
 
-val_evaluator = dict(type='RetrievalRecall',  topk=(1, 5, 10))
-test_evaluator = dict(type='RetrievalRecall',  topk=(1, 5, 10))
+val_evaluator = dict(type='RetrievalRecall', topk=(1, 5, 10))
+test_evaluator = dict(type='RetrievalRecall', topk=(1, 5, 10))
 
 param_scheduler = [
     dict(
@@ -163,19 +159,23 @@ param_scheduler = [
 optim_wrapper = dict(
     type='AmpOptimWrapper',
     optimizer=dict(type='AdamW', lr=1e-5, weight_decay=0.02),
-    paramwise_cfg=dict(bypass_duplicate=True, norm_decay_mult=0.0, bias_decay_mult=0.0),
+    paramwise_cfg=dict(
+        bypass_duplicate=True, norm_decay_mult=0.0, bias_decay_mult=0.0),
     clip_grad=dict(max_norm=50, norm_type=2),
-    )
+)
 
-model_wrapper_cfg=dict(type='MMDistributedDataParallel', static_graph=True)
-
+model_wrapper_cfg = dict(type='MMDistributedDataParallel', static_graph=True)
 
 default_hooks = dict(
-    checkpoint=dict(type='CheckpointHook', interval=1, save_best="t2i/retrieval/Recall@1", rule='greater'),
+    checkpoint=dict(
+        type='CheckpointHook',
+        interval=1,
+        save_best='t2i/retrieval/Recall@1',
+        rule='greater'),
     logger=dict(type='LoggerHook', interval=20, ignore_last=False))
 
 auto_scale_lr = dict(enable=True, base_batch_size=128)
 
-find_unused_parameters=True
+find_unused_parameters = True
 
 custom_hooks = [dict(type='EmptyCacheHook', after_epoch=True)]

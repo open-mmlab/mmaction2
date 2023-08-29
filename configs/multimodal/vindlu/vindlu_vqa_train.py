@@ -6,8 +6,6 @@ anno_file_train = 'data/msrvtt/anno_downstream/msrvtt_qa_train.json'
 anno_file_val = 'data/msrvtt/anno_downstream/msrvtt_qa_val.json'
 anno_file_test = 'data/msrvtt/anno_downstream/msrvtt_qa_test.json'
 answer_list_file = 'data/msrvtt/anno_downstream/msrvtt_qa_answer_list.json'
-# vision_encoder_name = 'microsoft/beit-base-patch16-224-pt22k-ft22k'
-# text_encoder_config = 'configs/multimodal/vindlu/config_bert.json'
 
 # model settings
 model = dict(
@@ -49,7 +47,6 @@ model = dict(
         add_pooling_layer=True),
     proj_dim=256,
     temperature=0.07,
-    evaluate=True,
     max_question_len=25,
     max_answer_len=5,
     num_ans_candidates=128,
@@ -60,11 +57,7 @@ file_client_args = dict(io_backend='disk')
 
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(
-        type='SampleFrames',
-        clip_len=1,
-        frame_interval=1,
-        num_clips=12),
+    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=12),
     dict(type='DecordDecode'),
     dict(type='RandomResizedCrop', area_range=(0.5, 1.0)),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
@@ -76,7 +69,8 @@ train_pipeline = [
             'question',
             'question_id',
             'gt_answer',
-            'gt_answer_weight',))
+            'gt_answer_weight',
+        ))
 ]
 
 val_pipeline = [
@@ -96,7 +90,8 @@ val_pipeline = [
             'question',
             'gt_answer',
             'question_id',
-        ))]
+        ))
+]
 
 test_pipeline = val_pipeline
 
@@ -141,7 +136,6 @@ test_dataloader = dict(
 val_evaluator = dict(type='VQAAcc')
 test_evaluator = dict(type='VQAAcc')
 
-
 train_cfg = dict(
     type='EpochBasedTrainLoop', max_epochs=10, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
@@ -168,15 +162,16 @@ param_scheduler = [
 optim_wrapper = dict(
     type='AmpOptimWrapper',
     optimizer=dict(type='AdamW', lr=1e-5, weight_decay=0.02),
-    paramwise_cfg=dict(bypass_duplicate=True, norm_decay_mult=0.0, bias_decay_mult=0.0),
+    paramwise_cfg=dict(
+        bypass_duplicate=True, norm_decay_mult=0.0, bias_decay_mult=0.0),
     clip_grad=dict(max_norm=50, norm_type=2),
-    )
+)
 
-model_wrapper_cfg=dict(type='MMDistributedDataParallel', static_graph=True)
+model_wrapper_cfg = dict(type='MMDistributedDataParallel', static_graph=True)
 
 default_hooks = dict(
     logger=dict(type='LoggerHook', interval=20, ignore_last=False))
 
 auto_scale_lr = dict(enable=True, base_batch_size=32)
 
-find_unused_parameters=True
+find_unused_parameters = True

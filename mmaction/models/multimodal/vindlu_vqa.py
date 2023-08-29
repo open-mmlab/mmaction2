@@ -1,54 +1,57 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import logging
+from typing import Optional
 
+import mmengine
 import numpy as np
 import torch
 import torch.nn.functional as F
-import mmengine
 from einops import rearrange
-from mmengine.logging import MMLogger
 
 from mmaction.registry import MODELS
-from .bert_builder import build_bert_decoder
-from .vindlu import VindLU
+from .vindlu import VindLUBase
 
 
 @MODELS.register_module()
-class VindLUVQA(VindLU):
-    """docstring for VindLUVQA."""
+class VindLUVQA(VindLUBase):
+    """VindLU VQA.
 
-    def __init__(self, max_question_len, max_answer_len, num_ans_candidates, answer_list_path,
+    Args:
+        text_decoder (dict): Backbone for extracting
+            multi-modal features. We apply this part as VQA fusion module.
+        answer_list_path (str, optional): Path to `answer_list.json`.
+        max_question_len (int): Max text length of question text.
+            Defaults to 25.
+        max_answer_len (int): Max text length of answer text. Defaults to 5.
+        num_ans_candidates (int): Number of answer candidates, used to filter
+            out answers with low probability. Defaults to 128.
+        **kwargs: Other keyword arguments accepted by the VindLUBase.
+    """
+
+    def __init__(self,
+                 text_decoder: dict,
+                 answer_list_path: Optional[str] = None,
+                 max_question_len: int = 25,
+                 max_answer_len: int = 5,
+                 num_ans_candidates: int = 128,
                  **kwargs):
         super().__init__(**kwargs)
 
         self.max_question_len = max_question_len
         self.max_answer_len = max_answer_len
         self.num_ans_candidates = num_ans_candidates
-        self.answer_list_path =  answer_list_path
+        self.answer_list_path = answer_list_path
+        self.text_decoder_cfg = text_decoder
 
+        # for inference only
         if answer_list_path:
             self.answer_list = mmengine.load(answer_list_path)
 
-        # delete extra/unnecessary modules inherited from VindLU
+        # delete extra/unnecessary modules inherited from VindLUBase
         extra_attributes = ['vision_proj', 'text_proj', 'temp', 'itm_head']
         for attr in extra_attributes:
             delattr(self, attr)
 
         self.text_decoder = MODELS.build(self.text_decoder_cfg)
-
-    def forward(self, inputs, data_samples, mode: str = 'loss'):
-        """
-        Args:
-        k: number of answers for each question
-        weights: weight for each answer
-        """
-
-        if mode == 'loss':
-            return self.loss(inputs, data_samples)
-        elif mode == 'predict':
-            return self.predict(inputs, data_samples)
-        else:
-            raise RuntimeError(f'Invalid mode "{mode}".')
 
     def forward_encoder(self, inputs, data_samples):
         # forward vision encoder
@@ -79,14 +82,16 @@ class VindLUVQA(VindLU):
 
         questions, question_output = self.forward_encoder(inputs, data_samples)
 
-        weights = torch.cat([torch.tensor(sample.gt_answer_weight) for sample in data_samples],
-                            dim=0).to(inputs.device)
+        weights = torch.cat(
+            [torch.tensor(sample.gt_answer_weight) for sample in data_samples],
+            dim=0).to(inputs.device)
         # answers = [sample.gt_answer for sample in data_samples]
         raw_answers = []
         for sample in data_samples:
             raw_answers.extend(sample.gt_answer)
-        answer_count = torch.tensor(
-            [len(sample.gt_answer) for sample in data_samples]).to(inputs.device)
+        answer_count = torch.tensor([
+            len(sample.gt_answer) for sample in data_samples
+        ]).to(inputs.device)
         answers = [a + ' ' + '[SEP]' for a in raw_answers]
         answers = self.tokenizer(
             answers,
@@ -185,20 +190,22 @@ class VindLUVQA(VindLU):
         targets_ids = input_ids.masked_fill(
             input_ids == self.tokenizer.pad_token_id, -100)
 
-        def tile(x, dim, n_tile):
-            init_dim = x.size(dim)
-            repeat_idx = [1] * x.dim()
-            repeat_idx[dim] = n_tile
-            x = x.repeat(*repeat_idx)
-            order_index = torch.LongTensor(
-                np.concatenate([
-                    init_dim * np.arange(n_tile) + i for i in range(init_dim)
-                ]))
-            return torch.index_select(x, dim, order_index.to(x.device))
+        # def tile(x, dim, n_tile):
+        #     init_dim = x.size(dim)
+        #     repeat_idx = [1] * x.dim()
+        #     repeat_idx[dim] = n_tile
+        #     x = x.repeat(*repeat_idx)
+        #     order_index = torch.LongTensor(
+        #         np.concatenate([
+        #             init_dim * np.arange(n_tile) + i for i in range(init_dim)
+        #         ]))
+        #     return torch.index_select(x, dim, order_index.to(x.device))
 
         # repeat encoder's output for top-k answers
-        question_states = tile(question_states, 0, k)
-        question_atts = tile(question_atts, 0, k)
+        # question_states = tile(question_states, 0, k)
+        # question_atts = tile(question_atts, 0, k)
+        question_states = question_states.repeat_interleave(k, dim=0)
+        question_atts = question_atts.repeat_interleave(k, dim=0)
 
         output = self.text_decoder(
             input_ids,
@@ -227,3 +234,32 @@ class VindLUVQA(VindLU):
         topk_ids = torch.gather(topk_ids, 1, rerank_id)
 
         return topk_ids, topk_probs
+
+    def preprocess_state_dict(self, state_dict):
+        for key in list(state_dict.keys()):
+            if 'bert' in key:
+                encoder_key = key.replace('bert.', '')
+                state_dict[encoder_key] = state_dict[key]
+                if not self.text_decoder_cfg:
+                    del state_dict[key]
+
+            # init text decoder as multimodal encoder (last 6 layers of model.text_encoder)
+            # only for generation tasks like VQA
+            if self.text_decoder_cfg and 'text_encoder' in key:
+                if 'layer' in key:
+                    encoder_keys = key.split('.')
+                    layer_num = int(encoder_keys[4])
+                    if layer_num < self.text_encoder_cfg.fusion_layer:
+                        del state_dict[key]
+                        continue
+                    else:
+                        decoder_layer_num = layer_num - 9
+                        encoder_keys[4] = str(decoder_layer_num)
+                        encoder_key = '.'.join(encoder_keys)
+                else:
+                    encoder_key = key
+                decoder_key = encoder_key.replace('text_encoder',
+                                                  'text_decoder')
+                state_dict[decoder_key] = state_dict[key]
+                del state_dict[key]
+        return state_dict

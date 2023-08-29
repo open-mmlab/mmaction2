@@ -2,8 +2,6 @@ _base_ = ['../../_base_/default_runtime.py']
 
 video_root = 'data/msrvtt/msrvtt_2fps_224'
 anno_file_test = 'data/msrvtt/anno_downstream/msrvtt_ret_test1k.json'
-# vision_encoder_name = 'microsoft/beit-base-patch16-224-pt22k-ft22k'
-# text_encoder_config = 'configs/multimodal/vindlu/config_bert.json'
 
 # model settings
 model = dict(
@@ -85,7 +83,7 @@ test_dataloader = dict(
         data_prefix=dict(video=video_root),
     ))
 
-test_evaluator = dict(type='RetrievalRecall',  topk=(1, 5, 10))
+test_evaluator = dict(type='RetrievalRecall', topk=(1, 5, 10))
 test_cfg = dict(type='RetrievalTestLoop')
 
 default_hooks = dict(

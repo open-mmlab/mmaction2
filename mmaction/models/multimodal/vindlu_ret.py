@@ -10,7 +10,7 @@ from torch.distributed.nn import all_gather as all_gather_with_grad
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
 from mmaction.utils import track_on_main_process
-from .vindlu import VindLU
+from .vindlu import VindLUBase
 
 
 def all_gather_concat(data: torch.Tensor) -> torch.Tensor:
@@ -53,11 +53,15 @@ def all_gather_concat(data: torch.Tensor) -> torch.Tensor:
 
 
 @MODELS.register_module()
-class VindLURet(VindLU):
-    """docstring for VindLU retrieval."""
+class VindLURetrieval(VindLUBase):
+    """VindLU retriever.
+
+    max_txt_len (int): Max text length of input text, used for retrieval
+    from multiple choices. Defaults to 32.
+    """
 
     def __init__(self,
-                 max_txt_len,
+                 max_txt_len=32,
                  topk=128,
                  eval_frame_ensemble=None,
                  negative_all_rank=False,
