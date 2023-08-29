@@ -1,11 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Sequence, Union, Dict
+from typing import Dict, Sequence, Union
 
 import numpy as np
 import torch
 from mmengine.structures import BaseDataElement, InstanceData
 from mmengine.utils import is_str
-
 
 LABEL_TYPE = Union[torch.Tensor, np.ndarray, Sequence, int]
 SCORE_TYPE = Union[torch.Tensor, np.ndarray, Sequence, Dict]
