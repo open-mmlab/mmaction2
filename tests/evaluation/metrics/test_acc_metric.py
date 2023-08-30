@@ -121,7 +121,7 @@ class TestConfusionMatrix(TestCase):
 
         # Test with label
         for sample in pred:
-            del sample['pred_scores']
+            del sample['pred_score']
         metric = METRICS.build(dict(type='ConfusionMatrix'))
         metric.process(None, pred)
         with self.assertRaisesRegex(AssertionError,
