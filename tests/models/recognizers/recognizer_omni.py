@@ -12,8 +12,7 @@ from mmaction.utils import register_all_modules
 def test_omni_resnet():
     register_all_modules()
     config = get_recognizer_cfg(
-        'omnisource/slowonly_r50_8xb16-8x8x1-256e_imagenet-kinetics400-rgb.py'
-    )
+        'omnisource/slowonly_r50_8xb16-8x8x1-256e_imagenet-kinetics400-rgb.py')
     recognizer = MODELS.build(config.model)
 
     # test train_step
