@@ -6,7 +6,7 @@ import torch
 from mmengine.runner import load_checkpoint, save_checkpoint
 from mmengine.runner.checkpoint import _load_checkpoint_with_prefix
 
-from mmaction.models.backbones import MobileOneTSM
+from mmaction.models.backbones.mobileone_tsm import MobileOneTSM
 from mmaction.testing import generate_backbone_demo_inputs
 
 
