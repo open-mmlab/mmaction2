@@ -12,13 +12,37 @@ from .resnet_tsm import TemporalShift
 
 @MODELS.register_module()
 class MobileOneTSM(MobileOne):
+    """MobileOne backbone for TSM.
+
+    Args:
+        arch (str | dict): MobileOne architecture. If use string, choose
+            from 's0', 's1', 's2', 's3' and 's4'. If use dict, it should
+            have below keys:
+
+            - num_blocks (Sequence[int]): Number of blocks in each stage.
+            - width_factor (Sequence[float]): Width factor in each stage.
+            - num_conv_branches (Sequence[int]): Number of conv branches
+              in each stage.
+            - num_se_blocks (Sequence[int]): Number of SE layers in each
+              stage, all the SE layers are placed in the subsequent order
+              in each stage.
+
+            Defaults to 's0'.
+        num_segments (int): Number of frame segments. Defaults to 8.
+        is_shift (bool): Whether to make temporal shift in reset layers.
+            Defaults to True.
+        shift_div (int): Number of div for shift. Defaults to 8.
+        pretraind2d (bool): Whether to load pretrained 2D model.
+            Defaults to True.
+        **kwargs (keyword arguments, optional): Arguments for MobileOne.
+    """
 
     def __init__(self,
-                 arch,
-                 num_segments=8,
-                 is_shift=True,
-                 shift_div=8,
-                 pretrained2d=True,
+                 arch: str,
+                 num_segments: int = 8,
+                 is_shift: bool = True,
+                 shift_div: int = 8,
+                 pretrained2d: bool = True,
                  **kwargs):
         super().__init__(arch, **kwargs)
         self.num_segments = num_segments
@@ -105,9 +129,6 @@ class MobileOneTSM(MobileOne):
             logger = MMLogger.get_current_instance()
             self.load_original_weights(logger)
         else:
-            if self.pretrained:
-                self.init_cfg = dict(
-                    type='Pretrained', checkpoint=self.pretrained)
             super().init_weights()
 
     def forward(self, x):
