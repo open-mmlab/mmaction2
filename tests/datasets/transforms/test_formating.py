@@ -82,7 +82,7 @@ class TestPackActionInputs(unittest.TestCase):
         self.assertIsInstance(results['inputs'], torch.Tensor)
         self.assertIsInstance(results['data_samples'], ActionDataSample)
         self.assertEqual(results['data_samples'].img_shape, (256, 256, 3))
-        self.assertEqual(results['data_samples'].gt_labels.item,
+        self.assertEqual(results['data_samples'].gt_label,
                          torch.LongTensor([1]))
 
         # Test grayscale image
