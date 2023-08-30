@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Union
 
 import mmengine
 from mmengine.logging import MMLogger
@@ -39,11 +39,6 @@ class PoseDataset(BaseActionDataset):
             with confidence score larger than `box_thr` is kept. None
             means not applicable (only applicable to Kinetics). Allowed
             choices are 0.5, 0.6, 0.7, 0.8, 0.9. Defaults to 0.5.
-        memcached (bool): Whether keypoint is cached in memcached.
-            If set as True, will use 'frame_dir' as the key to
-            fetch 'keypoint' from memcached. Defaults to False.
-        mc_cfg (tuple): The config for memcached client, only applicable
-            if `memcached==True`. Defaults to  ``('localhost', 22077)``.
     """
 
     def __init__(self,
@@ -52,16 +47,11 @@ class PoseDataset(BaseActionDataset):
                  split: Optional[str] = None,
                  valid_ratio: Optional[float] = None,
                  box_thr: float = 0.5,
-                 memcached: bool = False,
-                 mc_cfg: Tuple[str, int] = ('localhost', 22077),
                  **kwargs) -> None:
         self.split = split
         self.box_thr = box_thr
         assert box_thr in [.5, .6, .7, .8, .9]
         self.valid_ratio = valid_ratio
-        self.memcached = memcached
-        self.mc_cfg = mc_cfg
-        self.cli = None
 
         super().__init__(
             ann_file, pipeline=pipeline, modality='Pose', **kwargs)
