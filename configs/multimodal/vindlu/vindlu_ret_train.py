@@ -7,8 +7,9 @@ pretrained_ckpt_path = 'checkpoints/5M-pretrain.pth'
 
 # model settings
 model = dict(
-    type='VindLURet',
-    pretrained_ckpt=pretrained_ckpt_path,
+    type='VindLURetrieval',
+    custom_tokenizer=True,
+    init_cfg= dict(type='Pretrained', checkpoint=pretrained_ckpt_path),
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[128],
@@ -44,10 +45,20 @@ model = dict(
 file_client_args = dict(io_backend='disk')
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=12),
+    dict(
+        type='SampleFrames', 
+        clip_len=1, 
+        frame_interval=1, 
+        num_clips=12,
+        out_of_bound_opt='repeat_last',
+        ),
     dict(type='DecordDecode'),
     dict(type='RandomResizedCrop', area_range=(0.5, 1.0)),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
+    dict(
+        type='Resize', 
+        scale=(224, 224), 
+        keep_ratio=False, 
+        interpolation='bicubic'),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='FormatShape', input_format='NCHW'),
     dict(
@@ -66,7 +77,8 @@ val_pipeline = [
         clip_len=1,
         frame_interval=1,
         num_clips=12,
-        test_mode=True),
+        test_mode=True,
+        out_of_bound_opt='repeat_last'),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='FormatShape', input_format='NCHW'),
@@ -86,9 +98,10 @@ test_pipeline = [
         clip_len=1,
         frame_interval=1,
         num_clips=12,
-        test_mode=True),
+        test_mode=True,
+        out_of_bound_opt='repeat_last'),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
+    dict(type='Resize', scale=(224, 224), keep_ratio=False, interpolation='bicubic'),
     dict(type='FormatShape', input_format='NCHW'),
     dict(
         type='PackActionInputs',

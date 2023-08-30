@@ -1,23 +1,41 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import imp
-import logging
+from abc import abstractmethod
+from typing import Optional
 
-import mmengine
 import torch
-from einops import rearrange
 from mmengine.logging import MMLogger
 from mmengine.model import BaseModel
 from mmengine.runner.checkpoint import _load_checkpoint
 from torch import nn
 
 from mmaction.registry import MODELS, TOKENIZER
-from .beit_builder import build_beit, build_beit3d, interpolate_pos_embed_beit
+from mmaction.utils import ForwardResults, SampleList
+from .beit_builder import build_beit3d, interpolate_pos_embed_beit
 from .bert_builder import build_bert
 from .tokenization_bert import BertTokenizer
 
 
 class VindLUBase(BaseModel):
-    """VindLU base Model."""
+    """VindLU base Model.
+    
+    Args:
+        vision_encoder (dict): Backbone for extracting image features.
+        text_encoder (dict): Backbone for extracting text features.
+        multimodal_backbone (Optional[dict]): Backbone for extracting
+            multi-modal features.
+        temperature (float): Temperature parameter that controls the
+            concentration level of the distribution. Defaults to 0.07.
+        fast_match (bool): If False, select topk similarity as candidates and
+            compute the matching score. If True, return the similarity as the
+            matching score directly. Defaults to False.
+        data_preprocessor (Optional[dict]): The config for preprocessing input
+            data. If None or no specified type, it will use
+            "MutimodalDataPreprocessor" as type.
+            See :class:`MutimodalDataPreprocessor` for more details.
+            Defaults to None.
+        init_cfg (Optional[dict]): the config to control the initialization.
+            Defaults to None.
+    """
 
     def __init__(
         self,
@@ -27,30 +45,32 @@ class VindLUBase(BaseModel):
         proj_dim: int = 256,
         temperature: float = 0.07,
         gradient_checkpointing: bool = False,
-        pretrained_ckpt=None,
+        pretrined_vl=True,
         data_preprocessor=None,
+        init_cfg: Optional[dict] = None,
+        custom_tokenizer = False,
     ):
         if data_preprocessor is None:
             data_preprocessor = dict(type='ActionDataPreprocessor')
-        super(VindLUBase, self).__init__(data_preprocessor=data_preprocessor)
+        super().__init__(init_cfg=init_cfg, data_preprocessor=data_preprocessor)
 
-        self.tokenizer = BertTokenizer.from_pretrained(
-            tokenizer.pretrained_model_name_or_path)
+        if custom_tokenizer:
+            self.tokenizer = BertTokenizer.from_pretrained(
+                tokenizer.pretrained_model_name_or_path)
         # can't align with vindlu's BertTokenizer, hf's BertTokenizer will add a sep token
-        # self.tokenizer = TOKENIZER.build(tokenizer)
+        else:
+            self.tokenizer = TOKENIZER.build(tokenizer)
         self.vision_cfg = vision_encoder
         self.text_encoder_cfg = text_encoder
         # TODO support gradient_checkpointing
         self.gradient_checkpointing = gradient_checkpointing
         self.vision_width = vision_encoder.encoder_width
         self.text_width = text_encoder.encoder_width
-        self.pretrained_ckpt = pretrained_ckpt
+        self.pretrined_vl = pretrined_vl
 
-        # create modules.
         self.vision_encoder, self.vision_layernorm = self.build_vision_encoder(
         )
 
-        # self.vision_encoder = build_beit3d(self.vision_cfg, self.gradient_checkpointing)
         self.text_encoder = MODELS.build(self.text_encoder_cfg)
 
         self.vision_proj = nn.Linear(self.vision_width, proj_dim)
@@ -58,6 +78,15 @@ class VindLUBase(BaseModel):
 
         self.temp = nn.parameter.Parameter(torch.ones([]) * temperature)
         self.itm_head = nn.Linear(self.text_width, 2)
+
+    @abstractmethod
+    def extract_feat(self, inputs: torch.Tensor, **kwargs) -> ForwardResults:
+        """Extract features from raw inputs."""
+
+    @abstractmethod
+    def loss(self, inputs: torch.Tensor, data_samples: SampleList,
+             **kwargs) -> dict:
+        """Calculate losses from a batch of inputs and data samples."""
 
     def forward(self, inputs, data_samples, mode: str = 'loss'):
         """The unified entry for a forward process in both training and test.
@@ -158,12 +187,6 @@ class VindLUBase(BaseModel):
                 self.vision_cfg,
                 self.gradient_checkpointing,
             )
-            # vision_encoder = build_beit(
-            #     self.vision_cfg,
-            #     224,
-            #     self.gradient_checkpointing,
-            # )
-
         else:
             raise ValueError(f'not implemented: {encoder_name}')
 
@@ -204,15 +227,21 @@ class VindLUBase(BaseModel):
             if 'bert' in key:
                 encoder_key = key.replace('bert.', '')
                 state_dict[encoder_key] = state_dict[key]
-                if not self.text_decoder_cfg:
-                    del state_dict[key]
+                del state_dict[key]
         return state_dict
 
     def init_weights(self):
-        checkpoint = _load_checkpoint(self.pretrained_ckpt, map_location='cpu')
-        state_dict = checkpoint['model']
-        state_dict = interpolate_pos_embed_beit(state_dict, self)
-        state_dict = self.preprocess_state_dict(state_dict)
-        msg = self.load_state_dict(state_dict, strict=False)
-        logger = MMLogger.get_current_instance()
-        logger.info(msg)
+        if self.pretrined_vl:
+            assert self.init_cfg.get('type') == 'Pretrained', (
+                'Please specify '
+                'init_cfg to use pretrained video-language checkpoint')
+            self.pretrained = self.init_cfg.get('checkpoint')
+            checkpoint = _load_checkpoint(self.pretrained, map_location='cpu')
+            state_dict = checkpoint['model']
+            state_dict = interpolate_pos_embed_beit(state_dict, self)
+            state_dict = self.preprocess_state_dict(state_dict)
+            msg = self.load_state_dict(state_dict, strict=False)
+            logger = MMLogger.get_current_instance()
+            logger.info(msg)
+        else:
+            super().init_weights()

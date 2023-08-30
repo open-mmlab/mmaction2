@@ -10,7 +10,7 @@ answer_list_file = 'data/msrvtt/anno_downstream/msrvtt_qa_answer_list.json'
 # model settings
 model = dict(
     type='VindLUVQA',
-    pretrained_ckpt=pretrained_ckpt_path,
+    init_cfg= dict(type='Pretrained', checkpoint=pretrained_ckpt_path),
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[128],

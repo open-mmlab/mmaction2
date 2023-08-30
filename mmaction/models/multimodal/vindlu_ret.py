@@ -43,7 +43,7 @@ def all_gather_concat(data: torch.Tensor) -> torch.Tensor:
     gather_list = dist.all_gather(data)
 
     # gather all data according to the default DDP sampler. For instance,
-    # 8 samples on 2 GPUs, GPU0: [0,2,4,8], GPU1: [1,3,5,7], will be gathered
+    # 8 samples on 2 GPUs, GPU0: [0,2,4,6], GPU1: [1,3,5,7], will be gathered
     # as [0,1,2,3,4,5,6,7]
     all_data = []
     for gather_batch in zip(*gather_list):
@@ -57,37 +57,24 @@ class VindLURetrieval(VindLUBase):
     """VindLU retriever.
 
     max_txt_len (int): Max text length of input text, used for retrieval
-    from multiple choices. Defaults to 32.
+        from multiple choices. Defaults to 32.
+    topk (int): Select topk similarity as candidates for compute matching
+        scores. Defaults to 256.
+    negative_all_rank (bool): Whether to sample negative data from all
+        ranks for image text matching in training. Defaults to False.
+    **kwargs: Other keyword arguments to initialize the VindLU base model.
     """
 
     def __init__(self,
                  max_txt_len=32,
                  topk=128,
-                 eval_frame_ensemble=None,
                  negative_all_rank=False,
                  **kwargs):
         super().__init__(**kwargs)
 
         self.max_txt_len = max_txt_len
         self.topk = topk
-        self.eval_frame_ensemble = eval_frame_ensemble
         self.negative_all_rank = negative_all_rank
-
-    def forward(self, inputs, data_samples, mode: str = 'loss'):
-        """
-        Args:
-        k: number of answers for each question
-        weights: weight for each answer
-        """
-
-        if mode == 'tensor':
-            return self.extract_feat(inputs, data_samples)
-        elif mode == 'loss':
-            return self.loss(inputs, data_samples)
-        elif mode == 'predict':
-            return self.predict(inputs, data_samples)
-        else:
-            raise RuntimeError(f'Invalid mode "{mode}".')
 
     def loss(
         self,
@@ -126,11 +113,14 @@ class VindLURetrieval(VindLUBase):
 
         # image to text similarity
         # B, B*world_size
-        sim_i2t = image_feat @ text_feat_all.t() / self.temp
-
+        # sim_i2t = image_feat @ text_feat_all.t() / self.temp
+        sim_i2t = torch.einsum('mld,nd->mln', image_feat, text_feat_all
+                               ).mean(1) / self.temp
         # text-image similarity
         # B, B*world_size
-        sim_t2i = text_feat @ image_feat_all.t() / self.temp
+        # sim_t2i = text_feat @ image_feat_all.t() / self.temp
+        sim_t2i = torch.einsum('md,nld->mln', text_feat, image_feat_all
+                               ).mean(1) / self.temp
 
         rank = dist.get_rank()
         bs = inputs.size(0)
@@ -169,8 +159,12 @@ class VindLURetrieval(VindLUBase):
 
         with torch.no_grad():
             # compute sample similarity
-            sim_i2t = image_feat @ text_feat_world.t() / self.temp
-            sim_t2i = text_feat @ image_feat_world.t() / self.temp
+            # sim_i2t = image_feat @ text_feat_world.t() / self.temp
+            # sim_t2i = text_feat @ image_feat_world.t() / self.temp
+            sim_i2t = torch.einsum('mld,nd->mln', image_feat, text_feat_world
+                                   ).mean(1) / self.temp
+            sim_t2i = torch.einsum('md,nld->mln', text_feat, image_feat_world
+                                   ).mean(1) / self.temp
 
             mask = torch.eq(idx, idxs.t()).to(self.device)
             weights_i2t = F.softmax(sim_i2t + 1e-4, dim=1)
@@ -284,7 +278,6 @@ class VindLURetrieval(VindLUBase):
 
         # extract image features
         if images is not None:
-            # images = torch.ones_like(images)
             image_embeds, pooled_image_embeds = self.encode_vision(images)
             # concat temporal embeds
             image_embeds = rearrange(image_embeds,
@@ -292,7 +285,7 @@ class VindLURetrieval(VindLUBase):
             # image_embeds = image_embeds.unsqueeze(1)  # (bsz, 1, #frm*L, d)
             results['image_embeds'] = image_embeds
             results['image_feat'] = F.normalize(
-                self.vision_proj(pooled_image_embeds), dim=-1).mean(1)
+                self.vision_proj(pooled_image_embeds), dim=-1)
 
         # extract text features
         if texts is not None:
@@ -310,11 +303,11 @@ class VindLURetrieval(VindLUBase):
 
         return results
 
-    # def predict(self, images, data_samples, cal_i2t=True, cal_t2i=True):
-    #     feats = self.extract_feat(images, data_samples)
+    def predict(self, images, data_samples, cal_i2t=True, cal_t2i=True):
+        feats = self.extract_feat(images, data_samples)
 
-    #     return self.predict_all(
-    #         feats, data_samples, cal_i2t=cal_i2t, cal_t2i=cal_t2i)
+        return self.predict_all(
+            feats, data_samples, cal_i2t=cal_i2t, cal_t2i=cal_t2i)
 
     def predict_all(self,
                     feats,
@@ -373,7 +366,7 @@ class VindLURetrieval(VindLUBase):
                 (M, C). M stands for numbers of samples on a single GPU.
             text_feats (torch.Tensor): The input text feats tensor with shape
                 (N, C). N stands for numbers of all samples on all GPUs.
-            text_ids (torch.Tensor): The input tensor with shape (N, C).
+            text_embeds (torch.Tensor): The input tensor with shape (N, C).
             text_atts (torch.Tensor): The input tensor with shape (N, C).
 
         Returns:
@@ -381,7 +374,9 @@ class VindLURetrieval(VindLUBase):
         """
         use_sim = False
         # compute i2t sim matrix
-        sim_matrix_i2t = img_feats @ text_feats.t()
+        # sim_matrix_i2t = img_feats @ text_feats.t()
+        sim_matrix_i2t = torch.einsum('mld,nd->mln', img_feats, text_feats
+                                      ).mean(1)
 
         score_matrix_i2t = torch.full((img_feats.size(0), text_feats.size(0)),
                                       -100.0).to(self.device)
@@ -423,7 +418,7 @@ class VindLURetrieval(VindLUBase):
                 (M, C). M stands for numbers of samples on a single GPU.
             text_feats (torch.Tensor): The input text feats tensor with shape
                 (N, C). N stands for numbers of all samples on all GPUs.
-            text_ids (torch.Tensor): The input tensor with shape (M, C).
+            text_embeds (torch.Tensor): The input tensor with shape (M, C).
             text_atts (torch.Tensor): The input tensor with shape (M, C).
 
         Returns:
@@ -431,7 +426,9 @@ class VindLURetrieval(VindLUBase):
         """
         use_sim = False
         # compute t2i sim matrix
-        sim_matrix_t2i = text_feats @ img_feats.t()
+        # sim_matrix_t2i = text_feats @ img_feats.t()
+        sim_matrix_t2i = torch.einsum('md,nld->mln', text_feats, img_feats
+                                      ).mean(1)
 
         score_matrix_t2i = torch.full((text_feats.size(0), img_feats.size(0)),
                                       -100.0).to(self.device)

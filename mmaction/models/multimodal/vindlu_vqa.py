@@ -190,20 +190,6 @@ class VindLUVQA(VindLUBase):
         targets_ids = input_ids.masked_fill(
             input_ids == self.tokenizer.pad_token_id, -100)
 
-        # def tile(x, dim, n_tile):
-        #     init_dim = x.size(dim)
-        #     repeat_idx = [1] * x.dim()
-        #     repeat_idx[dim] = n_tile
-        #     x = x.repeat(*repeat_idx)
-        #     order_index = torch.LongTensor(
-        #         np.concatenate([
-        #             init_dim * np.arange(n_tile) + i for i in range(init_dim)
-        #         ]))
-        #     return torch.index_select(x, dim, order_index.to(x.device))
-
-        # repeat encoder's output for top-k answers
-        # question_states = tile(question_states, 0, k)
-        # question_atts = tile(question_atts, 0, k)
         question_states = question_states.repeat_interleave(k, dim=0)
         question_atts = question_atts.repeat_interleave(k, dim=0)
 
@@ -240,8 +226,6 @@ class VindLUVQA(VindLUBase):
             if 'bert' in key:
                 encoder_key = key.replace('bert.', '')
                 state_dict[encoder_key] = state_dict[key]
-                if not self.text_decoder_cfg:
-                    del state_dict[key]
 
             # init text decoder as multimodal encoder (last 6 layers of model.text_encoder)
             # only for generation tasks like VQA
