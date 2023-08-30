@@ -36,8 +36,6 @@ def format_label(value: LABEL_TYPE) -> torch.Tensor:
     elif not isinstance(value, torch.Tensor):
         raise TypeError(f'Type {type(value)} is not an available label type.')
 
-    assert value.ndim == 1, \
-        f'The dims of value should be 1, but got {value.ndim}.'
     return value
 
 
@@ -64,9 +62,6 @@ def format_score(value: SCORE_TYPE) -> Union[torch.Tensor, Dict]:
             value[k] = format_score(v)
     elif not isinstance(value, torch.Tensor):
         raise TypeError(f'Type {type(value)} is not an available label type.')
-    if not isinstance(value, dict):
-        assert value.ndim == 1, \
-            f'The dims of value should be 1, but got {value.ndim}.'
 
     return value
 
