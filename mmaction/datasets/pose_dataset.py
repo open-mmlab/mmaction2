@@ -94,12 +94,6 @@ class PoseDataset(BaseActionDataset):
                 anno_inds = (item['box_score'] >= self.box_thr)
                 item['anno_inds'] = anno_inds
 
-        for item in self.data_list:
-            if self.memcached:
-                item.pop('valid', None)
-                item.pop('box_score', None)
-                item['key'] = item['frame_dir']
-
         logger = MMLogger.get_current_instance()
         logger.info(
             f'{len(self.data_list)} videos remain after valid thresholding')
