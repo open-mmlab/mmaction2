@@ -94,11 +94,11 @@ class GradCAM:
         self.model.cls_head.average_clips = 'score'
         # model forward & backward
         results = self.model.test_step(data)
-        preds = [result.pred_scores.item for result in results]
+        preds = [result.pred_score for result in results]
         preds = torch.stack(preds)
 
         if use_labels:
-            labels = [result.gt_labels.item for result in results]
+            labels = [result.gt_label for result in results]
             labels = torch.stack(labels)
             score = torch.gather(preds, dim=1, index=labels)
         else:
