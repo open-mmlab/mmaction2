@@ -2,7 +2,6 @@
 import json
 import os.path as osp
 import re
-from collections import Counter, defaultdict
 from typing import Callable, Dict, List, Optional, Union
 
 from mmengine.fileio import exists
@@ -47,6 +46,7 @@ class MSRVTT_RetMC(BaseActionDataset):
 
         return data_list
 
+
 @DATASETS.register_module()
 class MSRVTT_Ret(BaseActionDataset):
     """MSR-VTT Retrieval dataset."""
@@ -77,9 +77,8 @@ class MSRVTT_Ret(BaseActionDataset):
             video_idx = 0
             text_idx = 0
             for data in data_lines:
-                # don't consider multiple videos or mulitple captions
-                video_path = osp.join(self.data_prefix['video'],
-                                        data['video'])
+                # don't consider multiple videos or multiple captions
+                video_path = osp.join(self.data_prefix['video'], data['video'])
                 data_item = dict(
                     filename=video_path,
                     text=[],
@@ -87,7 +86,7 @@ class MSRVTT_Ret(BaseActionDataset):
                     gt_text_id=[])
                 if isinstance(data['caption'], str):
                     data['caption'] = [data['caption']]
-                
+
                 for text in data['caption']:
                     text = pre_text(text)
                     data_item['text'].append(text)

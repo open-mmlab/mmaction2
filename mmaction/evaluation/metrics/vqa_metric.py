@@ -4,13 +4,13 @@
 # Copyright (c) 2014, Aishwarya Agrawal
 from typing import List, Optional, Sequence, Union
 
-import numpy as np
 import mmengine
+import numpy as np
+import torch
+import torch.nn.functional as F
 from mmengine.evaluator import BaseMetric
 from mmengine.logging import MMLogger
 from mmengine.utils import is_seq_of, is_str
-import torch
-import torch.nn.functional  as F  
 
 from mmaction.registry import METRICS
 
@@ -320,7 +320,6 @@ class ReportVQA(BaseMetric):
         return {}
 
 
-
 @METRICS.register_module()
 class RetMCACC(BaseMetric):
     '''Retrieval multiple choice Acc metric.
@@ -374,11 +373,12 @@ class RetMCACC(BaseMetric):
         """
         preds = np.array([x['pred_label'] for x in results])
         labels = np.array([x['gt_label'] for x in results])
-        
-        accuracy = np.sum(preds==labels) / len(preds) * 100
+
+        accuracy = np.sum(preds == labels) / len(preds) * 100
 
         metrics = {'acc': accuracy}
         return metrics
+
 
 @METRICS.register_module()
 class RetrievalRecall(BaseMetric):
@@ -550,7 +550,8 @@ class RetrievalRecall(BaseMetric):
                 recalls[i] = int(np.in1d(sample_pred[:k], sample_target).max())
             results.append(recalls.mean() * 100)
         return results
-    
+
+
 def _format_pred(label, topk=None, is_indices=False):
     """format various label to List[indices]."""
     if is_indices:
@@ -609,6 +610,7 @@ def to_tensor(value):
     elif not isinstance(value, torch.Tensor):
         raise TypeError(f'{type(value)} is not an available argument.')
     return value
+
 
 def format_label(value) -> torch.Tensor:
     """Convert various python types to label-format tensor.
