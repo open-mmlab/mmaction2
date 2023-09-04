@@ -45,7 +45,8 @@ class STAdapter(nn.Module):
         """forward.
 
         Args:
-            x (torch.Tensor): input features. Shape: [bs, nframes, l, c]. l = 1 + h*w
+            x (torch.Tensor): input features.
+            Shape: [bs, nframes, l, c]. l = 1 + h*w
 
         Returns: features after adapter. The same shape as input.
         """
@@ -92,7 +93,8 @@ class TemporalAttention(nn.Module):
         """forward.
 
         Args:
-            x (torch.Tensor): input features. Shape: [bs, nframes, l, c]. l = 1 + h*w
+            x (torch.Tensor): input features.
+            Shape: [bs, nframes, l, c]. l = 1 + h*w
 
         Returns: features after adapter. The same shape as input.
         """
@@ -132,7 +134,8 @@ class WindowTemporalAttention(nn.Module):
         """forward.
 
         Args:
-            x (torch.Tensor): input features. Shape: [bs, nframes, l, c]. l = 1 + h*w
+            x (torch.Tensor): input features.
+            Shape: [bs, nframes, l, c]. l = 1 + h*w
 
         Returns: features after adapter. The same shape as input.
         """
@@ -191,7 +194,8 @@ class X_CLIP(nn.Module):
         """forward.
 
         Args:
-            x (torch.Tensor): input features. Shape: [bs, nframes, l, c]. l = 1 + h*w
+            x (torch.Tensor): input features.
+            Shape: [bs, nframes, l, c]. l = 1 + h*w
 
         Returns: features after adapter. The same shape as input.
         """
@@ -207,42 +211,3 @@ class X_CLIP(nn.Module):
         x = torch.cat([x[:, :, :-1, :],
                        msg_token.unsqueeze(2)], dim=2)  # [b, t, l+1, c]
         return x
-
-
-class TemporalS4(nn.Module):
-    """perform temporal self-attention."""
-
-    def __init__(self, input_dim=768, droppath_rate=0.1):
-        """
-
-        Kwargs:
-            input_dim (int): The input feature dimension.
-
-
-        """
-        super().__init__()
-        from .s4 import S4
-
-        self._input_dim = input_dim
-        self.norm = LayerNorm(input_dim, eps=1e-12)
-        self.droppath = DropPath(droppath_rate)
-        self.scale = nn.parameter.Parameter(torch.zeros([]))
-        self.s4 = S4(d_model=input_dim, bidirectional=True, transposed=True)
-
-    def forward(self, x: torch.Tensor):
-        """forward.
-
-        Args:
-            x (torch.Tensor): input features. Shape: [bs, nframes, l, c]. l = 1 + h*w
-
-        Returns: features after adapter. The same shape as input.
-        """
-        if x.shape[1] == 1:  # for single frame, return itself.
-            return x
-
-        shortcut = x
-        x = self.norm(x)
-        x = einops.rearrange(x, 'b t l c -> b c (t l)')
-        x, _ = self.s4(x)
-        x = einops.rearrange(x, 'b c (t l) -> b t l c', t=shortcut.shape[1])
-        return shortcut + self.scale * self.droppath(x)

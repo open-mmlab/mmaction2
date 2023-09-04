@@ -2,7 +2,6 @@
 from typing import Optional
 
 import mmengine
-import numpy as np
 import torch
 import torch.nn.functional as F
 from einops import rearrange
@@ -51,6 +50,8 @@ class VindLUVQA(VindLUBase):
         for attr in extra_attributes:
             delattr(self, attr)
 
+        self.text_decoder_cfg.gradient_checkpointing = \
+            self.gradient_checkpointing
         self.text_decoder = MODELS.build(self.text_decoder_cfg)
 
     def forward_encoder(self, inputs, data_samples):
@@ -79,6 +80,19 @@ class VindLUVQA(VindLUBase):
         return questions, question_output
 
     def loss(self, inputs, data_samples):
+        """Calculate losses from a batch of inputs and data samples.
+
+        Args:
+            inputs (dict): A batch of inputs. The input tensor with of
+                at least one modality. For image, the value is a tensor
+                of shape (N, C, ...) in general.
+                For text, the value is a dict of tokenized text inputs.
+            data_samples (Optional[List[DataSample]]):
+                The annotation data of every samples. Defaults to None.
+
+        Returns:
+            Dict[str, torch.tensor]: a dictionary of loss components of
+        """
 
         questions, question_output = self.forward_encoder(inputs, data_samples)
 
@@ -210,7 +224,8 @@ class VindLUVQA(VindLUBase):
         topk_probs = topk_probs.view(-1, 1)
         log_probs = torch.cat([topk_probs.log(), -answer_loss], dim=1)
 
-        # re-calculate log probabilities for the answer sequences using chain rule
+        # re-calculate log probabilities for the answer sequences
+        # using chain rule
         log_probs_sum = log_probs.sum(1)
         log_probs_sum = log_probs_sum.view(num_ques, k)
 
@@ -222,12 +237,15 @@ class VindLUVQA(VindLUBase):
         return topk_ids, topk_probs
 
     def preprocess_state_dict(self, state_dict):
+        """Preprocess pretrained checkpoint for text_encoder and
+        text_decoder."""
         for key in list(state_dict.keys()):
             if 'bert' in key:
                 encoder_key = key.replace('bert.', '')
                 state_dict[encoder_key] = state_dict[key]
 
-            # init text decoder as multimodal encoder (last 6 layers of model.text_encoder)
+            # init text decoder as multimodal encoder
+            # (last 6 layers of model.text_encoder)
             # only for generation tasks like VQA
             if self.text_decoder_cfg and 'text_encoder' in key:
                 if 'layer' in key:

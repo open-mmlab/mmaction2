@@ -8,26 +8,25 @@ pretrained_ckpt_path = 'checkpoints/5M-pretrain.pth'
 # model settings
 model = dict(
     type='VindLURetrieval',
-    custom_tokenizer=True,
-    init_cfg= dict(type='Pretrained', checkpoint=pretrained_ckpt_path),
+    gradient_checkpointing=True,
+    init_cfg=dict(type='Pretrained', checkpoint=pretrained_ckpt_path),
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[128],
         std=[128],
         format_shape='NCTHW'),
     tokenizer=dict(
-        type='BertTokenizer',
+        type='VindLUTokenizer',
         pretrained_model_name_or_path='bert-base-uncased'),
     vision_encoder=dict(
-        type='beit',
+        type='BeitModel3D',
+        config='microsoft/beit-base-patch16-224-pt22k-ft22k',
         tem_config=dict(
             num_frames=12,
             temporal_model_block='timesformer',
             temporal_model_position='last',
             temporal_model_config=dict(input_dim=768),
             use_temporal_position_embedding=True),
-        pretrained_model_name_or_path=
-        'microsoft/beit-base-patch16-224-pt22k-ft22k',
         encoder_width=768,
         add_ln=True),
     text_encoder=dict(
@@ -39,25 +38,24 @@ model = dict(
     proj_dim=256,
     temperature=0.07,
     max_txt_len=32,
-    topk=128,
-    gradient_checkpointing=True)
+    topk=128)
 
 file_client_args = dict(io_backend='disk')
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
     dict(
-        type='SampleFrames', 
-        clip_len=1, 
-        frame_interval=1, 
+        type='SampleFrames',
+        clip_len=1,
+        frame_interval=1,
         num_clips=12,
         out_of_bound_opt='repeat_last',
-        ),
+    ),
     dict(type='DecordDecode'),
     dict(type='RandomResizedCrop', area_range=(0.5, 1.0)),
     dict(
-        type='Resize', 
-        scale=(224, 224), 
-        keep_ratio=False, 
+        type='Resize',
+        scale=(224, 224),
+        keep_ratio=False,
         interpolation='bicubic'),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='FormatShape', input_format='NCHW'),
@@ -101,7 +99,11 @@ test_pipeline = [
         test_mode=True,
         out_of_bound_opt='repeat_last'),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False, interpolation='bicubic'),
+    dict(
+        type='Resize',
+        scale=(224, 224),
+        keep_ratio=False,
+        interpolation='bicubic'),
     dict(type='FormatShape', input_format='NCHW'),
     dict(
         type='PackActionInputs',

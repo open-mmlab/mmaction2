@@ -10,26 +10,25 @@ answer_list_file = 'data/msrvtt/anno_downstream/msrvtt_qa_answer_list.json'
 # model settings
 model = dict(
     type='VindLUVQA',
-    init_cfg= dict(type='Pretrained', checkpoint=pretrained_ckpt_path),
+    init_cfg=dict(type='Pretrained', checkpoint=pretrained_ckpt_path),
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[128],
         std=[128],
         format_shape='NCTHW'),
     tokenizer=dict(
-        type='BertTokenizer',
+        type='VindLUTokenizer',
         pretrained_model_name_or_path='bert-base-uncased',
     ),
     vision_encoder=dict(
-        type='beit',
+        type='BeitModel3D',
+        config='microsoft/beit-base-patch16-224-pt22k-ft22k',
         tem_config=dict(
             num_frames=12,
             temporal_model_block='timesformer',
             temporal_model_position='last',
             temporal_model_config=dict(input_dim=768),
             use_temporal_position_embedding=True),
-        pretrained_model_name_or_path=
-        'microsoft/beit-base-patch16-224-pt22k-ft22k',
         encoder_width=768,
         add_ln=True),
     text_encoder=dict(
@@ -110,8 +109,8 @@ train_dataloader = dict(
     ))
 
 val_dataloader = dict(
-    batch_size=32,
-    num_workers=8,
+    batch_size=16,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -122,8 +121,8 @@ val_dataloader = dict(
     ))
 
 test_dataloader = dict(
-    batch_size=32,
-    num_workers=8,
+    batch_size=16,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(

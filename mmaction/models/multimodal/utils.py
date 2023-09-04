@@ -1,32 +1,78 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import logging
-
+import mmengine.dist as dist
 import numpy as np
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.logging import MMLogger
 from scipy import interpolate
 
 
-def _init_transformer_weights(module, initializer_range=0.02):
-    """Initialize the weights.
+def all_gather_concat(data: torch.Tensor) -> torch.Tensor:
+    """Gather tensors with different first-dimension size and concat to one
+    tenosr.
 
-    Copied from transformers ViT/Bert model init
+    Note:
+        Only the first dimension should be different.
+
+    Args:
+        data (Tensor): Tensor to be gathered.
+
+    Returns:
+        torch.Tensor: The concatenated tenosr.
     """
-    if isinstance(module, (nn.Linear, nn.Conv2d)):
-        # Slightly different from the TF version which uses truncated_normal for initialization
-        # cf https://github.com/pytorch/pytorch/pull/5617
-        module.weight.data.normal_(mean=0.0, std=initializer_range)
-        if module.bias is not None:
-            module.bias.data.zero_()
-    elif isinstance(module, nn.Embedding):
-        module.weight.data.normal_(mean=0.0, std=initializer_range)
-        if module.padding_idx is not None:
-            module.weight.data[module.padding_idx].zero_()
-    elif isinstance(module, nn.LayerNorm):
-        module.bias.data.zero_()
-        module.weight.data.fill_(1.0)
+    if dist.get_world_size() == 1:
+        return data
+
+    data_size = torch.tensor(data.size(0), device=data.device)
+    sizes_list = dist.all_gather(data_size)
+
+    total_length = sum(sizes_list)
+    max_length = max(sizes_list)
+    size_diff = max_length.item() - data_size.item()
+    if size_diff:
+        padding = torch.zeros(
+            size_diff, *data.size()[1:], device=data.device, dtype=data.dtype)
+        data = torch.cat((data, padding))
+
+    gather_list = dist.all_gather(data)
+
+    # gather all data according to the default DDP sampler. For instance,
+    # 8 samples on 2 GPUs, GPU0: [0,2,4,6], GPU1: [1,3,5,7], will be gathered
+    # as [0,1,2,3,4,5,6,7]
+    all_data = []
+    for gather_batch in zip(*gather_list):
+        all_data.extend(gather_batch)
+
+    return torch.stack(all_data)[:total_length]
+
+
+def interpolate_pos_embed_beit(state_dict, new_model):
+    """interpolate the positional embeddings. The spatial pe is relative and
+    temporal pe is absolute. additional temporal pe is padded with 0.
+
+    Args:
+        state_dict (dict): The state_dict.
+        new_model (nn.Module): The created model.
+
+    Returns: dict. The state_dict with updated positional embeddings.
+    """
+    state_dict = interpolate_pos_relative_bias_beit(
+        state_dict_old=state_dict,
+        state_dict_new=new_model.state_dict(),
+        patch_shape_new=new_model.vision_encoder.embeddings.patch_embeddings.
+        patch_shape,
+    )
+    # absolute temporal pos bias
+    temporal_pe_key = 'vision_encoder.embeddings.temporal_position_embeddings'
+    if temporal_pe_key in state_dict:
+        logger = MMLogger.get_current_instance()
+        logger.info(
+            f'interpolate temporal positional embeddings: {temporal_pe_key}')
+        state_dict[temporal_pe_key] = load_temp_embed_with_mismatch(
+            temp_embed_old=state_dict[temporal_pe_key],
+            temp_embed_new=new_model.state_dict()[temporal_pe_key],
+        )
+    return state_dict
 
 
 def load_temp_embed_with_mismatch(temp_embed_old,
@@ -47,8 +93,8 @@ def load_temp_embed_with_mismatch(temp_embed_old,
         f'Load temporal_embeddings, lengths: {num_frms_old}-->{num_frms_new}')
     if num_frms_new > num_frms_old:
         if add_zero:
-            temp_embed_new[:, :
-                           num_frms_old] = temp_embed_old  # untrained embeddings are zeros.
+            temp_embed_new[:, :num_frms_old] \
+                = temp_embed_old  # untrained embeddings are zeros.
         else:
             temp_embed_new = interpolate_temporal_pos_embed(
                 temp_embed_old, num_frms_new)
@@ -75,44 +121,6 @@ def interpolate_temporal_pos_embed(temp_embed_old, num_frames_new):
     return temp_embed_new
 
 
-def interpolate_pos_embed(pos_embed_old, pos_embed_new, num_patches_new):
-    """
-    Args:
-        pos_embed_old: (1, L_old, d), pre-trained
-        pos_embed_new: (1, L_new, d), newly initialized, to be replaced by interpolated weights
-        num_patches_new:
-    """
-    # interpolate position embedding
-    embedding_size = pos_embed_old.shape[-1]
-    num_extra_tokens = pos_embed_new.shape[-2] - num_patches_new
-    # height (== width) for the checkpoint position embedding
-    orig_size = int((pos_embed_old.shape[-2] - num_extra_tokens)**0.5)
-    # height (== width) for the new position embedding
-    new_size = int(num_patches_new**0.5)
-
-    if orig_size != new_size:
-        # class_token and dist_token are kept unchanged
-        # the extra tokens seems always at the beginning of the position embedding
-        extra_tokens = pos_embed_old[:, :num_extra_tokens]
-        # only the position tokens are interpolated
-        pos_tokens = pos_embed_old[:, num_extra_tokens:]
-        pos_tokens = pos_tokens.reshape(-1, orig_size, orig_size,
-                                        embedding_size).permute(0, 3, 1, 2)
-        pos_tokens = torch.nn.functional.interpolate(
-            pos_tokens,
-            size=(new_size, new_size),
-            mode='bicubic',
-            align_corners=False)
-        pos_tokens = pos_tokens.permute(0, 2, 3, 1).flatten(1, 2)
-        interpolated_pos_embed = torch.cat((extra_tokens, pos_tokens), dim=1)
-        logger = MMLogger.get_current_instance()
-        logger.info(
-            f'reshape position embedding from {orig_size}**2 to {new_size}**2')
-        return interpolated_pos_embed
-    else:
-        return pos_embed_old
-
-
 def interpolate_pos_relative_bias_beit(state_dict_old, state_dict_new,
                                        patch_shape_new):
     """
@@ -120,7 +128,7 @@ def interpolate_pos_relative_bias_beit(state_dict_old, state_dict_new,
         state_dict_old: loaded state dict
         state_dict_new: state dict for model with new image size
         patch_shape_new: new model patch_shape
-    ref: https://github.com/microsoft/unilm/blob/master/beit/run_class_finetuning.py
+    ref: https://github.com/microsoft/unilm/blob/master/beit/run_class_finetuning.py  # noqa: E501
     """
     all_keys = list(state_dict_old.keys())
     for key in all_keys:
@@ -188,31 +196,3 @@ def interpolate_pos_relative_bias_beit(state_dict_old, state_dict_new,
                                              dim=0)
                 state_dict_old[key] = new_rel_pos_bias
     return state_dict_old
-
-
-
-def mask_logits(target, mask):
-    return target * mask + (1 - mask) * (-1e10)
-
-
-class AllGather(torch.autograd.Function):
-    """An autograd function that performs allgather on a tensor."""
-
-    @staticmethod
-    def forward(ctx, tensor, args):
-        output = [torch.empty_like(tensor) for _ in range(args.world_size)]
-        torch.distributed.all_gather(output, tensor)
-        ctx.rank = args.rank
-        ctx.batch_size = tensor.shape[0]
-        return torch.cat(output, dim=0)
-
-    @staticmethod
-    def backward(ctx, grad_output):
-        return (
-            grad_output[ctx.batch_size * ctx.rank:ctx.batch_size *
-                        (ctx.rank + 1)],
-            None,
-        )
-
-
-allgather_wgrad = AllGather.apply

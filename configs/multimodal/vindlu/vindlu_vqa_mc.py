@@ -5,25 +5,24 @@ anno_file_test = 'data/msrvtt/anno_downstream/msrvtt_mc_test.json'
 
 # model settings
 model = dict(
-    type='VindLURetMC',
+    type='VindLURetrievalMC',
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[128],
         std=[128],
         format_shape='NCTHW'),
     tokenizer=dict(
-        type='BertTokenizer',
+        type='VindLUTokenizer',
         pretrained_model_name_or_path='bert-base-uncased'),
     vision_encoder=dict(
-        type='beit',
+        type='BeitModel3D',
+        config='microsoft/beit-base-patch16-224-pt22k-ft22k',
         tem_config=dict(
             num_frames=12,
             temporal_model_block='timesformer',
             temporal_model_position='last',
             temporal_model_config=dict(input_dim=768),
             use_temporal_position_embedding=True),
-        pretrained_model_name_or_path=
-        'microsoft/beit-base-patch16-224-pt22k-ft22k',
         encoder_width=768,
         add_ln=True),
     text_encoder=dict(

@@ -1,7 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import logging
-
-import numpy as np
 import torch
 import torch.nn.functional as F
 from einops import rearrange
@@ -11,8 +8,13 @@ from .vindlu_ret import VindLURetrieval
 
 
 @MODELS.register_module()
-class VindLURetMC(VindLURetrieval):
-    """VindLU VQA retrieval multiple choice."""
+class VindLURetrievalMC(VindLURetrieval):
+    """VindLU VQA retrieval multiple choice.
+
+    score_weight (float): Weight coefficient for itm_head score to compute the
+    choice score. similarity_weight (float): Weight coefficient for similarity
+    score to compute the     choice score.
+    """
 
     def __init__(self, score_weight=0.7, similarity_weight=0.3, **kwargs):
         kwargs.pop('text_decoder')
@@ -48,7 +50,7 @@ class VindLURetMC(VindLURetrieval):
         # compute similarity between vision feat and caption feat
         text_feat = rearrange(
             text_feat, '(b n) c -> b c n', n=num_options_per_q)
-        sim = torch.matmul(image_feat.unsqueeze(1),
+        sim = torch.matmul(image_feat.mean(1, keepdim=True),
                            text_feat).squeeze(1) / self.temp
         sim = F.softmax(sim, dim=1).flatten()
 
@@ -67,8 +69,8 @@ class VindLURetMC(VindLURetrieval):
         )
         itm_embeds = output.last_hidden_state[:, 0]  # [CLS]
 
-        score = F.softmax(self.itm_head(itm_embeds), dim=1)[:, 1]  # [bs*5]
-        score = score * self.score_weight + sim * self.similarity_weight
+        itm_score = F.softmax(self.itm_head(itm_embeds), dim=1)[:, 1]  # [bs*5]
+        score = itm_score * self.score_weight + sim * self.similarity_weight
 
         pred_answers = score.view(-1, num_options_per_q).max(1)[1].cpu()
 

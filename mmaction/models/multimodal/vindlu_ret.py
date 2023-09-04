@@ -10,46 +10,8 @@ from torch.distributed.nn import all_gather as all_gather_with_grad
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
 from mmaction.utils import track_on_main_process
+from .utils import all_gather_concat
 from .vindlu import VindLUBase
-
-
-def all_gather_concat(data: torch.Tensor) -> torch.Tensor:
-    """Gather tensors with different first-dimension size and concat to one
-    tenosr.
-
-    Note:
-        Only the first dimension should be different.
-
-    Args:
-        data (Tensor): Tensor to be gathered.
-
-    Returns:
-        torch.Tensor: The concatenated tenosr.
-    """
-    if dist.get_world_size() == 1:
-        return data
-
-    data_size = torch.tensor(data.size(0), device=data.device)
-    sizes_list = dist.all_gather(data_size)
-
-    total_length = sum(sizes_list)
-    max_length = max(sizes_list)
-    size_diff = max_length.item() - data_size.item()
-    if size_diff:
-        padding = torch.zeros(
-            size_diff, *data.size()[1:], device=data.device, dtype=data.dtype)
-        data = torch.cat((data, padding))
-
-    gather_list = dist.all_gather(data)
-
-    # gather all data according to the default DDP sampler. For instance,
-    # 8 samples on 2 GPUs, GPU0: [0,2,4,6], GPU1: [1,3,5,7], will be gathered
-    # as [0,1,2,3,4,5,6,7]
-    all_data = []
-    for gather_batch in zip(*gather_list):
-        all_data.extend(gather_batch)
-
-    return torch.stack(all_data)[:total_length]
 
 
 @MODELS.register_module()
@@ -62,19 +24,24 @@ class VindLURetrieval(VindLUBase):
         scores. Defaults to 256.
     negative_all_rank (bool): Whether to sample negative data from all
         ranks for image text matching in training. Defaults to False.
+    fast_match (bool): If False, select topk similarity as candidates and
+            compute the matching score. If True, return the similarity as the
+            matching score directly. Defaults to False.
     **kwargs: Other keyword arguments to initialize the VindLU base model.
     """
 
     def __init__(self,
-                 max_txt_len=32,
-                 topk=128,
-                 negative_all_rank=False,
+                 max_txt_len: int = 32,
+                 topk: int = 128,
+                 negative_all_rank: bool = False,
+                 fast_match: bool = False,
                  **kwargs):
         super().__init__(**kwargs)
 
         self.max_txt_len = max_txt_len
         self.topk = topk
         self.negative_all_rank = negative_all_rank
+        self.fast_match = fast_match
 
     def loss(
         self,
@@ -114,13 +81,13 @@ class VindLURetrieval(VindLUBase):
         # image to text similarity
         # B, B*world_size
         # sim_i2t = image_feat @ text_feat_all.t() / self.temp
-        sim_i2t = torch.einsum('mld,nd->mln', image_feat, text_feat_all
-                               ).mean(1) / self.temp
+        sim_i2t = torch.einsum('mld,nd->mln', image_feat,
+                               text_feat_all).mean(1) / self.temp
         # text-image similarity
         # B, B*world_size
         # sim_t2i = text_feat @ image_feat_all.t() / self.temp
-        sim_t2i = torch.einsum('md,nld->mln', text_feat, image_feat_all
-                               ).mean(1) / self.temp
+        sim_t2i = torch.einsum('md,nld->mln', text_feat,
+                               image_feat_all).mean(1) / self.temp
 
         rank = dist.get_rank()
         bs = inputs.size(0)
@@ -161,10 +128,10 @@ class VindLURetrieval(VindLUBase):
             # compute sample similarity
             # sim_i2t = image_feat @ text_feat_world.t() / self.temp
             # sim_t2i = text_feat @ image_feat_world.t() / self.temp
-            sim_i2t = torch.einsum('mld,nd->mln', image_feat, text_feat_world
-                                   ).mean(1) / self.temp
-            sim_t2i = torch.einsum('md,nld->mln', text_feat, image_feat_world
-                                   ).mean(1) / self.temp
+            sim_i2t = torch.einsum('mld,nd->mln', image_feat,
+                                   text_feat_world).mean(1) / self.temp
+            sim_t2i = torch.einsum('md,nld->mln', text_feat,
+                                   image_feat_world).mean(1) / self.temp
 
             mask = torch.eq(idx, idxs.t()).to(self.device)
             weights_i2t = F.softmax(sim_i2t + 1e-4, dim=1)
@@ -372,11 +339,12 @@ class VindLURetrieval(VindLUBase):
         Returns:
             torch.Tensor: Score matrix of image-to-text retrieval.
         """
-        use_sim = False
         # compute i2t sim matrix
         # sim_matrix_i2t = img_feats @ text_feats.t()
-        sim_matrix_i2t = torch.einsum('mld,nd->mln', img_feats, text_feats
-                                      ).mean(1)
+        sim_matrix_i2t = torch.einsum('mld,nd->mln', img_feats,
+                                      text_feats).mean(1)
+        if self.fast_match:
+            return sim_matrix_i2t
 
         score_matrix_i2t = torch.full((img_feats.size(0), text_feats.size(0)),
                                       -100.0).to(self.device)
@@ -384,26 +352,21 @@ class VindLURetrieval(VindLUBase):
                 range(img_feats.size(0)), 'Compute I2T scores...'):
             sims = sim_matrix_i2t[i]
             topk_sim, topk_idx = sims.topk(k=self.topk, dim=0)
-            if use_sim:
-                score_matrix_i2t[i, topk_idx] = topk_sim
-            else:
-                topk_bz = 32
-                encoder_output = img_embeds[i].repeat(topk_bz, 1, 1)
-                encoder_att = torch.ones(
-                    encoder_output.size()[:-1],
-                    dtype=torch.long).to(self.device)
-                for j in range(0, self.topk // topk_bz):
-                    batch_topk = topk_idx[j * topk_bz:(j + 1) * topk_bz]
-                    output = self.text_encoder(
-                        encoder_embeds=text_embeds[batch_topk],
-                        attention_mask=text_atts[batch_topk],
-                        encoder_hidden_states=encoder_output,
-                        encoder_attention_mask=encoder_att,
-                        return_dict=True,
-                        mode='fusion')
-                    score = self.itm_head(output.last_hidden_state[:, 0, :])[:,
-                                                                             1]
-                    score_matrix_i2t[i, batch_topk] = score
+            topk_bz = 32
+            encoder_output = img_embeds[i].repeat(topk_bz, 1, 1)
+            encoder_att = torch.ones(
+                encoder_output.size()[:-1], dtype=torch.long).to(self.device)
+            for j in range(0, self.topk // topk_bz):
+                batch_topk = topk_idx[j * topk_bz:(j + 1) * topk_bz]
+                output = self.text_encoder(
+                    encoder_embeds=text_embeds[batch_topk],
+                    attention_mask=text_atts[batch_topk],
+                    encoder_hidden_states=encoder_output,
+                    encoder_attention_mask=encoder_att,
+                    return_dict=True,
+                    mode='fusion')
+                score = self.itm_head(output.last_hidden_state[:, 0, :])[:, 1]
+                score_matrix_i2t[i, batch_topk] = score
         return score_matrix_i2t
 
     def compute_score_matrix_t2i(self, img_feats, img_embeds, text_feats,
@@ -427,8 +390,11 @@ class VindLURetrieval(VindLUBase):
         use_sim = False
         # compute t2i sim matrix
         # sim_matrix_t2i = text_feats @ img_feats.t()
-        sim_matrix_t2i = torch.einsum('md,nld->mln', text_feats, img_feats
-                                      ).mean(1)
+        sim_matrix_t2i = torch.einsum('md,nld->mln', text_feats,
+                                      img_feats).mean(1)
+
+        if self.fast_match:
+            return sim_matrix_t2i
 
         score_matrix_t2i = torch.full((text_feats.size(0), img_feats.size(0)),
                                       -100.0).to(self.device)

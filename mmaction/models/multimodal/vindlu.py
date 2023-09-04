@@ -10,29 +10,24 @@ from torch import nn
 
 from mmaction.registry import MODELS, TOKENIZER
 from mmaction.utils import ForwardResults, SampleList
-from .beit_builder import build_beit3d, interpolate_pos_embed_beit
-from .bert_builder import build_bert
-from .tokenization_bert import BertTokenizer
+from .utils import (interpolate_pos_embed_beit,
+                    interpolate_pos_relative_bias_beit)
 
 
 class VindLUBase(BaseModel):
     """VindLU base Model.
-    
+
     Args:
+        tokenizer: (dict): The config for tokenizer.
         vision_encoder (dict): Backbone for extracting image features.
         text_encoder (dict): Backbone for extracting text features.
-        multimodal_backbone (Optional[dict]): Backbone for extracting
-            multi-modal features.
         temperature (float): Temperature parameter that controls the
             concentration level of the distribution. Defaults to 0.07.
-        fast_match (bool): If False, select topk similarity as candidates and
-            compute the matching score. If True, return the similarity as the
-            matching score directly. Defaults to False.
+        gradient_checkpointing (bool): Whether to do gradient_checkpointing.
+            Using checkpoint will save some memory while slowing down the
+            training speed. Defaults to False.
         data_preprocessor (Optional[dict]): The config for preprocessing input
-            data. If None or no specified type, it will use
-            "MutimodalDataPreprocessor" as type.
-            See :class:`MutimodalDataPreprocessor` for more details.
-            Defaults to None.
+            data.
         init_cfg (Optional[dict]): the config to control the initialization.
             Defaults to None.
     """
@@ -45,31 +40,34 @@ class VindLUBase(BaseModel):
         proj_dim: int = 256,
         temperature: float = 0.07,
         gradient_checkpointing: bool = False,
-        pretrined_vl=True,
-        data_preprocessor=None,
+        pretrined_vl: bool = True,
+        data_preprocessor: Optional[dict] = None,
         init_cfg: Optional[dict] = None,
-        custom_tokenizer = False,
     ):
         if data_preprocessor is None:
             data_preprocessor = dict(type='ActionDataPreprocessor')
-        super().__init__(init_cfg=init_cfg, data_preprocessor=data_preprocessor)
+        super().__init__(
+            init_cfg=init_cfg, data_preprocessor=data_preprocessor)
 
-        if custom_tokenizer:
-            self.tokenizer = BertTokenizer.from_pretrained(
-                tokenizer.pretrained_model_name_or_path)
-        # can't align with vindlu's BertTokenizer, hf's BertTokenizer will add a sep token
-        else:
-            self.tokenizer = TOKENIZER.build(tokenizer)
+        self.tokenizer = TOKENIZER.build(tokenizer)
         self.vision_cfg = vision_encoder
         self.text_encoder_cfg = text_encoder
-        # TODO support gradient_checkpointing
         self.gradient_checkpointing = gradient_checkpointing
-        self.vision_width = vision_encoder.encoder_width
+        self.text_encoder_cfg.gradient_checkpointing = gradient_checkpointing
+
+        self.vision_width = vision_encoder.pop('encoder_width')
         self.text_width = text_encoder.encoder_width
         self.pretrined_vl = pretrined_vl
 
-        self.vision_encoder, self.vision_layernorm = self.build_vision_encoder(
-        )
+        if self.vision_cfg.pop('add_ln'):
+            self.vision_layernorm = nn.LayerNorm(self.vision_width, eps=1e-12)
+        else:
+            self.vision_layernorm = nn.Identity()
+
+        self.vision_encoder = MODELS.build(self.vision_cfg)
+
+        if gradient_checkpointing:
+            self.vision_encoder.gradient_checkpointing_enable()
 
         self.text_encoder = MODELS.build(self.text_encoder_cfg)
 
@@ -79,7 +77,6 @@ class VindLUBase(BaseModel):
         self.temp = nn.parameter.Parameter(torch.ones([]) * temperature)
         self.itm_head = nn.Linear(self.text_width, 2)
 
-    @abstractmethod
     def extract_feat(self, inputs: torch.Tensor, **kwargs) -> ForwardResults:
         """Extract features from raw inputs."""
 
@@ -134,8 +131,10 @@ class VindLUBase(BaseModel):
             image (torch.Tensor): The input images.
 
         Returns: tuple.
-            - vision_embeds (torch.Tensor): The features of all patches. Shape: [B,T,L,C].
-            - pooled_vision_embeds (torch.Tensor): The pooled features. Shape: [B,T,C].
+            - vision_embeds (torch.Tensor): The features of all patches.
+                Shape: [B,T,L,C].
+            - pooled_vision_embeds (torch.Tensor): The pooled features.
+                Shape: [B,T,C].
         """
         output_dict = self.vision_encoder(image)
         vision_embeds = self.vision_layernorm(output_dict.last_hidden_state)
@@ -146,16 +145,19 @@ class VindLUBase(BaseModel):
     def encode_text(self, text):
         """encode text.
         Args:
-            text (dict): The output of huggingface's `PreTrainedTokenizer`. contains keys:
-                - input_ids (torch.Tensor): Token ids to be fed to a model. Shape: [B,L].
-                - attention_mask (torch.Tensor): The mask indicate padded tokens. Shape: [B,L]. 0 is padded token.
-                - other keys refer to "https://huggingface.co/docs/transformers/v4.21.2/en/main_classes/tokenizer#transformers.PreTrainedTokenizer.__call__".
+            text (dict): The output of huggingface's `PreTrainedTokenizer`.
+                contains keys:
+                - input_ids (torch.Tensor): Token ids to be fed to a model.
+                    Shape: [B,L].
+                - attention_mask (torch.Tensor): The mask indicate padded tokens.
+                    Shape: [B,L]. 0 is padded token.
+                - other keys refer to "https://huggingface.co/docs/transformers/v4.21.2/en/main_classes/tokenizer#transformers.PreTrainedTokenizer.__call__".  # noqa: E501
         Returns: tuple.
             - text_embeds (torch.Tensor): The features of all tokens. Shape: [B,L,C].
             - pooled_text_embeds (torch.Tensor): The pooled features. Shape: [B,C].
 
         """
-        text_output = self.get_text_encoder()(
+        text_output = self.text_encoder(
             text.input_ids,
             attention_mask=text.attention_mask,
             return_dict=True,
@@ -174,55 +176,13 @@ class VindLUBase(BaseModel):
     def device(self):
         return next(self.parameters()).device
 
-    def build_vision_encoder(self):
-        """build vision encoder
-        Returns: (vision_encoder, vision_layernorm). Each is a `nn.Module`.
-
-        """
-        encoder_name = self.vision_cfg.type
-        logger = MMLogger.get_current_instance()
-        logger.info(f'Build vision_encoder: {encoder_name}')
-        if 'beit' in encoder_name:
-            vision_encoder = build_beit3d(
-                self.vision_cfg,
-                self.gradient_checkpointing,
-            )
-        else:
-            raise ValueError(f'not implemented: {encoder_name}')
-
-        if self.vision_cfg.add_ln:
-            vision_layernorm = nn.LayerNorm(self.vision_width, eps=1e-12)
-        else:
-            vision_layernorm = nn.Identity()
-        return vision_encoder, vision_layernorm
-
-    def build_text_encoder(self):
-        """build text_encoder and possibly video-to-text multimodal fusion
-        encoder.
-
-        Returns: nn.Module. The text encoder
-        """
-        encoder_name = self.text_encoder_cfg.type
-        logger = MMLogger.get_current_instance()
-        logger.info(f'Build text_encoder {encoder_name}')
-
-        if 'bert' in encoder_name:
-            text_encoder = build_bert(
-                self.text_encoder_cfg,
-                self.text_encoder_cfg.is_pretrain,
-                self.gradient_checkpointing,
-            )
-        else:
-            raise ValueError(f'Not implemented: {encoder_name}')
-
-        return text_encoder
-
-    def get_text_encoder(self):
-        """get text encoder, used for text and cross-modal encoding."""
-        encoder = self.text_encoder
-        return encoder.bert if hasattr(encoder, 'bert') else encoder
+    # def get_text_encoder(self):
+    #     """get text encoder, used for text and cross-modal encoding."""
+    #     encoder = self.text_encoder
+    #     return encoder.bert if hasattr(encoder, 'bert') else encoder
 
     def preprocess_state_dict(self, state_dict):
+        """Preprocess pretrained checkpoint for text_encoder."""
         for key in list(state_dict.keys()):
             if 'bert' in key:
                 encoder_key = key.replace('bert.', '')
@@ -230,7 +190,32 @@ class VindLUBase(BaseModel):
                 del state_dict[key]
         return state_dict
 
+    def load_from_pretrainded_beit(self):
+        from transformers.models.beit.modeling_beit import BeitModel
+        beit2d = BeitModel.from_pretrained(
+            self.vision_cfg.pretrained_model_name_or_path)
+        ori_state_dict = beit2d.state_dict()
+        del beit2d
+        # interpolate relative pos bias
+        state_dict = interpolate_pos_relative_bias_beit(
+            state_dict_old=ori_state_dict,
+            state_dict_new=self.vision_encoder.state_dict(),
+            patch_shape_new=self.vision_encoder.embeddings.patch_embeddings.
+            patch_shape,
+        )
+
+        for k in list(state_dict.keys()):
+            if 'prompt_bias_table' in k:
+                del state_dict[k]
+
+        msg = self.vision_encoder.load_state_dict(state_dict, strict=False)
+        logger = MMLogger.get_current_instance()
+        logger.info(msg)
+
     def init_weights(self):
+        if self.vision_cfg.get('pretrained2d', False):
+            self.load_from_pretrainded_beit()
+
         if self.pretrined_vl:
             assert self.init_cfg.get('type') == 'Pretrained', (
                 'Please specify '
