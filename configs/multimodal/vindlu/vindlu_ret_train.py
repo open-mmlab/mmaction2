@@ -78,7 +78,11 @@ val_pipeline = [
         test_mode=True,
         out_of_bound_opt='repeat_last'),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
+    dict(
+        type='Resize',
+        scale=(224, 224),
+        keep_ratio=False,
+        interpolation='bicubic'),
     dict(type='FormatShape', input_format='NCHW'),
     dict(
         type='PackActionInputs',
