@@ -1,11 +1,11 @@
 _base_ = ['../../_base_/default_runtime.py']
 
-video_root = 'data/msrvtt/msrvtt_2fps_224'
+video_root = 'data/msrvtt/videos_2fps_224'
 pretrained_ckpt_path = 'checkpoints/5M-pretrain.pth'
-anno_file_train = 'data/msrvtt/anno_downstream/msrvtt_qa_train.json'
-anno_file_val = 'data/msrvtt/anno_downstream/msrvtt_qa_val.json'
-anno_file_test = 'data/msrvtt/anno_downstream/msrvtt_qa_test.json'
-answer_list_file = 'data/msrvtt/anno_downstream/msrvtt_qa_answer_list.json'
+anno_file_train = 'data/msrvtt/annotations/msrvtt_qa_train.json'
+anno_file_val = 'data/msrvtt/annotations/msrvtt_qa_val.json'
+anno_file_test = 'data/msrvtt/annotations/msrvtt_qa_test.json'
+answer_list_file = 'data/msrvtt/annotations/msrvtt_qa_answer_list.json'
 
 # model settings
 model = dict(
@@ -94,7 +94,7 @@ val_pipeline = [
 
 test_pipeline = val_pipeline
 
-dataset_type = 'MSRVTT_VQA'
+dataset_type = 'MSRVTTVQA'
 
 train_dataloader = dict(
     batch_size=32,

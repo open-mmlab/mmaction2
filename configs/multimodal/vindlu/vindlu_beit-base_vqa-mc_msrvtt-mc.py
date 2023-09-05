@@ -1,7 +1,7 @@
 _base_ = ['../../_base_/default_runtime.py']
 
-video_root = 'data/msrvtt/msrvtt_2fps_224'
-anno_file_test = 'data/msrvtt/anno_downstream/msrvtt_mc_test.json'
+video_root = 'data/msrvtt/videos_2fps_224'
+anno_file_test = 'data/msrvtt/annotations/msrvtt_mc_test.json'
 
 # model settings
 model = dict(
@@ -59,7 +59,7 @@ test_pipeline = [
     dict(type='PackActionInputs', algorithm_keys=('caption_options', ))
 ]
 
-dataset_type = 'MSRVTT_RetMC'
+dataset_type = 'MSRVTTVQAMC'
 
 test_dataloader = dict(
     batch_size=32,
@@ -73,7 +73,7 @@ test_dataloader = dict(
         data_prefix=dict(video=video_root),
     ))
 
-test_evaluator = dict(type='RetMCACC')
+test_evaluator = dict(type='VQAMCACC')
 test_cfg = dict(type='TestLoop')
 
 default_hooks = dict(

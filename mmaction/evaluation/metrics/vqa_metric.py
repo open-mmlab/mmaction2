@@ -10,9 +10,11 @@ import torch
 import torch.nn.functional as F
 from mmengine.evaluator import BaseMetric
 from mmengine.logging import MMLogger
-from mmengine.utils import is_seq_of, is_str
+from mmengine.utils import is_seq_of
 
 from mmaction.registry import METRICS
+from mmaction.structures.action_data_sample import format_label
+from .acc_metric import to_tensor
 
 
 def _process_punctuation(inText):
@@ -321,8 +323,8 @@ class ReportVQA(BaseMetric):
 
 
 @METRICS.register_module()
-class RetMCACC(BaseMetric):
-    '''Retrieval multiple choice Acc metric.
+class VQAMCACC(BaseMetric):
+    '''VQA multiple choice Acc metric.
     Args:
 
         collect_device (str): Device name used for collecting results from
@@ -334,7 +336,7 @@ class RetMCACC(BaseMetric):
             will be used instead. Should be modified according to the
             `retrieval_type` for unambiguous results. Defaults to TR.
     '''
-    default_prefix = 'RetMC'
+    default_prefix = 'VQAMC'
 
     def __init__(self,
                  collect_device: str = 'cpu',
@@ -397,44 +399,6 @@ class RetrievalRecall(BaseMetric):
             If prefix is not provided in the argument, self.default_prefix
             will be used instead. Defaults to None.
 
-    Examples:
-        Use in the code:
-
-        >>> import torch
-        >>> from mmpretrain.evaluation import RetrievalRecall
-        >>> # -------------------- The Basic Usage --------------------
-        >>> y_pred = [[0], [1], [2], [3]]
-        >>> y_true = [[0, 1], [2], [1], [0, 3]]
-        >>> RetrievalRecall.calculate(
-        >>>     y_pred, y_true, topk=1, pred_indices=True, target_indices=True)
-        [tensor([50.])]
-        >>> # Calculate the recall@1 and recall@5 for non-indices input.
-        >>> y_score = torch.rand((1000, 10))
-        >>> import torch.nn.functional as F
-        >>> y_true = F.one_hot(torch.arange(0, 1000) % 10, num_classes=10)
-        >>> RetrievalRecall.calculate(y_score, y_true, topk=(1, 5))
-        [tensor(9.3000), tensor(48.4000)]
-        >>>
-        >>> # ------------------- Use with Evalutor -------------------
-        >>> from mmpretrain.structures import DataSample
-        >>> from mmengine.evaluator import Evaluator
-        >>> data_samples = [
-        ...     DataSample().set_gt_label([0, 1]).set_pred_score(
-        ...     torch.rand(10))
-        ...     for i in range(1000)
-        ... ]
-        >>> evaluator = Evaluator(metrics=RetrievalRecall(topk=(1, 5)))
-        >>> evaluator.process(data_samples)
-        >>> evaluator.evaluate(1000)
-        {'retrieval/Recall@1': 20.700000762939453,
-         'retrieval/Recall@5': 78.5999984741211}
-
-        Use in OpenMMLab configs:
-
-        .. code:: python
-
-            val_evaluator = dict(type='RetrievalRecall', topk=(1, 5))
-            test_evaluator = val_evaluator
     """
     default_prefix: Optional[str] = 'retrieval'
 
@@ -599,45 +563,3 @@ def _format_target(label, is_indices=False):
 
     indices = [sample_gt.nonzero().squeeze(-1) for sample_gt in label]
     return indices
-
-
-def to_tensor(value):
-    """Convert value to torch.Tensor."""
-    if isinstance(value, np.ndarray):
-        value = torch.from_numpy(value)
-    elif isinstance(value, Sequence) and not mmengine.is_str(value):
-        value = torch.tensor(value)
-    elif not isinstance(value, torch.Tensor):
-        raise TypeError(f'{type(value)} is not an available argument.')
-    return value
-
-
-def format_label(value) -> torch.Tensor:
-    """Convert various python types to label-format tensor.
-
-    Supported types are: :class:`numpy.ndarray`, :class:`torch.Tensor`,
-    :class:`Sequence`, :class:`int`.
-
-    Args:
-        value (torch.Tensor | numpy.ndarray | Sequence | int): Label value.
-
-    Returns:
-        :obj:`torch.Tensor`: The foramtted label tensor.
-    """
-
-    # Handle single number
-    if isinstance(value, (torch.Tensor, np.ndarray)) and value.ndim == 0:
-        value = int(value.item())
-
-    if isinstance(value, np.ndarray):
-        value = torch.from_numpy(value).to(torch.long)
-    elif isinstance(value, Sequence) and not is_str(value):
-        value = torch.tensor(value).to(torch.long)
-    elif isinstance(value, int):
-        value = torch.LongTensor([value])
-    elif not isinstance(value, torch.Tensor):
-        raise TypeError(f'Type {type(value)} is not an available label type.')
-    assert value.ndim == 1, \
-        f'The dims of value should be 1, but got {value.ndim}.'
-
-    return value

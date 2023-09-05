@@ -34,7 +34,7 @@
 bash prepare_msrvtt.sh
 ```
 
-完场上述准备步骤后，文件目录如下：
+完成上述准备步骤后，文件目录如下：
 
 ```
 mmaction2

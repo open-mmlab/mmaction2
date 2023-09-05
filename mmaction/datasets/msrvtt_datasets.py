@@ -2,32 +2,47 @@
 import json
 import os.path as osp
 import re
-from typing import Callable, Dict, List, Optional, Union
+from collections import Counter
+from typing import Dict, List
 
 from mmengine.fileio import exists
 
 from mmaction.registry import DATASETS
-from mmaction.utils import ConfigType
 from .base import BaseActionDataset
 
 
 @DATASETS.register_module()
-class MSRVTT_RetMC(BaseActionDataset):
-    """MSR-VTT Retrieval multiple choices dataset."""
+class MSRVTTVQA(BaseActionDataset):
+    """MSR-VTT Video Question Answering dataset."""
 
-    def __init__(self,
-                 ann_file: str,
-                 pipeline: List[Union[ConfigType, Callable]],
-                 data_prefix: Optional[ConfigType] = dict(prefix=''),
-                 test_mode: bool = False,
-                 multi_class: bool = False,
-                 num_classes: Optional[int] = None,
-                 start_index: int = 0,
-                 modality: str = 'RGB',
-                 **kwargs) -> None:
-        super().__init__(ann_file, pipeline, data_prefix, test_mode,
-                         multi_class, num_classes, start_index, modality,
-                         **kwargs)
+    def load_data_list(self) -> List[Dict]:
+        """Load annotation file to get video information."""
+        exists(self.ann_file)
+        data_list = []
+
+        with open(self.ann_file) as f:
+            data_lines = json.load(f)
+            for data in data_lines:
+                answers = data['answer']
+                if isinstance(answers, str):
+                    answers = [answers]
+                count = Counter(answers)
+                answer_weight = [i / len(answers) for i in count.values()]
+                data_item = dict(
+                    question_id=data['question_id'],
+                    filename=osp.join(self.data_prefix['video'],
+                                      data['video']),
+                    question=pre_text(data['question']),
+                    gt_answer=list(count.keys()),
+                    gt_answer_weight=answer_weight)
+                data_list.append(data_item)
+
+        return data_list
+
+
+@DATASETS.register_module()
+class MSRVTTVQAMC(BaseActionDataset):
+    """MSR-VTT VQA multiple choices dataset."""
 
     def load_data_list(self) -> List[Dict]:
         """Load annotation file to get video information."""
@@ -48,24 +63,8 @@ class MSRVTT_RetMC(BaseActionDataset):
 
 
 @DATASETS.register_module()
-class MSRVTT_Ret(BaseActionDataset):
+class MSRVTTRetrieval(BaseActionDataset):
     """MSR-VTT Retrieval dataset."""
-
-    def __init__(self,
-                 ann_file: str,
-                 pipeline: List[Union[ConfigType, Callable]],
-                 data_prefix: Optional[ConfigType] = dict(prefix=''),
-                 test_mode: bool = False,
-                 multi_class: bool = False,
-                 num_classes: Optional[int] = None,
-                 start_index: int = 0,
-                 modality: str = 'RGB',
-                 txt2multi_video: bool = False,
-                 **kwargs) -> None:
-        super().__init__(ann_file, pipeline, data_prefix, test_mode,
-                         multi_class, num_classes, start_index, modality,
-                         **kwargs)
-        self.txt2multi_video = txt2multi_video
 
     def load_data_list(self) -> List[Dict]:
         """Load annotation file to get video information."""
@@ -99,10 +98,6 @@ class MSRVTT_Ret(BaseActionDataset):
         self.num_videos = video_idx
         self.num_texts = text_idx
 
-        # debug_len = 1000
-        # data_list = data_list[:debug_len]
-        # self.num_videos = debug_len
-        # self.num_texts = debug_len
         return data_list
 
 
