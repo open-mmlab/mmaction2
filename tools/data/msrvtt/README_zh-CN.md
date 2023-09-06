@@ -35,7 +35,6 @@
 用户可参考该数据集的[官网](https://www.microsoft.com/en-us/research/publication/msr-vtt-a-large-video-description-dataset-for-bridging-video-and-language/)，以获取数据集相关的基本信息。运行下面的命令准备 MSRVTT 视频文件:
 
 ```shell
-cd $MMACTION2/tools/data/msrvtt/
 # download original videos
 bash download_msrvtt.sh
 # preprocess videos to lower FPS and dimension

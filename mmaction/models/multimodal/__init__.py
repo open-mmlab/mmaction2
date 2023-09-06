@@ -1,12 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .beit3d import BeitModel3D
-from .tokenizer import BertTokenizer
-from .vindlu_ret import VindLURetrieval
-from .vindlu_ret_mc import VindLURetrievalMC
-from .vindlu_vqa import VindLUVQA
-from .xbert import BertDecoder, BertModel
+from mmaction.utils.dependency import WITH_MULTIMODAL
 
-__all__ = [
-    'VindLUVQA', 'BertTokenizer', 'BertModel', 'BertDecoder', 'BeitModel3D',
-    'VindLURetrievalMC', 'VindLURetrieval'
-]
+if WITH_MULTIMODAL:
+    from .vindlu import *  # noqa: F401,F403
+
+else:
+    from mmaction.registry import MODELS
+    from mmaction.utils.dependency import register_multimodal_placeholder
+
+    register_multimodal_placeholder(
+        ['VindLUVQA', 'VindLURetrievalMC', 'VindLURetrieval'], MODELS)

@@ -99,7 +99,6 @@ class VindLUVQA(VindLUBase):
         weights = torch.cat(
             [torch.tensor(sample.gt_answer_weight) for sample in data_samples],
             dim=0).to(inputs.device)
-        # answers = [sample.gt_answer for sample in data_samples]
         raw_answers = []
         for sample in data_samples:
             raw_answers.extend(sample.gt_answer)

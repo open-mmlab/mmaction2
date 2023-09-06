@@ -2,9 +2,9 @@
 from .acc_metric import AccMetric, ConfusionMatrix
 from .anet_metric import ANetMetric
 from .ava_metric import AVAMetric
+from .multimodal_metric import VQAMCACC, ReportVQA, RetrievalRecall, VQAAcc
 from .multisports_metric import MultiSportsMetric
 from .retrieval_metric import RetrievalMetric
-from .vqa_metric import VQAMCACC, ReportVQA, RetrievalRecall, VQAAcc
 
 __all__ = [
     'AccMetric', 'AVAMetric', 'ANetMetric', 'ConfusionMatrix',

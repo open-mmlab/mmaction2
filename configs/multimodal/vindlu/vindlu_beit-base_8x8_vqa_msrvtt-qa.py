@@ -1,16 +1,16 @@
 _base_ = ['../../_base_/default_runtime.py']
 
 video_root = 'data/msrvtt/videos_2fps_224'
-pretrained_ckpt_path = 'checkpoints/5M-pretrain.pth'
 anno_file_train = 'data/msrvtt/annotations/msrvtt_qa_train.json'
 anno_file_val = 'data/msrvtt/annotations/msrvtt_qa_val.json'
 anno_file_test = 'data/msrvtt/annotations/msrvtt_qa_test.json'
 answer_list_file = 'data/msrvtt/annotations/msrvtt_qa_answer_list.json'
+pretrained_ckpt_url = 'https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_c5m_pretrain'  # noqa: E501
 
 # model settings
 model = dict(
     type='VindLUVQA',
-    init_cfg=dict(type='Pretrained', checkpoint=pretrained_ckpt_path),
+    init_cfg=dict(type='Pretrained', checkpoint=pretrained_ckpt_url),
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[128],
@@ -56,10 +56,19 @@ file_client_args = dict(io_backend='disk')
 
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=12),
+    dict(
+        type='SampleFrames',
+        clip_len=1,
+        frame_interval=1,
+        num_clips=12,
+        out_of_bound_opt='repeat_last'),
     dict(type='DecordDecode'),
     dict(type='RandomResizedCrop', area_range=(0.5, 1.0)),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
+    dict(
+        type='Resize',
+        scale=(224, 224),
+        keep_ratio=False,
+        interpolation='bicubic'),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='FormatShape', input_format='NCHW'),
     dict(
@@ -79,9 +88,14 @@ val_pipeline = [
         clip_len=1,
         frame_interval=1,
         num_clips=12,
-        test_mode=True),
+        test_mode=True,
+        out_of_bound_opt='repeat_last'),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
+    dict(
+        type='Resize',
+        scale=(224, 224),
+        keep_ratio=False,
+        interpolation='bicubic'),
     dict(type='FormatShape', input_format='NCHW'),
     dict(
         type='PackActionInputs',
@@ -97,7 +111,7 @@ test_pipeline = val_pipeline
 dataset_type = 'MSRVTTVQA'
 
 train_dataloader = dict(
-    batch_size=32,
+    batch_size=8,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),

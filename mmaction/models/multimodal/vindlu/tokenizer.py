@@ -42,6 +42,4 @@ class VindLUTokenizer(BertTokenizer):
 
 
 TOKENIZER.register_module(
-    'BertTokenizer', module=BertTokenizer.from_pretrained)
-TOKENIZER.register_module(
     'VindLUTokenizer', module=VindLUTokenizer.from_pretrained)

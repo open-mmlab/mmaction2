@@ -3,13 +3,13 @@ _base_ = ['../../_base_/default_runtime.py']
 video_root = 'data/msrvtt/videos_2fps_224'
 anno_file_train = 'data/msrvtt/annotations/msrvtt_ret_train9k.json'
 anno_file_test = 'data/msrvtt/annotations/msrvtt_ret_test1k.json'
-pretrained_ckpt_path = 'checkpoints/5M-pretrain.pth'
+pretrained_ckpt_url = 'https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_c5m_pretrain'  # noqa: E501
 
 # model settings
 model = dict(
     type='VindLURetrieval',
     gradient_checkpointing=True,
-    init_cfg=dict(type='Pretrained', checkpoint=pretrained_ckpt_path),
+    init_cfg=dict(type='Pretrained', checkpoint=pretrained_ckpt_url),
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[128],

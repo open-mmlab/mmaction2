@@ -26,15 +26,17 @@ The last several years have witnessed remarkable progress in video-and-language 
 
 ### Video Question-Answering on MSRVTT-QA
 
-| frame sampling strategy | resolution | gpus | vision encoder | text encoder |      pretraining       | top1 acc |                       config                       |                       ckpt                       |    log    |
-| :---------------------: | :--------: | :--: | :------------: | :----------: | :--------------------: | :------: | :------------------------------------------------: | :----------------------------------------------: | :-------: |
-|       uniform 12        |  224x224   |  8   |   BEiT-Base    |  Bert-Base   | C5M (WebVid-2M + CC3M) |   xx.x   | [config](/configs/multimodal/vindlu/vindlu_beit-base_8x32_vqa_msrvtt-qa.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/multimodal/) | [log](<>) |
+| frame sampling strategy | resolution | gpus | vision encoder | text encoder |      pretraining       | top1 acc |                config                 |                ckpt                 |                 log                 |
+| :---------------------: | :--------: | :--: | :------------: | :----------: | :--------------------: | :------: | :-----------------------------------: | :---------------------------------: | :---------------------------------: |
+|       uniform 12        |  224x224   |  8   |   BEiT-Base    |  Bert-Base   | C5M (WebVid-2M + CC3M) |   43.6   | [config](/configs/multimodal/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu_beit-base_8x8_vqa_msrvtt-qa/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa_20230906-6e693e64.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu_beit-base_8x8_vqa_msrvtt-qa/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa.log) |
 
 ### Multiple-Choice Question-Answering on MSRVTT-MC (Inference)
 
 | frame sampling strategy | resolution | gpus | vision encoder | text encoder |      pretraining       | top1 acc |                         config                         |                         ckpt                          |
 | :---------------------: | :--------: | :--: | :------------: | :----------: | :--------------------: | :------: | :----------------------------------------------------: | :---------------------------------------------------: |
 |       uniform 12        |  224x224   |  8   |   BEiT-Base    |  Bert-Base   | C5M (WebVid-2M + CC3M) |   97.6   | [config](/configs/multimodal/vindlu/vindlu_beit-base_vqa-mc_msrvtt-mc.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_beit-base_8x16_retrieval_msrvtt-9k/vindlu_beit-base_8x16_retrieval_msrvtt-9k_20230905-fc36231e.pth) |
+
+1. Currently, we only support the fine-tuning stage of VindLU models based on the pretrained checkpoint provided by the [original repo](https://github.com/klauscc/VindLU).
 
 For more details on data preparation, you can refer to [prepare msrvtt](/tools/data/msrvtt/README.md).
 

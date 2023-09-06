@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 FPS=2
 SIZE=224
 DATA_DIR="../../../data/msrvtt/videos"
