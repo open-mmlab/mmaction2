@@ -59,17 +59,16 @@ class TestRetrievalRecall(TestCase):
     def test_evaluate(self):
         """Test using the metric in the same way as Evalutor."""
         pred = [
-            ActionDataSample().set_pred_score(i).to_dict() for i in [
+            ActionDataSample().set_pred_score(i).set_gt_label(k).to_dict()
+            for i, k in zip([
                 torch.tensor([0.7, 0.0, 0.3]),
                 torch.tensor([0.5, 0.2, 0.3]),
                 torch.tensor([0.4, 0.5, 0.1]),
                 torch.tensor([0.0, 0.0, 1.0]),
                 torch.tensor([0.0, 0.0, 1.0]),
                 torch.tensor([0.0, 0.0, 1.0]),
-            ]
+            ], [[0], [0], [1], [2], [2], [0]])
         ]
-        for sample, label in zip(pred, [[0], [0], [1], [2], [2], [0]]):
-            sample['gt_label'] = label
 
         # Test with score (use score instead of label if score exists)
         metric = METRICS.build(dict(type='RetrievalRecall', topk=1))

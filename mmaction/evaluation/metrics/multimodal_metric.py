@@ -355,7 +355,7 @@ class VQAMCACC(BaseMetric):
         """
         for sample in data_samples:
             # gt_labels in datasample is a LabelData
-            label = sample['gt_labels']['item'].item()
+            label = sample['gt_label'].item()
             result = {
                 'pred_label': sample.get('pred_label'),
                 'gt_label': label,
@@ -428,7 +428,7 @@ class RetrievalRecall(BaseMetric):
             predictions (Sequence[dict]): A batch of outputs from the model.
         """
         for data_sample in data_samples:
-            pred_score = data_sample['pred_scores']['item'].cpu()
+            pred_score = data_sample['pred_score'].cpu()
             gt_label = format_label(data_sample['gt_label'])
 
             if 'gt_score' in data_sample:
