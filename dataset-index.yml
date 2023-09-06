@@ -1,39 +1,40 @@
+openxlab: true
 kinetics400:
-  dataset: Kinetics-400
+  dataset: OpenMMLab/Kinetics-400
   download_root: data
   data_root: data/kinetics400
-  script: tools/data/kinetics/k400_preprocess.sh
+  script: tools/data/kinetics/preprocess_k400.sh
 
 kinetics600:
-  dataset: Kinetics600
+  dataset: OpenMMLab/Kinetics600
   download_root: data
   data_root: data/kinetics600
-  script: tools/data/kinetics/k600_preprocess.sh
+  script: tools/data/kinetics/preprocess_k600.sh
 
 kinetics700:
-  dataset: Kinetics_700
+  dataset: OpenMMLab/Kinetics_700
   download_root: data
   data_root: data/kinetics700
-  script: tools/data/kinetics/k700_preprocess.sh
+  script: tools/data/kinetics/preprocess_k700.sh
 
 sthv2:
-  dataset: sthv2
+  dataset: OpenDataLab/sthv2
   download_root: data
   data_root: data/sthv2
   script: tools/data/sthv2/preprocess.sh
 
 ucf-101:
-  dataset: UCF101
+  dataset: OpenDataLab/UCF101
   download_root: data
   data_root: data/ucf101
 
 finegym:
-  dataset: FineGym
+  dataset: OpenDataLab/FineGym
   download_root: data
   data_root: data/gym
 
 diving48:
-  dataset: diving48
+  dataset: OpenDataLab/diving48
   download_root: data
   data_root: data/diving48
   script: tools/data/diving48/preprocess.sh

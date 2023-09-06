@@ -38,10 +38,10 @@ All experiments on Kinetics in MMAction2 are based on this version, we recommend
 MIM supports downloading from OpenDataLab and preprocessing Kinetics-400/600/700 dataset with one command line.
 
 ```Bash
-# install OpenDataLab CLI tools
-pip install -U opendatalab
-# log in OpenDataLab
-odl login
+# install OpenXlab CLI tools
+pip install -U openxlab
+# log in OpenXLab
+openxlab login
 # download and preprocess Kinetics-400 by MIM. Note that this might take a long time.
 mim download mmaction2 --dataset kinetics400
 # download and preprocess Kinetics-600 by MIM. Note that this might take a long time.
