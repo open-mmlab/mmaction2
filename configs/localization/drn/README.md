@@ -1,4 +1,4 @@
-# BMN
+# DRN
 
 [Dense Regression Network for Video Grounding](https://openaccess.thecvf.com/content_CVPR_2020/papers/Zeng_Dense_Regression_Network_for_Video_Grounding_CVPR_2020_paper.pdf)
 
@@ -13,7 +13,7 @@ We address the problem of video grounding from natural language queries. The key
 <!-- [IMAGE] -->
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/34324155/143016479-2ca7e8b6-a17b-4a4c-b4c9-ae731935cd91.png" width="800"/>
+<img src="https://github.com/open-mmlab/mmaction2/files/12532583/Fig1.pdf" width="800"/>
 </div>
 
 ## Results and Models
