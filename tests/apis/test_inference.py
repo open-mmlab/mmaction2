@@ -66,7 +66,7 @@ class TestInference(TestCase):
             result = inference_recognizer(model, video_path)
 
             self.assertIsInstance(result, ActionDataSample)
-            self.assertTrue(result.pred_scores.item.shape, (400, ))
+            self.assertTrue(result.pred_score.shape, (400, ))
 
     def test_detection_inference(self):
         from mmdet.apis import init_detector

@@ -356,6 +356,6 @@ class ActionRecogInferencer(BaseInferencer):
             dict: The output dictionary.
         """
         result = {}
-        result['pred_labels'] = data_sample.pred_labels.item.tolist()
-        result['pred_scores'] = data_sample.pred_scores.item.tolist()
+        result['pred_labels'] = data_sample.pred_label.tolist()
+        result['pred_scores'] = data_sample.pred_score.tolist()
         return result

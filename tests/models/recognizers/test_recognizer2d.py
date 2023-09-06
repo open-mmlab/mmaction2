@@ -21,7 +21,7 @@ def train_test_step(cfg, input_shape):
         'inputs':
         [torch.randint(0, 256, input_shape) for i in range(batch_size)],
         'data_samples':
-        [ActionDataSample().set_gt_labels(2) for i in range(batch_size)]
+        [ActionDataSample().set_gt_label(2) for i in range(batch_size)]
     }
 
     # test train_step
@@ -34,7 +34,7 @@ def train_test_step(cfg, input_shape):
     # test test_step
     with torch.no_grad():
         predictions = recognizer.test_step(data_batch)
-    score = predictions[0].pred_scores.item
+    score = predictions[0].pred_score
     assert len(predictions) == batch_size
     assert score.shape == torch.Size([num_classes])
     assert torch.min(score) >= 0
@@ -46,7 +46,7 @@ def train_test_step(cfg, input_shape):
     data_batch['inputs'] = [torch.randint(0, 256, input_shape)]
     with torch.no_grad():
         predictions = recognizer.test_step(data_batch)
-    score = predictions[0].pred_scores.item
+    score = predictions[0].pred_score
     assert len(predictions) == batch_size
     assert score.shape == torch.Size([num_classes])
 

@@ -373,7 +373,7 @@ def skeleton_based_action_recognition(args, pose_results, h, w):
     skeleton_model = init_recognizer(
         skeleton_config, args.skeleton_checkpoint, device=args.device)
     result = inference_skeleton(skeleton_model, pose_results, (h, w))
-    action_idx = result.pred_scores.item.argmax().item()
+    action_idx = result.pred_score.argmax().item()
     return label_map[action_idx]
 
 
@@ -382,7 +382,7 @@ def rgb_based_action_recognition(args):
     rgb_config.model.backbone.pretrained = None
     rgb_model = init_recognizer(rgb_config, args.rgb_checkpoint, args.device)
     action_results = inference_recognizer(rgb_model, args.video)
-    rgb_action_result = action_results.pred_scores.item.argmax().item()
+    rgb_action_result = action_results.pred_score.argmax().item()
     label_map = [x.strip() for x in open(args.label_map).readlines()]
     return label_map[rgb_action_result]
 
@@ -460,7 +460,7 @@ def skeleton_based_stdet(args, label_map, human_detections, pose_results,
 
             output = inference_recognizer(skeleton_stdet_model, fake_anno)
             # for multi-label recognition
-            score = output.pred_scores.item.tolist()
+            score = output.pred_score.tolist()
             for k in range(len(score)):  # 81
                 if k not in label_map:
                     continue

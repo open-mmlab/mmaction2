@@ -34,7 +34,7 @@ class TestPackActionInputs(unittest.TestCase):
         self.assertIn('data_samples', results)
         self.assertIsInstance(results['inputs'], torch.Tensor)
         self.assertEqual(results['inputs'].shape, (2, 300, 17, 3))
-        self.assertEqual(results['data_samples'].gt_labels.item,
+        self.assertEqual(results['data_samples'].gt_label,
                          torch.LongTensor([1]))
 
         # heatmap_imgs input
@@ -45,7 +45,7 @@ class TestPackActionInputs(unittest.TestCase):
         self.assertIn('data_samples', results)
         self.assertIsInstance(results['inputs'], torch.Tensor)
         self.assertEqual(results['inputs'].shape, (2, 17, 56, 56))
-        self.assertEqual(results['data_samples'].gt_labels.item,
+        self.assertEqual(results['data_samples'].gt_label,
                          torch.LongTensor([1]))
 
         # audios input
@@ -82,7 +82,7 @@ class TestPackActionInputs(unittest.TestCase):
         self.assertIsInstance(results['inputs'], torch.Tensor)
         self.assertIsInstance(results['data_samples'], ActionDataSample)
         self.assertEqual(results['data_samples'].img_shape, (256, 256, 3))
-        self.assertEqual(results['data_samples'].gt_labels.item,
+        self.assertEqual(results['data_samples'].gt_label,
                          torch.LongTensor([1]))
 
         # Test grayscale image

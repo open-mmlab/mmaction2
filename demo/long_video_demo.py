@@ -216,7 +216,7 @@ def inference(model, data, args, frame_queue):
 
     result = inference_recognizer(
         model, cur_data, test_pipeline=args.test_pipeline)
-    scores = result.pred_scores.item.tolist()
+    scores = result.pred_score.tolist()
 
     if args.stride > 0:
         pred_stride = int(args.sample_length * args.stride)

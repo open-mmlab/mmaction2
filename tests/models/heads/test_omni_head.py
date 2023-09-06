@@ -31,9 +31,7 @@ def testOmniHead():
     video_feat = torch.randn(2, 400, 8, 8, 8)
     video_score = head(video_feat)
     assert video_score.shape == torch.Size([2, 200])
-    data_samples = [
-        obj('gt_label', obj('label', torch.tensor(1))) for _ in range(2)
-    ]
+    data_samples = [obj('gt_label', torch.tensor(1)) for _ in range(2)]
     losses = head.loss_by_feat(video_score, data_samples)
     assert 'loss_cls' in losses
 
@@ -41,6 +39,6 @@ def testOmniHead():
     head.eval()
     image_score = head(image_feat)
     assert image_score.shape == torch.Size([1, 100])
-    data_samples = [obj('gt_labels', obj('item', torch.tensor(1)))]
+    data_samples = [obj('gt_label', torch.tensor(1))]
     losses = head.loss_by_feat(image_score, data_samples)
     assert 'loss_cls' in losses

@@ -39,7 +39,7 @@ def main():
         raise NotImplementedError('Demo works on extracted audio features')
     pred_result = inference_recognizer(model, args.audio)
 
-    pred_scores = pred_result.pred_scores.item.tolist()
+    pred_scores = pred_result.pred_score.tolist()
     score_tuples = tuple(zip(range(len(pred_scores)), pred_scores))
     score_sorted = sorted(score_tuples, key=itemgetter(1), reverse=True)
     top5_label = score_sorted[:5]

@@ -75,17 +75,23 @@ class AccMetric(BaseMetric):
         data_samples = copy.deepcopy(data_samples)
         for data_sample in data_samples:
             result = dict()
-            pred = data_sample['pred_scores']
-            label = data_sample['gt_labels']
-            for item_name, score in pred.items():
-                pred[item_name] = score.cpu().numpy()
+            pred = data_sample['pred_score']
+            label = data_sample['gt_label']
+
+            # Ad-hoc for RGBPoseConv3D
+            if isinstance(pred, dict):
+                for item_name, score in pred.items():
+                    pred[item_name] = score.cpu().numpy()
+            else:
+                pred = pred.cpu().numpy()
+
             result['pred'] = pred
-            if label['item'].size(0) == 1:
+            if label.size(0) == 1:
                 # single-label
-                result['label'] = label['item'].item()
+                result['label'] = label.item()
             else:
                 # multi-label
-                result['label'] = label['item'].cpu().numpy()
+                result['label'] = label.cpu().numpy()
             self.results.append(result)
 
     def compute_metrics(self, results: List) -> Dict:
@@ -100,39 +106,41 @@ class AccMetric(BaseMetric):
         """
         labels = [x['label'] for x in results]
 
-        if len(results[0]['pred']) == 1:
-            preds = [x['pred']['item'] for x in results]
-            return self.calculate(preds, labels)
-
         eval_results = dict()
-        for item_name in results[0]['pred'].keys():
-            preds = [x['pred'][item_name] for x in results]
-            eval_result = self.calculate(preds, labels)
-            eval_results.update(
-                {f'{item_name}_{k}': v
-                 for k, v in eval_result.items()})
-
         # Ad-hoc for RGBPoseConv3D
-        if len(results[0]['pred']) == 2 and \
-                'rgb' in results[0]['pred'] and \
-                'pose' in results[0]['pred']:
+        if isinstance(results[0]['pred'], dict):
 
-            rgb = [x['pred']['rgb'] for x in results]
-            pose = [x['pred']['pose'] for x in results]
+            for item_name in results[0]['pred'].keys():
+                preds = [x['pred'][item_name] for x in results]
+                eval_result = self.calculate(preds, labels)
+                eval_results.update(
+                    {f'{item_name}_{k}': v
+                     for k, v in eval_result.items()})
 
-            preds = {
-                '1:1': get_weighted_score([rgb, pose], [1, 1]),
-                '2:1': get_weighted_score([rgb, pose], [2, 1]),
-                '1:2': get_weighted_score([rgb, pose], [1, 2])
-            }
-            for k in preds:
-                eval_result = self.calculate(preds[k], labels)
-                eval_results.update({
-                    f'RGBPose_{k}_{key}': v
-                    for key, v in eval_result.items()
-                })
+            if len(results[0]['pred']) == 2 and \
+                    'rgb' in results[0]['pred'] and \
+                    'pose' in results[0]['pred']:
 
-        return eval_results
+                rgb = [x['pred']['rgb'] for x in results]
+                pose = [x['pred']['pose'] for x in results]
+
+                preds = {
+                    '1:1': get_weighted_score([rgb, pose], [1, 1]),
+                    '2:1': get_weighted_score([rgb, pose], [2, 1]),
+                    '1:2': get_weighted_score([rgb, pose], [1, 2])
+                }
+                for k in preds:
+                    eval_result = self.calculate(preds[k], labels)
+                    eval_results.update({
+                        f'RGBPose_{k}_{key}': v
+                        for key, v in eval_result.items()
+                    })
+            return eval_results
+
+        # Simple Acc Calculation
+        else:
+            preds = [x['pred'] for x in results]
+            return self.calculate(preds, labels)
 
     def calculate(self, preds: List[np.ndarray],
                   labels: List[Union[int, np.ndarray]]) -> Dict:
@@ -238,13 +246,13 @@ class ConfusionMatrix(BaseMetric):
 
     def process(self, data_batch, data_samples: Sequence[dict]) -> None:
         for data_sample in data_samples:
-            pred_scores = data_sample.get('pred_scores')
-            gt_label = data_sample['gt_labels']['item']
+            pred_scores = data_sample.get('pred_score')
+            gt_label = data_sample['gt_label']
             if pred_scores is not None:
-                pred_label = pred_scores['item'].argmax(dim=0, keepdim=True)
-                self.num_classes = pred_scores['item'].size(0)
+                pred_label = pred_scores.argmax(dim=0, keepdim=True)
+                self.num_classes = pred_scores.size(0)
             else:
-                pred_label = data_sample['pred_labels']['item']
+                pred_label = data_sample['pred_label']
 
             self.results.append({
                 'pred_label': pred_label,
