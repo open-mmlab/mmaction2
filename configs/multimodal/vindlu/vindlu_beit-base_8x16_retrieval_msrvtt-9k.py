@@ -3,7 +3,7 @@ _base_ = ['../../_base_/default_runtime.py']
 video_root = 'data/msrvtt/videos_2fps_224'
 anno_file_train = 'data/msrvtt/annotations/msrvtt_ret_train9k.json'
 anno_file_test = 'data/msrvtt/annotations/msrvtt_ret_test1k.json'
-pretrained_ckpt_url = 'https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_c5m_pretrain'  # noqa: E501
+pretrained_ckpt_url = 'https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_c5m_pretrain.pth'  # noqa: E501
 
 # model settings
 model = dict(

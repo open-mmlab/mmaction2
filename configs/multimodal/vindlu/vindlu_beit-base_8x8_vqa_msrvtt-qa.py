@@ -5,7 +5,7 @@ anno_file_train = 'data/msrvtt/annotations/msrvtt_qa_train.json'
 anno_file_val = 'data/msrvtt/annotations/msrvtt_qa_val.json'
 anno_file_test = 'data/msrvtt/annotations/msrvtt_qa_test.json'
 answer_list_file = 'data/msrvtt/annotations/msrvtt_qa_answer_list.json'
-pretrained_ckpt_url = 'https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_c5m_pretrain'  # noqa: E501
+pretrained_ckpt_url = 'https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_c5m_pretrain.pth'  # noqa: E501
 
 # model settings
 model = dict(

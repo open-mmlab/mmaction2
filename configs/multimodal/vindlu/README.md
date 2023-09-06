@@ -28,7 +28,7 @@ The last several years have witnessed remarkable progress in video-and-language 
 
 | frame sampling strategy | resolution | gpus | vision encoder | text encoder |      pretraining       | top1 acc |                config                 |                ckpt                 |                 log                 |
 | :---------------------: | :--------: | :--: | :------------: | :----------: | :--------------------: | :------: | :-----------------------------------: | :---------------------------------: | :---------------------------------: |
-|       uniform 12        |  224x224   |  8   |   BEiT-Base    |  Bert-Base   | C5M (WebVid-2M + CC3M) |   43.6   | [config](/configs/multimodal/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu_beit-base_8x8_vqa_msrvtt-qa/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa_20230906-6e693e64.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu_beit-base_8x8_vqa_msrvtt-qa/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa.log) |
+|       uniform 12        |  224x224   |  8   |   BEiT-Base    |  Bert-Base   | C5M (WebVid-2M + CC3M) |   43.6   | [config](/configs/multimodal/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa/vindlu_beit-base_8x8_vqa_msrvtt-qa_20230906-6e693e64.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa/vindlu_beit-base_8x8_vqa_msrvtt-qa.log) |
 
 ### Multiple-Choice Question-Answering on MSRVTT-MC (Inference)
 
