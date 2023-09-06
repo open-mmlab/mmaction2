@@ -108,28 +108,28 @@ python generate_rawframes_filelist.py
 
 ```shell
 python ../../misc/clip_feature_extraction.py tsn_extract_rgb_feat_config.py \
-  /path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_tarin_feat.pkl \
+  /path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_tarin_feat \
   --video-list ../../../data/ActivityNet/anet_train_video.txt \
   --video-root ../../../data/ActivityNet/rawframes \
-  --dump-score
+  --dump-score --long-video-mode
 
 python ../../misc/clip_feature_extraction.py tsn_extract_rgb_feat_config.py \
-  path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_val_feat.pkl \
+  path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_val_feat \
   --video-list ../../../data/ActivityNet/anet_val_video.txt \
   --video-root ../../../data/ActivityNet/rawframes \
-  --dump-score
+  --dump-score --long-video-mode
 
 python ../../misc/clip_feature_extraction.py tsn_extract_flow_feat_config.py \
-  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_tarin_feat.pkl \
+  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_tarin_feat \
   --video-list ../../../data/ActivityNet/anet_train_video.txt \
   --video-root ../../../data/ActivityNet/rawframes \
-  --dump-score
+  --dump-score --long-video-mode
 
 python ../../misc/clip_feature_extraction.py tsn_extract_flow_feat_config.py \
-  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_val_feat.pkl \
+  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_val_feat \
   --video-list ../../../data/ActivityNet/anet_val_video.txt \
   --video-root ../../../data/ActivityNet/rawframes \
-  --dump-score
+  --dump-score --long-video-mode
 ```
 
 在提取完特征后，用户可以使用后处理脚本整合 RGB 特征和光流特征，生成 `100-t X 400-d` 维度的特征用于时序动作检测。

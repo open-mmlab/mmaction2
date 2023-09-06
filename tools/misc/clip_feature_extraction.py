@@ -5,6 +5,7 @@ import os.path as osp
 
 from mmengine import dump, list_from_file, load
 from mmengine.config import Config, DictAction
+from mmengine.dist.utils import is_main_process
 from mmengine.runner import Runner
 
 
@@ -133,8 +134,7 @@ def merge_args(cfg, args):
         for idx, transform in enumerate(test_pipeline):
             if transform.type == 'SampleFrames':
                 test_pipeline[idx]['twice_sample'] = False
-            # if transform.type in ['ThreeCrop', 'TenCrop']:
-            if transform.type == 'TenCrop':
+            if transform.type in ['ThreeCrop', 'TenCrop']:
                 test_pipeline[idx].type = 'CenterCrop'
 
     # -------------------- pipeline settings  --------------------
@@ -231,7 +231,7 @@ def merge_args(cfg, args):
 def split_feats(args):
     total_feats = load(args.dump)
     if args.dump_score:
-        total_feats = [sample['pred_scores']['item'] for sample in total_feats]
+        total_feats = [sample['pred_score'] for sample in total_feats]
 
     video_list = list_from_file(args.video_list)
     video_list = [line.split(' ')[0] for line in video_list]
@@ -258,8 +258,8 @@ def main():
 
     # start testing
     runner.test()
-
-    split_feats(args)
+    if is_main_process():
+        split_feats(args)
 
 
 if __name__ == '__main__':
