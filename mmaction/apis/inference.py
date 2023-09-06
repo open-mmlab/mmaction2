@@ -70,7 +70,7 @@ def inference_recognizer(model: nn.Module,
 
     Returns:
         :obj:`ActionDataSample`: The inference results. Specifically, the
-        predicted scores are saved at ``result.pred_scores.item``.
+        predicted scores are saved at ``result.pred_score``.
     """
 
     if test_pipeline is None:
@@ -131,7 +131,7 @@ def inference_skeleton(model: nn.Module,
 
     Returns:
         :obj:`ActionDataSample`: The inference results. Specifically, the
-        predicted scores are saved at ``result.pred_scores.item``.
+        predicted scores are saved at ``result.pred_score``.
     """
     if test_pipeline is None:
         cfg = model.cfg

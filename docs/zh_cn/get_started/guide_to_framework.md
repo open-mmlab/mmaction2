@@ -180,7 +180,7 @@ class VideoPack(BaseTransform):
     def transform(self, results):
         packed_results = dict()
         inputs = to_tensor(results['imgs'])
-        data_sample = ActionDataSample().set_gt_labels(results['label'])
+        data_sample = ActionDataSample().set_gt_label(results['label'])
         metainfo = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(metainfo)
         packed_results['inputs'] = inputs

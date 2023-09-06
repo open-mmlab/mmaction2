@@ -63,7 +63,7 @@ class ActionVisualizer(Visualizer):
         >>> video = video.get_batch(range(32)).asnumpy()
         >>> # Example annotation
         >>> data_sample = ActionDataSample()
-        >>> data_sample.gt_labels = LabelData(item=torch.tensor([2]))
+        >>> data_sample.gt_label = LabelData(item=torch.tensor([2]))
         >>> # Setup the visualizer
         >>> vis = ActionVisualizer(
         ...     save_dir="./outputs",
@@ -215,8 +215,8 @@ class ActionVisualizer(Visualizer):
             self.set_image(frame)
 
             if draw_gt and 'gt_labels' in data_sample:
-                gt_labels = data_sample.gt_labels
-                idx = gt_labels.item.tolist()
+                gt_labels = data_sample.gt_label
+                idx = gt_labels.tolist()
                 class_labels = [''] * len(idx)
                 if classes is not None:
                     class_labels = [f' ({classes[i]})' for i in idx]
