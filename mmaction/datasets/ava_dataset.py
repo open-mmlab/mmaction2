@@ -203,7 +203,6 @@ class AVADataset(BaseActionDataset):
 
             labels.append(label)
             entity_ids.append(img_record['entity_id'])
-
         bboxes = np.stack(bboxes)
         labels = np.stack(labels)
         entity_ids = np.stack(entity_ids)

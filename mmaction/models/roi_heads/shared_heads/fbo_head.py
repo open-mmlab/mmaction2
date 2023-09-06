@@ -10,14 +10,7 @@ from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.runner import load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
-from mmaction.registry import MODELS
 from .lfb import LFB
-
-try:
-    from mmdet.registry import MODELS as MMDET_MODELS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
 
 
 class NonLocalLayer(nn.Module):
@@ -322,7 +315,6 @@ class FBOMax(nn.Module):
         return out
 
 
-@MODELS.register_module()
 class FBOHead(nn.Module):
     """Feature Bank Operator Head.
 
@@ -403,7 +395,3 @@ class FBOHead(nn.Module):
 
         out = torch.cat([identity, fbo_feat], dim=1)
         return out
-
-
-if mmdet_imported:
-    MMDET_MODELS.register_module()(FBOHead)
