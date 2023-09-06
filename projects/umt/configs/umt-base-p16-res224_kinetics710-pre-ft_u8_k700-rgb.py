@@ -29,10 +29,6 @@ data_root_val = 'data/kinetics700/videos_val'
 ann_file_test = 'data/kinetics700/kinetics700_val_list_videos.txt'
 
 file_client_args = dict(io_backend='disk')
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict(
-        {'data/kinetics700/': 's3://openmmlab/datasets/action/Kinetics700/'}))
 
 test_pipeline = [
     dict(type='DecordInit', **file_client_args),
