@@ -66,6 +66,7 @@ jobs:
             mim install 'mmcv >= 2.0.0'
             pip install git+https://git@github.com/open-mmlab/mmdetection.git@dev-3.x
             pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+            pip install git+https://github.com/open-mmlab/mmpretrain.git@dev
             pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
             pip install -r requirements.txt
       - run:
@@ -126,6 +127,7 @@ jobs:
             docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmdetection.git@dev-3.x
             docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmpose.git@dev-1.x
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+            docker exec mmaction pip install git+https://github.com/open-mmlab/mmpretrain.git@dev
             docker exec mmaction pip install -r requirements.txt
       - run:
           name: Build and install
