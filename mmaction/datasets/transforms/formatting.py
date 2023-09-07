@@ -20,6 +20,8 @@ class PackActionInputs(BaseTransform):
         meta_keys (Sequence[str]): The meta keys to saved in the
             `metainfo` of the `data_sample`.
             Defaults to ``('img_shape', 'img_key', 'video_id', 'timestamp')``.
+        algorithm_keys (Sequence[str]): The keys of custom elements to be used
+            in the algorithm. Defaults to an empty tuple.
     """
 
     mapping_table = {
@@ -28,13 +30,15 @@ class PackActionInputs(BaseTransform):
     }
 
     def __init__(
-        self,
-        collect_keys: Optional[Tuple[str]] = None,
-        meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
-                                    'timestamp')
+            self,
+            collect_keys: Optional[Tuple[str]] = None,
+            meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
+                                        'timestamp'),
+            algorithm_keys: Sequence[str] = (),
     ) -> None:
         self.collect_keys = collect_keys
         self.meta_keys = meta_keys
+        self.algorithm_keys = algorithm_keys
 
     def transform(self, results: Dict) -> Dict:
         """The transform function of :class:`PackActionInputs`.
@@ -88,6 +92,12 @@ class PackActionInputs(BaseTransform):
         if 'label' in results:
             data_sample.set_gt_label(results['label'])
 
+        # Set custom algorithm keys
+        for key in self.algorithm_keys:
+            if key in results:
+                data_sample.set_field(results[key], key)
+
+        # Set meta keys
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
         packed_results['data_samples'] = data_sample

@@ -73,6 +73,10 @@ jobs:
           name: Install timm
           command: |
             pip install timm
+      - run:
+          name: Install transformers
+          command: |
+            pip install transformers
       - when:
           condition:
             equal: [ "0.10.0", << parameters.torchvision >> ]
@@ -118,6 +122,10 @@ jobs:
           command: |
             docker exec mmaction pip install timm
             docker exec mmaction python -m pip install pytorchvideo
+      - run:
+          name: Install transformers
+          command: |
+            docker exec mmaction pip install transformers
       - run:
           name: Install mmaction dependencies
           command: |
