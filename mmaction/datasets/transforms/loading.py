@@ -1851,6 +1851,77 @@ class GenerateLocalizationLabels(BaseTransform):
 
 
 @TRANSFORMS.register_module()
+class LoadSegmentationFeature(BaseTransform):
+    """Load Video features for Segmentation with given video_name list.
+
+    The required key is "feature_path", added or modified keys
+    are "raw_feature".
+
+    Args:
+        raw_feature_ext (str): Raw feature file extension.  Default: '.csv'.
+    """
+
+    def transform(self, results):
+        """Perform the LoadSegmentationFeature loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        raw_feature = np.load(results['feature_path'])
+        file_ptr = open(results['ground_truth_path'], 'r')
+        content = file_ptr.read().split('\n')[:-1]
+        classes = np.zeros(min(np.shape(raw_feature)[1], len(content)))
+        for i in range(len(classes)):
+            classes[i] = results['actions_dict'][content[i]]
+
+        results['raw_feature'] = raw_feature
+        results['ground_truth'] = content
+        results['classes'] = classes
+
+        return results
+
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__}'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class GenerateSegmentationLabels(BaseTransform):
+    """Load video label for localizer with given video_name list.
+
+    Required keys are "duration_frame", "duration_second", "feature_frame",
+    "annotations", added or modified keys are "gt_bbox".
+    """
+
+    def transform(self, results):
+        """Perform the GenerateLocalizationLabels loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        video_frame = results['duration_frame']
+        video_second = results['duration_second']
+        feature_frame = results['feature_frame']
+        corrected_second = float(feature_frame) / video_frame * video_second
+        annotations = results['annotations']
+
+        gt_bbox = []
+
+        for annotation in annotations:
+            current_start = max(
+                min(1, annotation['segment'][0] / corrected_second), 0)
+            current_end = max(
+                min(1, annotation['segment'][1] / corrected_second), 0)
+            gt_bbox.append([current_start, current_end])
+
+        gt_bbox = np.array(gt_bbox)
+        results['gt_bbox'] = gt_bbox
+        return results
+
+
+@TRANSFORMS.register_module()
 class LoadProposals(BaseTransform):
     """Loading proposals with given proposal results.
 
