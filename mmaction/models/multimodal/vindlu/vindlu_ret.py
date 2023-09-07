@@ -80,12 +80,10 @@ class VindLURetrieval(VindLUBase):
 
         # image to text similarity
         # B, B*world_size
-        # sim_i2t = image_feat @ text_feat_all.t() / self.temp
         sim_i2t = torch.einsum('mld,nd->mln', image_feat,
                                text_feat_all).mean(1) / self.temp
         # text-image similarity
         # B, B*world_size
-        # sim_t2i = text_feat @ image_feat_all.t() / self.temp
         sim_t2i = torch.einsum('md,nld->mln', text_feat,
                                image_feat_all).mean(1) / self.temp
 
@@ -126,8 +124,6 @@ class VindLURetrieval(VindLUBase):
 
         with torch.no_grad():
             # compute sample similarity
-            # sim_i2t = image_feat @ text_feat_world.t() / self.temp
-            # sim_t2i = text_feat @ image_feat_world.t() / self.temp
             sim_i2t = torch.einsum('mld,nd->mln', image_feat,
                                    text_feat_world).mean(1) / self.temp
             sim_t2i = torch.einsum('md,nld->mln', text_feat,
@@ -249,7 +245,6 @@ class VindLURetrieval(VindLUBase):
             # concat temporal embeds
             image_embeds = rearrange(image_embeds,
                                      'b t l c -> b (t l) c').contiguous()
-            # image_embeds = image_embeds.unsqueeze(1)  # (bsz, 1, #frm*L, d)
             results['image_embeds'] = image_embeds
             results['image_feat'] = F.normalize(
                 self.vision_proj(pooled_image_embeds), dim=-1)
@@ -340,7 +335,6 @@ class VindLURetrieval(VindLUBase):
             torch.Tensor: Score matrix of image-to-text retrieval.
         """
         # compute i2t sim matrix
-        # sim_matrix_i2t = img_feats @ text_feats.t()
         sim_matrix_i2t = torch.einsum('mld,nd->mln', img_feats,
                                       text_feats).mean(1)
         if self.fast_match:
@@ -387,9 +381,7 @@ class VindLURetrieval(VindLUBase):
         Returns:
             torch.Tensor: Score matrix of text-to-image retrieval.
         """
-        use_sim = False
         # compute t2i sim matrix
-        # sim_matrix_t2i = text_feats @ img_feats.t()
         sim_matrix_t2i = torch.einsum('md,nld->mln', text_feats,
                                       img_feats).mean(1)
 
@@ -402,26 +394,22 @@ class VindLURetrieval(VindLUBase):
                 range(text_feats.size(0)), 'Compute T2I scores...'):
             sims = sim_matrix_t2i[i]
             topk_sim, topk_idx = sims.topk(k=self.topk, dim=0)
-            if use_sim:
-                score_matrix_t2i[i, topk_idx] = topk_sim
-            else:
-                topk_bz = 32
-                for j in range(0, self.topk // topk_bz):
-                    batch_topk = topk_idx[j * topk_bz:(j + 1) * topk_bz]
-                    encoder_output = img_embeds[batch_topk]
-                    encoder_att = torch.ones(
-                        encoder_output.size()[:-1],
-                        dtype=torch.long).to(self.device)
-                    output = self.text_encoder(
-                        encoder_embeds=text_embeds[i].repeat(topk_bz, 1, 1),
-                        attention_mask=text_atts[i].repeat(topk_bz, 1),
-                        encoder_hidden_states=encoder_output,
-                        encoder_attention_mask=encoder_att,
-                        return_dict=True,
-                        mode='fusion')
-                    score = self.itm_head(output.last_hidden_state[:, 0, :])[:,
-                                                                             1]
-                    score_matrix_t2i[i, batch_topk] = score
+            topk_bz = 32
+            for j in range(0, self.topk // topk_bz):
+                batch_topk = topk_idx[j * topk_bz:(j + 1) * topk_bz]
+                encoder_output = img_embeds[batch_topk]
+                encoder_att = torch.ones(
+                    encoder_output.size()[:-1],
+                    dtype=torch.long).to(self.device)
+                output = self.text_encoder(
+                    encoder_embeds=text_embeds[i].repeat(topk_bz, 1, 1),
+                    attention_mask=text_atts[i].repeat(topk_bz, 1),
+                    encoder_hidden_states=encoder_output,
+                    encoder_attention_mask=encoder_att,
+                    return_dict=True,
+                    mode='fusion')
+                score = self.itm_head(output.last_hidden_state[:, 0, :])[:, 1]
+                score_matrix_t2i[i, batch_topk] = score
         return score_matrix_t2i
 
     def _get_predictions(self,

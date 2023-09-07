@@ -162,9 +162,6 @@ def interpolate_pos_relative_bias_beit(state_dict_old, state_dict_new,
                     else:
                         left = q
 
-                # if q > 1.090307:
-                #     q = 1.090307
-
                 dis = []
                 cur = 1
                 for i in range(src_size // 2):

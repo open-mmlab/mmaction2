@@ -176,11 +176,6 @@ class VindLUBase(BaseModel):
     def device(self):
         return next(self.parameters()).device
 
-    # def get_text_encoder(self):
-    #     """get text encoder, used for text and cross-modal encoding."""
-    #     encoder = self.text_encoder
-    #     return encoder.bert if hasattr(encoder, 'bert') else encoder
-
     def preprocess_state_dict(self, state_dict):
         """Preprocess pretrained checkpoint for text_encoder."""
         for key in list(state_dict.keys()):
