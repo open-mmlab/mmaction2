@@ -3,7 +3,7 @@
 # 'https://github.com/qinzhi-0110/'
 # 'Temporal-Context-Aggregation-Network-Pytorch/'
 # 'blob/main/utils.py'
-# TODO: refactor
+# : refactor
 import torch
 
 

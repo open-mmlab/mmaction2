@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-"""import torch TODO! from mmaction.models import SingleRoIExtractor3D.
+"""import torch ! from mmaction.models import SingleRoIExtractor3D.
 
 def test_single_roi_extractor3d():
     roi_extractor = SingleRoIExtractor3D(

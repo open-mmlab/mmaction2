@@ -117,7 +117,7 @@ We provide scripts to convert skeleton annotations from third-party projects to 
 
 - BABEL: `babel2mma2.py`
 
-**TODO**:
+\*\*\*\*:
 
 - [x] FineGYM
 - [x] NTU60_XSub

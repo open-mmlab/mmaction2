@@ -346,7 +346,7 @@ class ResNet3dPathway(ResNet3d):
 
 pathway_cfg = {
     'resnet3d': ResNet3dPathway,
-    # TODO: BNInceptionPathway
+    # : BNInceptionPathway
 }
 
 

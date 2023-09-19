@@ -12,7 +12,7 @@ def bbox2result(bboxes: torch.Tensor,
     This identifies single-label classification (as opposed to multi-label)
     through the thr parameter which is set to a negative value.
 
-    ToDo: The ideal way would be for this to be automatically set when the
+    : The ideal way would be for this to be automatically set when the
     Currently, the way to set this is to set ``test_cfg.rcnn.action_thr=-1.0``
     model cfg uses multilabel=False, however this could be a breaking change
     and is left as a future exercise.

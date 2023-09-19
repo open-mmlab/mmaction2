@@ -7,7 +7,7 @@
 
 # -- Path setup --------------------------------------------------------------
 
-# If extensions (or modules to document with autodoc) are in another directory,
+# If extensions (or modules to document with auc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
@@ -42,7 +42,7 @@ release = get_version()
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
+    'sphinx.ext.auc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     'sphinx.ext.napoleon',
@@ -55,7 +55,7 @@ extensions = [
 ]
 
 # numpy and torch are required
-autodoc_mock_imports = ['mmaction.version', 'PIL']
+auc_mock_imports = ['mmaction.version', 'PIL']
 
 copybutton_prompt_text = r'>>> |\.\.\. '
 copybutton_prompt_is_regexp = True

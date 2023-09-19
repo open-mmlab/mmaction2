@@ -29,7 +29,7 @@ def generate_backbone_demo_inputs(input_shape=(1, 3, 64, 64)):
     return imgs
 
 
-# TODO Remove this API
+#  Remove this API
 def generate_recognizer_demo_inputs(
         input_shape=(1, 3, 3, 224, 224), model_type='2D'):
     """Create a superset of inputs needed to run test or train batches.

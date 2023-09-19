@@ -39,7 +39,7 @@ class AccMetric(BaseMetric):
                      top_k_accuracy=dict(topk=(1, 5))),
                  prefix: Optional[str] = None) -> None:
 
-        # TODO: fix the metric_list argument with a better one.
+        # : fix the metric_list argument with a better one.
         # `metrics` is not a safe argument here with mmengine.
         # we have to replace it with `metric_list`.
         super().__init__(collect_device=collect_device, prefix=prefix)

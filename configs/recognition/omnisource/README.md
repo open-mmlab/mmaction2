@@ -1,6 +1,6 @@
 # Omnisource
 
-<!-- TODO: add links to the tech report -->
+<!-- : add links to the tech report -->
 
 <!-- [ALGORITHM] -->
 

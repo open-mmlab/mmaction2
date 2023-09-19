@@ -1,0 +1,23 @@
+_BASE_: "Base.yaml"
+MODEL:
+  TRAIN_TASK: ["ObjectDet", "DenseCap"]
+  TEST_TASK: "DenseCap" # DenseCap or ObjectDet: Choose one for testing
+  MASK_ON: True
+  ROI_HEADS:
+    SOFT_NMS_ENABLED: False
+  BEAM_SIZE: 1
+  WEIGHTS: "detectron2://ImageNetPretrained/MAE/mae_pretrain_vit_base.pth"
+  BACKBONE:
+    NAME: build_vit_fpn_backbone
+  VIT_LAYERS: 12
+SOLVER:
+  VIT_LAYER_DECAY_RATE: 0.7
+DATASETS:
+  TRAIN: ("GRiT_coco2017_train", "vg_train")
+  TEST: ("coco_2017_test-dev",)
+DATALOADER:
+  DATASET_RATIO: [1, 1]
+  DATASET_BS: 2
+  DATASET_INPUT_SIZE: [1024, 1024]
+  DATASET_INPUT_SCALE: [[0.1, 2.0], [0.1, 2.0]]
+OUTPUT_DIR: "./output/GRiT_B_DenseCap_ObjectDet"

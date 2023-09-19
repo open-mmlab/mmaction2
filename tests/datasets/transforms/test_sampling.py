@@ -664,7 +664,7 @@ class TestSampling(BaseTestLoading):
             f'frame_interval={8}, '
             f'test_mode={False})')
 
-    """ TODO
+    """
     def test_sample_proposal_frames(self):
         target_keys = [
             'frame_inds', 'clip_len', 'frame_interval', 'num_clips',
