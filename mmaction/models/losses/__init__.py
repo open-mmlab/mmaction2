@@ -12,5 +12,5 @@ from .ssn_loss import SSNLoss
 __all__ = [
     'BaseWeightedLoss', 'CrossEntropyLoss', 'NLLLoss', 'BCELossWithLogits',
     'BinaryLogisticRegressionLoss', 'BMNLoss', 'OHEMHingeLoss', 'SSNLoss',
-    'HVULoss', 'CBFocalLoss'
+    'HVULoss', 'CBFocalLoss', 'MeanSquareErrorLoss'
 ]

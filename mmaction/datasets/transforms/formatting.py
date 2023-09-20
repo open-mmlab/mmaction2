@@ -170,6 +170,62 @@ class PackLocalizationInputs(BaseTransform):
 
 
 @TRANSFORMS.register_module()
+class PackSegmentationInputs(BaseTransform):
+
+    def __init__(self, keys=(), meta_keys=('video_name', )):
+        self.keys = keys
+        self.meta_keys = meta_keys
+
+    def transform(self, results):
+        """Method to pack the input data.
+
+        Args:
+            results (dict): Result dict from the data pipeline.
+
+        Returns:
+            dict:
+
+            - 'inputs' (obj:`torch.Tensor`): The forward data of models.
+            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
+                sample.
+        """
+        packed_results = dict()
+        if 'raw_feature' in results:
+            raw_feature = results['raw_feature']
+            packed_results['inputs'] = to_tensor(raw_feature)
+        else:
+            raise ValueError('Cannot get "raw_feature" in the input '
+                             'dict of `PackSegmentationInputs`.')
+
+        data_sample = ActionDataSample()
+        for key in self.keys:
+            if key not in results:
+                continue
+            if key == 'classes':
+                instance_data = InstanceData()
+                instance_data[key] = to_tensor(results[key])
+                data_sample.gt_instances = instance_data
+            elif key == 'proposals':
+                instance_data = InstanceData()
+                instance_data[key] = to_tensor(results[key])
+                data_sample.proposals = instance_data
+            else:
+                raise NotImplementedError(
+                    f"Key '{key}' is not supported in `PackSegmentationInputs`"
+                )
+
+        img_meta = {k: results[k] for k in self.meta_keys if k in results}
+        data_sample.set_metainfo(img_meta)
+        packed_results['data_samples'] = data_sample
+        return packed_results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(meta_keys={self.meta_keys})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
 class Transpose(BaseTransform):
     """Transpose image channels to a given order.
 

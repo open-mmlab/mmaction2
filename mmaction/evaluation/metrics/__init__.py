@@ -9,5 +9,5 @@ from .retrieval_metric import RetrievalMetric
 __all__ = [
     'AccMetric', 'AVAMetric', 'ANetMetric', 'ConfusionMatrix',
     'MultiSportsMetric', 'RetrievalMetric', 'VQAAcc', 'ReportVQA', 'VQAMCACC',
-    'RetrievalRecall'
+    'RetrievalRecall', 'SegmentMetric'
 ]

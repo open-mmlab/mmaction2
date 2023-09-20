@@ -1785,6 +1785,43 @@ class AudioFeatureSelector(BaseTransform):
 
 
 @TRANSFORMS.register_module()
+class LoadSegmentationFeature(BaseTransform):
+    """Load Video features for localizer with given video_name list.
+
+    The required key are "feature_path", "ground_truth_path",
+    added or modified keys are "actions_dict", "raw_feature",
+    "ground_truth", "classes".
+
+    Args:
+        raw_feature_ext (str): Raw feature file extension.  Default: '.csv'.
+    """
+
+    def transform(self, results):
+        """Perform the LoadSegmentationFeature loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        raw_feature = np.load(results['feature_path'])
+        file_ptr = open(results['ground_truth_path'], 'r')
+        content = file_ptr.read().split('\n')[:-1]
+        classes = np.zeros(min(np.shape(raw_feature)[1], len(content)))
+        for i in range(len(classes)):
+            classes[i] = results['actions_dict'][content[i]]
+
+        results['raw_feature'] = raw_feature
+        results['ground_truth'] = content
+        results['classes'] = classes
+
+        return results
+
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__}'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
 class LoadLocalizationFeature(BaseTransform):
     """Load Video features for localizer with given video_name list.
 
