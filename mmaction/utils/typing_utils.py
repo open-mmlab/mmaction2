@@ -18,7 +18,6 @@ OptMultiConfig = Optional[MultiConfig]
 InstanceList = List[InstanceData]
 OptInstanceList = Optional[InstanceList]
 
-
 SampleList = List[ActionDataSample]
 OptSampleList = Optional[SampleList]
 
