@@ -36,10 +36,10 @@ MMAction2 代码仓库中提供的 Kinetics 实验性能，都是基于这个版
 
 # MIM 支持下载 Kinetics-400/600/700 数据集。用户可以通过一行命令，从 OpenDataLab 进行下载，并进行预处理。
 ```Bash
-# 安装 OpenDataLab CLI 工具
-pip install -U opendatalab
-# 登录 OpenDataLab
-odl login
+# 安装 OpenXLab CLI 工具
+pip install -U openxlab
+# 登录 OpenXLab
+openxlab login
 # 通过 MIM 进行 Kinetics-400 数据集下载，预处理。注意这将花费较长时间
 mim download mmaction2 --dataset kinetics400
 # 通过 MIM 进行 Kinetics-600 数据集下载，预处理。注意这将花费较长时间

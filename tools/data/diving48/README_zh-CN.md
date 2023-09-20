@@ -21,10 +21,10 @@
 ````{group-tab} 使用 MIM 下载
 # MIM 支持下载 Diving48 数据集。用户可以通过一行命令，从 OpenDataLab 进行下载，并进行预处理。
 ```Bash
-# 安装 OpenDataLab CLI 工具
-pip install -U opendatalab
-# 登录 OpenDataLab
-odl login
+# 安装 OpenXLab CLI 工具
+pip install -U openxlab
+# 登录 OpenXLab
+openxlab login
 # 通过 MIM 进行数据集下载，预处理。注意这将花费较长时间
 mim download mmaction2 --dataset diving48
 ```

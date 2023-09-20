@@ -325,6 +325,9 @@ class ResNetTIN(ResNetTSM):
         if len(self.non_local_cfg) != 0:
             self.make_non_local()
 
+    def _get_wrap_prefix(self):
+        return ['.net2']
+
     def make_temporal_interlace(self):
         """Make temporal interlace for some layers."""
         num_segment_list = [self.num_segments] * 4
@@ -365,6 +368,3 @@ class ResNetTIN(ResNetTSM):
                                            self.shift_div)
         self.layer4 = make_block_interlace(self.layer4, num_segment_list[3],
                                            self.shift_div)
-
-    def init_weights(self):
-        pass
