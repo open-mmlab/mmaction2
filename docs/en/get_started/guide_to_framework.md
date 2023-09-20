@@ -418,7 +418,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.model import BaseModel, BaseModule, Sequential
-from mmengine.structures import LabelData
 from mmaction.registry import MODELS
 
 
@@ -498,8 +497,7 @@ class ClsHeadZelda(BaseModule):
         cls_scores = self.average_clip(cls_scores, num_views)
 
         for ds, sc in zip(data_samples, cls_scores):
-            pred = LabelData(item=sc)
-            ds.pred_scores = pred
+            ds.set_pred_score(sc)
         return data_samples
 
     def average_clip(self, cls_scores, num_views):

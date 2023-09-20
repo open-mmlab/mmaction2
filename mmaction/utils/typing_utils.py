@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 from mmengine.config import ConfigDict
-from mmengine.structures import InstanceData, LabelData
+from mmengine.structures import InstanceData
 
 from mmaction.structures import ActionDataSample
 
@@ -18,8 +18,6 @@ OptMultiConfig = Optional[MultiConfig]
 InstanceList = List[InstanceData]
 OptInstanceList = Optional[InstanceList]
 
-LabelList = List[LabelData]
-OptLabelList = Optional[LabelList]
 
 SampleList = List[ActionDataSample]
 OptSampleList = Optional[SampleList]

@@ -57,13 +57,12 @@ class ActionVisualizer(Visualizer):
         >>> import decord
         >>> from pathlib import Path
         >>> from mmaction.structures import ActionDataSample, ActionVisualizer
-        >>> from mmengine.structures import LabelData
         >>> # Example frame
         >>> video = decord.VideoReader('./demo/demo.mp4')
         >>> video = video.get_batch(range(32)).asnumpy()
         >>> # Example annotation
         >>> data_sample = ActionDataSample()
-        >>> data_sample.gt_label = LabelData(item=torch.tensor([2]))
+        >>> data_sample.set_pred_label(torch.tensor([2]))
         >>> # Setup the visualizer
         >>> vis = ActionVisualizer(
         ...     save_dir="./outputs",

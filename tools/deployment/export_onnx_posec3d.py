@@ -11,7 +11,6 @@ import torch.nn as nn
 from mmengine import Config
 from mmengine.registry import init_default_scope
 from mmengine.runner import load_checkpoint
-from mmengine.structures import LabelData
 
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
@@ -113,8 +112,6 @@ def main():
     base_model.eval()
 
     data_sample = ActionDataSample()
-    data_sample.pred_scores = LabelData()
-    data_sample.pred_labels = LabelData()
     base_output = base_model(
         input_tensor.unsqueeze(0), data_samples=[data_sample],
         mode='predict')[0]
