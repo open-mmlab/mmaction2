@@ -22,10 +22,10 @@ For basic dataset information, you can refer to the dataset [website](https://de
 ````{group-tab} Download by MIM
 MIM supports downloading from OpenDataLab and preprocessing Something-Something V2 dataset with one command line.
 ```Bash
-# install OpenDataLab CLI tools
-pip install -U opendatalab
-# log in OpenDataLab
-odl login
+# install OpenXlab CLI tools
+pip install -U openxlab
+# log in OpenXLab
+openxlab login
 # download and preprocess by MIM
 mim download mmaction2 --dataset sthv2
 ```

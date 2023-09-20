@@ -21,10 +21,10 @@ For basic dataset information, you can refer to the official dataset [website](h
 ````{group-tab} Download by MIM
 MIM supports downloading from OpenDataLab and preprocessing Diving48 dataset with one command line.
 ```Bash
-# install OpenDataLab CLI tools
-pip install -U opendatalab
-# log in OpenDataLab
-odl login
+# install OpenXlab CLI tools
+pip install -U openxlab
+# log in OpenXLab
+openxlab login
 # download and preprocess by MIM
 mim download mmaction2 --dataset diving48
 ```
