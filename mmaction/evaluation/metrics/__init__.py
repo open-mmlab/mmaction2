@@ -5,6 +5,7 @@ from .ava_metric import AVAMetric
 from .multimodal_metric import VQAMCACC, ReportVQA, RetrievalRecall, VQAAcc
 from .multisports_metric import MultiSportsMetric
 from .retrieval_metric import RetrievalMetric
+from .segment_metric import SegmentMetric
 
 __all__ = [
     'AccMetric', 'AVAMetric', 'ANetMetric', 'ConfusionMatrix',
