@@ -5,6 +5,7 @@ from .bmn_loss import BMNLoss
 from .cross_entropy_loss import (BCELossWithLogits, CBFocalLoss,
                                  CrossEntropyLoss)
 from .hvu_loss import HVULoss
+from .mse_loss import MeanSquareErrorLoss
 from .nll_loss import NLLLoss
 from .ohem_hinge_loss import OHEMHingeLoss
 from .ssn_loss import SSNLoss
