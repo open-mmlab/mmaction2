@@ -78,7 +78,6 @@ class VisualizationHook(Hook):
         for sample_id in range(first_sample_id, end_idx, self.interval):
             video = videos[sample_id - start_idx]
             # move channel to the last
-            #video = video.permute(1, 2, 3, 0).numpy().astype('uint8')
             for i in range(video.shape[0]):
                 single_video = video[i].permute(1, 2, 3, 0).numpy().astype('uint8')
                 data_sample = data_samples[sample_id - start_idx]
@@ -91,9 +90,6 @@ class VisualizationHook(Hook):
                     sample_name = str(sample_id)
 
                 draw_args = self.draw_args
-                if 'show' in draw_args:
-                    del draw_args['show']
-                print(draw_args)
                 if self.out_dir is not None:
                     draw_args['out_path'] = self.file_client.join_path(
                         self.out_dir, f'{sample_name}_{step}')
