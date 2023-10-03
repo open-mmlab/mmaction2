@@ -79,11 +79,11 @@ class VisualizationHook(Hook):
             video = videos[sample_id - start_idx]
             # move channel to the last
             for i in range(video.shape[0]):
-                single_video = video[i].permute(1, 2, 3, 
+                single_video = video[i].permute(1, 2, 3,
                                                 0).numpy().astype('uint8')
                 data_sample = data_samples[sample_id - start_idx]
                 if 'filename' in data_sample:
-                    # osp.basename works on different platforms 
+                    # osp.basename works on different platforms
                     # even file clients.
                     sample_name = osp.basename(data_sample.get('filename'))
                 elif 'frame_dir' in data_sample:
