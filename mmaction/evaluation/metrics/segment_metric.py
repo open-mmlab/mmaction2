@@ -14,7 +14,7 @@ class SegmentMetric(BaseMetric):
     """Action Segmentation dataset evaluation metric."""
 
     def __init__(self,
-                 metric_type: str = 'TEM',
+                 metric_type: str = 'ALL',
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None,
                  metric_options: dict = {},
