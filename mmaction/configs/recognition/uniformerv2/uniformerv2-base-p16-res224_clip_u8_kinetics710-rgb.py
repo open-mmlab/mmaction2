@@ -4,7 +4,7 @@ from mmengine.config import read_base
 with read_base():
     from ..._base_.default_runtime import *
 
-from mmengine.dataset import DefaultSampler
+from mmengine.dataset import ConcatDataset, DefaultSampler
 from mmengine.optim import CosineAnnealingLR, LinearLR
 from mmengine.runner import EpochBasedTrainLoop, TestLoop, ValLoop
 from torch.optim import AdamW
