@@ -14,6 +14,16 @@
 }
 ```
 
+```BibTeX
+@inproceedings{chen2011collecting,
+  title={Collecting highly parallel data for paraphrase evaluation},
+  author={Chen, David and Dolan, William B},
+  booktitle={ACL},
+  pages={190--200},
+  year={2011}
+}
+```
+
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/video_retrieval/`.
 
 ## Preparing MSRVTT dataset
@@ -42,4 +52,32 @@ mmaction2
 │   │           ├── video1.mp4
 │   │           ├── ...
 │   │           └── video9999.mp4
+```
+
+## Preparing MSVD dataset
+
+For basic dataset information, you can refer to the MSVD dataset [website](https://www.cs.utexas.edu/users/ml/clamp/videoDescription/). Run the following command to prepare the MSVD dataset:
+
+```shell
+bash prepare_msvd.sh
+```
+
+After preparation, the folder structure will look like:
+
+```
+mmaction2
+├── mmaction
+├── tools
+├── configs
+├── data
+│   ├── video_retrieval
+│   │   └── msrvd
+│   │       ├── train.json
+│   │       ├── test.json
+│   │       ├── val.json
+│   │       └─── videos
+│   │           ├── xxx.avi
+│   │           ├── xxx.avi
+│   │           ├── ...
+│   │           └── xxx.avi
 ```

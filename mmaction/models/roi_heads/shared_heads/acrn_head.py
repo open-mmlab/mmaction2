@@ -5,18 +5,9 @@ from mmcv.cnn import ConvModule
 from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
-from mmaction.registry import MODELS
-
-try:
-    from mmdet.registry import MODELS as MMDET_MODELS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
-
 # Note: All these heads take 5D Tensors as input (N, C, T, H, W)
 
 
-@MODELS.register_module()
 class ACRNHead(nn.Module):
     """ACRN Head: Tile + 1x1 convolution + 3x3 convolution.
 
@@ -132,7 +123,3 @@ class ACRNHead(nn.Module):
             new_feat = conv(new_feat)
 
         return new_feat
-
-
-if mmdet_imported:
-    MMDET_MODELS.register_module()(ACRNHead)

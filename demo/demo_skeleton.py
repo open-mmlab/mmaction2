@@ -152,7 +152,7 @@ def main():
     model = init_recognizer(config, args.checkpoint, args.device)
     result = inference_skeleton(model, pose_results, (h, w))
 
-    max_pred_index = result.pred_scores.item.argmax().item()
+    max_pred_index = result.pred_score.argmax().item()
     label_map = [x.strip() for x in open(args.label_map).readlines()]
     action_label = label_map[max_pred_index]
 

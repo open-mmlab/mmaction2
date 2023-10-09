@@ -8,6 +8,7 @@ MMAction2 支持许多现有的数据集。在本章中，我们将引导您准�
   - [使用自定义数据集](#使用自定义数据集)
     - [动作识别](#动作识别)
     - [基于骨骼的动作识别](#基于骨骼的动作识别)
+    - [基于音频的动作识别](#基于音频的动作识别)
     - [时空动作检测](#时空动作检测)
     - [时序动作定位](#时序动作定位)
   - [使用混合数据集进行训练](#使用混合数据集进行训练)
@@ -20,7 +21,7 @@ MMAction2 支持两种类型的数据格式：原始帧和视频。前者在之�
 
 ## 使用内置数据集
 
-MMAction2 已经支持许多数据集，我们在路径 `$MMACTION2/tools/data/` 下提供了用于数据准备的 shell 脚本，请参考[支持的数据集](../datasetzoo_satatistics.md)以获取准备特定数据集的详细信息。
+MMAction2 已经支持许多数据集，我们在路径 `$MMACTION2/tools/data/` 下提供了用于数据准备的 shell 脚本，请参考[支持的数据集](https://mmaction2.readthedocs.io/zh_CN/latest/datasetzoo_statistics.html)以获取准备特定数据集的详细信息。
 
 ## 使用自定义数据集
 
@@ -28,6 +29,7 @@ MMAction2 已经支持许多数据集，我们在路径 `$MMACTION2/tools/data/`
 
 - `RawFrameDataset` 和 `VideoDataset` 用于[动作识别](#动作识别)
 - `PoseDataset` 用于[基于骨骼的动作识别](#基于骨骼的动作识别)
+- `AudioDataset` 用于[基于音频动作识别](#基于音频动作识别)
 - `AVADataset` 用于[时空动作检测](#时空动作检测)
 - `ActivityNetDataset` 用于[时序动作定位](#时序动作定位)
 
@@ -162,6 +164,46 @@ data = dict(
   ```
 
   支持其他关键点格式需要进行进一步修改，请参考[自定义数据集](../advanced_guides/customize_dataset.md)。
+
+### 基于音频的动作识别
+
+MMAction2 支持基于 `AudioDataset` 的音频动作识别任务。该任务使用梅尔频谱特征作为输入, 注释文件格式示例如下：
+
+```
+ihWykL5mYRI.npy 300 153
+lumzQD42AN8.npy 240 321
+sWFRmD9Of4s.npy 250 250
+w_IpfgRsBVA.npy 300 356
+```
+
+每一行代表一个训练样本，以第一行为例，`ihWykL5mYRI.npy` 为梅尔频谱特征的文件名，`300` 为该梅尔频谱特征文件对应的原视频文件的总帧数，`153` 为类别标签。我们分以下两阶段生成所需要的梅尔频谱特征文件数据：
+
+首先，通过视频文件提取`音频文件`:
+
+```
+cd $MMACTION2
+python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-workers ${N_WORKERS}] \
+    [--level ${LEVEL}]
+```
+
+- `ROOT`: 视频的根目录。
+- `DST_ROOT`: 存放生成音频的根目录。
+- `EXT`: 视频的后缀名，如 `mp4`。
+- `N_WORKERS`: 使用的进程数量。
+
+下一步，从音频文件生成`梅尔频谱特征`:
+
+```
+cd $MMACTION2
+python tools/data/build_audio_features.py ${AUDIO_HOME_PATH} ${SPECTROGRAM_SAVE_PATH} [--level ${LEVEL}] \
+    [--ext $EXT] [--num-workers $N_WORKERS] [--part $PART]
+```
+
+- `AUDIO_HOME_PATH`: 音频文件的根目录。
+- `SPECTROGRAM_SAVE_PATH`: 存放生成音频特征的根目录。
+- `EXT`: 音频的后缀名，如 `m4a`。
+- `N_WORKERS`: 使用的进程数量。
+- `PART`: 将完整的解码任务分为几部分并执行其中一份。如 `2/5` 表示将所有待解码数据分成 5 份，并对其中的第 2 份进行解码。这一选项在用户有多台机器时发挥作用。
 
 ### 时空动作检测
 

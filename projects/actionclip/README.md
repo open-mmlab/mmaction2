@@ -120,6 +120,7 @@ print("Label probs:", probs)  # [[9.995e-01 5.364e-07 6.666e-04]]
 
 ```python
 import mmengine
+import torch
 from mmaction.utils import register_all_modules
 from mmaction.apis import inference_recognizer, init_recognizer
 
@@ -139,7 +140,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model = init_recognizer(config=config, checkpoint=checkpoint_path, device=device)
 
 pred_result = inference_recognizer(model, 'test.mp4')
-probs = pred_result.pred_scores.item.cpu().numpy()
+probs = pred_result.pred_score.cpu().numpy()
 print("Label probs:", probs)  # [9.995e-01 5.364e-07 6.666e-04]
 ```
 

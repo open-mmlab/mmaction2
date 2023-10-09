@@ -1,0 +1,55 @@
+Collections:
+  - Name: VindLU
+    README: configs/multimodal/vindlu/README.md
+    Paper:
+      URL: https://arxiv.org/abs/2212.05051
+      Title: 'VindLU: A Recipe for Effective Video-and-Language Pretraining'
+
+Models:
+  - Name: vindlu_beit-base_8x16_retrieval_msrvtt-9k
+    Config: configs/multimodal/vindlu/vindlu_beit-base_8x16_retrieval_msrvtt-9k.py
+    In Collection: VindLU
+    Metadata:
+      Architecture: BEiT-Base
+      Batch Size: 16
+      Epochs: 5
+      Training Data: MSRVTT-9k
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: MSRVTT
+      Task: Video Retrieval
+      Metrics:
+        Recall@1: 44.0
+        Recall@5: 70.6
+        Recall@10: 80.0
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_beit-base_8x16_retrieval_msrvtt-9k/vindlu_beit-base_8x16_retrieval_msrvtt-9k.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_beit-base_8x16_retrieval_msrvtt-9k/vindlu_beit-base_8x16_retrieval_msrvtt-9k_20230905-fc36231e.pth
+
+  - Name: vindlu_beit-base_8x8_vqa_msrvtt-qa
+    Config: configs/multimodal/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa.py
+    In Collection: VindLU
+    Metadata:
+      Architecture: BEiT-Base
+      Batch Size: 8
+      Epochs: 10
+      Training Data: MSRVTT-qa
+      Training Resources: 8 GPUs
+    Results:
+      Dataset: MSRVTT
+      Task: Video Question-Answering
+      Metrics:
+        Top 1 Accuracy: 43.6
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa/vindlu_beit-base_8x8_vqa_msrvtt-qa.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_beit-base_8x8_vqa_msrvtt-qa/vindlu_beit-base_8x8_vqa_msrvtt-qa_20230906-6e693e64.pth
+
+  - Name: vindlu_beit-base_vqa-mc_msrvtt-mc
+    Config: configs/multimodal/vindlu/vindlu_beit-base_vqa-mc_msrvtt-mc.py
+    In Collection: VindLU
+    Metadata:
+      Architecture: BEiT-Base
+    Results:
+      Dataset: MSRVTT-MC
+      Task: Multiple-Choice Question-Answering
+      Metrics:
+        Top 1 Accuracy: 97.6
+    Weights: https://download.openmmlab.com/mmaction/v1.0/multimodal/vindlu/vindlu_beit-base_8x16_retrieval_msrvtt-9k/vindlu_beit-base_8x16_retrieval_msrvtt-9k_20230905-fc36231e.pth

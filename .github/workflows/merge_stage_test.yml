@@ -60,6 +60,8 @@ jobs:
         run: pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
       - name: Install MMCls
         run: pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+      - name: Install MMPretrain
+        run: pip install git+https://github.com/open-mmlab/mmpretrain.git@dev
       - name: Install MMPose
         run: pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
       - name: Install PytorchVideo
@@ -67,6 +69,8 @@ jobs:
         if: ${{matrix.torchvision == '0.10.0'}}
       - name: Install timm
         run: pip install timm
+      - name: Install transformers
+        run: pip install transformers
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
@@ -108,6 +112,8 @@ jobs:
         run: pip install lmdb
       - name: Install timm
         run: pip install timm
+      - name: Install transformers
+        run: pip install transformers
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install PyTorch
@@ -122,6 +128,8 @@ jobs:
         run: pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
       - name: Install MMCls
         run: pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+      - name: Install MMPretrain
+        run: pip install git+https://github.com/open-mmlab/mmpretrain.git@dev
       - name: Install MMPose
         run: pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
       - name: Install unittest dependencies
@@ -179,6 +187,8 @@ jobs:
         run: pip install librosa soundfile
       - name: Install lmdb
         run: pip install lmdb
+      - name: Install transformers
+        run: pip install transformers
       - name: Install mmaction dependencies
         run: |
           pip install git+https://github.com/open-mmlab/mmengine.git@main
@@ -186,6 +196,7 @@ jobs:
           mim install 'mmcv >= 2.0.0'
           pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
           pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+          pip install git+https://github.com/open-mmlab/mmpretrain.git@dev
           pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
           pip install -r requirements.txt
       - name: Install PytorchVideo
@@ -228,12 +239,15 @@ jobs:
           mim install 'mmcv >= 2.0.0'
           pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
           pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+          pip install git+https://github.com/open-mmlab/mmpretrain.git@dev
           pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
           pip install -r requirements.txt
       - name: Install PytorchVideo
         run: python -m pip install pytorchvideo
       - name: Install timm
         run: python -m pip install timm
+      - name: Install transformers
+        run: python -m pip install transformers
       - name: Build and install
         run: |
           pip install -e . -v

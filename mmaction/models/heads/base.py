@@ -6,7 +6,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.model import BaseModule
-from mmengine.structures import LabelData
 
 from mmaction.evaluation import top_k_accuracy
 from mmaction.registry import MODELS
@@ -112,7 +111,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         Returns:
             dict: A dictionary of loss components.
         """
-        labels = [x.gt_labels.item for x in data_samples]
+        labels = [x.gt_label for x in data_samples]
         labels = torch.stack(labels).to(cls_scores.device)
         labels = labels.squeeze()
 
@@ -175,7 +174,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                 (B*num_segs, num_classes)
             data_samples (list[:obj:`ActionDataSample`]): The
                 annotation data of every samples. It usually includes
-                information such as `gt_labels`.
+                information such as `gt_label`.
 
         Returns:
             List[:obj:`ActionDataSample`]: Recognition results wrapped
@@ -187,10 +186,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
 
         for data_sample, score, pred_label in zip(data_samples, cls_scores,
                                                   pred_labels):
-            prediction = LabelData(item=score)
-            pred_label = LabelData(item=pred_label)
-            data_sample.pred_scores = prediction
-            data_sample.pred_labels = pred_label
+            data_sample.set_pred_score(score)
+            data_sample.set_pred_label(pred_label)
         return data_samples
 
     def average_clip(self,

@@ -7,11 +7,10 @@ import pytest
 from mmengine.testing import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal
 
-from mmaction.datasets.transforms import (AudioAmplify, CenterCrop,
-                                          ColorJitter, Flip, Fuse,
-                                          MelSpectrogram, MultiScaleCrop,
-                                          RandomCrop, RandomResizedCrop,
-                                          Resize, TenCrop, ThreeCrop)
+from mmaction.datasets.transforms import (CenterCrop, ColorJitter, Flip, Fuse,
+                                          MultiScaleCrop, RandomCrop,
+                                          RandomResizedCrop, Resize, TenCrop,
+                                          ThreeCrop)
 
 
 def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
@@ -68,59 +67,6 @@ def check_flip(origin_imgs, result_imgs, flip_type):
                 return False
         # yapf: enable
     return True
-
-
-class TestAudio:
-
-    @staticmethod
-    def test_audio_amplify():
-        target_keys = ['audios', 'amplify_ratio']
-        with pytest.raises(TypeError):
-            # ratio should be float
-            AudioAmplify(1)
-
-        audio = (np.random.rand(8, ))
-        results = dict(audios=audio)
-        amplifier = AudioAmplify(1.5)
-        results = amplifier(results)
-        assert assert_dict_has_keys(results, target_keys)
-        assert repr(amplifier) == (f'{amplifier.__class__.__name__}'
-                                   f'(ratio={amplifier.ratio})')
-
-    @staticmethod
-    def test_melspectrogram():
-        target_keys = ['audios']
-        with pytest.raises(TypeError):
-            # ratio should be float
-            MelSpectrogram(window_size=12.5)
-        audio = (np.random.rand(1, 160000))
-
-        # test padding
-        results = dict(audios=audio, sample_rate=16000)
-        results['num_clips'] = 1
-        results['sample_rate'] = 16000
-        mel = MelSpectrogram()
-        try:
-            import soundfile as sf  # noqa: F401
-        except (OSError, ImportError):
-            return
-
-        results = mel(results)
-        assert assert_dict_has_keys(results, target_keys)
-
-        # test truncating
-        audio = (np.random.rand(1, 160000))
-        results = dict(audios=audio, sample_rate=16000)
-        results['num_clips'] = 1
-        results['sample_rate'] = 16000
-        mel = MelSpectrogram(fixed_length=1)
-        results = mel(results)
-        assert assert_dict_has_keys(results, target_keys)
-        assert repr(mel) == (f'{mel.__class__.__name__}'
-                             f'(window_size={mel.window_size}), '
-                             f'step_size={mel.step_size}, '
-                             f'n_mels={mel.n_mels}, '
-                             f'fixed_length={mel.fixed_length})')
 
 
 class TestColor:

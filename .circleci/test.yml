@@ -66,12 +66,17 @@ jobs:
             mim install 'mmcv >= 2.0.0'
             pip install git+https://git@github.com/open-mmlab/mmdetection.git@dev-3.x
             pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+            pip install git+https://github.com/open-mmlab/mmpretrain.git@dev
             pip install git+https://github.com/open-mmlab/mmpose.git@dev-1.x
             pip install -r requirements.txt
       - run:
           name: Install timm
           command: |
             pip install timm
+      - run:
+          name: Install transformers
+          command: |
+            pip install transformers
       - when:
           condition:
             equal: [ "0.10.0", << parameters.torchvision >> ]
@@ -118,6 +123,10 @@ jobs:
             docker exec mmaction pip install timm
             docker exec mmaction python -m pip install pytorchvideo
       - run:
+          name: Install transformers
+          command: |
+            docker exec mmaction pip install transformers
+      - run:
           name: Install mmaction dependencies
           command: |
             docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmengine.git@main
@@ -126,6 +135,7 @@ jobs:
             docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmdetection.git@dev-3.x
             docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmpose.git@dev-1.x
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification.git@dev-1.x
+            docker exec mmaction pip install git+https://github.com/open-mmlab/mmpretrain.git@dev
             docker exec mmaction pip install -r requirements.txt
       - run:
           name: Build and install

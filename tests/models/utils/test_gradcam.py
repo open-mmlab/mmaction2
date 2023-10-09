@@ -41,7 +41,7 @@ def _do_test_2D_models(recognizer,
                        device='cpu'):
     demo_data = {
         'inputs': [torch.randint(0, 256, input_shape[1:])],
-        'data_samples': [ActionDataSample().set_gt_labels(2)]
+        'data_samples': [ActionDataSample().set_gt_label(2)]
     }
 
     recognizer = recognizer.to(device)
@@ -67,7 +67,7 @@ def _do_test_3D_models(recognizer,
         input_shape, num_classes=num_classes, model_type='3D')
     demo_data = {
         'inputs': [torch.randint(0, 256, input_shape[1:])],
-        'data_samples': [ActionDataSample().set_gt_labels(2)]
+        'data_samples': [ActionDataSample().set_gt_label(2)]
     }
 
     gradcam = GradCAM(recognizer, target_layer_name)

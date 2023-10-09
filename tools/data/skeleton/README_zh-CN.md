@@ -44,7 +44,7 @@ bash download_annotations.sh ${DATASET}
 - Diving48 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/diving48_2d.pkl
 - Kinetics400 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/k400_2d.pkl (只包含数据列表，没有姿态标注文件)
 
-由于 Kinetics400 数据集姿态标注文件过大，我们不提供阿里云的下载链接，请使用此[链接](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EeyDCVskqLtClMVVwqD53acBF2FEwkctp3vtRbkLfnKSTw?e=B3SZlM)下载 `kpfiles`，解压到 `$MMACTION2/data/k400` 目录下，用于 Kinetics400 的训练和测试。
+由于 Kinetics400 数据集姿态标注文件过大，我们不提供阿里云的下载链接，请使用此[链接](https://openxlab.org.cn/datasets/OpenMMLab/Kinetics400-skeleton)下载 `k400_kpfiles_2d.zip`，解压到 `$MMACTION2/data/skeleton/kpfiles` 目录下，用于 Kinetics400 的训练和测试。
 
 若想生成单个视频的 2D 姿态标注文件，用户在安装 mmdetection 和 mmpose 之后，可使用以下脚本进行 NTURGB+D 视频的姿态提取：
 

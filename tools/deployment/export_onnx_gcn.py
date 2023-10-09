@@ -122,7 +122,7 @@ def main():
     base_output = base_model(
         input_tensor.unsqueeze(0), data_samples=[data_sample],
         mode='predict')[0]
-    base_output = base_output.pred_scores.item.detach().cpu().numpy()
+    base_output = base_output.pred_score.detach().cpu().numpy()
 
     model = GCNNet(base_model).to(args.device)
     model.eval()

@@ -32,7 +32,7 @@ We provide links to the pre-processed skeleton annotations, you can directly dow
 - Diving48 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/diving48_2d.pkl
 - Kinetics400 \[2D Skeleton\]: https://download.openmmlab.com/mmaction/v1.0/skeleton/data/k400_2d.pkl (Table of contents only, no skeleton annotations)
 
-For Kinetics400, since the skeleton annotations are large, we do not provide the direct download links on aliyun. Please use the following link to download the `kpfiles` and extract it under `$MMACTION2/data/k400` for Kinetics400 training & testing: https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EeyDCVskqLtClMVVwqD53acBF2FEwkctp3vtRbkLfnKSTw?e=B3SZlM
+For Kinetics400, since the skeleton annotations are large, we do not provide the direct download links on aliyun. Please use the following link to download the `k400_kpfiles_2d.zip` and extract it under `$MMACTION2/data/skeleton/kpfiles` for Kinetics400 training & testing: https://openxlab.org.cn/datasets/OpenMMLab/Kinetics400-skeleton
 
 If you want to generate 2D skeleton annotations of specified video, please install mmdetection and mmpose first, then use the following script to extract skeleton annotations of NTURGB+D video:
 

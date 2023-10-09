@@ -34,7 +34,7 @@ class TestPackActionInputs(unittest.TestCase):
         self.assertIn('data_samples', results)
         self.assertIsInstance(results['inputs'], torch.Tensor)
         self.assertEqual(results['inputs'].shape, (2, 300, 17, 3))
-        self.assertEqual(results['data_samples'].gt_labels.item,
+        self.assertEqual(results['data_samples'].gt_label,
                          torch.LongTensor([1]))
 
         # heatmap_imgs input
@@ -45,7 +45,7 @@ class TestPackActionInputs(unittest.TestCase):
         self.assertIn('data_samples', results)
         self.assertIsInstance(results['inputs'], torch.Tensor)
         self.assertEqual(results['inputs'].shape, (2, 17, 56, 56))
-        self.assertEqual(results['data_samples'].gt_labels.item,
+        self.assertEqual(results['data_samples'].gt_label,
                          torch.LongTensor([1]))
 
         # audios input
@@ -82,7 +82,7 @@ class TestPackActionInputs(unittest.TestCase):
         self.assertIsInstance(results['inputs'], torch.Tensor)
         self.assertIsInstance(results['data_samples'], ActionDataSample)
         self.assertEqual(results['data_samples'].img_shape, (256, 256, 3))
-        self.assertEqual(results['data_samples'].gt_labels.item,
+        self.assertEqual(results['data_samples'].gt_label,
                          torch.LongTensor([1]))
 
         # Test grayscale image
@@ -191,11 +191,20 @@ def test_format_shape():
         # invalid input format
         FormatShape('NHWC')
 
-    # 'NCHW' input format
+    # 'NCHW' input format (RGB Modality)
     results = dict(
         imgs=np.random.randn(3, 224, 224, 3), num_clips=1, clip_len=3)
     format_shape = FormatShape('NCHW')
     assert format_shape(results)['input_shape'] == (3, 3, 224, 224)
+
+    # `NCHW` input format (Flow Modality)
+    results = dict(
+        imgs=np.random.randn(3, 224, 224, 2),
+        num_clips=1,
+        clip_len=3,
+        modality='Flow')
+    format_shape = FormatShape('NCHW')
+    assert format_shape(results)['input_shape'] == (1, 6, 224, 224)
 
     # `NCTHW` input format with num_clips=1, clip_len=3
     results = dict(
@@ -228,11 +237,6 @@ def test_format_shape():
         imgs=np.random.randn(12, 17, 56, 56), num_clips=2, clip_len=6)
     format_shape = FormatShape('NCTHW_Heatmap')
     assert format_shape(results)['input_shape'] == (2, 17, 6, 56, 56)
-
-    # `NCHW_Flow` input format
-    results = dict(imgs=np.random.randn(6, 224, 224), num_clips=1, clip_len=3)
-    format_shape = FormatShape('NCHW_Flow')
-    assert format_shape(results)['input_shape'] == (1, 6, 224, 224)
 
     # `NPTCHW` input format
     results = dict(

@@ -10,13 +10,14 @@ def test_bbox_head_ava():
     bbox head."""
     with pytest.raises(TypeError):
         # topk must be None, int or tuple[int]
-        BBoxHeadAVA(topk=0.1)
+        BBoxHeadAVA(background_class=True, topk=0.1)
 
     with pytest.raises(AssertionError):
         # topk should be smaller than num_classes
-        BBoxHeadAVA(num_classes=5, topk=(3, 5))
+        BBoxHeadAVA(background_class=True, num_classes=5, topk=(3, 5))
 
-    bbox_head = BBoxHeadAVA(in_channels=10, num_classes=4, topk=1)
+    bbox_head = BBoxHeadAVA(
+        background_class=True, in_channels=10, num_classes=4, topk=1)
     input = torch.randn([3, 10, 2, 2, 2])
     ret = bbox_head(input)
     assert ret.shape == (3, 4)
@@ -48,10 +49,16 @@ def test_bbox_head_ava():
         torch.ones([4, 6], dtype=bool))
 
     # Test Multi-Label Loss
-    bbox_head = BBoxHeadAVA()  # Why is this here? isn't this redundant?
+    bbox_head = BBoxHeadAVA(
+        background_class=True)  # Why is this here? isn't this redundant?
     bbox_head.init_weights()
-    bbox_head = BBoxHeadAVA(temporal_pool_type='max', spatial_pool_type='avg')
+    bbox_head = BBoxHeadAVA(
+        background_class=True,
+        temporal_pool_type='max',
+        spatial_pool_type='avg')
     bbox_head.init_weights()
+
+    # test without background class
     """
     losses = bbox_head.loss(
         cls_score=cls_score,

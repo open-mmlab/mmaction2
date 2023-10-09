@@ -8,6 +8,7 @@ MMAction2 supports many existing datasets. In this chapter, we will lead you to 
   - [Use a custom dataset](#use-a-custom-dataset)
     - [Action Recognition](#action-recognition)
     - [Skeleton-based Action Recognition](#skeleton-based-action-recognition)
+    - [Audio-based Action Recognition](#audio-based-action-recognition)
     - [Spatio-temporal Action Detection](#spatio-temporal-action-detection)
     - [Temporal Action Localization](#temporal-action-localization)
   - [Use mixed datasets for training](#use-mixed-datasets-for-training)
@@ -24,7 +25,7 @@ To make video decoding faster, we support several efficient video loading librar
 
 ## Use built-in datasets
 
-MMAction2 already supports many datasets, we provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`, please refer to [supported datasets](../datasetzoo_satatistics.md) for details to prepare specific datasets.
+MMAction2 already supports many datasets, we provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`, please refer to [supported datasets](https://mmaction2.readthedocs.io/en/latest/datasetzoo_statistics.html) for details to prepare specific datasets.
 
 ## Use a custom dataset
 
@@ -32,6 +33,7 @@ The simplest way is to convert your dataset to existing dataset formats:
 
 - `RawFrameDataset` and `VideoDataset` for [Action Recognition](#action-recognition)
 - `PoseDataset` for [Skeleton-based Action Recognition](#skeleton-based-action-recognition)
+- `AudioDataset` for [Audio-based Action Recognition](#Audio-based-action-recognition)
 - `AVADataset` for [Spatio-temporal Action Detection](#spatio-temporal-action-detection)
 - `ActivityNetDataset` for [Temporal Action Localization](#temporal-action-localization)
 
@@ -171,6 +173,46 @@ The task recognizes the action class based on the skeleton sequence (time sequen
   ```
 
   Support other keypoint formats needs further modification, please refer to [customize dataset](../advanced_guides/customize_dataset.md).
+
+### Audio-based Action Recognition
+
+MMAction2 provides support for audio-based action recognition tasks utilizing the `AudioDataset`. This task employs mel spectrogram features as input. An example annotation file format is as follows:
+
+```
+ihWykL5mYRI.npy 300 153
+lumzQD42AN8.npy 240 321
+sWFRmD9Of4s.npy 250 250
+w_IpfgRsBVA.npy 300 356
+```
+
+Each line represents a training sample. Taking the first line as an example, `ihWykL5mYRI.npy` corresponds to the filename of the mel spectrogram feature. The value `300` represents the total number of frames of the original video corresponding to this mel spectrogram feature, and `153` denotes the class label. We take the following two steps to perpare the mel spectrogram feature data:
+
+First, extract `audios` from videos:
+
+```shell
+cd $MMACTION2
+python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-workers ${N_WORKERS}] \
+    [--level ${LEVEL}]
+```
+
+- `ROOT`: The root directory of the videos.
+- `DST_ROOT`: The destination root directory of the audios.
+- `EXT`: Extension of the video files. e.g., `mp4`.
+- `N_WORKERS`: Number of processes to be used.
+
+Next, offline generate the `mel spectrogram features` from the audios:
+
+```shell
+cd $MMACTION2
+python tools/data/build_audio_features.py ${AUDIO_HOME_PATH} ${SPECTROGRAM_SAVE_PATH} [--level ${LEVEL}] \
+    [--ext $EXT] [--num-workers $N_WORKERS] [--part $PART]
+```
+
+- `AUDIO_HOME_PATH`: The root directory of the audio files.
+- `SPECTROGRAM_SAVE_PATH`: The destination root directory of the audio features.
+- `EXT`: Extension of the audio files. e.g., `m4a`.
+- `N_WORKERS`: Number of processes to be used.
+- `PART`: Determines how many parts to be splited and which part to run. e.g., `2/5` means splitting all files into 5-fold and executing the 2nd part. This is useful if you have several machines.
 
 ### Spatio-temporal Action Detection
 

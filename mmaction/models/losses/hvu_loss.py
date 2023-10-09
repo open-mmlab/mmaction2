@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn.functional as F
+from mmengine.device import get_device
 
 from mmaction.registry import MODELS
 from .base import BaseWeightedLoss
@@ -111,7 +112,8 @@ class HVULoss(BaseWeightedLoss):
                     # there should be at least one sample which contains tags
                     # in this category
                     if torch.sum(category_mask_i) < 0.5:
-                        losses[f'{name}_LOSS'] = torch.tensor(.0).cuda()
+                        losses[f'{name}_LOSS'] = torch.tensor(
+                            .0, device=get_device())
                         loss_weights[f'{name}_LOSS'] = .0
                         continue
                     category_loss = torch.sum(category_loss * category_mask_i)

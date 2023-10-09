@@ -26,8 +26,7 @@ def generate_data(num_classes=5, random_label=False, multi_label=False):
             label = torch.randint(num_classes, size=[1])
         else:
             label = torch.LongTensor([scores.argmax().item()])
-        data_sample = dict(
-            pred_scores=dict(item=scores), gt_labels=dict(item=label))
+        data_sample = dict(pred_score=scores, gt_label=label)
         data_samples.append(data_sample)
     return data_batch, data_samples
 
@@ -97,7 +96,7 @@ class TestConfusionMatrix(TestCase):
         """Test using the metric in the same way as Evalutor."""
         pred = [
             ActionDataSample().set_pred_score(i).set_pred_label(
-                j).set_gt_labels(k).to_dict() for i, j, k in zip([
+                j).set_gt_label(k).to_dict() for i, j, k in zip([
                     torch.tensor([0.7, 0.0, 0.3]),
                     torch.tensor([0.5, 0.2, 0.3]),
                     torch.tensor([0.4, 0.5, 0.1]),
@@ -122,7 +121,7 @@ class TestConfusionMatrix(TestCase):
 
         # Test with label
         for sample in pred:
-            del sample['pred_scores']
+            del sample['pred_score']
         metric = METRICS.build(dict(type='ConfusionMatrix'))
         metric.process(None, pred)
         with self.assertRaisesRegex(AssertionError,
