@@ -66,8 +66,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      Top 1 Accuracy: 71.77
-      Top 5 Accuracy: 90.36
+      Top 1 Accuracy: 71.86
+      Top 5 Accuracy: 90.44
     Task: Action Recognition
   Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tin/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb.log
   Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tin/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb_20220913-7f10d0c0.pth

@@ -25,10 +25,10 @@ Before we start, please make sure that the directory is located at `$MMACTION2`.
 Kinetics-710 is a video benchmark based on Kinetics-400/600/700, which merges the training set of these Kinetics datasets, and deletes the repeated videos according to Youtube IDs. MMAction2 provides an annotation file based on the Kinetics-400/600/700 on [OpenDataLab](https://opendatalab.com/). So we suggest you download Kinetics-400/600/700 first from OpenDataLab by [MIM](https://github.com/open-mmlab/mim).
 
 ```shell
-# install OpenDataLab CLI tools
-pip install -U opendatalab
-# log in OpenDataLab
-odl login
+# install OpenXlab CLI tools
+pip install -U openxlab
+# log in OpenXLab
+openxlab login
 # download Kinetics-400/600/700, note that this might take a long time.
 mim download mmaction2 --dataset kinetics400
 mim download mmaction2 --dataset kinetics600
