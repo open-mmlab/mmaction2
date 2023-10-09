@@ -1,0 +1,26 @@
+Collections:
+- Name: ASFormer
+  README: configs/segmentation/asformer/README.md
+  Paper:
+    URL: https://arxiv.org/pdf/2110.08568.pdf
+    Title: "ASFormer: Transformer for Action Segmentation"
+
+Models:
+  - Name: bmn_2xb8-400x100-9e_activitynet-feature
+    Config: configs/segmentation/asformer/asformer_gtea.py
+    In Collection: ASFormer
+    Metadata:
+      Batch Size: 1
+      Epochs: 120
+      Training Data: GTEA
+      Training Resources: 1 GPU
+    Modality: RGB
+    Results:
+      - Dataset: GTEA
+        Task: Action Segmentation
+        Metrics:
+              Acc: 79.76
+              Edit: 85.92
+              F1@10: 90.02
+              F1@25: 88.75
+              F1@50: 80.23
