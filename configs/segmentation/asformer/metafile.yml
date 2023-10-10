@@ -6,8 +6,8 @@ Collections:
     Title: "ASFormer: Transformer for Action Segmentation"
 
 Models:
-  - Name: bmn_2xb8-400x100-9e_activitynet-feature
-    Config: configs/segmentation/asformer/asformer_gtea.py
+  - Name: asformer_gtea2
+    Config: configs/segmentation/asformer/asformer_gtea2.py
     In Collection: ASFormer
     Metadata:
       Batch Size: 1
@@ -19,8 +19,46 @@ Models:
       - Dataset: GTEA
         Task: Action Segmentation
         Metrics:
-              Acc: 79.76
-              Edit: 85.92
-              F1@10: 90.02
-              F1@25: 88.75
-              F1@50: 80.23
+              Acc: 80.34
+              Edit: 81.58
+              F1@10: 89.30
+              F1@25: 87.83
+              F1@50: 75.28
+
+  - Name: asformer_50salads2
+    Config: configs/segmentation/asformer/asformer_50salads2.py
+    In Collection: ASFormer
+    Metadata:
+      Batch Size: 1
+      Epochs: 120
+      Training Data: GTEA
+      Training Resources: 1 GPU
+    Modality: RGB
+    Results:
+      - Dataset: GTEA
+        Task: Action Segmentation
+        Metrics:
+              Acc: 87.55
+              Edit: 79.10
+              F1@10: 85.17
+              F1@25: 83.73
+              F1@50: 77.99
+
+  - Name: asformer_breakfast2
+    Config: configs/segmentation/asformer/asformer_breakfast2.py
+    In Collection: ASFormer
+    Metadata:
+      Batch Size: 1
+      Epochs: 120
+      Training Data: GTEA
+      Training Resources: 1 GPU
+    Modality: RGB
+    Results:
+      - Dataset: GTEA
+        Task: Action Segmentation
+        Metrics:
+              Acc: 74.12
+              Edit: 76.53
+              F1@10: 77.74
+              F1@25: 72.62
+              F1@50: 60.43

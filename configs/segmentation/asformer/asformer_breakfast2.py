@@ -2,11 +2,23 @@ _base_ = [
     '../../_base_/models/asformer.py', '../../_base_/default_runtime.py'
 ]  # dataset settings
 dataset_type = 'ActionSegmentDataset'
-data_root = 'data/action_seg/gtea/'
-data_root_val = 'data/action_seg/gtea/'
-ann_file_train = 'data/action_seg/gtea/splits/train.split1.bundle'
-ann_file_val = 'data/action_seg/gtea/splits/test.split1.bundle'
-ann_file_test = 'data/action_seg/gtea/splits/test.split1.bundle'
+data_root = 'data/action_seg/breakfast/'
+data_root_val = 'data/action_seg/breakfast/'
+ann_file_train = 'data/action_seg/breakfast/splits/train.split2.bundle'
+ann_file_val = 'data/action_seg/breakfast/splits/test.split2.bundle'
+ann_file_test = 'data/action_seg/breakfast/splits/test.split2.bundle'
+
+model = dict(
+    type='ASFormer',
+    channel_masking_rate=0.3,
+    input_dim=2048,
+    num_classes=48,
+    num_decoders=3,
+    num_f_maps=64,
+    num_layers=10,
+    r1=2,
+    r2=2,
+    sample_rate=1)
 
 train_pipeline = [
     dict(type='LoadSegmentationFeature'),
@@ -100,7 +112,7 @@ param_scheduler = [
         gamma=0.5)
 ]
 
-work_dir = './work_dirs/gtea1/'
+work_dir = './work_dirs/breakfast2/'
 test_evaluator = dict(
     type='SegmentMetric',
     metric_type='ALL',

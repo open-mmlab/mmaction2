@@ -2,23 +2,11 @@ _base_ = [
     '../../_base_/models/asformer.py', '../../_base_/default_runtime.py'
 ]  # dataset settings
 dataset_type = 'ActionSegmentDataset'
-data_root = 'data/action_seg/50salads/'
-data_root_val = 'data/action_seg/50salads/'
-ann_file_train = 'data/action_seg/50salads/splits/train.split1.bundle'
-ann_file_val = 'data/action_seg/50salads/splits/test.split1.bundle'
-ann_file_test = 'data/action_seg/50salads/splits/test.split1.bundle'
-
-model = dict(
-    type='ASFormer',
-    num_layers=10,
-    num_f_maps=64,
-    input_dim=2048,
-    num_decoders=3,
-    num_classes=19,
-    channel_masking_rate=0.3,
-    sample_rate=2,
-    r1=2,
-    r2=2)
+data_root = 'data/action_seg/gtea/'
+data_root_val = 'data/action_seg/gtea/'
+ann_file_train = 'data/action_seg/gtea/splits/train.split2.bundle'
+ann_file_val = 'data/action_seg/gtea/splits/test.split2.bundle'
+ann_file_test = 'data/action_seg/gtea/splits/test.split2.bundle'
 
 train_pipeline = [
     dict(type='LoadSegmentationFeature'),
@@ -93,7 +81,7 @@ train_cfg = dict(
     type='EpochBasedTrainLoop',
     max_epochs=max_epochs,
     val_begin=0,
-    val_interval=10)
+    val_interval=5)
 
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
@@ -111,10 +99,11 @@ param_scheduler = [
         ],
         gamma=0.5)
 ]
-work_dir = './work_dirs/50salads1/'
+
+work_dir = './work_dirs/gtea2/'
 test_evaluator = dict(
     type='SegmentMetric',
     metric_type='ALL',
     dump_config=dict(out=f'{work_dir}/results.json', output_format='json'))
 val_evaluator = test_evaluator
-default_hooks = dict(checkpoint=dict(interval=10, max_keep_ckpts=3))
+default_hooks = dict(checkpoint=dict(interval=5, max_keep_ckpts=3))

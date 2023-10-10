@@ -18,8 +18,7 @@ distinctive characteristics: (i) We explicitly bring in the local connectivity i
 reliable scope, and is beneficial for the action segmentation task to learn a proper target
 function with small training sets. (ii) We apply a pre-defined hierarchical representation pattern that efficiently handles long input sequences. (iii) We carefully design the
 decoder to refine the initial predictions from the encoder. Extensive experiments on
-three public datasets demonstrate the effectiveness of our methods. The original code is available at
-https://github.com/ChinaYi/ASFormer.
+three public datasets demonstrate the effectiveness of our methods.
 
 <!-- [IMAGE] -->
 
@@ -27,30 +26,42 @@ https://github.com/ChinaYi/ASFormer.
 <img src="https://user-images.githubusercontent.com/34324155/143016479-2ca7e8b6-a17b-4a4c-b4c9-ae731935cd91.png" width="800"/>
 </div>
 
-## Results and Models
+## Results
 
 ### ActivityNet feature
 
-| feature | gpus | pretrain |  ACC  | EDIT  | F1@10 | F1@25 | F1@50 | gpu_mem(M) | iter time(s) |                     config                     |                     ckpt                     |                     log                      |
-| :-----: | :--: | :------: | :---: | :---: | :---: | :---: | :---: | :--------: | :----------: | :--------------------------------------------: | :------------------------------------------: | :------------------------------------------: |
-|  gtea   |  1   |   None   | 67.25 | 32.89 | 49.43 | 56.64 | 75.29 |    8693    |      -       | [config](/configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log) |
+|     dataset      | gpus | pretrain |  ACC  | EDIT  | F1@10 | F1@25 | F1@50 | gpu_mem(M) | iter time(s) |                   config                    |                   ckpt                    |                    log                    |
+| :--------------: | :--: | :------: | :---: | :---: | :---: | :---: | :---: | :--------: | :----------: | :-----------------------------------------: | :---------------------------------------: | :---------------------------------------: |
+|   gtea_split2    |  1   |   None   | 80.34 | 81.58 | 89.30 | 87.83 | 75.28 |    1500    |      -       |                      -                      |                     -                     |                     -                     |
+|   gtea_split1    |  1   |   None   | 76.54 | 80.36 | 84.80 | 83.39 | 77.74 |    1500    |      -       | [config](/configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log) |
+|   gtea_split3    |  1   |   None   | 82.41 | 90.03 | 92.13 | 92.37 | 86.26 |    1500    |      -       |                      -                      |                     -                     |                     -                     |
+|   gtea_split4    |  1   |   None   | 79.77 | 91.70 | 92.88 | 92.39 | 81.65 |    1500    |      -       |                      -                      |                     -                     |                     -                     |
+| 50salads_split2  |  1   |   None   | 87.55 | 79.10 | 85.17 | 83.73 | 77.99 |    7200    |      -       |                      -                      |                     -                     |                     -                     |
+| 50salads_split1  |  1   |   None   | 81.44 | 73.25 | 82.04 | 80.27 | 71.84 |    7200    |      -       | [config](/configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log) |
+| 50salads_split3  |  1   |   None   | 85.51 | 82.23 | 85.71 | 84.29 | 78.57 |    7200    |      -       |                      -                      |                     -                     |                     -                     |
+| 50salads_split4  |  1   |   None   | 87.27 | 80.46 | 85.99 | 83.14 | 78.86 |    7200    |      -       |                      -                      |                     -                     |                     -                     |
+| 50salads_split5  |  1   |   None   | 87.96 | 75.29 | 84.60 | 83.13 | 76.28 |    7200    |      -       |                      -                      |                     -                     |                     -                     |
+| breakfast_split2 |  1   |   None   | 74.12 | 76.53 | 77.74 | 72.62 | 60.43 |    8800    |      -       |                      -                      |                     -                     |                     -                     |
+| breakfast_split1 |  1   |   None   | 75.52 | 76.87 | 77.06 | 73.05 | 61.77 |    8800    |      -       | [config](/configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log) |
+| breakfast_split3 |  1   |   None   | 74.86 | 74.33 | 76.17 | 70.85 | 58.07 |    8800    |      -       |                      -                      |                     -                     |                     -                     |
+| breakfast_split4 |  1   |   None   | 70.39 | 71.54 | 73.42 | 66.61 | 52.76 |    8800    |      -       |                      -                      |                     -                     |                     -                     |
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk).
-3. We evaluate the action detection performance of BMN, using  [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) submission for ActivityNet2017 Untrimmed Video Classification Track to assign label for each action proposal.
+   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu. .
 
-\*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
+2. We train ASFormer with the [official repo](https://github.com/ChinaYi/ASFormer), evaluate its proposal segmentation performance with GTEA, Breakfast and 50Salads.
 
-For more details on data preparation, you can refer to [ActivityNet Data Preparation](/tools/data/activitynet/README.md).
+3. For experiments with other splits, we simply change the names of the training and testing datasets in the configs file.
+
+For more details on data preparation, you can refer to [Preparing Datasets for Action Segmentation](/tools/data/action_seg/README.md).
 
 ## Train
 
 Train ASFormer model on features dataset for action segmentation.
 
 ```shell
-bash tools/dist_train.sh configs/segmentation/asformer/asformer_gtea.py 1
+bash tools/dist_train.sh configs/segmentation/asformer/asformer_gtea2.py 1
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
@@ -60,7 +71,7 @@ For more details, you can refer to the **Training** part in the [Training and Te
 Test ASFormer on features dataset for action segmentation.
 
 ```shell
-python3 tools/test.py  configs/segmentation/asformer/asformer_gtea.py CHECKPOINT.PTH
+python3 tools/test.py  configs/segmentation/asformer/asformer_gtea2.py CHECKPOINT.PTH
 ```
 
 For more details, you can refer to the **Testing** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
@@ -86,5 +97,25 @@ For more details, you can refer to the **Testing** part in the [Training and Tes
   pages={3281--3288},
   year={2011},
   organization={IEEE}
+}
+```
+
+```BibTeX
+@inproceedings{stein2013combining,
+  title={Combining embedded accelerometers with computer vision for recognizing food preparation activities},
+  author={Stein, Sebastian and McKenna, Stephen J},
+  booktitle={Proceedings of the 2013 ACM international joint conference on Pervasive and ubiquitous computing},
+  pages={729--738},
+  year={2013}
+}
+```
+
+```BibTeX
+@inproceedings{kuehne2014language,
+  title={The language of actions: Recovering the syntax and semantics of goal-directed human activities},
+  author={Kuehne, Hilde and Arslan, Ali and Serre, Thomas},
+  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages={780--787},
+  year={2014}
 }
 ```
