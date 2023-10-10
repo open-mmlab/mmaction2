@@ -2,11 +2,23 @@ _base_ = [
     '../../_base_/models/asformer.py', '../../_base_/default_runtime.py'
 ]  # dataset settings
 dataset_type = 'ActionSegmentDataset'
-data_root = 'data/action_seg/gtea/'
-data_root_val = 'data/action_seg/gtea/'
-ann_file_train = 'data/action_seg/gtea/splits/train.split2.bundle'
-ann_file_val = 'data/action_seg/gtea/splits/test.split2.bundle'
-ann_file_test = 'data/action_seg/gtea/splits/test.split2.bundle'
+data_root = 'data/action_seg/breakfast/'
+data_root_val = 'data/action_seg/breakfast/'
+ann_file_train = 'data/action_seg/breakfast/splits/train.split1.bundle'
+ann_file_val = 'data/action_seg/breakfast/splits/test.split1.bundle'
+ann_file_test = 'data/action_seg/breakfast/splits/test.split1.bundle'
+
+model = dict(
+    type='ASFormer',
+    channel_masking_rate=0.3,
+    input_dim=2048,
+    num_classes=48,
+    num_decoders=3,
+    num_f_maps=64,
+    num_layers=10,
+    r1=2,
+    r2=2,
+    sample_rate=1)
 
 train_pipeline = [
     dict(type='LoadSegmentationFeature'),
@@ -87,18 +99,6 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(optimizer=dict(type='Adam', lr=0.0005, weight_decay=1e-5))
-'''
-param_scheduler = [
-    dict(
-        monitor= 'F1@50',
-        param_name='lr',
-        type='ReduceOnPlateauParamScheduler',
-        rule='less',
-        factor=0.5,
-        patience=3,#33
-        verbose=True)
-]
-'''
 param_scheduler = [
     dict(
         type='MultiStepLR',
@@ -112,10 +112,10 @@ param_scheduler = [
         gamma=0.5)
 ]
 
-work_dir = './work_dirs/asformer_gtea2/'
+work_dir = './work_dirs/breakfast1/'
 test_evaluator = dict(
     type='SegmentMetric',
     metric_type='ALL',
     dump_config=dict(out=f'{work_dir}/results.json', output_format='json'))
 val_evaluator = test_evaluator
-default_hooks = dict(checkpoint=dict(interval=5, max_keep_ckpts=6))
+default_hooks = dict(checkpoint=dict(interval=5, max_keep_ckpts=3))

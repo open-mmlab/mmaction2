@@ -22,13 +22,12 @@ class SegmentMetric(BaseMetric):
         super().__init__(collect_device=collect_device, prefix=prefix)
         self.metric_type = metric_type
 
+        assert metric_type == 'ALL'
         assert 'out' in dump_config
         self.output_format = dump_config.pop('output_format', 'csv')
         self.out = dump_config['out']
 
         self.metric_options = metric_options
-        if self.metric_type == 'AR@AN':
-            self.ground_truth = {}
 
     def process(self, data_batch: Sequence[Tuple[Any, dict]],
                 predictions: Sequence[dict]) -> None:

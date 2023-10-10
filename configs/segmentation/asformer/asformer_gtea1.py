@@ -87,18 +87,6 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(optimizer=dict(type='Adam', lr=0.0005, weight_decay=1e-5))
-'''
-param_scheduler = [
-    dict(
-        monitor= 'F1@50',
-        param_name='lr',
-        type='ReduceOnPlateauParamScheduler',
-        rule='less',
-        factor=0.5,
-        patience=3,#33
-        verbose=True)
-]
-'''
 param_scheduler = [
     dict(
         type='MultiStepLR',
