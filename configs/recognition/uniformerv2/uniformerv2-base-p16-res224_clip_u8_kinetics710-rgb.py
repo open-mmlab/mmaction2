@@ -1,11 +1,28 @@
-_base_ = ['../../_base_/default_runtime.py']
+# Copyright (c) OpenMMLab. All rights reserved.
+from mmengine.config import read_base
+
+with read_base():
+    from ..._base_.default_runtime import *
+
+from mmengine.dataset import ConcatDataset, DefaultSampler
+from mmengine.optim import CosineAnnealingLR, LinearLR
+from mmengine.runner import EpochBasedTrainLoop, TestLoop, ValLoop
+from torch.optim import AdamW
+
+from mmaction.datasets import (CenterCrop, ConcatDataset, DecordDecode,
+                               DecordInit, Flip, FormatShape, PackActionInputs,
+                               PytorchVideoWrapper, RandomResizedCrop, Resize,
+                               ThreeCrop, UniformSample, VideoDataset)
+from mmaction.evaluation import AccMetric
+from mmaction.models import (ActionDataPreprocessor, Recognizer3D,
+                             TimeSformerHead, UniFormerHead, UniFormerV2)
 
 # model settings
 num_frames = 8
 model = dict(
-    type='Recognizer3D',
+    type=Recognizer3D,
     backbone=dict(
-        type='UniFormerV2',
+        type=UniFormerV2,
         input_resolution=224,
         patch_size=16,
         width=768,
@@ -27,57 +44,50 @@ model = dict(
         clip_pretrained=True,
         pretrained='ViT-B/16'),
     cls_head=dict(
-        type='TimeSformerHead',
+        type=TimeSformerHead,
         dropout_ratio=0.5,
         num_classes=710,
         in_channels=768,
         average_clips='prob'),
     data_preprocessor=dict(
-        type='ActionDataPreprocessor',
+        type=ActionDataPreprocessor,
         mean=[114.75, 114.75, 114.75],
         std=[57.375, 57.375, 57.375],
         format_shape='NCTHW'))
 
 file_client_args = dict(io_backend='disk')
 train_pipeline = [
-    dict(type='DecordInit', **file_client_args),
-    dict(type='UniformSample', clip_len=num_frames, num_clips=1),
-    dict(type='DecordDecode'),
-    dict(type='Resize', scale=(-1, 256)),
+    dict(type=DecordInit, **file_client_args),
+    dict(type=UniformSample, clip_len=num_frames, num_clips=1),
+    dict(type=DecordDecode),
+    dict(type=Resize, scale=(-1, 256)),
     dict(
-        type='PytorchVideoWrapper',
-        op='RandAugment',
-        magnitude=7,
-        num_layers=4),
-    dict(type='RandomResizedCrop'),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5),
-    dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='PackActionInputs')
+        type=PytorchVideoWrapper, op='RandAugment', magnitude=7, num_layers=4),
+    dict(type=RandomResizedCrop),
+    dict(type=Resize, scale=(224, 224), keep_ratio=False),
+    dict(type=Flip, flip_ratio=0.5),
+    dict(type=FormatShape, input_format='NCTHW'),
+    dict(type=PackActionInputs)
 ]
 
 val_pipeline = [
-    dict(type='DecordInit', **file_client_args),
-    dict(
-        type='UniformSample', clip_len=num_frames, num_clips=1,
-        test_mode=True),
-    dict(type='DecordDecode'),
-    dict(type='Resize', scale=(-1, 224)),
-    dict(type='CenterCrop', crop_size=224),
-    dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='PackActionInputs')
+    dict(type=DecordInit, **file_client_args),
+    dict(type=UniformSample, clip_len=num_frames, num_clips=1, test_mode=True),
+    dict(type=DecordDecode),
+    dict(type=Resize, scale=(-1, 224)),
+    dict(type=CenterCrop, crop_size=224),
+    dict(type=FormatShape, input_format='NCTHW'),
+    dict(type=PackActionInputs)
 ]
 
 test_pipeline = [
-    dict(type='DecordInit', **file_client_args),
-    dict(
-        type='UniformSample', clip_len=num_frames, num_clips=4,
-        test_mode=True),
-    dict(type='DecordDecode'),
-    dict(type='Resize', scale=(-1, 224)),
-    dict(type='ThreeCrop', crop_size=224),
-    dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='PackActionInputs')
+    dict(type=DecordInit, **file_client_args),
+    dict(type=UniformSample, clip_len=num_frames, num_clips=4, test_mode=True),
+    dict(type=DecordDecode),
+    dict(type=Resize, scale=(-1, 224)),
+    dict(type=ThreeCrop, crop_size=224),
+    dict(type=FormatShape, input_format='NCTHW'),
+    dict(type=PackActionInputs)
 ]
 
 # dataset settings
@@ -97,35 +107,35 @@ k600_ann_file_val = 'data/kinetics710/k600_val_list_videos.txt'
 k700_ann_file_val = 'data/kinetics710/k700_val_list_videos.txt'
 
 k400_trainset = dict(
-    type='VideoDataset',
+    type=VideoDataset,
     ann_file=k400_ann_file_train,
     data_prefix=dict(video=k400_data_root),
     pipeline=train_pipeline)
 k600_trainset = dict(
-    type='VideoDataset',
+    type=VideoDataset,
     ann_file=k600_ann_file_train,
     data_prefix=dict(video=k600_data_root),
     pipeline=train_pipeline)
 k700_trainset = dict(
-    type='VideoDataset',
+    type=VideoDataset,
     ann_file=k700_ann_file_train,
     data_prefix=dict(video=k700_data_root),
     pipeline=train_pipeline)
 
 k400_valset = dict(
-    type='VideoDataset',
+    type=VideoDataset,
     ann_file=k400_ann_file_val,
     data_prefix=dict(video=k400_data_root_val),
     pipeline=val_pipeline,
     test_mode=True)
 k600_valset = dict(
-    type='VideoDataset',
+    type=VideoDataset,
     ann_file=k600_ann_file_val,
     data_prefix=dict(video=k600_data_root_val),
     pipeline=val_pipeline,
     test_mode=True)
 k700_valset = dict(
-    type='VideoDataset',
+    type=VideoDataset,
     ann_file=k700_ann_file_val,
     data_prefix=dict(video=k700_data_root_val),
     pipeline=val_pipeline,
@@ -139,12 +149,11 @@ k600_testset['pipeline'] = test_pipeline
 k700_testset['pipeline'] = test_pipeline
 
 k710_trainset = dict(
-    type='ConcatDataset',
-    datasets=[k400_trainset, k600_trainset, k700_trainset])
+    type=ConcatDataset, datasets=[k400_trainset, k600_trainset, k700_trainset])
 k710_valset = dict(
-    type='ConcatDataset', datasets=[k400_valset, k600_valset, k700_valset])
+    type=ConcatDataset, datasets=[k400_valset, k600_valset, k700_valset])
 k710_testset = dict(
-    type='ConcatDataset',
+    type=ConcatDataset,
     datasets=[k400_testset, k600_testset, k700_testset],
 )
 
@@ -152,45 +161,45 @@ train_dataloader = dict(
     batch_size=8,
     num_workers=8,
     persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=True),
+    sampler=dict(type=DefaultSampler, shuffle=True),
     dataset=k710_trainset)
 val_dataloader = dict(
     batch_size=8,
     num_workers=8,
     persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=False),
+    sampler=dict(type=DefaultSampler, shuffle=False),
     dataset=k710_valset)
 test_dataloader = dict(
     batch_size=8,
     num_workers=8,
     persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=False),
+    sampler=dict(type=DefaultSampler, shuffle=False),
     dataset=k710_testset)
 
-val_evaluator = dict(type='AccMetric')
-test_evaluator = dict(type='AccMetric')
+val_evaluator = dict(type=AccMetric)
+test_evaluator = dict(type=AccMetric)
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=55, val_begin=1, val_interval=1)
-val_cfg = dict(type='ValLoop')
-test_cfg = dict(type='TestLoop')
+    type=EpochBasedTrainLoop, max_epochs=55, val_begin=1, val_interval=1)
+val_cfg = dict(type=ValLoop)
+test_cfg = dict(type=TestLoop)
 
 base_lr = 1e-5
 optim_wrapper = dict(
     optimizer=dict(
-        type='AdamW', lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
+        type=AdamW, lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
     paramwise_cfg=dict(norm_decay_mult=0.0, bias_decay_mult=0.0),
     clip_grad=dict(max_norm=20, norm_type=2))
 
 param_scheduler = [
     dict(
-        type='LinearLR',
+        type=LinearLR,
         start_factor=0.5,
         by_epoch=True,
         begin=0,
         end=5,
         convert_to_iter_based=True),
     dict(
-        type='CosineAnnealingLR',
+        type=CosineAnnealingLR,
         T_max=50,
         eta_min_ratio=0.5,
         by_epoch=True,
@@ -199,8 +208,10 @@ param_scheduler = [
         convert_to_iter_based=True)
 ]
 
-default_hooks = dict(
-    checkpoint=dict(interval=3, max_keep_ckpts=5), logger=dict(interval=100))
+default_hooks.update(
+    dict(
+        checkpoint=dict(interval=3, max_keep_ckpts=5),
+        logger=dict(interval=100)))
 
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically
