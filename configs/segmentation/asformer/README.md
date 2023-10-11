@@ -23,7 +23,7 @@ three public datasets demonstrate the effectiveness of our methods.
 <!-- [IMAGE] -->
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/34324155/143016479-2ca7e8b6-a17b-4a4c-b4c9-ae731935cd91.png" width="800"/>
+<img src="https://github.com/open-mmlab/mmaction2/assets/35267818/d1c593d9-cf4e-4cb8-8fca-b1212e5197c5" width="800"/>
 </div>
 
 ## Results
@@ -32,7 +32,7 @@ three public datasets demonstrate the effectiveness of our methods.
 
 | split  | gpus | pretrain |  ACC  | EDIT  | F1@10 | F1@25 | F1@50 | gpu_mem(M) |                       config                       |                       ckpt                        |                       log                        |
 | :----: | :--: | :------: | :---: | :---: | :---: | :---: | :---: | :--------: | :------------------------------------------------: | :-----------------------------------------------: | :----------------------------------------------: |
-| split2 |  1   |   None   | 80.34 | 81.58 | 89.30 | 87.83 | 75.28 |    1500    | [config](/configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log)           ｜ |
+| split2 |  1   |   None   | 80.34 | 81.58 | 89.30 | 87.83 | 75.28 |    1500    | [config](/configs/segmentation/asformer/asformer_1xb1-120e_gtea-split2-i3d-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_gtea-split2-i3d-feature_20231011-b5aaf789.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_gtea-split2-i3d-feature.log) |
 | split1 |  1   |   None   | 76.54 | 80.36 | 84.80 | 83.39 | 77.74 |    1500    |                         -                          |                         -                         |                        -                         |
 | split3 |  1   |   None   | 82.41 | 90.03 | 92.13 | 92.37 | 86.26 |    1500    |                         -                          |                         -                         |                        -                         |
 | split4 |  1   |   None   | 79.77 | 91.70 | 92.88 | 92.39 | 81.65 |    1500    |                         -                          |                         -                         |                        -                         |
@@ -41,7 +41,7 @@ three public datasets demonstrate the effectiveness of our methods.
 
 | split  | gpus | pretrain |  ACC  | EDIT  | F1@10 | F1@25 | F1@50 | gpu_mem(M) |                       config                       |                       ckpt                        |                       log                        |
 | :----: | :--: | :------: | :---: | :---: | :---: | :---: | :---: | :--------: | :------------------------------------------------: | :-----------------------------------------------: | :----------------------------------------------: |
-| split2 |  1   |   None   | 87.55 | 79.10 | 85.17 | 83.73 | 77.99 |    7200    | [config](/configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log) |
+| split2 |  1   |   None   | 87.55 | 79.10 | 85.17 | 83.73 | 77.99 |    7200    | [config](/configs/segmentation/asformer/asformer_1xb1-120e_50salads-split2-i3d-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_50salads-split2-i3d-feature_20231011-25dc57d5.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_50salads-split2-i3d-feature.log) |
 | split1 |  1   |   None   | 81.44 | 73.25 | 82.04 | 80.27 | 71.84 |    7200    |                         -                          |                                                   |                                                  |
 | split3 |  1   |   None   | 85.51 | 82.23 | 85.71 | 84.29 | 78.57 |    7200    |                         -                          |                         -                         |                        -                         |
 | split4 |  1   |   None   | 87.27 | 80.46 | 85.99 | 83.14 | 78.86 |    7200    |                         -                          |                         -                         |                        -                         |
@@ -51,18 +51,14 @@ three public datasets demonstrate the effectiveness of our methods.
 
 | split  | gpus | pretrain |  ACC  | EDIT  | F1@10 | F1@25 | F1@50 | gpu_mem(M) |                       config                       |                       ckpt                        |                       log                        |
 | :----: | :--: | :------: | :---: | :---: | :---: | :---: | :---: | :--------: | :------------------------------------------------: | :-----------------------------------------------: | :----------------------------------------------: |
-| split2 |  1   |   None   | 74.12 | 76.53 | 77.74 | 72.62 | 60.43 |    8800    | [config](/configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log) |
+| split2 |  1   |   None   | 74.12 | 76.53 | 77.74 | 72.62 | 60.43 |    8800    | [config](/configs/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature_20231011-10e557f3.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature_20231011-10e557f3.pth) |
 | split1 |  1   |   None   | 75.52 | 76.87 | 77.06 | 73.05 | 61.77 |    8800    |                         -                          |                         -                         |                        -                         |
 | split3 |  1   |   None   | 74.86 | 74.33 | 76.17 | 70.85 | 58.07 |    8800    |                         -                          |                         -                         |                        -                         |
 | split4 |  1   |   None   | 70.39 | 71.54 | 73.42 | 66.61 | 52.76 |    8800    |                         -                          |                         -                         |                        -                         |
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu. .
 
-2. We train ASFormer with the [official repo](https://github.com/ChinaYi/ASFormer), evaluate its proposal segmentation performance with GTEA, Breakfast and 50Salads.
-
-3. For experiments with other splits, we simply change the names of the training and testing datasets in the configs file.
+2. We only provide checkpoints of one split. For experiments with other splits, we simply change the names of the training and testing datasets in the configs file, i.e., modifying `ann_file_train`, `ann_file_val` and `ann_file_test`.
 
 For more details on data preparation, you can refer to [Preparing Datasets for Action Segmentation](/tools/data/action_seg/README.md).
 
@@ -71,7 +67,7 @@ For more details on data preparation, you can refer to [Preparing Datasets for A
 Train ASFormer model on features dataset for action segmentation.
 
 ```shell
-bash tools/dist_train.sh configs/segmentation/asformer/asformer_gtea2.py 1
+bash tools/dist_train.sh configs/segmentation/asformer/asformer_1xb1-120e_gtea-split2-i3d-feature.py 1
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
@@ -81,7 +77,7 @@ For more details, you can refer to the **Training** part in the [Training and Te
 Test ASFormer on features dataset for action segmentation.
 
 ```shell
-python3 tools/test.py  configs/segmentation/asformer/asformer_gtea2.py CHECKPOINT.PTH
+python3 tools/test.py  configs/segmentation/asformer/asformer_1xb1-120e_gtea-split2-i3d-feature.py CHECKPOINT.PTH
 ```
 
 For more details, you can refer to the **Testing** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
