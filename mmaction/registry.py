@@ -54,7 +54,7 @@ DATASETS = Registry(
 DATA_SAMPLERS = Registry(
     'data sampler',
     parent=MMENGINE_DATA_SAMPLERS,
-    locations=['mmaction.engine'])
+    locations=['mmaction.datasets'])
 TRANSFORMS = Registry(
     'transform',
     parent=MMENGINE_TRANSFORMS,
@@ -132,3 +132,9 @@ INFERENCERS = Registry(
 # manage function
 FUNCTION = Registry(
     'function', parent=MMENGINE_FUNCTION, locations=['mmaction.mmengine'])
+
+# Tokenizer to encode sequence
+TOKENIZER = Registry(
+    'tokenizer',
+    locations=['mmaction.models'],
+)

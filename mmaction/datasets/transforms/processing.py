@@ -613,8 +613,9 @@ class Resize(BaseTransform):
         keep_ratio (bool): If set to True, Images will be resized without
             changing the aspect ratio. Otherwise, it will resize images to a
             given size. Default: True.
-        interpolation (str): Algorithm used for interpolation:
-            "nearest" | "bilinear". Default: "bilinear".
+        interpolation (str): Algorithm used for interpolation,
+            accepted values are "nearest", "bilinear", "bicubic", "area",
+            "lanczos". Default: "bilinear".
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 

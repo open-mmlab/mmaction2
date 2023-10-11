@@ -30,6 +30,7 @@ model = dict(
             with_temporal_pool=True),
         bbox_head=dict(
             type='BBoxHeadAVA',
+            background_class=False,
             in_channels=2048,
             num_classes=num_classes,
             multilabel=False,

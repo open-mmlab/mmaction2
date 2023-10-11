@@ -12,8 +12,7 @@ from mmaction.utils import register_all_modules
 def test_omni_resnet():
     register_all_modules()
     config = get_recognizer_cfg(
-        'omnisource/slowonly_r50_16xb16-8x8x1-256e_imagenet-kinetics400-rgb.py'
-    )
+        'omnisource/slowonly_r50_8xb16-8x8x1-256e_imagenet-kinetics400-rgb.py')
     recognizer = MODELS.build(config.model)
 
     # test train_step
@@ -24,8 +23,8 @@ def test_omni_resnet():
             torch.randint(0, 255, (1, 3, 8, 224, 224))
         ],
         'data_samples': [
-            ActionDataSample().set_gt_labels(2),
-            ActionDataSample().set_gt_labels(2)
+            ActionDataSample().set_gt_label(2),
+            ActionDataSample().set_gt_label(2)
         ]
     }
 
@@ -35,8 +34,8 @@ def test_omni_resnet():
             torch.randint(0, 255, (1, 3, 224, 224))
         ],
         'data_samples': [
-            ActionDataSample().set_gt_labels(2),
-            ActionDataSample().set_gt_labels(2)
+            ActionDataSample().set_gt_label(2),
+            ActionDataSample().set_gt_label(2)
         ]
     }
 
@@ -54,7 +53,7 @@ def test_omni_resnet():
     # test test_step
     with torch.no_grad():
         predictions = recognizer.test_step(video_sample)
-    score = predictions[0].pred_scores.item
-    assert len(predictions) == 1
+    score = predictions[0].pred_score
+    assert len(predictions) == 2
     assert torch.min(score) >= 0
     assert torch.max(score) <= 1

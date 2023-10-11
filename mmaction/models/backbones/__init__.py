@@ -33,3 +33,10 @@ __all__ = [
     'TimeSformer', 'UniFormer', 'UniFormerV2', 'VisionTransformer', 'X3D',
     'RGBPoseConv3D'
 ]
+
+try:
+    from .mobileone_tsm import MobileOneTSM  # noqa: F401
+    __all__.append('MobileOneTSM')
+
+except (ImportError, ModuleNotFoundError):
+    pass

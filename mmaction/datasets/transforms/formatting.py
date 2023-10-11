@@ -4,7 +4,7 @@ from typing import Dict, Optional, Sequence, Tuple
 import numpy as np
 import torch
 from mmcv.transforms import BaseTransform, to_tensor
-from mmengine.structures import InstanceData, LabelData
+from mmengine.structures import InstanceData
 
 from mmaction.registry import TRANSFORMS
 from mmaction.structures import ActionDataSample
@@ -12,23 +12,16 @@ from mmaction.structures import ActionDataSample
 
 @TRANSFORMS.register_module()
 class PackActionInputs(BaseTransform):
-    """Pack the input data for the recognition.
-
-    PackActionInputs first packs one of 'imgs', 'keypoint' and 'audios' into
-    the `packed_results['inputs']`, which are the three basic input modalities
-    for the task of rgb-based, skeleton-based and audio-based action
-    recognition, as well as spatio-temporal action detection in the case
-    of 'img'. Next, it prepares a `data_sample` for the task of action
-    recognition (only a single label of `torch.LongTensor` format, which is
-    saved in the `data_sample.gt_labels.item`) or spatio-temporal action
-    detection respectively. Then, it saves the meta keys defined in
-    the `meta_keys` in `data_sample.metainfo`, and packs the `data_sample`
-    into the `packed_results['data_samples']`.
+    """Pack the inputs data.
 
     Args:
+        collect_keys (tuple[str], optional): The keys to be collected
+            to ``packed_results['inputs']``. Defaults to ``
         meta_keys (Sequence[str]): The meta keys to saved in the
             `metainfo` of the `data_sample`.
             Defaults to ``('img_shape', 'img_key', 'video_id', 'timestamp')``.
+        algorithm_keys (Sequence[str]): The keys of custom elements to be used
+            in the algorithm. Defaults to an empty tuple.
     """
 
     mapping_table = {
@@ -37,13 +30,15 @@ class PackActionInputs(BaseTransform):
     }
 
     def __init__(
-        self,
-        collect_keys: Optional[Tuple[str]] = None,
-        meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
-                                    'timestamp')
+            self,
+            collect_keys: Optional[Tuple[str]] = None,
+            meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
+                                        'timestamp'),
+            algorithm_keys: Sequence[str] = (),
     ) -> None:
         self.collect_keys = collect_keys
         self.meta_keys = meta_keys
+        self.algorithm_keys = algorithm_keys
 
     def transform(self, results: Dict) -> Dict:
         """The transform function of :class:`PackActionInputs`.
@@ -95,10 +90,14 @@ class PackActionInputs(BaseTransform):
                     bboxes=to_tensor(results['proposals']))
 
         if 'label' in results:
-            label_data = LabelData()
-            label_data.item = to_tensor(results['label'])
-            data_sample.gt_labels = label_data
+            data_sample.set_gt_label(results['label'])
 
+        # Set custom algorithm keys
+        for key in self.algorithm_keys:
+            if key in results:
+                data_sample.set_field(results[key], key)
+
+        # Set meta keys
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
         packed_results['data_samples'] = data_sample

@@ -27,7 +27,7 @@ class TestFeatureHead(TestCase):
         input_shape = [3, 3, 32, 32]
         data_batch = {
             'inputs': [torch.randint(0, 256, input_shape)],
-            'data_samples': [ActionDataSample().set_gt_labels(2)]
+            'data_samples': [ActionDataSample().set_gt_label(2)]
         }
         feat = recognizer.test_step(data_batch)
         assert isinstance(feat, torch.Tensor)
@@ -46,7 +46,7 @@ class TestFeatureHead(TestCase):
         input_shape = [1, 3, 4, 32, 32]
         data_batch = {
             'inputs': [torch.randint(0, 256, input_shape)],
-            'data_samples': [ActionDataSample().set_gt_labels(2)]
+            'data_samples': [ActionDataSample().set_gt_label(2)]
         }
         feat = recognizer.test_step(data_batch)
         assert isinstance(feat, torch.Tensor)

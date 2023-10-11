@@ -162,7 +162,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 These should usually be mean centered and std scaled.
             data_samples (List[``ActionDataSample``]): The batch
                 data samples. It usually includes information such
-                as ``gt_labels``.
+                as ``gt_label``.
 
         Returns:
             dict: A dictionary of loss components.
@@ -187,7 +187,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 These should usually be mean centered and std scaled.
             data_samples (List[``ActionDataSample``]): The batch
                 data samples. It usually includes information such
-                as ``gt_labels``.
+                as ``gt_label``.
 
         Returns:
             List[``ActionDataSample``]: Return the recognition results.

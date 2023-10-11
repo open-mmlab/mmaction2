@@ -84,7 +84,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
         data = self.cast_data(data)
         if isinstance(data, dict):
             return self.forward_onesample(data, training=training)
-        elif isinstance(data, tuple):
+        elif isinstance(data, (tuple, list)):
             outputs = []
             for data_sample in data:
                 output = self.forward_onesample(data_sample, training=training)

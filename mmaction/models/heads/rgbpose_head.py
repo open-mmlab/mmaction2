@@ -5,7 +5,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.model.weight_init import normal_init
-from mmengine.structures import LabelData
 
 from mmaction.evaluation import top_k_accuracy
 from mmaction.registry import MODELS
@@ -110,7 +109,7 @@ class RGBPoseHead(BaseHead):
         Returns:
             dict: A dictionary of loss components.
         """
-        labels = torch.stack([x.gt_labels.item for x in data_samples])
+        labels = torch.stack([x.gt_label for x in data_samples])
         labels = labels.squeeze()
 
         if labels.shape == torch.Size([]):
@@ -192,34 +191,26 @@ class RGBPoseHead(BaseHead):
                 classification scores,
             data_samples (list[:obj:`ActionDataSample`]): The
                 annotation data of every samples. It usually includes
-                information such as `gt_labels`.
+                information such as `gt_label`.
 
         Returns:
             list[:obj:`ActionDataSample`]: Recognition results wrapped
                 by :obj:`ActionDataSample`.
         """
-        pred_scores = [LabelData() for _ in range(len(data_samples))]
-        pred_labels = [LabelData() for _ in range(len(data_samples))]
+        pred_scores = [dict() for _ in range(len(data_samples))]
 
         for name in self.loss_components:
             cls_score = cls_scores[name]
-            cls_score, pred_label = \
-                self.predict_by_scores(cls_score, data_samples)
-            for pred_score, pred_label, score, label in zip(
-                    pred_scores, pred_labels, cls_score, pred_label):
-                pred_score.set_data({f'{name}': score})
-                pred_label.set_data({f'{name}': label})
+            cls_score = self.predict_by_scores(cls_score, data_samples)
+            for pred_score, score in zip(pred_scores, cls_score):
+                pred_score[f'{name}'] = score
 
-        for data_sample, pred_score, pred_label in zip(data_samples,
-                                                       pred_scores,
-                                                       pred_labels):
-            data_sample.pred_scores = pred_score
-            data_sample.pred_labels = pred_label
-
+        for data_sample, pred_score, in zip(data_samples, pred_scores):
+            data_sample.set_pred_score(pred_score)
         return data_samples
 
     def predict_by_scores(self, cls_scores: torch.Tensor,
-                          data_samples: SampleList) -> Tuple:
+                          data_samples: SampleList) -> torch.Tensor:
         """Transform a batch of output features extracted from the head into
         prediction results.
 
@@ -230,11 +221,9 @@ class RGBPoseHead(BaseHead):
                 data of every samples.
 
         Returns:
-            tuple: A tuple of the averaged classification scores and
-                prediction labels.
+            torch.Tensor: The averaged classification scores.
         """
 
         num_segs = cls_scores.shape[0] // len(data_samples)
         cls_scores = self.average_clip(cls_scores, num_segs=num_segs)
-        pred_labels = cls_scores.argmax(dim=-1, keepdim=True).detach()
-        return cls_scores, pred_labels
+        return cls_scores

@@ -254,7 +254,7 @@ class AuxHead(nn.Module):
              data_samples: Optional[SampleList]) -> dict:
         """Calculate auxiliary loss."""
         x = self(x)
-        labels = [x.gt_labels.item for x in data_samples]
+        labels = [x.gt_label for x in data_samples]
         labels = torch.stack(labels).to(x.device)
         labels = labels.squeeze()
         if labels.shape == torch.Size([]):

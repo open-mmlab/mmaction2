@@ -3,7 +3,6 @@ import copy
 
 import pytest
 import torch
-from mmengine.structures import LabelData
 
 from mmaction.models import TPN
 from mmaction.structures import ActionDataSample
@@ -14,7 +13,7 @@ def get_label(label_):
     label = []
     for idx, one_label in enumerate(label_):
         data_sample = ActionDataSample()
-        data_sample.gt_labels = LabelData(item=label_[idx])
+        data_sample.set_gt_label(label_[idx])
         label.append(data_sample)
     return label
 

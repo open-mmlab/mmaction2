@@ -121,7 +121,7 @@ label_file = 'tools/data/kinetics/label_map_k400.txt'
 model = init_recognizer(config_file, checkpoint_file, device='cpu')  # or device='cuda:0'
 pred_result = inference_recognizer(model, video_file)
 
-pred_scores = pred_result.pred_scores.item.tolist()
+pred_scores = pred_result.pred_score.tolist()
 score_tuples = tuple(zip(range(len(pred_scores)), pred_scores))
 score_sorted = sorted(score_tuples, key=itemgetter(1), reverse=True)
 top5_label = score_sorted[:5]

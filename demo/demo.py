@@ -119,7 +119,7 @@ def main():
     model = init_recognizer(cfg, args.checkpoint, device=args.device)
     pred_result = inference_recognizer(model, args.video)
 
-    pred_scores = pred_result.pred_scores.item.tolist()
+    pred_scores = pred_result.pred_score.tolist()
     score_tuples = tuple(zip(range(len(pred_scores)), pred_scores))
     score_sorted = sorted(score_tuples, key=itemgetter(1), reverse=True)
     top5_label = score_sorted[:5]
