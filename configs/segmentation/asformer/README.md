@@ -58,7 +58,7 @@ three public datasets demonstrate the effectiveness of our methods.
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
 
-2. We only provide checkpoints of one split. For experiments with other splits, we simply change the names of the training and testing datasets in the configs file, i.e., modifying `ann_file_train`, `ann_file_val` and `ann_file_test`.
+2. We report results trained on every split, but only provide checkpoints of one split. For experiments with other splits, simply change the paths to the training and testing datasets in the configs file, i.e., modifying `ann_file_train`, `ann_file_val` and `ann_file_test`.
 
 For more details on data preparation, you can refer to [Preparing Datasets for Action Segmentation](/tools/data/action_seg/README.md).
 
