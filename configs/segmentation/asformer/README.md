@@ -23,7 +23,7 @@ three public datasets demonstrate the effectiveness of our methods.
 <!-- [IMAGE] -->
 
 <div align=center>
-<img src="https://github.com/open-mmlab/mmaction2/assets/35267818/d1c593d9-cf4e-4cb8-8fca-b1212e5197c5" width="800"/>
+<img src="https://github.com/open-mmlab/mmaction2/assets/35267818/ea2af27e-0cd9-489d-9c81-02b8a7f29ef1" width="800"/>
 </div>
 
 ## Results
@@ -42,7 +42,7 @@ three public datasets demonstrate the effectiveness of our methods.
 | split  | gpus | pretrain |  ACC  | EDIT  | F1@10 | F1@25 | F1@50 | gpu_mem(M) |                       config                       |                       ckpt                        |                       log                        |
 | :----: | :--: | :------: | :---: | :---: | :---: | :---: | :---: | :--------: | :------------------------------------------------: | :-----------------------------------------------: | :----------------------------------------------: |
 | split2 |  1   |   None   | 87.55 | 79.10 | 85.17 | 83.73 | 77.99 |    7200    | [config](/configs/segmentation/asformer/asformer_1xb1-120e_50salads-split2-i3d-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_50salads-split2-i3d-feature_20231011-25dc57d5.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_50salads-split2-i3d-feature.log) |
-| split1 |  1   |   None   | 81.44 | 73.25 | 82.04 | 80.27 | 71.84 |    7200    |                         -                          |                                                   |                                                  |
+| split1 |  1   |   None   | 81.44 | 73.25 | 82.04 | 80.27 | 71.84 |    7200    |                         -                          |                         -                         |                        -                         |
 | split3 |  1   |   None   | 85.51 | 82.23 | 85.71 | 84.29 | 78.57 |    7200    |                         -                          |                         -                         |                        -                         |
 | split4 |  1   |   None   | 87.27 | 80.46 | 85.99 | 83.14 | 78.86 |    7200    |                         -                          |                         -                         |                        -                         |
 | split5 |  1   |   None   | 87.96 | 75.29 | 84.60 | 83.13 | 76.28 |    7200    |                         -                          |                         -                         |                        -                         |
@@ -51,7 +51,7 @@ three public datasets demonstrate the effectiveness of our methods.
 
 | split  | gpus | pretrain |  ACC  | EDIT  | F1@10 | F1@25 | F1@50 | gpu_mem(M) |                       config                       |                       ckpt                        |                       log                        |
 | :----: | :--: | :------: | :---: | :---: | :---: | :---: | :---: | :--------: | :------------------------------------------------: | :-----------------------------------------------: | :----------------------------------------------: |
-| split2 |  1   |   None   | 74.12 | 76.53 | 77.74 | 72.62 | 60.43 |    8800    | [config](/configs/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature_20231011-10e557f3.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature_20231011-10e557f3.pth) |
+| split2 |  1   |   None   | 74.12 | 76.53 | 77.74 | 72.62 | 60.43 |    8800    | [config](/configs/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature_20231011-10e557f3.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature.log) |
 | split1 |  1   |   None   | 75.52 | 76.87 | 77.06 | 73.05 | 61.77 |    8800    |                         -                          |                         -                         |                        -                         |
 | split3 |  1   |   None   | 74.86 | 74.33 | 76.17 | 70.85 | 58.07 |    8800    |                         -                          |                         -                         |                        -                         |
 | split4 |  1   |   None   | 70.39 | 71.54 | 73.42 | 66.61 | 52.76 |    8800    |                         -                          |                         -                         |                        -                         |

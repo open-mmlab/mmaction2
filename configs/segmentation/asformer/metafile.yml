@@ -7,7 +7,7 @@ Collections:
 
 Models:
   - Name: asformer_gtea2
-    Config: configs/segmentation/asformer/asformer_gtea2.py
+    Config: configs/segmentation/asformer/asformer_1xb1-120e_gtea-split2-i3d-feature.py
     In Collection: ASFormer
     Metadata:
       Batch Size: 1
@@ -24,9 +24,11 @@ Models:
               F1@10: 89.30
               F1@25: 87.83
               F1@50: 75.28
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_50salads-split2-i3d-feature.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_50salads-split2-i3d-feature_20231011-25dc57d5.pth
 
   - Name: asformer_50salads2
-    Config: configs/segmentation/asformer/asformer_50salads2.py
+    Config: configs/segmentation/asformer/asformer_1xb1-120e_50salads-split2-i3d-feature.py
     In Collection: ASFormer
     Metadata:
       Batch Size: 1
@@ -43,9 +45,11 @@ Models:
               F1@10: 85.17
               F1@25: 83.73
               F1@50: 77.99
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_gtea-split2-i3d-feature.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_gtea-split2-i3d-feature_20231011-b5aaf789.pth
 
   - Name: asformer_breakfast2
-    Config: configs/segmentation/asformer/asformer_breakfast2.py
+    Config: configs/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature.py
     In Collection: ASFormer
     Metadata:
       Batch Size: 1
@@ -62,3 +66,5 @@ Models:
               F1@10: 77.74
               F1@25: 72.62
               F1@50: 60.43
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/segmentation/asformer/asformer_1xb1-120e_breakfast-split2-i3d-feature_20231011-10e557f3.pth
