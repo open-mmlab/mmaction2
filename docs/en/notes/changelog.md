@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.2.0 (10/12/2023)
+
+**Highlights**
+
+- Support the Training of ActionClip
+- Support VindLU multi-modality algorithm
+- Support MobileOne TSN/TSM
+
+**New Features**
+
+- Support the Training of ActionClip ([2620](https://github.com/open-mmlab/mmaction2/pull/2620))
+- Support video retrieval dataset MSVD ([2622](https://github.com/open-mmlab/mmaction2/pull/2622))
+- Support VindLU multi-modality algorithm ([2667](https://github.com/open-mmlab/mmaction2/pull/2667))
+- Support Dense Regression Network for Video Grounding ([2668](https://github.com/open-mmlab/mmaction2/pull/2668))
+
+**Improvements**
+
+- Support Video Demos ([2602](https://github.com/open-mmlab/mmaction2/pull/2602))
+- Support Audio Demos ([2603](https://github.com/open-mmlab/mmaction2/pull/2603))
+- Add README_zh-CN.md for Swin and VideoMAE ([2621](https://github.com/open-mmlab/mmaction2/pull/2621))
+- Support MobileOne TSN/TSM ([2656](https://github.com/open-mmlab/mmaction2/pull/2656))
+- Support SlowOnly K700 feature to train localization models ([2673](https://github.com/open-mmlab/mmaction2/pull/2673))
+
+**Bug Fixes**
+
+- Refine ActionDataSample structure ([2658](https://github.com/open-mmlab/mmaction2/pull/2658))
+- Fix MPS device ([2619](https://github.com/open-mmlab/mmaction2/pull/2619))
+
 ## 1.1.0 (7/3/2023)
 
 **Highlights**
