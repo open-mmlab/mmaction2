@@ -123,7 +123,7 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/latest/get_star
 
 ```shell
 conda create --name openmmlab python=3.8 -y
-conda activate open-mmlab
+conda activate openmmlab
 conda install pytorch torchvision -c pytorch  # This command will automatically install the latest version PyTorch and cudatoolkit, please check whether they match your environment.
 pip install -U openmim
 mim install mmengine
