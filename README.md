@@ -81,7 +81,7 @@ English | [简体中文](/README_zh-CN.md)
 - Support lightweight model MobileOne TSN/TSM
 - Support video retrieval dataset MSVD
 - Support SlowOnly K700 feature to train localization models
-- Support Video and Audio Demos 
+- Support Video and Audio Demos
 
 ## 📖 Introduction [🔝](#-table-of-contents)
 
