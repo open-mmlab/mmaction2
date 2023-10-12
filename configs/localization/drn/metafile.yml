@@ -1,0 +1,26 @@
+Collections:
+- Name: DRN
+  README: configs/localization/drn/README.md
+  Paper:
+    URL: https://openaccess.thecvf.com/content_CVPR_2020/papers/Zeng_Dense_Regression_Network_for_Video_Grounding_CVPR_2020_paper.pdf
+    Title: "Dense Regression Network for Video Grounding"
+
+Models:
+  - Name: drn_2xb16-4096-10e_c3d-feature_third
+    Config: configs/localization/drn/drn_2xb16-4096-10e_c3d-feature_third.py
+    In Collection: DRN
+    Metadata:
+      Batch Size: 16
+      Epochs: 10
+      Training Data: Charades STA
+      Training Resources: 2 GPUs
+      feature: C3D
+    Modality: RGB
+    Results:
+      - Dataset: Charades STA
+        Task: Video Grounding
+        Metrics:
+              Recall@Top1(IoU=0.5): 47.04
+              Recall@Top5(IoU=0.5): 84.57
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/drn_2xb16-4096-10e_c3d-feature.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/localization/drn/drn_2xb16-4096-10e_c3d-feature_20230809-ec0429a6.pth
