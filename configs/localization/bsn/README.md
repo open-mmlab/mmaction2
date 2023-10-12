@@ -23,17 +23,20 @@ Temporal action proposal generation is an important yet challenging problem, sin
 |    feature    | gpus | pretrain |  AUC  | AR@1  | AR@5  | AR@10 | AR@100 |   gpu_mem(M)    | iter time(s) |                   config                   |                   ckpt                   |                   log                    |
 | :-----------: | :--: | :------: | :---: | :---: | :---: | :---: | :----: | :-------------: | :----------: | :----------------------------------------: | :--------------------------------------: | :--------------------------------------: |
 | cuhk_mean_100 |  1   |   None   | 66.26 | 32.71 | 48.43 | 55.28 | 74.27  | 43(TEM)+25(PEM) |      -       | [config_TEM](/configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py) [config_PGM](/configs/localization/bsn/bsn_pgm_400x100_activitynet-feature.py) [config_PEM](/configs/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.py) | [ckpt_TEM](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature_20220908-9da79951.pth) [ckpt_PEM](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature_20220908-ec2eb21d.pth) | [log_tem](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.log) [log_pem](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.log) |
+| slowonly-k700 |  1   |   None   | 67.63 | 33.04 | 48.79 | 56.01 | 75.74  |        -        |      -       | [config_TEM](/configs/localization/bsn/bsn_tem_1xb16-2048x100-20e_activitynet-k700-feature.py) [config_PGM](/configs/localization/bsn/bsn_pgm_2048x100_activitynet-slowonly-k700-feature.py) [config_PEM](/configs/localization/bsn/bsn_pem_1xb16-2048x100-20e_activitynet-slowonly-k700-feature.py) | [ckpt_TEM](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-2048x100-20e_activitynet-k700-feature_20230907-76069fda.pth) [ckpt_PEM](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-2048x100-20e_activitynet-slowonly-k700-feature_20230907-44158b6d.pth) | [log_tem](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.log) [log_pem](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.log) |
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk).
+2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk). The slowonly-k700 denotes the feature extracted using MMAction2's [SlowOnly model trained on Kinetics 700](/configs/recognition/slowonly/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb.py). You can download this feature from [ActivityNet Data Preparation](/tools/data/activitynet/README.md).
 
 For more details on data preparation, you can refer to [ActivityNet Data Preparation](/tools/data/activitynet/README.md).
 
 ## Training and Test
 
-The traing of the BSN model is three-stages. Firstly train the Temporal evaluation module (TEM):
+The traing of the BSN model is three-stages. We take the `cuhk_mean_100` feature as an example. For `slowonly-k700` feature, just need to replace the config file with the corresponding config file with `slowonly-k700` in the file name.
+
+Firstly train the Temporal evaluation module (TEM):
 
 ```shell
 python3 tools/train.py configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py

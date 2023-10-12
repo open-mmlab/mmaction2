@@ -23,11 +23,12 @@ Temporal action proposal generation is an challenging and promising task which a
 |    feature    | gpus | pretrain |  AUC  | AR@1  | AR@5  | AR@10 | AR@100 | gpu_mem(M) | iter time(s) |                    config                    |                    ckpt                    |                    log                    |
 | :-----------: | :--: | :------: | :---: | :---: | :---: | :---: | :----: | :--------: | :----------: | :------------------------------------------: | :----------------------------------------: | :---------------------------------------: |
 | cuhk_mean_100 |  2   |   None   | 67.25 | 32.89 | 49.43 | 56.64 | 75.29  |    5412    |      -       | [config](/configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log) |
+| slowonly-k700 |  2   |   None   | 68.04 | 33.44 | 50.53 | 57.65 | 75.77  |     -      |      -       | [config](/configs/localization/bmn/bmn_2xb8-2048x100-9e_activitynet-slowonly-k700-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-2048x100-9e_activitynet-slowonly-k700-feature_20230907-50b939b2.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-2048x100-9e_activitynet-slowonly-k700-feature.log) |
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk).
+2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk).  The slowonly-k700 denotes the feature extracted using MMAction2's [SlowOnly model trained on Kinetics 700](/configs/recognition/slowonly/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb.py). You can download this feature from [ActivityNet Data Preparation](/tools/data/activitynet/README.md).
 3. We evaluate the action detection performance of BMN, using  [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) submission for ActivityNet2017 Untrimmed Video Classification Track to assign label for each action proposal.
 
 \*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
@@ -40,6 +41,12 @@ Train BMN model on ActivityNet features dataset.
 
 ```shell
 bash tools/dist_train.sh configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py 2
+```
+
+Train BMN model on ActivityNet SlowOnly-K700 features dataset.
+
+```shell
+bash tools/dist_train.sh configs/localization/bmn/bmn_2xb8-2048x100-9e_activitynet-slowonly-k700-feature.py 2
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/train_test.md).
