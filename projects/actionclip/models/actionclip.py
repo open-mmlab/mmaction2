@@ -7,7 +7,6 @@ import torch
 import torch.nn.functional as F
 from mmengine.dist import all_gather, get_rank
 from mmengine.model import BaseModel
-from mmengine.structures import LabelData
 
 from mmaction.registry import MODELS
 from .adapter import TransformerAdapter
@@ -132,7 +131,7 @@ class ActionClip(BaseModel):
             cls_scores = F.softmax(similarity, dim=2).mean(dim=1)
 
             for data_sample, score in zip(data_samples, cls_scores):
-                data_sample.pred_scores = LabelData(item=score)
+                data_sample.set_pred_score(score)
 
             return data_samples
 
