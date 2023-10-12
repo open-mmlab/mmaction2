@@ -167,6 +167,7 @@ class ASFormer(BaseModel):
         output = [dict(ground=ground, recognition=recognition)]
         return output
 
+
 def exponential_descrease(idx_decoder, p=3):
     return math.exp(-p * idx_decoder)
 
@@ -571,7 +572,8 @@ class Decoder(nn.Module):
 
 
 class MyTransformer(nn.Module):
-    """An encoder-decoder transformer"""
+    """An encoder-decoder transformer."""
+
     def __init__(self, num_decoders, num_layers, r1, r2, num_f_maps, input_dim,
                  num_classes, channel_masking_rate):
         super(MyTransformer, self).__init__()
@@ -601,7 +603,7 @@ class MyTransformer(nn.Module):
 
     def forward(self, x, mask):
         """Define the computation performed at every call.
-        
+
         Args:
             x (torch.Tensor): The input data.
         Returns:
