@@ -60,8 +60,6 @@ class ASFormer(BaseModel):
             - If ``mode="loss"``, return a dict of tensor.
         """
         input = torch.stack(inputs)
-        if mode == 'tensor':
-            return self._forward(inputs, **kwargs)
         if mode == 'predict':
             return self.predict(input, data_samples, **kwargs)
         elif mode == 'loss':
@@ -168,19 +166,6 @@ class ASFormer(BaseModel):
             ]))
         output = [dict(ground=ground, recognition=recognition)]
         return output
-
-    def _forward(self, x):
-        """Define the computation performed at every call.
-
-        Args:
-            x (torch.Tensor): The input data.
-        Returns:
-            torch.Tensor: The output of the module.
-        """
-        print(x.shape)
-
-        return x.shape
-
 
 def exponential_descrease(idx_decoder, p=3):
     return math.exp(-p * idx_decoder)
@@ -448,6 +433,13 @@ class ConvFeedForward(nn.Module):
                 dilation=dilation), nn.ReLU())
 
     def forward(self, x):
+        """Define the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         return self.layer(x)
 
 
@@ -579,7 +571,7 @@ class Decoder(nn.Module):
 
 
 class MyTransformer(nn.Module):
-
+    """An encoder-decoder transformer"""
     def __init__(self, num_decoders, num_layers, r1, r2, num_f_maps, input_dim,
                  num_classes, channel_masking_rate):
         super(MyTransformer, self).__init__()
@@ -608,6 +600,13 @@ class MyTransformer(nn.Module):
         ])  # num_decoders
 
     def forward(self, x, mask):
+        """Define the computation performed at every call.
+        
+        Args:
+            x (torch.Tensor): The input data.
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         out, feature = self.encoder(x, mask)
         outputs = out.unsqueeze(0)
 
