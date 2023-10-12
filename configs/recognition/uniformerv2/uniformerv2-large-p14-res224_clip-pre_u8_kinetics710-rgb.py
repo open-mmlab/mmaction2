@@ -1,11 +1,28 @@
-_base_ = ['../../_base_/default_runtime.py']
+# Copyright (c) OpenMMLab. All rights reserved.
+from mmengine.config import read_base
+
+with read_base():
+    from ..._base_.default_runtime import *
+
+from mmengine.dataset import DefaultSampler
+from mmengine.optim import CosineAnnealingLR, LinearLR
+from mmengine.runner import EpochBasedTrainLoop, TestLoop, ValLoop
+from torch.optim import AdamW
+
+from mmaction.datasets import (CenterCrop, DecordDecode, DecordInit, Flip,
+                               FormatShape, PackActionInputs,
+                               PytorchVideoWrapper, RandomResizedCrop, Resize,
+                               ThreeCrop, UniformSample, VideoDataset)
+from mmaction.evaluation import AccMetric
+from mmaction.models import (ActionDataPreprocessor, Recognizer3D,
+                             TimeSformerHead, UniFormerHead, UniFormerV2)
 
 # model settings
 num_frames = 8
 model = dict(
-    type='Recognizer3D',
+    type=Recognizer3D,
     backbone=dict(
-        type='UniFormerV2',
+        type=UniFormerV2,
         input_resolution=224,
         patch_size=14,
         width=1024,
@@ -25,13 +42,13 @@ model = dict(
         drop_path_rate=0.,
         mlp_dropout=[0.5, 0.5, 0.5, 0.5]),
     cls_head=dict(
-        type='TimeSformerHead',
+        type=TimeSformerHead,
         dropout_ratio=0.5,
         num_classes=710,
         in_channels=1024,
         average_clips='prob'),
     data_preprocessor=dict(
-        type='ActionDataPreprocessor',
+        type=ActionDataPreprocessor,
         mean=[114.75, 114.75, 114.75],
         std=[57.375, 57.375, 57.375],
         format_shape='NCTHW'))
