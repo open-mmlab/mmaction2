@@ -17,6 +17,6 @@ __all__ = [
     'AVADataset', 'AVAKineticsDataset', 'ActivityNetDataset', 'AudioDataset',
     'BaseActionDataset', 'PoseDataset', 'RawframeDataset', 'RepeatAugDataset',
     'VideoDataset', 'repeat_pseudo_collate', 'VideoTextDataset',
-    'MSRVTTRetrieval', 'MSRVTTVQA', 'MSRVTTVQAMC', 'CharadesSTADataset', 
+    'MSRVTTRetrieval', 'MSRVTTVQA', 'MSRVTTVQAMC', 'CharadesSTADataset',
     'ActionSegmentDataset'
 ]

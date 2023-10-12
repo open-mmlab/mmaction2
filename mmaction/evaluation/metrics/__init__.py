@@ -8,7 +8,6 @@ from .retrieval_metric import RetrievalMetric
 from .segment_metric import SegmentMetric
 from .video_grounding_metric import RecallatTopK
 
-
 __all__ = [
     'AccMetric', 'AVAMetric', 'ANetMetric', 'ConfusionMatrix',
     'MultiSportsMetric', 'RetrievalMetric', 'VQAAcc', 'ReportVQA', 'VQAMCACC',
