@@ -21,7 +21,7 @@ def train_test_step(cfg, input_shape):
         'inputs':
         [torch.randint(0, 256, input_shape) for i in range(batch_size)],
         'data_samples':
-        [ActionDataSample().set_gt_labels(2) for i in range(batch_size)]
+        [ActionDataSample().set_gt_label(2) for i in range(batch_size)]
     }
 
     # test train_step
@@ -34,7 +34,7 @@ def train_test_step(cfg, input_shape):
     # test test_step
     with torch.no_grad():
         predictions = recognizer.test_step(data_batch)
-    score = predictions[0].pred_scores.item
+    score = predictions[0].pred_score
     assert len(predictions) == batch_size
     assert score.shape == torch.Size([num_classes])
     assert torch.min(score) >= 0
@@ -46,7 +46,7 @@ def train_test_step(cfg, input_shape):
     data_batch['inputs'] = [torch.randint(0, 256, input_shape)]
     with torch.no_grad():
         predictions = recognizer.test_step(data_batch)
-    score = predictions[0].pred_scores.item
+    score = predictions[0].pred_score
     assert len(predictions) == batch_size
     assert score.shape == torch.Size([num_classes])
 
@@ -86,6 +86,16 @@ def test_tsn_mmcls_backbone():
     mmcls_backbone['type'] = ResNeXt
     config.model['backbone'] = mmcls_backbone
 
+    input_shape = (1, 3, 3, 32, 32)
+    train_test_step(config, input_shape)
+
+
+def test_tsn_mobileone():
+    register_all_modules()
+    config = get_recognizer_cfg(
+        'tsn/custom_backbones/tsn_imagenet-pretrained-mobileone-s4_8xb32-1x1x8-100e_kinetics400-rgb.py'  # noqa: E501
+    )
+    config.model['backbone']['init_cfg'] = None
     input_shape = (1, 3, 3, 32, 32)
     train_test_step(config, input_shape)
 
@@ -142,6 +152,7 @@ def test_tsn_tv_backbone():
 
 def test_tsm():
     register_all_modules()
+    # test tsm-mobilenetv2
     config = get_recognizer_cfg(
         'tsm/tsm_imagenet-pretrained-mobilenetv2_8xb16-1x1x8-100e_kinetics400-rgb.py'  # noqa: E501
     )
@@ -151,12 +162,23 @@ def test_tsm():
     input_shape = (1, 8, 3, 32, 32)
     train_test_step(config, input_shape)
 
+    # test tsm-res50
     config = get_recognizer_cfg(
         'tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
     config.model['backbone']['pretrained2d'] = None
 
     input_shape = (1, 8, 3, 32, 32)
+    train_test_step(config, input_shape)
+
+    # test tsm-mobileone
+    config = get_recognizer_cfg(
+        'tsm/tsm_imagenet-pretrained-mobileone-s4_8xb16-1x1x16-50e_kinetics400-rgb.py'  # noqa: E501
+    )
+    config.model['backbone']['init_cfg'] = None
+    config.model['backbone']['pretrained2d'] = None
+
+    input_shape = (1, 16, 3, 32, 32)
     train_test_step(config, input_shape)
 
 

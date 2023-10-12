@@ -8,8 +8,6 @@ from tempfile import TemporaryDirectory
 
 import decord
 import pytest
-import torch
-from mmengine.structures import LabelData
 
 from mmaction.structures import ActionDataSample
 from mmaction.utils import register_all_modules
@@ -24,7 +22,7 @@ def test_local_visbackend():
     video = video.get_batch(range(32)).asnumpy()
 
     data_sample = ActionDataSample()
-    data_sample.gt_labels = LabelData(item=torch.tensor([2]))
+    data_sample.set_gt_label(2)
     with TemporaryDirectory() as tmp_dir:
         vis = ActionVisualizer(
             save_dir=tmp_dir, vis_backends=[dict(type='LocalVisBackend')])
@@ -46,7 +44,7 @@ def test_tensorboard_visbackend():
     video = video.get_batch(range(32)).asnumpy()
 
     data_sample = ActionDataSample()
-    data_sample.gt_labels = LabelData(item=torch.tensor([2]))
+    data_sample.set_gt_label(2)
     with TemporaryDirectory() as tmp_dir:
         vis = ActionVisualizer(
             save_dir=tmp_dir,
@@ -63,29 +61,3 @@ def test_tensorboard_visbackend():
         # wait tensorboard store asynchronously
         time.sleep(1)
     return
-
-
-"""
-def test_wandb_visbackend():
-    video = decord.VideoReader('./demo/demo.mp4')
-    video = video.get_batch(range(32)).asnumpy()
-
-    data_sample = ActionDataSample()
-    data_sample.gt_labels = LabelData(item=torch.tensor([2]))
-
-    vis = ActionVisualizer(
-        save_dir='./outputs', vis_backends=[dict(type='WandbVisBackend')])
-    vis.add_datasample('demo', video, data_sample, step=1)
-
-    wandb_dir = 'outputs/vis_data/wandb/'
-    assert Path(wandb_dir).exists()
-
-    flag = False
-    for item in os.listdir(wandb_dir):
-        if item.startswith('run-') and os.path.isdir('%s/%s' %
-                                                     (wandb_dir, item)):
-            flag = True
-            break
-    assert flag, 'Cannot find wandb folder!'
-    return
-"""

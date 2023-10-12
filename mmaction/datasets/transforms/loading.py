@@ -1418,11 +1418,7 @@ class RawFrameDecode(BaseTransform):
         for i, frame_idx in enumerate(results['frame_inds']):
             # Avoid loading duplicated frames
             if frame_idx in cache:
-                if modality == 'RGB':
-                    imgs.append(cp.deepcopy(imgs[cache[frame_idx]]))
-                else:
-                    imgs.append(cp.deepcopy(imgs[2 * cache[frame_idx]]))
-                    imgs.append(cp.deepcopy(imgs[2 * cache[frame_idx] + 1]))
+                imgs.append(cp.deepcopy(imgs[cache[frame_idx]]))
                 continue
             else:
                 cache[frame_idx] = i
@@ -1443,7 +1439,7 @@ class RawFrameDecode(BaseTransform):
                 x_frame = mmcv.imfrombytes(x_img_bytes, flag='grayscale')
                 y_img_bytes = self.file_client.get(y_filepath)
                 y_frame = mmcv.imfrombytes(y_img_bytes, flag='grayscale')
-                imgs.extend([x_frame, y_frame])
+                imgs.append(np.stack([x_frame, y_frame], axis=-1))
             else:
                 raise NotImplementedError
 
@@ -1621,32 +1617,26 @@ class ImageDecode(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class AudioDecodeInit(BaseTransform):
-    """Using librosa to initialize the audio reader.
+class LoadAudioFeature(BaseTransform):
+    """Load offline extracted audio features.
 
-    Required keys are ``audio_path``, added or modified keys are ``length``,
-    ``sample_rate``, ``audios``.
+    Required Keys:
+
+        - audio_path
+
+    Added Keys:
+
+        - length
+        - audios
 
     Args:
-        io_backend (str): io backend where frames are store.
-            Defaults to ``disk``.
-        sample_rate (int): Audio sampling times per second. Defaults to 16000.
-        pad_method (str): Padding method. Defaults to ``zero``.
+        pad_method (str): Padding method. Defaults to ``'zero'``.
     """
 
-    def __init__(self,
-                 io_backend: str = 'disk',
-                 sample_rate: int = 16000,
-                 pad_method: str = 'zero',
-                 **kwargs) -> None:
-        self.io_backend = io_backend
-        self.sample_rate = sample_rate
-        if pad_method in ['random', 'zero']:
-            self.pad_method = pad_method
-        else:
+    def __init__(self, pad_method: str = 'zero') -> None:
+        if pad_method not in ['zero', 'random']:
             raise NotImplementedError
-        self.kwargs = kwargs
-        self.file_client = None
+        self.pad_method = pad_method
 
     @staticmethod
     def _zero_pad(shape: int) -> np.ndarray:
@@ -1656,70 +1646,10 @@ class AudioDecodeInit(BaseTransform):
     @staticmethod
     def _random_pad(shape: int) -> np.ndarray:
         """Random padding method."""
-        # librosa load raw audio file into a distribution of -1~+1
-        return np.random.rand(shape).astype(np.float32) * 2 - 1
-
-    def transform(self, results: dict) -> dict:
-        """Perform the librosa initialization.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        try:
-            import librosa
-        except ImportError:
-            raise ImportError('Please install librosa first.')
-
-        if self.file_client is None:
-            self.file_client = FileClient(self.io_backend, **self.kwargs)
-        if osp.exists(results['audio_path']):
-            file_obj = io.BytesIO(self.file_client.get(results['audio_path']))
-            y, sr = librosa.load(file_obj, sr=self.sample_rate)
-        else:
-            # Generate a random dummy 10s input
-            pad_func = getattr(self, f'_{self.pad_method}_pad')
-            y = pad_func(int(round(10.0 * self.sample_rate)))
-            sr = self.sample_rate
-
-        results['length'] = y.shape[0]
-        results['sample_rate'] = sr
-        results['audios'] = y
-        return results
-
-    def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}('
-                    f'io_backend={self.io_backend}, '
-                    f'sample_rate={self.sample_rate}, '
-                    f'pad_method={self.pad_method})')
-        return repr_str
-
-
-@TRANSFORMS.register_module()
-class LoadAudioFeature(BaseTransform):
-    """Load offline extracted audio features.
-
-    Required keys are "audio_path", added or modified keys are "length",
-    audios".
-    """
-
-    def __init__(self, pad_method='zero'):
-        if pad_method not in ['zero', 'random']:
-            raise NotImplementedError
-        self.pad_method = pad_method
-
-    @staticmethod
-    def _zero_pad(shape):
-        """Zero padding method."""
-        return np.zeros(shape, dtype=np.float32)
-
-    @staticmethod
-    def _random_pad(shape):
-        """Random padding method."""
         # spectrogram is normalized into a distribution of 0~1
         return np.random.rand(shape).astype(np.float32)
 
-    def transform(self, results):
+    def transform(self, results: Dict) -> Dict:
         """Perform the numpy loading.
 
         Args:
@@ -1738,65 +1668,9 @@ class LoadAudioFeature(BaseTransform):
         results['audios'] = feature_map
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'pad_method={self.pad_method})')
-        return repr_str
-
-
-@TRANSFORMS.register_module()
-class AudioDecode(BaseTransform):
-    """Sample the audio w.r.t. the frames selected.
-
-    Args:
-        fixed_length (int): As the audio clip selected by frames sampled may
-            not be exactly the same, ``fixed_length`` will truncate or pad them
-            into the same size. Defaults to 32000.
-
-    Required keys are ``frame_inds``, ``num_clips``, ``total_frames``,
-    ``length``, added or modified keys are ``audios``, ``audios_shape``.
-    """
-
-    def __init__(self, fixed_length: int = 32000) -> None:
-        self.fixed_length = fixed_length
-
-    def transform(self, results: dict) -> dict:
-        """Perform the ``AudioDecode`` to pick audio clips."""
-        audio = results['audios']
-        frame_inds = results['frame_inds']
-        num_clips = results['num_clips']
-        resampled_clips = list()
-        frame_inds = frame_inds.reshape(num_clips, -1)
-        for clip_idx in range(num_clips):
-            clip_frame_inds = frame_inds[clip_idx]
-            start_idx = max(
-                0,
-                int(
-                    round((clip_frame_inds[0] + 1) / results['total_frames'] *
-                          results['length'])))
-            end_idx = min(
-                results['length'],
-                int(
-                    round((clip_frame_inds[-1] + 1) / results['total_frames'] *
-                          results['length'])))
-            cropped_audio = audio[start_idx:end_idx]
-            if cropped_audio.shape[0] >= self.fixed_length:
-                truncated_audio = cropped_audio[:self.fixed_length]
-            else:
-                truncated_audio = np.pad(
-                    cropped_audio,
-                    ((0, self.fixed_length - cropped_audio.shape[0])),
-                    mode='constant')
-
-            resampled_clips.append(truncated_audio)
-
-        results['audios'] = np.array(resampled_clips)
-        results['audios_shape'] = results['audios'].shape
-        return results
-
-    def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f"(fixed_length='{self.fixed_length}')"
         return repr_str
 
 
@@ -1840,19 +1714,32 @@ class BuildPseudoClip(BaseTransform):
 class AudioFeatureSelector(BaseTransform):
     """Sample the audio feature w.r.t. the frames selected.
 
-    Required keys are "audios", "frame_inds", "num_clips", "length",
-    "total_frames", added or modified keys are "audios", "audios_shape".
+    Required Keys:
+
+        - audios
+        - frame_inds
+        - num_clips
+        - length
+        - total_frames
+
+    Modified Keys:
+
+        - audios
+
+    Added Keys:
+
+        - audios_shape
 
     Args:
         fixed_length (int): As the features selected by frames sampled may
             not be exactly the same, `fixed_length` will truncate or pad them
-            into the same size. Default: 128.
+            into the same size. Defaults to 128.
     """
 
-    def __init__(self, fixed_length=128):
+    def __init__(self, fixed_length: int = 128) -> None:
         self.fixed_length = fixed_length
 
-    def transform(self, results):
+    def transform(self, results: Dict) -> Dict:
         """Perform the ``AudioFeatureSelector`` to pick audio feature clips.
 
         Args:
@@ -1891,7 +1778,7 @@ class AudioFeatureSelector(BaseTransform):
         results['audios_shape'] = results['audios'].shape
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'fix_length={self.fixed_length})')
         return repr_str

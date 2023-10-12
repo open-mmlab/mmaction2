@@ -31,6 +31,7 @@ model = dict(
             with_temporal_pool=True),
         bbox_head=dict(
             type='BBoxHeadAVA',
+            background_class=True,
             in_channels=768,
             num_classes=81,
             multilabel=True,

@@ -7,6 +7,7 @@ import math
 from collections import defaultdict
 
 import numpy as np
+from mmengine.logging import MMLogger
 from rich.progress import track
 
 
@@ -314,7 +315,7 @@ def link_tubes(anno, frm_dets, K=1, len_thre=15):
 
 
 def frameAP(GT, alldets, thr, print_info=True):
-
+    logger = MMLogger.get_current_instance()
     vlist = GT['test_videos'][0]
 
     results = {}
@@ -326,7 +327,7 @@ def frameAP(GT, alldets, thr, print_info=True):
                 'basketball save', 'basketball jump ball'
         ]:
             if print_info:
-                print('do not evaluate {}'.format(label))
+                logger.info('do not evaluate {}'.format(label))
             continue
         # det format: <video_index><frame_number><label_index><score><x1><y1><x2><y2> # noqa: E501
         detections = alldets[alldets[:, 2] == ilabel, :]
@@ -355,7 +356,7 @@ def frameAP(GT, alldets, thr, print_info=True):
         gt_num = sum([g.shape[0] for g in gt.values()])
         if gt_num == 0:
             if print_info:
-                print('no such label', ilabel, label)
+                logger.info('no such label', ilabel, label)
             continue
         fp = 0  # false positives
         tp = 0  # true positives
@@ -395,15 +396,15 @@ def frameAP(GT, alldets, thr, print_info=True):
         class_result[label] = pr_to_ap_voc(results[label]) * 100
     frameap_result = np.mean(ap)
     if print_info:
-        print('frameAP_{}\n'.format(thr))
+        logger.info('frameAP_{}\n'.format(thr))
         for label in class_result:
-            print('{:20s} {:8.2f}'.format(label, class_result[label]))
-        print('{:20s} {:8.2f}'.format('mAP', frameap_result))
+            logger.info('{:20s} {:8.2f}'.format(label, class_result[label]))
+        logger.info('{:20s} {:8.2f}'.format('mAP', frameap_result))
     return frameap_result
 
 
 def videoAP(GT, alldets, thr, print_info=True):
-
+    logger = MMLogger.get_current_instance()
     vlist = GT['test_videos'][0]
 
     res = {}
@@ -414,7 +415,7 @@ def videoAP(GT, alldets, thr, print_info=True):
                 'basketball save', 'basketball jump ball'
         ]:
             if print_info:
-                print('do not evaluate{}'.format(GT['labels'][ilabel]))
+                logger.info('do not evaluate{}'.format(GT['labels'][ilabel]))
             continue
         detections = alldets[ilabel]
         # load ground-truth
@@ -438,7 +439,7 @@ def videoAP(GT, alldets, thr, print_info=True):
         tp = 0  # true positives
         if gt_num == 0:
             if print_info:
-                print('no such label', ilabel, GT['labels'][ilabel])
+                logger.info('no such label', ilabel, GT['labels'][ilabel])
             continue
         is_gt_box_detected = {}
         for i, j in enumerate(
@@ -471,10 +472,10 @@ def videoAP(GT, alldets, thr, print_info=True):
     for label in res:
         class_result[label] = pr_to_ap_voc(res[label]) * 100
     if print_info:
-        print('VideoAP_{}\n'.format(thr))
+        logger.info('VideoAP_{}\n'.format(thr))
         for label in class_result:
-            print('{:20s} {:8.2f}'.format(label, class_result[label]))
-        print('{:20s} {:8.2f}'.format('mAP', videoap_result))
+            logger.info('{:20s} {:8.2f}'.format(label, class_result[label]))
+        logger.info('{:20s} {:8.2f}'.format('mAP', videoap_result))
     return videoap_result
 
 

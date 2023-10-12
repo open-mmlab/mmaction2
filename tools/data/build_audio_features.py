@@ -38,11 +38,16 @@ class AudioTools:
             <https://pypi.org/project/lws/1.2.6/>`_.
 
     Args:
-        frame_rate (int): The frame rate per second of the video. Default: 30.
-        sample_rate (int): The sample rate for audio sampling. Default: 16000.
-        num_mels (int): Number of channels of the melspectrogram. Default: 80.
-        fft_size (int): fft_size / sample_rate is window size. Default: 1280.
-        hop_size (int): hop_size / sample_rate is step size. Default: 320.
+        frame_rate (int): The frame rate per second of the video.
+            Defaults to 30.
+        sample_rate (int): The sample rate for audio sampling.
+            Defaults to 16000.
+        num_mels (int): Number of channels of the melspectrogram.
+            Defaults to 80.
+        fft_size (int): fft_size / sample_rate is window size.
+            Defaults to 1280.
+        hop_size (int): hop_size / sample_rate is step size.
+            Defaults to 320.
     """
 
     def __init__(self,
@@ -290,15 +295,15 @@ if __name__ == '__main__':
     parser.add_argument('audio_home_path', type=str)
     parser.add_argument('spectrogram_save_path', type=str)
     parser.add_argument('--level', type=int, default=1)
-    parser.add_argument('--ext', default='.m4a')
+    parser.add_argument('--ext', default='m4a')
     parser.add_argument('--num-workers', type=int, default=4)
     parser.add_argument('--part', type=str, default='1/1')
     args = parser.parse_args()
 
     mmengine.mkdir_or_exist(args.spectrogram_save_path)
 
-    files = glob.glob(
-        osp.join(args.audio_home_path, '*/' * args.level, '*' + args.ext))
+    files = glob.glob(args.audio_home_path + '/*' * args.level + '.' +
+                      args.ext)
     print(f'found {len(files)} files.')
     files = sorted(files)
     if args.part is not None:

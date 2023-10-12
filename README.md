@@ -75,14 +75,13 @@ English | [简体中文](/README_zh-CN.md)
 
 **The default branch has been switched to `main`(previous `1.x`) from `master`(current `0.x`), and we encourage users to migrate to the latest version with more supported models, stronger pre-training checkpoints and simpler coding. Please refer to [Migration Guide](https://mmaction2.readthedocs.io/en/latest/migration.html) for more details.**
 
-**Release (2023.07.04)**: v1.1.0 with the following new features:
+**Release (2023.10.12)**: v1.2.0 with the following new features:
 
-- Support CLIP-based multi-modality models: ActionCLIP(Arxiv'2021) and CLIP4clip(ArXiv'2022)
-- Support rich projects: gesture recognition, spatio-temporal action detection tutorial, and knowledge distillation
-- Support HACS-segments dataset(ICCV'2019), MultiSports dataset(ICCV'2021), Kinetics-710 dataset(Arxiv'2022)
-- Support VideoMAE V2(CVPR'2023), and VideoMAE(NeurIPS'2022) on action detection
-- Support TCANet(CVPR'2021)
-- Support [Pure Python style Configuration File](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/config.html#a-pure-python-style-configuration-file-beta) and downloading datasets by MIM with one command
+- Support VindLU multi-modality algorithm and the Training of ActionClip
+- Support lightweight model MobileOne TSN/TSM
+- Support video retrieval dataset MSVD
+- Support SlowOnly K700 feature to train localization models
+- Support Video and Audio Demos
 
 ## 📖 Introduction [🔝](#-table-of-contents)
 

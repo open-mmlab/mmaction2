@@ -32,7 +32,7 @@ The models are ported from the repo [UniFormer](https://github.com/Sense-X/UniFo
 2. The values in `top1/5 acc` is tested on the same data list as the original repo, and the label map is provided by [UniFormer](https://drive.google.com/drive/folders/17VB-XdF3Kfr9ORmnGyXCxTMs86n0L4QL). The total videos are available at [Kinetics400](https://pan.baidu.com/s/1t5K0FRz3PGAT-37-3FwAfg) (BaiduYun password: g5kp), which consists of 19787 videos.
 3. The values in columns named after "mm-Kinetics" are the testing results on the Kinetics dataset held by MMAction2, which is also used by other models in MMAction2. Due to the differences between various versions of Kinetics dataset, there is a little gap between `top1/5 acc` and `mm-Kinetics top1/5 acc`. For a fair comparison with other models, we report both results here. Note that we simply report the inference results, since the training set is different between UniFormer and other models, the results are lower than that tested on the author's version.
 4. Since the original models for Kinetics-400/600/700 adopt different [label file](https://drive.google.com/drive/folders/17VB-XdF3Kfr9ORmnGyXCxTMs86n0L4QL), we simply map the weight according to the label name. New label map for Kinetics-400/600/700 can be found [here](https://github.com/open-mmlab/mmaction2/tree/main/tools/data/kinetics).
-5. Due to some difference between [SlowFast](https://github.com/facebookresearch/SlowFast) and MMAction, there are some gaps between their performances.
+5. Due to some difference between [SlowFast](https://github.com/facebookresearch/SlowFast) and MMAction2, there are some gaps between their performances.
 
 For more details on data preparation, you can refer to [preparing_kinetics](/tools/data/kinetics/README.md).
 

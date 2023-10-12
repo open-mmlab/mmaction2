@@ -139,7 +139,7 @@ def inference():
         # Forward the model
         with torch.no_grad():
             result = model.test_step(cur_data)[0]
-        scores = result.pred_scores.item.tolist()
+        scores = result.pred_score.tolist()
         scores = np.array(scores)
         score_cache.append(scores)
         scores_sum += scores

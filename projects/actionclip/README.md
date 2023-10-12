@@ -46,24 +46,45 @@ Create a symbolic link from `$MMACTION2/data` to `./data` in the current directo
 ln -s ../../data ./data
 ```
 
+### Training commands
+
+**To train with single GPU:**
+
+```bash
+mim train mmaction configs/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb.py
+```
+
+**To train with multiple GPUs:**
+
+```bash
+mim train mmaction configs/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb.py --launcher pytorch --gpus 8
+```
+
+**To train with multiple GPUs by slurm:**
+
+```bash
+mim train mmaction configs/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb.py --launcher slurm \
+    --gpus 8 --gpus-per-node 8 --partition $PARTITION
+```
+
 ### Testing commands
 
 **To test with single GPU:**
 
 ```bash
-mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb.py --checkpoint $CHECKPOINT
+mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb.py --checkpoint $CHECKPOINT
 ```
 
 **To test with multiple GPUs:**
 
 ```bash
-mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb.py --checkpoint $CHECKPOINT --launcher pytorch --gpus 8
+mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb.py --checkpoint $CHECKPOINT --launcher pytorch --gpus 8
 ```
 
 **To test with multiple GPUs by slurm:**
 
 ```bash
-mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb.py --checkpoint $CHECKPOINT --launcher slurm \
+mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb.py --checkpoint $CHECKPOINT --launcher slurm \
     --gpus 8 --gpus-per-node 8 --partition $PARTITION
 ```
 
@@ -79,6 +100,13 @@ mim test mmaction configs/actionclip_vit-base-p32-res224-clip-pre_1x1x8_k400-rgb
 |         1x1x32          | ViT-B/16 |   81.3   |   95.8   | 32 clips  x 1 crop | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_1x1x32_k400-rgb/vit-b-16-32f.pth)\[1\] |
 
 \[1\] The models are ported from the repo [ActionCLIP](https://github.com/sallymmx/ActionCLIP) and tested on our data. Currently, we only support the testing of ActionCLIP models. Due to the variation in testing data, our reported test accuracy differs from that of the original repository (on average, it is lower by one point). Please refer to this [issue](https://github.com/sallymmx/ActionCLIP/issues/14) for more details.
+
+### Kinetics400 (Trained on Our K400 dataset)
+
+| frame sampling strategy | gpus | backbone | top1 acc | top5 acc | testing protocol  |                    config                     |                     ckpt                     |                     log                     |
+| :---------------------: | :--: | :------: | :------: | :------: | :---------------: | :-------------------------------------------: | :------------------------------------------: | :-----------------------------------------: |
+|          1x1x8          |  8   | ViT-B/32 |   77.5   |   93.2   | 8 clips  x 1 crop | [config](./configs/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb_20230801-8535b794.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb/actionclip_vit-base-p32-res224-clip-pre_g8xb16_1x1x8_k400-rgb.log) |
+|          1x1x8          |  8   | ViT-B/16 |   81.3   |   95.2   | 8 clips  x 1 crop | [config](./configs/actionclip_vit-base-p16-res224-clip-pre_g8xb16_1x1x8_k400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_g8xb16_1x1x8_k400-rgb/actionclip_vit-base-p16-res224-clip-pre_g8xb16_1x1x8_k400-rgb_20230801-b307a0cd.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/projects/actionclip/actionclip_vit-base-p16-res224-clip-pre_g8xb16_1x1x8_k400-rgb/actionclip_vit-base-p16-res224-clip-pre_g8xb16_1x1x8_k400-rgb.log) |
 
 ## Zero-Shot Prediction
 
@@ -120,6 +148,7 @@ print("Label probs:", probs)  # [[9.995e-01 5.364e-07 6.666e-04]]
 
 ```python
 import mmengine
+import torch
 from mmaction.utils import register_all_modules
 from mmaction.apis import inference_recognizer, init_recognizer
 
@@ -139,7 +168,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model = init_recognizer(config=config, checkpoint=checkpoint_path, device=device)
 
 pred_result = inference_recognizer(model, 'test.mp4')
-probs = pred_result.pred_scores.item.cpu().numpy()
+probs = pred_result.pred_score.cpu().numpy()
 print("Label probs:", probs)  # [9.995e-01 5.364e-07 6.666e-04]
 ```
 

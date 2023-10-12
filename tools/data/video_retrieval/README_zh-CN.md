@@ -14,6 +14,16 @@
 }
 ```
 
+```BibTeX
+@inproceedings{chen2011collecting,
+  title={Collecting highly parallel data for paraphrase evaluation},
+  author={Chen, David and Dolan, William B},
+  booktitle={ACL},
+  pages={190--200},
+  year={2011}
+}
+```
+
 在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/video_retrieval/`。
 
 ## 准备 MSRVTT 数据集
@@ -24,7 +34,7 @@
 bash prepare_msrvtt.sh
 ```
 
-完场上述准备步骤后，文件目录如下：
+完成上述准备步骤后，文件目录如下：
 
 ```
 mmaction2
@@ -42,4 +52,32 @@ mmaction2
 │   │           ├── video1.mp4
 │   │           ├── ...
 │   │           └── video9999.mp4
+```
+
+## 准备 MSVD 数据集
+
+用户可参考该数据集的[官网](https://www.cs.utexas.edu/users/ml/clamp/videoDescription/)，以获取数据集相关的基本信息。运行下面的命令准备 MSVD 数据集：
+
+```shell
+bash prepare_msvd.sh
+```
+
+完场上述准备步骤后，文件目录如下：
+
+```
+mmaction2
+├── mmaction
+├── tools
+├── configs
+├── data
+│   ├── video_retrieval
+│   │   └── msvd
+│   │       ├── train.json
+│   │       ├── text.json
+│   │       ├── val.json
+│   │       └─── videos
+│   │           ├── xxx.avi
+│   │           ├── xxx.avi
+│   │           ├── ...
+│   │           └── xxx.avi
 ```

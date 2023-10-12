@@ -10,8 +10,7 @@ import torch
 from mmengine.testing import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal
 
-from mmaction.datasets.transforms import (AudioDecode, AudioDecodeInit,
-                                          DecordDecode, DecordInit,
+from mmaction.datasets.transforms import (DecordDecode, DecordInit,
                                           GenerateLocalizationLabels,
                                           LoadAudioFeature, LoadHVULabel,
                                           LoadLocalizationFeature,
@@ -487,8 +486,8 @@ class TestDecode(BaseTestLoading):
         frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert assert_dict_has_keys(results, target_keys)
-        assert np.shape(results['imgs']) == (len(inputs['frame_inds']) * 2,
-                                             240, 320)
+        assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
+                                             320, 2)
         assert results['original_shape'] == (240, 320)
 
         # test frame selector with 1 dim input for flow images
@@ -497,8 +496,8 @@ class TestDecode(BaseTestLoading):
         frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert assert_dict_has_keys(results, target_keys)
-        assert np.shape(results['imgs']) == (len(inputs['frame_inds']) * 2,
-                                             240, 320)
+        assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
+                                             320, 2)
         assert results['original_shape'] == (240, 320)
 
         return
@@ -532,42 +531,6 @@ class TestDecode(BaseTestLoading):
             assert repr(frame_selector) == (
                 f'{frame_selector.__class__.__name__}(io_backend=disk, '
                 f'decoding_backend=turbojpeg)')
-
-    def test_audio_decode_init(self):
-        try:
-            import soundfile as sf  # noqa: F401
-        except (OSError, ImportError):
-            return
-        target_keys = ['audios', 'length', 'sample_rate']
-        inputs = copy.deepcopy(self.audio_results)
-        audio_decode_init = AudioDecodeInit()
-        results = audio_decode_init(inputs)
-        assert assert_dict_has_keys(results, target_keys)
-
-        # test when no audio file exists
-        inputs = copy.deepcopy(self.audio_results)
-        inputs['audio_path'] = 'foo/foo/bar.wav'
-        audio_decode_init = AudioDecodeInit()
-        results = audio_decode_init(inputs)
-        assert assert_dict_has_keys(results, target_keys)
-        assert results['audios'].shape == (10.0 *
-                                           audio_decode_init.sample_rate, )
-        assert repr(audio_decode_init) == (
-            f'{audio_decode_init.__class__.__name__}('
-            f'io_backend=disk, '
-            f'sample_rate=16000, '
-            f'pad_method=zero)')
-
-    def test_audio_decode(self):
-        target_keys = ['frame_inds', 'audios']
-        inputs = copy.deepcopy(self.audio_results)
-        inputs['frame_inds'] = np.arange(0, self.audio_total_frames,
-                                         2)[:, np.newaxis]
-        inputs['num_clips'] = 1
-        inputs['length'] = 1280
-        audio_selector = AudioDecode()
-        results = audio_selector(inputs)
-        assert assert_dict_has_keys(results, target_keys)
 
     def test_pyav_decode_motion_vector(self):
         pyav_init = PyAVInit()

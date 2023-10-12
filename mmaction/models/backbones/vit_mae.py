@@ -12,12 +12,6 @@ from torch import Tensor, nn
 from mmaction.registry import MODELS
 from mmaction.utils import ConfigType, OptConfigType
 
-try:
-    from mmdet.registry import MODELS as MMDET_MODELS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
-
 
 class Attention(BaseModule):
     """Multi-head Self-attention.
@@ -387,7 +381,3 @@ class VisionTransformer(BaseModule):
             return self.fc_norm(x.mean(1))
 
         return x[:, 0]
-
-
-if mmdet_imported:
-    MMDET_MODELS.register_module()(VisionTransformer)

@@ -13,7 +13,7 @@ from mmaction.utils import register_all_modules
 def generate_dummy_data(batch_size, input_keys, input_shapes):
     data = dict()
     data['data_samples'] = [
-        ActionDataSample().set_gt_labels(2) for _ in range(batch_size)
+        ActionDataSample().set_gt_label(2) for _ in range(batch_size)
     ]
     data['inputs'] = dict()
     for key, shape in zip(input_keys, input_shapes):

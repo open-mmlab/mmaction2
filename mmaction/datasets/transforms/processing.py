@@ -613,8 +613,9 @@ class Resize(BaseTransform):
         keep_ratio (bool): If set to True, Images will be resized without
             changing the aspect ratio. Otherwise, it will resize images to a
             given size. Default: True.
-        interpolation (str): Algorithm used for interpolation:
-            "nearest" | "bilinear". Default: "bilinear".
+        interpolation (str): Algorithm used for interpolation,
+            accepted values are "nearest", "bilinear", "bicubic", "area",
+            "lanczos". Default: "bilinear".
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 
@@ -1273,117 +1274,6 @@ class TenCrop(BaseTransform):
 
     def __repr__(self):
         repr_str = f'{self.__class__.__name__}(crop_size={self.crop_size})'
-        return repr_str
-
-
-@TRANSFORMS.register_module()
-class AudioAmplify(BaseTransform):
-    """Amplify the waveform.
-
-    Required keys are ``audios``, added or modified keys are ``audios``,
-    ``amplify_ratio``.
-
-    Args:
-        ratio (float): The ratio used to amplify the audio waveform.
-    """
-
-    def __init__(self, ratio: float) -> None:
-        if isinstance(ratio, float):
-            self.ratio = ratio
-        else:
-            raise TypeError('Amplification ratio should be float.')
-
-    def transform(self, results: dict) -> dict:
-        """Perform the audio amplification.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-
-        assert 'audios' in results
-        results['audios'] *= self.ratio
-        results['amplify_ratio'] = self.ratio
-
-        return results
-
-    def __repr__(self):
-        repr_str = f'{self.__class__.__name__}(ratio={self.ratio})'
-        return repr_str
-
-
-@TRANSFORMS.register_module()
-class MelSpectrogram(BaseTransform):
-    """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
-
-    Required keys are ``audios``, ``sample_rate``, ``num_clips``, added or
-    modified keys are ``audios``.
-
-    Args:
-        window_size (int): The window size in millisecond. Defaults to 32.
-        step_size (int): The step size in millisecond. Defaults to 16.
-        n_mels (int): Number of mels. Defaults to 80.
-        fixed_length (int): The sample length of melspectrogram maybe not
-            exactly as wished due to different fps, fix the length for batch
-            collation by truncating or padding. Defaults to 128.
-    """
-
-    def __init__(self,
-                 window_size: int = 32,
-                 step_size: int = 16,
-                 n_mels: int = 80,
-                 fixed_length: int = 128) -> None:
-        if all(
-                isinstance(x, int)
-                for x in [window_size, step_size, n_mels, fixed_length]):
-            self.window_size = window_size
-            self.step_size = step_size
-            self.n_mels = n_mels
-            self.fixed_length = fixed_length
-        else:
-            raise TypeError('All arguments should be int.')
-
-    def transform(self, results: dict) -> dict:
-        """Perform MelSpectrogram transformation.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        try:
-            import librosa
-        except ImportError:
-            raise ImportError('Install librosa first.')
-        signals = results['audios']
-        sample_rate = results['sample_rate']
-        n_fft = int(round(sample_rate * self.window_size / 1000))
-        hop_length = int(round(sample_rate * self.step_size / 1000))
-        melspectrograms = list()
-        for clip_idx in range(results['num_clips']):
-            clip_signal = signals[clip_idx]
-            mel = librosa.feature.melspectrogram(
-                y=clip_signal,
-                sr=sample_rate,
-                n_fft=n_fft,
-                hop_length=hop_length,
-                n_mels=self.n_mels)
-            if mel.shape[0] >= self.fixed_length:
-                mel = mel[:self.fixed_length, :]
-            else:
-                mel = np.pad(
-                    mel, ((0, self.fixed_length - mel.shape[0]), (0, 0)),
-                    mode='edge')
-            melspectrograms.append(mel)
-
-        results['audios'] = np.array(melspectrograms)
-        return results
-
-    def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}'
-                    f'(window_size={self.window_size}), '
-                    f'step_size={self.step_size}, '
-                    f'n_mels={self.n_mels}, '
-                    f'fixed_length={self.fixed_length})')
         return repr_str
 
 

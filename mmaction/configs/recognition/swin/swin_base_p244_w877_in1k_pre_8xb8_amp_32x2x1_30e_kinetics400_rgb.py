@@ -28,6 +28,7 @@ model.update(
         cls_head=dict(in_channels=1024)))
 
 # dataset settings
+dataset_type = VideoDataset
 data_root = 'data/kinetics400/videos_train'
 data_root_val = 'data/kinetics400/videos_val'
 ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'

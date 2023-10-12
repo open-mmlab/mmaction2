@@ -12,6 +12,7 @@
 - [SpatioTemporal Action Detection Video Demo](#spatiotemporal-action-detection-video-demo): A demo script to predict the spatiotemporal action detection result using a single video.
 - [SpatioTemporal Action Detection ONNX Video Demo](#spatiotemporal-action-detection-onnx-video-demo): A demo script to predict the SpatioTemporal Action Detection result using the onnx file instead of building the PyTorch models.
 - [Inferencer Demo](#inferencer): A demo script to implement fast predict for video analysis tasks based on unified inferencer interface.
+- [Audio Demo](#audio-demo): A demo script to predict the recognition result using a single audio file.
 - [Video Structuralize Demo](#video-structuralize-demo): A demo script to predict the skeleton-based and rgb-based action recognition and spatio-temporal action detection result using a single video.
 
 ## Modify configs through script arguments
@@ -586,6 +587,34 @@ Assume that you are located at `$MMACTION2`.
        --vid-out-dir demo_out \
        --rec tsn \
        --label-file tools/data/kinetics/label_map_k400.txt
+   ```
+
+## Audio Demo
+
+Demo script to predict the audio-based action recognition using a single audio feature.
+
+The script [`extract_audio.py`](/tools/data/extract_audio.py) can be used to extract audios from videos and the script [`build_audio_features.py`](/tools/data/build_audio_features.py) can be used to extract the audio features.
+
+```shell
+python demo/demo_audio.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${AUDIO_FILE} {LABEL_FILE} [--device ${DEVICE}]
+```
+
+Optional arguments:
+
+- `DEVICE`: Type of device to run the demo. Allowed values are cuda devices like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
+
+Examples:
+
+Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
+or use checkpoint url from `configs/` to directly load the corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
+
+1. Recognize an audio file as input by using a tsn model on cuda by default.
+
+   ```shell
+   python demo/demo_audio.py \
+       configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py \
+       https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20230702-e4642fb0.pth \
+       audio_feature.npy tools/data/kinetics/label_map_k400.txt
    ```
 
 ## Video Structuralize Demo
