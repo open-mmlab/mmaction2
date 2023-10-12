@@ -145,18 +145,17 @@ class PackLocalizationInputs(BaseTransform):
         for key in self.keys:
             if key not in results:
                 continue
-            if key == 'gt_bbox':
-                instance_data = InstanceData()
-                instance_data[key] = to_tensor(results[key])
-                data_sample.gt_instances = instance_data
             elif key == 'proposals':
                 instance_data = InstanceData()
                 instance_data[key] = to_tensor(results[key])
                 data_sample.proposals = instance_data
             else:
-                raise NotImplementedError(
-                    f"Key '{key}' is not supported in `PackLocalizationInputs`"
-                )
+                if hasattr(data_sample, 'gt_instances'):
+                    data_sample.gt_instances[key] = to_tensor(results[key])
+                else:
+                    instance_data = InstanceData()
+                    instance_data[key] = to_tensor(results[key])
+                    data_sample.gt_instances = instance_data
 
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
