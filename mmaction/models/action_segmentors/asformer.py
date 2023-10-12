@@ -453,6 +453,13 @@ class FCFeedForward(nn.Module):
             nn.Conv1d(out_channels, out_channels, 1))
 
     def forward(self, x):
+        """Define the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         return self.layer(x)
 
 
@@ -506,6 +513,13 @@ class PositionalEncoding(nn.Module):
     #         self.register_buffer('pe', pe)
 
     def forward(self, x):
+        """Define the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         return x + self.pe[:, :, 0:x.shape[2]]
 
 
