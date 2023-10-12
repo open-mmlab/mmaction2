@@ -61,8 +61,6 @@ python tools/data/action_seg/generate_gt_array.py --dataset_dir data/action_seg
 After the whole data process for GTEA, 50Salads and Breakfast preparation,
 you will get the features, splits ,annotation files and groundtruth boundaries for the datasets.
 
-For extracting features from your own videos, please refer to [activitynet](/tools/data/activitynet/README.md).
-
 In the context of the whole project (for GTEA, 50Salads and Breakfast), the folder structure will look like:
 
 ```
