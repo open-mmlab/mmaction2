@@ -1,0 +1,32 @@
+image_root: '/home/notebook/data/group/projects/tagging/caption/datasets/public/coco/'
+
+ann_root: 'dataset/caption_dataset'
+coco_gt_root: 'dataset/caption_dataset'
+
+pretrained: '/home/notebook/code/personal/S9049611/BLIP/output/pretrain_caption_tagtotext_v2_bert_asl'
+
+# size of vit model; base or large
+vit: 'swin_b'
+vit_grad_ckpt: False
+vit_ckpt_layer: 0
+
+batch_size: 35
+init_lr: 5e-6
+
+image_size: 384
+
+# generation configs
+max_length: 20
+min_length: 5
+num_beams: 3
+prompt: 'a picture of '
+
+# optimizer
+weight_decay: 0.05
+min_lr: 0
+max_epoch: 10
+
+text_pretrain: 'bert'
+
+class_num: 3429
+threshold: 0.7
