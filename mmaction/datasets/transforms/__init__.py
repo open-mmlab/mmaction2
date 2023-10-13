@@ -1,13 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .formatting import (FormatAudioShape, FormatGCNInput, FormatShape,
-                         PackActionInputs, PackLocalizationInputs, Transpose)
+                         PackActionInputs, PackLocalizationInputs,
+                         PackSegmentationInputs, Transpose)
 from .loading import (ArrayDecode, AudioFeatureSelector, BuildPseudoClip,
                       DecordDecode, DecordInit, DenseSampleFrames,
                       GenerateLocalizationLabels, ImageDecode,
                       LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
-                      LoadProposals, LoadRGBFromFile, OpenCVDecode, OpenCVInit,
-                      PIMSDecode, PIMSInit, PyAVDecode, PyAVDecodeMotionVector,
-                      PyAVInit, RawFrameDecode, SampleAVAFrames, SampleFrames,
+                      LoadProposals, LoadRGBFromFile, LoadSegmentationFeature,
+                      OpenCVDecode, OpenCVInit, PIMSDecode, PIMSInit,
+                      PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
+                      RawFrameDecode, SampleAVAFrames, SampleFrames,
                       UniformSample, UntrimmedSampleFrames)
 from .pose_transforms import (DecompressPose, GeneratePoseTarget, GenSkeFeat,
                               JointToBone, MergeSkeFeat, MMCompact, MMDecode,
@@ -37,5 +39,5 @@ __all__ = [
     'SampleAVAFrames', 'SampleFrames', 'TenCrop', 'ThreeCrop', 'ToMotion',
     'TorchVisionWrapper', 'Transpose', 'UniformSample', 'UniformSampleFrames',
     'UntrimmedSampleFrames', 'MMUniformSampleFrames', 'MMDecode', 'MMCompact',
-    'CLIPTokenize'
+    'CLIPTokenize', 'LoadSegmentationFeature', 'PackSegmentationInputs'
 ]

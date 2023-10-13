@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from .action_segmentors import *  # noqa: F401,F403
 from .backbones import *  # noqa: F401,F403
 from .common import *  # noqa: F401,F403
 from .data_preprocessors import *  # noqa: F401,F403

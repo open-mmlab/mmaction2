@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from .action_segment_dataset import ActionSegmentDataset
 from .activitynet_dataset import ActivityNetDataset
 from .audio_dataset import AudioDataset
 from .ava_dataset import AVADataset, AVAKineticsDataset
@@ -16,5 +17,6 @@ __all__ = [
     'AVADataset', 'AVAKineticsDataset', 'ActivityNetDataset', 'AudioDataset',
     'BaseActionDataset', 'PoseDataset', 'RawframeDataset', 'RepeatAugDataset',
     'VideoDataset', 'repeat_pseudo_collate', 'VideoTextDataset',
-    'MSRVTTRetrieval', 'MSRVTTVQA', 'MSRVTTVQAMC', 'CharadesSTADataset'
+    'MSRVTTRetrieval', 'MSRVTTVQA', 'MSRVTTVQAMC', 'CharadesSTADataset',
+    'ActionSegmentDataset'
 ]
