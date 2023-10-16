@@ -1,0 +1,1 @@
+from .slowonly import SlowOnly
