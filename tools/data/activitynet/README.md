@@ -109,28 +109,28 @@ After finetuning TSN on ActivityNet, you can use it to extract both RGB and Flow
 
 ```shell
 python ../../misc/clip_feature_extraction.py tsn_extract_rgb_feat_config.py \
-  /path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_tarin_feat.pkl \
+  /path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_tarin_feat \
   --video-list ../../../data/ActivityNet/anet_train_video.txt \
   --video-root ../../../data/ActivityNet/rawframes \
-  --dump-score
+  --dump-score --long-video-mode
 
 python ../../misc/clip_feature_extraction.py tsn_extract_rgb_feat_config.py \
-  path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_val_feat.pkl \
+  path/to/rgb_checkpoint.pth ../../../data/ActivityNet/rgb_val_feat \
   --video-list ../../../data/ActivityNet/anet_val_video.txt \
   --video-root ../../../data/ActivityNet/rawframes \
-  --dump-score
+  --dump-score --long-video-mode
 
 python ../../misc/clip_feature_extraction.py tsn_extract_flow_feat_config.py \
-  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_tarin_feat.pkl \
+  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_tarin_feat \
   --video-list ../../../data/ActivityNet/anet_train_video.txt \
   --video-root ../../../data/ActivityNet/rawframes \
-  --dump-score
+  --dump-score --long-video-mode
 
 python ../../misc/clip_feature_extraction.py tsn_extract_flow_feat_config.py \
-  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_val_feat.pkl \
+  /path/to/flow_checkpoint.pth ../../../data/ActivityNet/flow_val_feat \
   --video-list ../../../data/ActivityNet/anet_val_video.txt \
   --video-root ../../../data/ActivityNet/rawframes \
-  --dump-score
+  --dump-score --long-video-mode
 ```
 
 After feature extraction, you can use our post processing scripts to concat RGB and Flow feature, generate the `100-t X 400-d` feature for Action Detection.

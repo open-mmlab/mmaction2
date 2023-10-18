@@ -11,7 +11,7 @@ head = ','.join([f'f{i}' for i in range(700)]) + '\n'
 for feature, video in zip(features, video_list):
     video_id = video.split()[0].split('/')[1]
     csv_file = video_id.replace('mp4', 'csv')
-    feat = feature['pred_scores']['item'].numpy()
+    feat = feature['pred_score'].numpy()
     feat = feat.tolist()
     csv_path = f'{feature_dir}/{csv_file}'
     with open(csv_path, 'w') as f:
