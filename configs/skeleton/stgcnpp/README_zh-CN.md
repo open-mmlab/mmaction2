@@ -34,10 +34,8 @@
 |                         |  two-stream  |      |          |  91.39   |                  |       |        |                                           |                                         |                                        |
 |                         | four-stream  |      |          |  91.87   |                  |       |        |                                           |                                         |                                        |
 
-
 1. 这里的 **GPU** 数量 指的是得到模型权重文件对应的 GPU 个数。用户在 使用不同数量的 GPU 或每块 GPU 处理不同视频个数时，最好的方法是在调用 `tools/train.py` 时设置 `--auto-scale-lr` ，该参数将根据实际批次大小自动调整学习率和原始批次。
-2. 对于双流融合，我们使用 **joint : bone = 1 : 1**。对于四流融合，我们使用**joint : joint-motion : bone : bone-motion = 2 : 1 : 2 : 1**。有关多流融合的更多详情信息，请参考[教程](/docs/zh_cn/useful_tools.md#%E5%A4%9A%E6%B5%81%E8%9E%8D%E5%90%88)。
-
+1. 对于双流融合，我们使用 **joint : bone = 1 : 1**。对于四流融合，我们使用**joint : joint-motion : bone : bone-motion = 2 : 1 : 2 : 1**。有关多流融合的更多详情信息，请参考[教程](/docs/zh_cn/useful_tools.md#%E5%A4%9A%E6%B5%81%E8%9E%8D%E5%90%88)。
 
 ## 训练
 
@@ -46,6 +44,7 @@
 ```shell
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
+
 Example: 以确定性的训练，进行 STGCN++ 模型在 NTU60-2D 数据集上的训练。
 
 ```shell
@@ -54,7 +53,6 @@ python tools/train.py configs/skeleton/stgcnpp/stgcnpp_8xb16-joint-u100-80e_ntu6
 ```
 
 更多训练细节，可参考 [训练与测试](/docs/zh_cn/user_guides/train_test.md#%E8%AE%AD%E7%BB%83) 中的 **训练** 部分。
-
 
 ## 测试
 
