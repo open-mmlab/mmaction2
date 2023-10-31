@@ -119,5 +119,3 @@ python tools/test.py configs/detection/slowonly/slowonly_kinetics400-pretrained-
 ```
 
 更多测试细节，可参考 [训练和测试教程](/docs/zh_cn/user_guides/train_test.md) 中的 **测试** 部分。
-
-
