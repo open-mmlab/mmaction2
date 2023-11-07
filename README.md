@@ -59,17 +59,17 @@ English | [简体中文](/README_zh-CN.md)
 ## 📄 Table of Contents
 
 - [📄 Table of Contents](#-table-of-contents)
-- [🥳 🚀 What's New](#--whats-new-)
-- [📖 Introduction](#-introduction-)
-- [🎁 Major Features](#-major-features-)
-- [🛠️ Installation](#️-installation-)
-- [👀 Model Zoo](#-model-zoo-)
-- [👨‍🏫 Get Started](#-get-started-)
-- [🎫 License](#-license-)
-- [🖊️ Citation](#️-citation-)
-- [🙌 Contributing](#-contributing-)
-- [🤝 Acknowledgement](#-acknowledgement-)
-- [🏗️ Projects in OpenMMLab](#️-projects-in-openmmlab-)
+- [🥳 🚀 What's New 🔝](#--whats-new-)
+- [📖 Introduction 🔝](#-introduction-)
+- [🎁 Major Features 🔝](#-major-features-)
+- [🛠️ Installation 🔝](#️-installation-)
+- [👀 Model Zoo 🔝](#-model-zoo-)
+- [👨‍🏫 Get Started 🔝](#-get-started-)
+- [🎫 License 🔝](#-license-)
+- [🖊️ Citation 🔝](#️-citation-)
+- [🙌 Contributing 🔝](#-contributing-)
+- [🤝 Acknowledgement 🔝](#-acknowledgement-)
+- [🏗️ Projects in OpenMMLab 🔝](#️-projects-in-openmmlab-)
 
 ## 🥳 🚀 What's New [🔝](#-table-of-contents)
 
@@ -149,7 +149,7 @@ Results and models are available in the [model zoo](https://mmaction2.readthedoc
     <td colspan="5" style="font-weight:bold;">Action Recognition</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/c3d/README.md">C3D</a> (CVPR'2014)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/c3d/README.md">C3D</a> (ICCV'2015)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/tsn/README.md">TSN</a> (ECCV'2016)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/i3d/README.md">I3D</a> (CVPR'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/c2d/README.md">C2D</a> (CVPR'2018)</td>
