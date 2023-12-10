@@ -14,7 +14,7 @@ Hand detection results on OneHand10K validation dataset
 
 | Config                                                  | Input Size | bbox mAP | bbox mAP 50 | bbox mAP 75 |                         ckpt                          |                         log                          |
 | :------------------------------------------------------ | :--------: | :------: | :---------: | :---------: | :---------------------------------------------------: | :--------------------------------------------------: |
-| [rtmpose_nano](/projects/gesture_recognition/configs/rtmdet-nano_8xb32-300e_multi-dataset-hand-320x320.py) |  320x320   |  0.8100  |   0.9870    |   0.9190    | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/gesture_recognition/rtmdet-nano_8xb32-300e_multi-dataset-hand-320x320_20230524-f6ffed6a.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/projects/gesture_recognition/rtmdet-nano_8xb32-300e_multi-dataset-hand-320x320.log) |
+| [rtmdet_nano](/projects/gesture_recognition/configs/rtmdet-nano_8xb32-300e_multi-dataset-hand-320x320.py) |  320x320   |  0.8100  |   0.9870    |   0.9190    | [ckpt](https://download.openmmlab.com/mmaction/v1.0/projects/gesture_recognition/rtmdet-nano_8xb32-300e_multi-dataset-hand-320x320_20230524-f6ffed6a.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/projects/gesture_recognition/rtmdet-nano_8xb32-300e_multi-dataset-hand-320x320.log) |
 
 ## Pose estimation stage
 
