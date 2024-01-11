@@ -267,14 +267,12 @@ class Transformer(BaseModule):
         dw_reduction (float): Downsample ratio of input channels in local MHRA.
             Defaults to 1.5.
         no_lmhra (bool): Whether removing local MHRA in local UniBlock.
-            Defaults to False.
+            Defaults to True.
         double_lmhra (bool): Whether using double local MHRA
-            in local UniBlock. Defaults to True.
+            in local UniBlock. Defaults to False.
         return_list (List[int]): Layer index of input features
             for global UniBlock. Defaults to [8, 9, 10, 11].
-        n_dim (int): Number of layers of global UniBlock.
-            Defaults to 4.
-        n_dim (int): Number of layers of global UniBlock.
+        n_layers (int): Number of layers of global UniBlock.
             Defaults to 4.
         n_dim (int): Number of input channels in global UniBlock.
             Defaults to 768.
@@ -413,19 +411,17 @@ class UniFormerV2(BaseModule):
             in local UniBlock. Defaults to 0.0.
         t_size (int): Number of temporal dimension after patch embedding.
             Defaults to 8.
-        temporal_downsample (bool): Whether downsampling temporal dimentison.
-            Defaults to False.
         dw_reduction (float): Downsample ratio of input channels in local MHRA.
             Defaults to 1.5.
-        no_lmhra (bool): Whether removing local MHRA in local UniBlock.
+        temporal_downsample (bool): Whether downsampling temporal dimentison.
             Defaults to False.
-        double_lmhra (bool): Whether using double local MHRA in local UniBlock.
+        no_lmhra (bool): Whether removing local MHRA in local UniBlock.
             Defaults to True.
+        double_lmhra (bool): Whether using double local MHRA in local UniBlock.
+            Defaults to False.
         return_list (List[int]): Layer index of input features
             for global UniBlock. Defaults to [8, 9, 10, 11].
-        n_dim (int): Number of layers of global UniBlock.
-            Defaults to 4.
-        n_dim (int): Number of layers of global UniBlock.
+        n_layers (int): Number of layers of global UniBlock.
             Defaults to 4.
         n_dim (int): Number of input channels in global UniBlock.
             Defaults to 768.
