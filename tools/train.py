@@ -8,6 +8,7 @@ from mmengine.runner import Runner
 
 from mmaction.registry import RUNNERS
 
+os.environ["CUBLAS_WORKSPACE_CONFIG"]=":4096:8"
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a action recognizer')
