@@ -1181,8 +1181,71 @@ class PoseSampleFrames(BaseTransform):
         Returns:
             dict: The result dict.
         """
-        # TODO
+        total_frames = results['total_frames']
+        # if can't get fps, same value of `fps` and `target_fps`
+        # will perform nothing
+        fps = results.get('avg_fps')
+        if self.target_fps is None or not fps:
+            fps_scale_ratio = 1.0
+        else:
+            fps_scale_ratio = fps / self.target_fps
+        ori_clip_len = self._get_ori_clip_len(fps_scale_ratio)
+        clip_offsets = self._sample_clips(total_frames, ori_clip_len)
 
+        if self.target_fps:
+            frame_inds = clip_offsets[:, None] + np.linspace(
+                0, ori_clip_len - 1, self.clip_len).astype(np.int32)
+        else:
+            frame_inds = clip_offsets[:, None] + np.arange(
+                self.clip_len)[None, :] * self.frame_interval
+            frame_inds = np.concatenate(frame_inds)
+
+        if self.temporal_jitter:
+            perframe_offsets = np.random.randint(
+                self.frame_interval, size=len(frame_inds))
+            frame_inds += perframe_offsets
+
+        frame_inds = frame_inds.reshape((-1, self.clip_len))
+        if self.out_of_bound_opt == 'loop':
+            frame_inds = np.mod(frame_inds, total_frames)
+        elif self.out_of_bound_opt == 'repeat_last':
+            safe_inds = frame_inds < total_frames
+            unsafe_inds = 1 - safe_inds
+            last_ind = np.max(safe_inds * frame_inds, axis=1)
+            new_inds = (safe_inds * frame_inds + (unsafe_inds.T * last_ind).T)
+            frame_inds = new_inds
+        else:
+            raise ValueError('Illegal out_of_bound option.')
+
+        start_index = results['start_index']
+        frame_inds = np.concatenate(frame_inds) + start_index
+
+        if 'keypoint' in results:
+            kp = results['keypoint']
+            assert total_frames == kp.shape[1]
+            num_person = kp.shape[0]
+            num_persons = [num_person] * total_frames
+            for i in range(total_frames):
+                j = num_person - 1
+                while j >= 0 and np.all(np.abs(kp[j, i]) < 1e-5):
+                    j -= 1
+                num_persons[i] = j + 1
+            transitional = [False] * total_frames
+            for i in range(1, total_frames - 1):
+                if num_persons[i] != num_persons[i - 1]:
+                    transitional[i] = transitional[i - 1] = True
+                if num_persons[i] != num_persons[i + 1]:
+                    transitional[i] = transitional[i + 1] = True
+            inds_int = inds.astype(np.int64)
+            coeff = np.array([transitional[i] for i in inds_int])
+            inds = (coeff * inds_int + (1 - coeff) * inds).astype(np.float32)
+
+        results['frame_inds'] = frame_inds.astype(np.int32)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = self.frame_interval
+        results['num_clips'] = self.num_clips
+        return results
+        
 @TRANSFORMS.register_module()
 class UniformSampleFrames(BaseTransform):
     """Uniformly sample frames from the video.
@@ -1326,15 +1389,19 @@ class UniformSampleFrames(BaseTransform):
                 while j >= 0 and np.all(np.abs(kp[j, i]) < 1e-5):
                     j -= 1
                 num_persons[i] = j + 1
+            # num_persons[i] = number of people in frame i
             transitional = [False] * num_frames
             for i in range(1, num_frames - 1):
                 if num_persons[i] != num_persons[i - 1]:
                     transitional[i] = transitional[i - 1] = True
                 if num_persons[i] != num_persons[i + 1]:
                     transitional[i] = transitional[i + 1] = True
+            # transitional[i] && transitional[i + 1] => num persons not same
+            # transitional[i - 1] && transitional[i] => num persons not same
             inds_int = inds.astype(np.int64)
             coeff = np.array([transitional[i] for i in inds_int])
             inds = (coeff * inds_int + (1 - coeff) * inds).astype(np.float32)
+            # adjust indices based on transitional frames
 
         results['frame_inds'] = inds.astype(np.int32)
         results['clip_len'] = self.clip_len

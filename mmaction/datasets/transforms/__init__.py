@@ -13,7 +13,7 @@ from .pose_transforms import (DecompressPose, GeneratePoseTarget, GenSkeFeat,
                               JointToBone, MergeSkeFeat, MMCompact, MMDecode,
                               MMUniformSampleFrames, PadTo, PoseCompact,
                               PoseDecode, PreNormalize2D, PreNormalize3D,
-                              ToMotion, UniformSampleFrames)
+                              ToMotion, PoseSampleFrames, UniformSampleFrames)
 from .processing import (CenterCrop, ColorJitter, Flip, Fuse, MultiScaleCrop,
                          RandomCrop, RandomRescale, RandomResizedCrop, Resize,
                          TenCrop, ThreeCrop)
@@ -35,7 +35,7 @@ __all__ = [
     'PyAVInit', 'PyAVInit', 'PytorchVideoWrapper', 'RandomCrop',
     'RandomRescale', 'RandomResizedCrop', 'RawFrameDecode', 'Resize',
     'SampleAVAFrames', 'SampleFrames', 'TenCrop', 'ThreeCrop', 'ToMotion',
-    'TorchVisionWrapper', 'Transpose', 'UniformSample', 'UniformSampleFrames',
+    'TorchVisionWrapper', 'Transpose', 'UniformSample', 'PoseSampleFrames', 'UniformSampleFrames',
     'UntrimmedSampleFrames', 'MMUniformSampleFrames', 'MMDecode', 'MMCompact',
     'CLIPTokenize'
 ]
