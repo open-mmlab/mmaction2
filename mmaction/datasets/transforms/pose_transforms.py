@@ -1236,9 +1236,9 @@ class PoseSampleFrames(BaseTransform):
                     transitional[i] = transitional[i - 1] = True
                 if num_persons[i] != num_persons[i + 1]:
                     transitional[i] = transitional[i + 1] = True
-            inds_int = inds.astype(np.int64)
+            inds_int = frame_inds.astype(np.int64)
             coeff = np.array([transitional[i] for i in inds_int])
-            inds = (coeff * inds_int + (1 - coeff) * inds).astype(np.float32)
+            frame_inds = (coeff * inds_int + (1 - coeff) * frame_inds).astype(np.float32)
 
         results['frame_inds'] = frame_inds.astype(np.int32)
         results['clip_len'] = self.clip_len
