@@ -93,9 +93,9 @@ def parse_args():
 
     return args
 
+args = parse_args()
 
 if __name__ == '__main__':
-    args = parse_args()
 
     if not osp.isdir(args.out_dir):
         print(f'Creating folder: {args.out_dir}')
