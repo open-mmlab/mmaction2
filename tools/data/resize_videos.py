@@ -95,6 +95,7 @@ def parse_args():
 
 args = parse_args()
 
+
 if __name__ == '__main__':
 
     if not osp.isdir(args.out_dir):
