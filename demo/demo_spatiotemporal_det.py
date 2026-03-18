@@ -364,8 +364,34 @@ def main():
     ]
     print('Performing visualization')
     vis_frames = visualize(frames, results)
+    # Calculate the exact fps needed for original duration
+    video_capture = cv2.VideoCapture(args.video)
+    original_fps = video_capture.get(cv2.CAP_PROP_FPS)
+    total_frames = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
+    original_duration = total_frames / original_fps
+    video_capture.release()
+    if args.output_fps == -1:
+        # Calculate exact fps needed to maintain original duration
+        fps = len(vis_frames) / original_duration
+    else:
+        exact_fps = len(vis_frames) / original_duration
+        requested_fps = args.output_fps
+        
+        # Find number of frames needed at requested fps to maintain duration
+        ideal_frame_count = requested_fps * original_duration
+        
+        # If we need to drop frames
+        if len(vis_frames) > ideal_frame_count:
+            # Calculate step size to get as close as possible to requested fps
+            step = len(vis_frames) / ideal_frame_count
+            indices = [int(i * step) for i in range(int(ideal_frame_count))]
+            vis_frames = [vis_frames[i] for i in indices]
+            fps = requested_fps
+        else:
+            # If we don't have enough frames for requested fps, use exact fps
+            fps = exact_fps
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames],
-                                fps=args.output_fps)
+                                fps=fps)
     vid.write_videofile(args.out_filename)
 
     tmp_dir.cleanup()
