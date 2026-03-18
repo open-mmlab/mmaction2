@@ -354,6 +354,9 @@ If you find this project useful in your research, please consider cite:
 
 We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/2.x/CONTRIBUTING.md) in MMCV for more details about the contributing guideline.
 
+> **Tip for New Contributors:**  
+> If you are new to OpenMMLab projects, please make sure your code follows the formatting guidelines and passes all required tests before submitting a pull request.
+
 ## 🤝 Acknowledgement [🔝](#-table-of-contents)
 
 MMAction2 is an open-source project that is contributed by researchers and engineers from various colleges and companies.
