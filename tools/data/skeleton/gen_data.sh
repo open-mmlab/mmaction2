@@ -1,0 +1,1 @@
+python3 ./tools/data/skeleton/ntu_pose_extraction.py /home/minhtranh/works/Project/Rainscales/Lying_detection/mmaction2/data/skeleton/Le2i/Lecture_room/video_1.avi video_1.pkl
