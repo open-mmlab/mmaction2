@@ -59,18 +59,18 @@
 ## 📄 目录
 
 - [📄 目录](#-目录)
-- [🥳 🚀 最新进展](#--最新进展-)
-- [📖 简介](#-简介-)
-- [🎁 主要功能](#-主要功能-)
-- [🛠️ 安装](#️-安装-)
-- [👀 模型库](#-模型库-)
-- [👨‍🏫 新手入门](#-新手入门-)
-- [🎫 许可证](#-许可证-)
-- [🖊️ 引用](#️-引用-)
-- [🙌 参与贡献](#-参与贡献-)
-- [🤝 致谢](#-致谢-)
-- [🏗️ OpenMMLab 的其他项目](#️-openmmlab-的其他项目-)
-- [❤️ 欢迎加入 OpenMMLab 社区](#️-欢迎加入-openmmlab-社区-)
+- [🥳 🚀 最新进展 🔝](#--最新进展-)
+- [📖 简介 🔝](#-简介-)
+- [🎁 主要功能 🔝](#-主要功能-)
+- [🛠️ 安装 🔝](#️-安装-)
+- [👀 模型库 🔝](#-模型库-)
+- [👨‍🏫 新手入门 🔝](#-新手入门-)
+- [🎫 许可证 🔝](#-许可证-)
+- [🖊️ 引用 🔝](#️-引用-)
+- [🙌 参与贡献 🔝](#-参与贡献-)
+- [🤝 致谢 🔝](#-致谢-)
+- [🏗️ OpenMMLab 的其他项目 🔝](#️-openmmlab-的其他项目-)
+- [❤️ 欢迎加入 OpenMMLab 社区 🔝](#️-欢迎加入-openmmlab-社区-)
 
 ## 🥳 🚀 最新进展 [🔝](#-table-of-contents)
 
@@ -150,7 +150,7 @@ pip install -v -e .
     <td colspan="5" style="font-weight:bold;">行为识别</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/c3d/README.md">C3D</a> (CVPR'2014)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/c3d/README.md">C3D</a> (ICCV'2015)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/tsn/README.md">TSN</a> (ECCV'2016)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/i3d/README.md">I3D</a> (CVPR'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/main/configs/recognition/c2d/README.md">C2D</a> (CVPR'2018)</td>
