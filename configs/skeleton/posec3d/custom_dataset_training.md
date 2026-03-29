@@ -15,7 +15,7 @@ We provide a step-by-step tutorial on how to train your custom dataset with Pose
 
 2. Then, you will collect all the pickle files into one list for training (and, of course, for validation) and save them as a single file (like `custom_dataset_train.pkl` or `custom_dataset_val.pkl`). At that time, you finalize preparing annotation files for your custom dataset.
 
-3. Next, you may use the following script (with some alterations according to your needs) for training as shown in [PoseC3D/Train](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md#train): `python tools/train.py configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py --work-dir work_dirs/slowonly_r50_u48_240e_ntu120_xsub_keypoint --validate --test-best --gpus 2 --seed 0 --deterministic`:
+3. Next, you may use the following script (with some alterations according to your needs) for training as shown in [PoseC3D/Train](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md#train): `python tools/train.py configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py --work-dir work_dirs/slowonly_r50_u48_240e_ntu120_xsub_keypoint --seed 0 --deterministic`:
 
    - Before running the above script, you need to modify the variables to initialize with your newly made annotation files:
 
