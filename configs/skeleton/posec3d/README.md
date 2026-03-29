@@ -79,7 +79,7 @@ Human skeleton, as a compact representation of human action, has received increa
 | :---------------------: | :------------: | :--: | :----------: | :------: | :--------------: | :---: | :----: | :-------------------------------------: | :-----------------------------------: | :----------------------------------: |
 |       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   69.6   |     10 clips     | 14.6G |  3.0M  | [config](/configs/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint_20220815-17eaa484.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint.log) |
 
-# Kinetics400
+### Kinetics400
 
 | frame sampling strategy | pseudo heatmap | gpus |   backbone   | top1 acc | testing protocol | FLOPs | params |                 config                  |                 ckpt                  |                 log                  |
 | :---------------------: | :------------: | :--: | :----------: | :------: | :--------------: | :---: | :----: | :-------------------------------------: | :-----------------------------------: | :----------------------------------: |
