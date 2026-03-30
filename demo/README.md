@@ -444,12 +444,28 @@ Examples:
 
 Assume that you are located at `$MMACTION2` .
 
-1. Use the Faster RCNN as the human detector, SlowOnly-8x8-R101 as the action detector. Making predictions per 8 frames, and output 1 frame per 4 frames to the output video. The FPS of the output video is 4.
+1. Use the Faster RCNN as the human detector, SlowOnly-8x8-R101 (AVA 2.1) as the action detector. Making predictions per 8 frames, and output 1 frame per 4 frames to the output video. The FPS of the output video is 4.
 
 ```shell
 python demo/demo_spatiotemporal_det.py demo/demo.mp4 demo/demo_spatiotemporal_det.mp4 \
     --config configs/detection/slowonly/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.py \
     --checkpoint https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
+    --det-config demo/demo_configs/faster-rcnn_r50_fpn_2x_coco_infer.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --det-score-thr 0.9 \
+    --action-score-thr 0.5 \
+    --label-map tools/data/ava/label_map.txt \
+    --predict-stepsize 8 \
+    --output-stepsize 4 \
+    --output-fps 6
+```
+
+Alternatively, use SlowFast-8x8-R101 (AVA 2.2) as the action detector.
+
+```shell
+python demo/demo_spatiotemporal_det.py demo/demo.mp4 demo/demo_spatiotemporal_det.mp4 \
+    --config configs/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.py \
+    --checkpoint https://download.openmmlab.com/mmaction/v1.0/detection/slowfast/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_r50-k400-pre-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-dd59e26f.pth \
     --det-config demo/demo_configs/faster-rcnn_r50_fpn_2x_coco_infer.py \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --det-score-thr 0.9 \
