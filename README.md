@@ -138,7 +138,7 @@ pip install -v -e .
 
 ## 👀 Model Zoo [🔝](#-table-of-contents)
 
-Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/latest/model_zoo/modelzoo.html).
+Results and models are available in the [model zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo_statistics.html).
 
 <details close>
 
