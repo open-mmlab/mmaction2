@@ -144,7 +144,7 @@ def inference_skeleton(model: nn.Module,
     num_frame = len(pose_results)
     num_person = max([len(x['keypoints']) for x in pose_results])
     fake_anno = dict(
-        frame_dict='',
+        frame_dir='',
         label=-1,
         img_shape=(h, w),
         origin_shape=(h, w),
