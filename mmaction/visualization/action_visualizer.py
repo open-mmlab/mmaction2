@@ -214,9 +214,9 @@ class ActionVisualizer(Visualizer):
             texts = ['Frame %d of total %d frames' % (frame_idx, tol_video)]
             self.set_image(frame)
 
-            if draw_gt and 'gt_labels' in data_sample:
-                gt_labels = data_sample.gt_label
-                idx = gt_labels.tolist()
+            if draw_gt and 'gt_label' in data_sample:
+                gt_label = data_sample.gt_label
+                idx = gt_label.tolist()
                 class_labels = [''] * len(idx)
                 if classes is not None:
                     class_labels = [f' ({classes[i]})' for i in idx]
@@ -226,14 +226,14 @@ class ActionVisualizer(Visualizer):
                 prefix = 'Ground truth: '
                 texts.append(prefix + ('\n' + ' ' * len(prefix)).join(labels))
 
-            if draw_pred and 'pred_labels' in data_sample:
-                pred_labels = data_sample.pred_labels
-                idx = pred_labels.item.tolist()
+            if draw_pred and 'pred_label' in data_sample:
+                pred_label = data_sample.pred_label
+                idx = pred_label.tolist()
                 score_labels = [''] * len(idx)
                 class_labels = [''] * len(idx)
-                if draw_score and 'score' in pred_labels:
+                if draw_score and data_sample.pred_score is not None:
                     score_labels = [
-                        f', {pred_labels.score[i].item():.2f}' for i in idx
+                        f', {data_sample.pred_score[i]:.2f}' for i in idx
                     ]
 
                 if classes is not None:
